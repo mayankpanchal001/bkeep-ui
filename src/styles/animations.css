@@ -1,0 +1,39 @@
+@keyframes moveGrid {
+    0% {
+        background-position: 0 0;
+    }
+    100% {
+        background-position: 60px 60px;
+    }
+}
+
+@keyframes moveDots {
+    0% {
+        background-position: 20px 20px;
+    }
+    100% {
+        background-position: 60px 60px;
+    }
+}
+
+@keyframes moveDiagonal {
+    0% {
+        background-position: 0 0;
+    }
+    100% {
+        background-position: 28px 28px;
+    }
+}
+
+.animate-pattern-grid {
+    animation: moveGrid 20s linear infinite;
+}
+
+.animate-pattern-dots {
+    animation: moveDots 15s linear infinite;
+}
+
+.animate-pattern-diagonal {
+    animation: moveDiagonal 25s linear infinite;
+}
+
