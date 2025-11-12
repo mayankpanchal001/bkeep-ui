@@ -351,9 +351,9 @@ const Reportpage = () => {
 
     const handleExportExcel = () => {
         try {
-            const exportData = prepareReportData(data, data.rangeLabel);
+            const exportData = prepareReportData(data);
             const filename = `report-${selectedRange}-${new Date().toISOString().split('T')[0]}`;
-            const businessName = 'Excel Studio Inc.'; // TODO: Get from user settings or context
+            const businessName = 'BKeep Accounting';
             const period = `${TIME_RANGE_OPTIONS.find((opt) => opt.value === selectedRange)?.label} [${new Date().toISOString().split('T')[0]}]`;
             exportToExcel(
                 exportData,
@@ -361,8 +361,7 @@ const Reportpage = () => {
                 'Financial Report',
                 undefined,
                 businessName,
-                period,
-                'CAD'
+                period
             );
             toast.success('Report exported to Excel successfully!');
             setIsExportMenuOpen(false);

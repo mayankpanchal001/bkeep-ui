@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as XLSX from 'xlsx';
 import * as XLSXStyle from 'xlsx-js-style';
 
@@ -43,7 +44,10 @@ export const exportToCSV = (
                 .map((header) => {
                     const value = row[header];
                     // Escape commas and quotes in values
-                    if (typeof value === 'string' && (value.includes(',') || value.includes('"'))) {
+                    if (
+                        typeof value === 'string' &&
+                        (value.includes(',') || value.includes('"'))
+                    ) {
                         return `"${value.replace(/"/g, '""')}"`;
                     }
                     return value;
@@ -75,7 +79,6 @@ export const exportToExcel = (
     data: ExportData[],
     filename: string = 'report',
     sheetName: string = 'Report',
-    reportTitle?: string,
     businessName?: string,
     period?: string,
     currency: string = 'CAD'
@@ -91,7 +94,7 @@ export const exportToExcel = (
     const maxCols = columns.length;
 
     // Prepare data with header banner
-    let worksheetData: any[][] = [];
+    const worksheetData: any[][] = [];
     let currentRow = 0;
 
     // Header banner row 1: Business name
@@ -333,7 +336,13 @@ export const exportToExcel = (
     for (let col = 0; col < maxCols; col++) {
         const cellAddress = XLSX.utils.encode_cell({ r: 0, c: col });
         if (!worksheet[cellAddress]) {
-            worksheet[cellAddress] = { t: 's', v: col === 0 ? `Business: ${businessName || 'Business Name'}` : '' };
+            worksheet[cellAddress] = {
+                t: 's',
+                v:
+                    col === 0
+                        ? `Business: ${businessName || 'Business Name'}`
+                        : '',
+            };
         }
         worksheet[cellAddress].s = businessNameStyle;
     }
@@ -342,7 +351,10 @@ export const exportToExcel = (
     for (let col = 0; col < maxCols; col++) {
         const cellAddress = XLSX.utils.encode_cell({ r: 1, c: col });
         if (!worksheet[cellAddress]) {
-            worksheet[cellAddress] = { t: 's', v: col === 0 ? 'by BKeep Accounting' : '' };
+            worksheet[cellAddress] = {
+                t: 's',
+                v: col === 0 ? 'by BKeep Accounting' : '',
+            };
         }
         worksheet[cellAddress].s = byTextStyle;
     }
@@ -360,7 +372,7 @@ export const exportToExcel = (
     if (!worksheet['!merges']) worksheet['!merges'] = [];
     worksheet['!merges'].push(
         { s: { r: 0, c: 0 }, e: { r: 0, c: maxCols - 1 } }, // Business name
-        { s: { r: 1, c: 0 }, e: { r: 1, c: maxCols - 1 } }  // By text
+        { s: { r: 1, c: 0 }, e: { r: 1, c: maxCols - 1 } } // By text
     );
 
     // Style metadata rows (rows 3, 4, 5)
@@ -384,7 +396,10 @@ export const exportToExcel = (
 
     // Style header row (row 6)
     for (let col = 0; col < columns.length; col++) {
-        const cellAddress = XLSX.utils.encode_cell({ r: headerRowIndex, c: col });
+        const cellAddress = XLSX.utils.encode_cell({
+            r: headerRowIndex,
+            c: col,
+        });
         if (!worksheet[cellAddress]) continue;
         worksheet[cellAddress].s = headerStyle;
     }
@@ -403,7 +418,6 @@ export const exportToExcel = (
                 sectionValue.includes('Aging') ||
                 sectionValue.includes('Payers'))
         ) {
-            currentSection = sectionValue;
             // Style section header
             for (let col = 0; col < columns.length; col++) {
                 const cellAddress = XLSX.utils.encode_cell({ r: row, c: col });
@@ -453,7 +467,7 @@ export const exportToExcel = (
 /**
  * Prepare report data for export with better structure
  */
-export const prepareReportData = (reportData: any, rangeLabel?: string) => {
+export const prepareReportData = (reportData: any) => {
     const exportData: ExportData[] = [];
 
     // Add summary metrics
@@ -525,4 +539,3 @@ export const prepareReportData = (reportData: any, rangeLabel?: string) => {
 
     return exportData;
 };
-

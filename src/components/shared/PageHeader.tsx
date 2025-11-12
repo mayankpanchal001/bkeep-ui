@@ -87,12 +87,12 @@ const PageHeader = ({
             <div className="relative" ref={menuRef}>
                 <button
                     onClick={() => setIsMenuOpen(!isMenuOpen)}
-                    className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-primary-10 transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                    className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-primary-10 transition-colors focus:outline-none focus:ring-1 focus:ring-primary focus:ring-offset-2"
                     aria-label="User menu"
                     aria-expanded={isMenuOpen}
                 >
-                    <div className="w-10 h-10 rounded-full bg-primary-10 flex items-center justify-center text-primary border-2 border-primary-20 hover:border-primary transition-colors">
-                        <FaUser className="w-5 h-5" />
+                    <div className="w-8 h-8 rounded-full bg-primary-10 flex items-center justify-center text-primary border-2 border-primary-20 hover:border-primary transition-colors">
+                        <FaUser className="w-4 h-4" />
                     </div>
                     <div className="hidden md:flex flex-col items-start">
                         <span className="text-sm font-medium text-primary">
@@ -108,7 +108,6 @@ const PageHeader = ({
                         }`}
                     />
                 </button>
-
                 {/* Dropdown Menu */}
                 {isMenuOpen && (
                     <div className="absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-lg border border-primary-10 py-2 z-50 dropdown-animate">
