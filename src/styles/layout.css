@@ -31,9 +31,10 @@
 }
 
 .protected-route-sidebar {
+    --sidebar-width: 200px;
     @apply hidden lg:flex flex-col gap-4 h-full p-4 bg-white border-r border-primary-10;
-    width: 260px;
-    min-width: 260px;
+    width: var(--sidebar-width);
+    min-width: var(--sidebar-width);
     transition:
         width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
         min-width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -110,7 +111,8 @@
 }
 
 .sidebar-header-title-text {
-    @apply text-base font-semibold text-primary whitespace-nowrap;
+    @apply text-base font-semibold text-primary;
+    line-height: 1.125;
     transition:
         opacity 0.15s ease-in-out 0.05s,
         max-width 0.3s cubic-bezier(0.4, 0, 0.2, 1),

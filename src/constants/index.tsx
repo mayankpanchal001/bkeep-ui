@@ -32,5 +32,5 @@ export const LOGOUT_ITEM = {
     path: '/logout',
 };
 
-export const APP_TITLE = 'BKeep Accounting Main';
+export const APP_TITLE = 'BKeep Accounting';
 export const USER_NAME = 'Mayank';

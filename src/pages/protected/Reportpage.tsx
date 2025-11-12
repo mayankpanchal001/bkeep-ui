@@ -1,8 +1,11 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 import {
     FaChartPie,
+    FaChevronDown,
     FaDownload,
+    FaFileAlt,
+    FaFileExcel,
     FaFileInvoiceDollar,
     FaFilter,
     FaMoneyBillWave,
@@ -10,6 +13,7 @@ import {
     FaUserCheck,
 } from 'react-icons/fa';
 
+import toast from 'react-hot-toast';
 import { FaArrowTrendUp } from 'react-icons/fa6';
 
 import ChartWidget from '../../components/dashboard/ChartWidget';
@@ -17,6 +21,12 @@ import SummaryCard from '../../components/dashboard/SummaryCard';
 import ExpensePieChart from '../../components/dashboard/charts/ExpensePieChart';
 import ProfitabilityLineChart from '../../components/dashboard/charts/ProfitabilityLineChart';
 import RevenueBarChart from '../../components/dashboard/charts/RevenueBarChart';
+import PageHeader from '../../components/shared/PageHeader';
+import {
+    exportToCSV,
+    exportToExcel,
+    prepareReportData,
+} from '../../utills/export';
 
 type TimeRangeValue =
     | 'yearly'
@@ -317,63 +327,161 @@ const useReportData = (range: TimeRangeValue) => {
 const Reportpage = () => {
     const [selectedRange, setSelectedRange] =
         useState<TimeRangeValue>('monthly');
+    const [isExportMenuOpen, setIsExportMenuOpen] = useState(false);
+    const exportMenuRef = useRef<HTMLDivElement>(null);
     const data = useReportData(selectedRange);
+
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (
+                exportMenuRef.current &&
+                !exportMenuRef.current.contains(event.target as Node)
+            ) {
+                setIsExportMenuOpen(false);
+            }
+        };
+
+        if (isExportMenuOpen) {
+            document.addEventListener('mousedown', handleClickOutside);
+            return () => {
+                document.removeEventListener('mousedown', handleClickOutside);
+            };
+        }
+    }, [isExportMenuOpen]);
+
+    const handleExportExcel = () => {
+        try {
+            const exportData = prepareReportData(data, data.rangeLabel);
+            const filename = `report-${selectedRange}-${new Date().toISOString().split('T')[0]}`;
+            const businessName = 'Excel Studio Inc.'; // TODO: Get from user settings or context
+            const period = `${TIME_RANGE_OPTIONS.find((opt) => opt.value === selectedRange)?.label} [${new Date().toISOString().split('T')[0]}]`;
+            exportToExcel(
+                exportData,
+                filename,
+                'Financial Report',
+                undefined,
+                businessName,
+                period,
+                'CAD'
+            );
+            toast.success('Report exported to Excel successfully!');
+            setIsExportMenuOpen(false);
+        } catch (error) {
+            console.error('Export error:', error);
+            toast.error('Failed to export report to Excel');
+        }
+    };
+
+    const handleExportCSV = () => {
+        try {
+            const exportData = prepareReportData(data);
+            const filename = `report-${selectedRange}-${new Date().toISOString().split('T')[0]}`;
+            exportToCSV(exportData, filename);
+            toast.success('Report exported to CSV successfully!');
+            setIsExportMenuOpen(false);
+        } catch (error) {
+            console.error('Export error:', error);
+            toast.error('Failed to export report to CSV');
+        }
+    };
 
     return (
         <div className="space-y-6">
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                <div>
-                    <h1 className="text-2xl font-bold text-primary">Reports</h1>
-                    <p className="text-sm text-primary-50 mt-1">
-                        Deep dive into production, collections, and receivables
-                        with intelligent filters.
-                    </p>
-                </div>
-                <div className="flex flex-wrap items-center gap-2">
-                    <button
-                        className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-primary bg-white border border-primary-10 rounded-xl hover:border-primary-25 hover:shadow-sm transition"
-                        type="button"
-                    >
-                        <FaFilter className="text-primary" />
-                        Advanced Filters
-                    </button>
-                    <button
-                        className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-primary rounded-xl shadow-sm hover:shadow-md transition"
-                        type="button"
-                    >
-                        <FaDownload />
-                        Export Report
-                    </button>
-                </div>
-            </div>
+            <PageHeader
+                title="Reports"
+                subtitle="Deep dive into production, collections, and receivables with intelligent filters."
+            />
 
-            <div className="bg-white border border-primary-10 rounded-2xl p-4 shadow-sm">
-                <div className="flex flex-wrap gap-2">
-                    {TIME_RANGE_OPTIONS.map((option) => {
-                        const isActive = option.value === selectedRange;
-                        return (
+            {/* Filters and Controls Section */}
+            <div className="bg-white border border-primary-10 rounded-2xl p-6 shadow-sm">
+                <div className="space-y-4">
+                    {/* Time Range Selector */}
+                    <div>
+                        <label className="block text-sm font-semibold text-primary mb-3">
+                            Time Range
+                        </label>
+                        <div className="flex flex-wrap gap-2">
+                            {TIME_RANGE_OPTIONS.map((option) => {
+                                const isActive = option.value === selectedRange;
+                                return (
+                                    <button
+                                        key={option.value}
+                                        type="button"
+                                        onClick={() =>
+                                            setSelectedRange(option.value)
+                                        }
+                                        className={`px-4 py-2.5 text-sm font-semibold rounded-xl transition-all duration-200 ${
+                                            isActive
+                                                ? 'bg-primary text-white shadow-md scale-105'
+                                                : 'bg-primary-10 text-primary hover:bg-primary-25 hover:scale-105'
+                                        }`}
+                                        aria-pressed={isActive}
+                                    >
+                                        {option.label}
+                                    </button>
+                                );
+                            })}
+                        </div>
+                        <p className="text-xs text-primary-50 mt-3 ml-1">
+                            Showing insights for the last {data.rangeLabel}.
+                            Trends are compared against the {data.trendPeriod}.
+                        </p>
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div className="flex flex-wrap items-center gap-3 pt-2 border-t border-primary-10">
+                        <button
+                            className="flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-primary bg-white border-2 border-primary-10 rounded-xl hover:border-primary hover:bg-primary-10 hover:shadow-sm transition-all duration-200"
+                            type="button"
+                        >
+                            <FaFilter className="text-primary" />
+                            Advanced Filters
+                        </button>
+
+                        {/* Export Dropdown */}
+                        <div className="relative" ref={exportMenuRef}>
                             <button
-                                key={option.value}
+                                onClick={() =>
+                                    setIsExportMenuOpen(!isExportMenuOpen)
+                                }
+                                className="flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-primary rounded-xl shadow-sm hover:shadow-md transition-all duration-200 hover:bg-primary/90"
                                 type="button"
-                                onClick={() => setSelectedRange(option.value)}
-                                className={`px-3 py-2 text-xs md:text-sm font-semibold rounded-xl transition ${
-                                    isActive
-                                        ? 'bg-primary text-white shadow-sm'
-                                        : 'bg-primary-10 text-primary hover:bg-primary-25'
-                                }`}
-                                aria-pressed={isActive}
                             >
-                                {option.label}
+                                <FaDownload />
+                                Export Report
+                                <FaChevronDown
+                                    className={`w-3 h-3 transition-transform duration-200 ${
+                                        isExportMenuOpen ? 'rotate-180' : ''
+                                    }`}
+                                />
                             </button>
-                        );
-                    })}
+
+                            {isExportMenuOpen && (
+                                <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-primary-10 py-2 z-50 dropdown-animate">
+                                    <button
+                                        onClick={handleExportExcel}
+                                        className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-primary-75 hover:bg-primary-10 hover:text-primary transition-colors"
+                                        type="button"
+                                    >
+                                        <FaFileExcel className="w-4 h-4 text-green-600" />
+                                        <span>Export to Excel</span>
+                                    </button>
+                                    <button
+                                        onClick={handleExportCSV}
+                                        className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-primary-75 hover:bg-primary-10 hover:text-primary transition-colors"
+                                        type="button"
+                                    >
+                                        <FaFileAlt className="w-4 h-4 text-blue-600" />
+                                        <span>Export to CSV</span>
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                    </div>
                 </div>
-                <p className="text-xs text-primary-50 mt-3">
-                    Showing insights for the last {data.rangeLabel}. Trends are
-                    compared against the {data.trendPeriod}.
-                </p>
             </div>
 
+            {/* Summary Cards Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
                 <SummaryCard
                     title="Net Production"
@@ -496,6 +604,7 @@ const Reportpage = () => {
                 />
             </div>
 
+            {/* Charts and Analytics Section */}
             <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
                 <div className="xl:col-span-2 space-y-6">
                     <ChartWidget
@@ -626,7 +735,7 @@ const Reportpage = () => {
                                     key={index}
                                     className="flex items-start gap-2 text-sm text-primary-75"
                                 >
-                                    <FaArrowTrendUp className="text-primary mt-1 flex-shrink-0" />
+                                    <FaArrowTrendUp className="text-primary mt-1 shrink-0" />
                                     <span>{highlight}</span>
                                 </li>
                             ))}

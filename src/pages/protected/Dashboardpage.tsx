@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from 'react';
 import {
     FaChartLine,
     FaExclamationTriangle,
@@ -13,7 +14,9 @@ import InsuranceChart from '../../components/dashboard/charts/InsuranceChart';
 import ProfitabilityLineChart from '../../components/dashboard/charts/ProfitabilityLineChart';
 import RevenueBarChart from '../../components/dashboard/charts/RevenueBarChart';
 import ChartWidget from '../../components/dashboard/ChartWidget';
+import ResizableCard from '../../components/dashboard/ResizableCard';
 import SummaryCard from '../../components/dashboard/SummaryCard';
+import PageHeader from '../../components/shared/PageHeader';
 
 // TODO: Replace with API data fetching
 const useDashboardData = () => {
@@ -166,59 +169,207 @@ const useDashboardData = () => {
 
 const Dashboardpage = () => {
     const data = useDashboardData();
+    const [cardOrder, setCardOrder] = useState<string[]>(() => {
+        const saved = localStorage.getItem('dashboard-card-order');
+        if (saved) {
+            return JSON.parse(saved);
+        }
+        return [
+            'total-collections',
+            'outstanding-receivables',
+            'cash-on-hand',
+            'expense-summary',
+            'profitability',
+        ];
+    });
+    const [draggedCardId, setDraggedCardId] = useState<string | null>(null);
+    const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
+    const containerRef = useRef<HTMLDivElement>(null);
+    const cardRefs = useRef<Map<string, HTMLDivElement>>(new Map());
+
+    useEffect(() => {
+        localStorage.setItem('dashboard-card-order', JSON.stringify(cardOrder));
+    }, [cardOrder]);
+
+    const handleDragStart = (cardId: string) => {
+        setDraggedCardId(cardId);
+    };
+
+    const handleDragEnd = () => {
+        if (draggedCardId && dragOverIndex !== null) {
+            const currentIndex = cardOrder.indexOf(draggedCardId);
+            if (currentIndex !== -1 && currentIndex !== dragOverIndex) {
+                const newOrder = [...cardOrder];
+                const [removed] = newOrder.splice(currentIndex, 1);
+                newOrder.splice(dragOverIndex, 0, removed);
+                setCardOrder(newOrder);
+            }
+        }
+        setDraggedCardId(null);
+        setDragOverIndex(null);
+    };
+
+    useEffect(() => {
+        if (!draggedCardId) return;
+
+        const handleMouseMove = (e: MouseEvent) => {
+            if (!containerRef.current) return;
+
+            const containerRect = containerRef.current.getBoundingClientRect();
+            const mouseX = e.clientX - containerRect.left;
+            const mouseY = e.clientY - containerRect.top;
+
+            // Find which card position the mouse is over
+            let newIndex = cardOrder.length;
+            for (let i = 0; i < cardOrder.length; i++) {
+                const cardId = cardOrder[i];
+                const cardElement = cardRefs.current.get(cardId);
+                if (cardElement && cardId !== draggedCardId) {
+                    const cardRect = cardElement.getBoundingClientRect();
+                    const relativeX = cardRect.left - containerRect.left;
+                    const relativeY = cardRect.top - containerRect.top;
+
+                    // Check if mouse is over this card
+                    if (
+                        mouseX >= relativeX &&
+                        mouseX <= relativeX + cardRect.width &&
+                        mouseY >= relativeY &&
+                        mouseY <= relativeY + cardRect.height
+                    ) {
+                        // Determine if we should insert before or after
+                        const cardCenterX = relativeX + cardRect.width / 2;
+                        const cardCenterY = relativeY + cardRect.height / 2;
+
+                        if (mouseX < cardCenterX || mouseY < cardCenterY) {
+                            newIndex = i;
+                        } else {
+                            newIndex = i + 1;
+                        }
+                        break;
+                    }
+
+                    // If mouse is before this card
+                    if (
+                        mouseY < relativeY ||
+                        (mouseY < relativeY + cardRect.height &&
+                            mouseX < relativeX)
+                    ) {
+                        newIndex = i;
+                        break;
+                    }
+                }
+            }
+
+            setDragOverIndex(newIndex);
+        };
+
+        document.addEventListener('mousemove', handleMouseMove);
+        return () => {
+            document.removeEventListener('mousemove', handleMouseMove);
+        };
+    }, [draggedCardId, cardOrder]);
+
+    const cardConfigs = [
+        {
+            id: 'total-collections',
+            title: 'Total Collections',
+            value: data.totalCollections.value,
+            trend: data.totalCollections.trend,
+            breakdown: data.totalCollections.breakdown,
+            aiNotes: data.totalCollections.aiNotes,
+            icon: <FaMoneyBillWave />,
+        },
+        {
+            id: 'outstanding-receivables',
+            title: 'Outstanding Receivables',
+            value: data.outstandingReceivables.value,
+            breakdown: data.outstandingReceivables.breakdown,
+            aiNotes: data.outstandingReceivables.aiNotes,
+            icon: <FaFileInvoiceDollar />,
+        },
+        {
+            id: 'cash-on-hand',
+            title: 'Cash on Hand',
+            value: data.cashOnHand.value,
+            indicator: data.cashOnHand.indicator,
+            aiNotes: data.cashOnHand.aiNotes,
+            icon: <FaPiggyBank />,
+        },
+        {
+            id: 'expense-summary',
+            title: 'Expense Summary',
+            value: data.expenseSummary.value,
+            trend: data.expenseSummary.trend,
+            breakdown: data.expenseSummary.breakdown,
+            aiNotes: data.expenseSummary.aiNotes,
+            icon: <FaChartLine />,
+        },
+        {
+            id: 'profitability',
+            title: 'Profitability',
+            value: data.profitability.value,
+            trend: data.profitability.trend,
+            icon: <FaArrowTrendUp />,
+        },
+    ];
 
     return (
         <div className="space-y-6">
             {/* Page Header */}
-            <div className="flex items-center justify-between">
-                <div>
-                    <h1 className="text-2xl font-bold text-primary">
-                        Dashboard
-                    </h1>
-                    <p className="text-sm text-primary-50 mt-1">
-                        Overview of your dental practice financial performance
-                    </p>
-                </div>
-            </div>
+            <PageHeader
+                title="Dashboard"
+                subtitle="Welcome to your dashboard"
+            />
 
             {/* Summary Cards Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <SummaryCard
-                    title="Total Collections"
-                    value={data.totalCollections.value}
-                    trend={data.totalCollections.trend}
-                    breakdown={data.totalCollections.breakdown}
-                    aiNotes={data.totalCollections.aiNotes}
-                    icon={<FaMoneyBillWave />}
-                />
-                <SummaryCard
-                    title="Outstanding Receivables"
-                    value={data.outstandingReceivables.value}
-                    breakdown={data.outstandingReceivables.breakdown}
-                    aiNotes={data.outstandingReceivables.aiNotes}
-                    icon={<FaFileInvoiceDollar />}
-                />
-                <SummaryCard
-                    title="Cash on Hand"
-                    value={data.cashOnHand.value}
-                    indicator={data.cashOnHand.indicator}
-                    aiNotes={data.cashOnHand.aiNotes}
-                    icon={<FaPiggyBank />}
-                />
-                <SummaryCard
-                    title="Expense Summary"
-                    value={data.expenseSummary.value}
-                    trend={data.expenseSummary.trend}
-                    breakdown={data.expenseSummary.breakdown}
-                    aiNotes={data.expenseSummary.aiNotes}
-                    icon={<FaChartLine />}
-                />
-                <SummaryCard
-                    title="Profitability"
-                    value={data.profitability.value}
-                    trend={data.profitability.trend}
-                    icon={<FaArrowTrendUp />}
-                />
+            <div ref={containerRef} className="flex flex-wrap gap-4 relative">
+                {cardOrder.map((cardId, index) => {
+                    const config = cardConfigs.find((c) => c.id === cardId);
+                    if (!config) return null;
+
+                    const isDragging = draggedCardId === cardId;
+                    const showDropIndicator =
+                        dragOverIndex === index && draggedCardId && !isDragging;
+
+                    return (
+                        <div
+                            key={cardId}
+                            ref={(el) => {
+                                if (el) {
+                                    cardRefs.current.set(cardId, el);
+                                } else {
+                                    cardRefs.current.delete(cardId);
+                                }
+                            }}
+                            className="relative"
+                            style={{
+                                order: isDragging ? 999 : index,
+                            }}
+                        >
+                            {showDropIndicator && (
+                                <div className="absolute -left-2 top-0 bottom-0 w-1 bg-primary rounded z-40"></div>
+                            )}
+                            <ResizableCard
+                                id={cardId}
+                                defaultWidth={320}
+                                defaultHeight={320}
+                                isDragging={isDragging}
+                                onDragStart={() => handleDragStart(cardId)}
+                                onDragEnd={handleDragEnd}
+                            >
+                                <SummaryCard
+                                    title={config.title}
+                                    value={config.value}
+                                    trend={config.trend}
+                                    breakdown={config.breakdown}
+                                    aiNotes={config.aiNotes}
+                                    indicator={config.indicator}
+                                    icon={config.icon}
+                                />
+                            </ResizableCard>
+                        </div>
+                    );
+                })}
             </div>
 
             {/* Main Content Grid */}

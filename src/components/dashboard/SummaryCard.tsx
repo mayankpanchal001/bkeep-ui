@@ -34,12 +34,10 @@ const SummaryCard = ({
     };
 
     return (
-        <div className="bg-white rounded-xl shadow-sm border border-primary-10 p-6 hover:shadow-md transition-shadow">
+        <div className="bg-white rounded-xl shadow-sm border border-primary-10 p-6 hover:shadow-md transition-shadow min-w-0 w-full h-full overflow-auto">
             <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-3">
-                    {icon && (
-                        <div className="text-primary text-xl">{icon}</div>
-                    )}
+                    {icon && <div className="text-primary text-xl">{icon}</div>}
                     <h3 className="text-sm font-semibold text-primary-75 uppercase">
                         {title}
                     </h3>
@@ -110,4 +108,3 @@ const SummaryCard = ({
 };
 
 export default SummaryCard;
-

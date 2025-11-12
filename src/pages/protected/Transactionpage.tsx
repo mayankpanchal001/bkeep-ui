@@ -1,37 +1,15 @@
-import { FaDownload, FaFileInvoiceDollar, FaPlus } from 'react-icons/fa';
+import { FaFileInvoiceDollar } from 'react-icons/fa';
+import PageHeader from '../../components/shared/PageHeader';
 import TransactionsTable from '../../components/transactions/TransactionsTable';
-import Button from '../../components/typography/Button';
 
 const Transactionpage = () => {
     return (
         <div className="space-y-6">
             {/* Page Header */}
-            <div className="flex items-center justify-between">
-                <div>
-                    <h1 className="text-2xl font-bold text-primary">
-                        Transactions
-                    </h1>
-                    <p className="text-sm text-primary-50 mt-1">
-                        View and manage all your financial transactions
-                    </p>
-                </div>
-                <div className="flex items-center gap-3">
-                    <Button
-                        variant="outline"
-                        size="md"
-                        icon={<FaDownload className="w-4 h-4" />}
-                    >
-                        Export
-                    </Button>
-                    <Button
-                        variant="primary"
-                        size="md"
-                        icon={<FaPlus className="w-4 h-4" />}
-                    >
-                        Add Transaction
-                    </Button>
-                </div>
-            </div>
+            <PageHeader
+                title="Transactions"
+                subtitle="View and manage all your financial transactions"
+            />
 
             {/* Summary Cards */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
