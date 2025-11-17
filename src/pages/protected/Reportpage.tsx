@@ -21,6 +21,7 @@ import SummaryCard from '../../components/dashboard/SummaryCard';
 import ExpensePieChart from '../../components/dashboard/charts/ExpensePieChart';
 import ProfitabilityLineChart from '../../components/dashboard/charts/ProfitabilityLineChart';
 import RevenueBarChart from '../../components/dashboard/charts/RevenueBarChart';
+import IncomeStatementTable from '../../components/reports/IncomeStatementTable';
 import PageHeader from '../../components/shared/PageHeader';
 import {
     exportToCSV,
@@ -328,7 +329,10 @@ const Reportpage = () => {
     const [selectedRange, setSelectedRange] =
         useState<TimeRangeValue>('monthly');
     const [isExportMenuOpen, setIsExportMenuOpen] = useState(false);
+    const [isFilterMenuOpen, setIsFilterMenuOpen] = useState(false);
+    const [selectedReportType, setSelectedReportType] = useState<'income' | 'balance'>('income');
     const exportMenuRef = useRef<HTMLDivElement>(null);
+    const filterMenuRef = useRef<HTMLDivElement>(null);
     const data = useReportData(selectedRange);
 
     useEffect(() => {
@@ -339,15 +343,21 @@ const Reportpage = () => {
             ) {
                 setIsExportMenuOpen(false);
             }
+            if (
+                filterMenuRef.current &&
+                !filterMenuRef.current.contains(event.target as Node)
+            ) {
+                setIsFilterMenuOpen(false);
+            }
         };
 
-        if (isExportMenuOpen) {
+        if (isExportMenuOpen || isFilterMenuOpen) {
             document.addEventListener('mousedown', handleClickOutside);
             return () => {
                 document.removeEventListener('mousedown', handleClickOutside);
             };
         }
-    }, [isExportMenuOpen]);
+    }, [isExportMenuOpen, isFilterMenuOpen]);
 
     const handleExportExcel = () => {
         try {
@@ -429,13 +439,57 @@ const Reportpage = () => {
 
                     {/* Action Buttons */}
                     <div className="flex flex-wrap items-center gap-3 pt-2 border-t border-primary-10">
-                        <button
-                            className="flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-primary bg-white border-2 border-primary-10 rounded-xl hover:border-primary hover:bg-primary-10 hover:shadow-sm transition-all duration-200"
-                            type="button"
-                        >
-                            <FaFilter className="text-primary" />
-                            Advanced Filters
-                        </button>
+                        {/* Advanced Filters Dropdown */}
+                        <div className="relative" ref={filterMenuRef}>
+                            <button
+                                onClick={() => setIsFilterMenuOpen(!isFilterMenuOpen)}
+                                className="flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-primary bg-white border-2 border-primary-10 rounded-xl hover:border-primary hover:bg-primary-10 hover:shadow-sm transition-all duration-200"
+                                type="button"
+                            >
+                                <FaFilter className="text-primary" />
+                                {selectedReportType === 'income' ? 'Income Statement' : 'Balance Sheet'}
+                                <FaChevronDown
+                                    className={`w-3 h-3 transition-transform duration-200 ${
+                                        isFilterMenuOpen ? 'rotate-180' : ''
+                                    }`}
+                                />
+                            </button>
+
+                            {isFilterMenuOpen && (
+                                <div className="absolute left-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-primary-10 py-2 z-50 dropdown-animate">
+                                    <button
+                                        onClick={() => {
+                                            setSelectedReportType('income');
+                                            setIsFilterMenuOpen(false);
+                                        }}
+                                        className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm transition-colors ${
+                                            selectedReportType === 'income'
+                                                ? 'bg-primary-10 text-primary font-semibold'
+                                                : 'text-primary-75 hover:bg-primary-10 hover:text-primary'
+                                        }`}
+                                        type="button"
+                                    >
+                                        <FaFileAlt className="w-4 h-4" />
+                                        <span>Income Statement</span>
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            setSelectedReportType('balance');
+                                            setIsFilterMenuOpen(false);
+                                        }}
+                                        className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm transition-colors ${
+                                            selectedReportType === 'balance'
+                                                ? 'bg-primary-10 text-primary font-semibold'
+                                                : 'text-primary-75 hover:bg-primary-10 hover:text-primary'
+                                        }`}
+                                        type="button"
+                                    >
+                                        <FaChartPie className="w-4 h-4" />
+                                        <span>Balance Sheet</span>
+                                    </button>
+                                </div>
+                            )}
+                        </div>
 
                         {/* Export Dropdown */}
                         <div className="relative" ref={exportMenuRef}>
@@ -756,6 +810,13 @@ const Reportpage = () => {
                     </div>
                 </div>
             </div>
+
+            {/* Income Statement Table - Only show when Income Statement is selected */}
+            {selectedReportType === 'income' && (
+                <div className="mt-6">
+                    <IncomeStatementTable />
+                </div>
+            )}
         </div>
     );
 };
