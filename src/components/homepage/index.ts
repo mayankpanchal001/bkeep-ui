@@ -6,4 +6,3 @@ export { default as BenefitsSection } from './BenefitsSection';
 export { default as IndustriesSection } from './IndustriesSection';
 export { default as CTASection } from './CTASection';
 export { default as Footer } from './Footer';
-

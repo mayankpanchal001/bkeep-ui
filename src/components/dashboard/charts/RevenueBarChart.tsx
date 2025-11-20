@@ -20,7 +20,10 @@ const RevenueBarChart = ({ data }: RevenueBarChartProps) => {
 
     return (
         <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+            <BarChart
+                data={chartData}
+                margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+            >
                 <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                 <XAxis
                     dataKey="name"
@@ -38,7 +41,10 @@ const RevenueBarChart = ({ data }: RevenueBarChartProps) => {
                         border: '1px solid #C56211',
                         borderRadius: '8px',
                     }}
-                    formatter={(value: number) => [`$${value.toLocaleString()}`, 'Revenue']}
+                    formatter={(value: number) => [
+                        `$${value.toLocaleString()}`,
+                        'Revenue',
+                    ]}
                 />
                 <Bar
                     dataKey="revenue"
@@ -52,4 +58,3 @@ const RevenueBarChart = ({ data }: RevenueBarChartProps) => {
 };
 
 export default RevenueBarChart;
-

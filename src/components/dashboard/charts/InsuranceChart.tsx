@@ -47,7 +47,10 @@ const InsuranceChart = ({ data }: InsuranceChartProps) => {
                     }}
                     formatter={(value: number, name: string) => {
                         if (name === 'volume') {
-                            return [`$${value.toLocaleString()}`, 'Claim Volume'];
+                            return [
+                                `$${value.toLocaleString()}`,
+                                'Claim Volume',
+                            ];
                         }
                         return [`${value} days`, 'Avg Days'];
                     }}
@@ -64,4 +67,3 @@ const InsuranceChart = ({ data }: InsuranceChartProps) => {
 };
 
 export default InsuranceChart;
-

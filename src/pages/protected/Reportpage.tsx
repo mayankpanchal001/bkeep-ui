@@ -330,7 +330,9 @@ const Reportpage = () => {
         useState<TimeRangeValue>('monthly');
     const [isExportMenuOpen, setIsExportMenuOpen] = useState(false);
     const [isFilterMenuOpen, setIsFilterMenuOpen] = useState(false);
-    const [selectedReportType, setSelectedReportType] = useState<'income' | 'balance'>('income');
+    const [selectedReportType, setSelectedReportType] = useState<
+        'income' | 'balance'
+    >('income');
     const exportMenuRef = useRef<HTMLDivElement>(null);
     const filterMenuRef = useRef<HTMLDivElement>(null);
     const data = useReportData(selectedRange);
@@ -442,12 +444,16 @@ const Reportpage = () => {
                         {/* Advanced Filters Dropdown */}
                         <div className="relative" ref={filterMenuRef}>
                             <button
-                                onClick={() => setIsFilterMenuOpen(!isFilterMenuOpen)}
+                                onClick={() =>
+                                    setIsFilterMenuOpen(!isFilterMenuOpen)
+                                }
                                 className="flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-primary bg-white border-2 border-primary-10 rounded-xl hover:border-primary hover:bg-primary-10 hover:shadow-sm transition-all duration-200"
                                 type="button"
                             >
                                 <FaFilter className="text-primary" />
-                                {selectedReportType === 'income' ? 'Income Statement' : 'Balance Sheet'}
+                                {selectedReportType === 'income'
+                                    ? 'Income Statement'
+                                    : 'Balance Sheet'}
                                 <FaChevronDown
                                     className={`w-3 h-3 transition-transform duration-200 ${
                                         isFilterMenuOpen ? 'rotate-180' : ''

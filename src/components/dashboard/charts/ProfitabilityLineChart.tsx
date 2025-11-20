@@ -65,4 +65,3 @@ const ProfitabilityLineChart = ({ data }: ProfitabilityLineChartProps) => {
 };
 
 export default ProfitabilityLineChart;
-

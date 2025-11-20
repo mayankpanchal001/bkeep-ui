@@ -17,9 +17,7 @@ type ChairUtilizationChartProps = {
     }[];
 };
 
-const ChairUtilizationChart = ({
-    data,
-}: ChairUtilizationChartProps) => {
+const ChairUtilizationChart = ({ data }: ChairUtilizationChartProps) => {
     const chartData = data.map((item) => ({
         name: item.location.split(' - ')[1] || item.location,
         utilization: item.utilization,
@@ -76,4 +74,3 @@ const ChairUtilizationChart = ({
 };
 
 export default ChairUtilizationChart;
-

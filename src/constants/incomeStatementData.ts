@@ -60,7 +60,7 @@ export const incomeStatementSections: IncomeStatementSection[] = [
                 label: 'gains/losses',
                 values: [-7848, 2666, -243, -769],
             },
-                        {
+            {
                 code: '80078',
                 label: 'Trade sales of goods and services',
                 values: [240117, 349569, 254569, 322179],

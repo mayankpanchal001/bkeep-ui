@@ -43,6 +43,7 @@ Query keys are used for cache management in React Query:
 Creates a new post.
 
 **Parameters:**
+
 - `newPost` - The post object without `id` (userId, title, body)
 
 **Returns:** Promise resolving to the created post with `id`
@@ -66,6 +67,7 @@ Fetches all posts.
 Fetches a single post by its ID.
 
 **Parameters:**
+
 - `postId` - The ID of the post to fetch
 
 **Returns:** Promise resolving to the post object
@@ -79,6 +81,7 @@ Fetches a single post by its ID.
 Updates an existing post.
 
 **Parameters:**
+
 - `updatedPost` - The complete post object including `id`
 
 **Returns:** Promise resolving to the updated post
@@ -92,6 +95,7 @@ Updates an existing post.
 Deletes a post by its ID.
 
 **Parameters:**
+
 - `postId` - The ID of the post to delete
 
 **Returns:** Promise resolving to the deleted post ID
@@ -107,6 +111,7 @@ Deletes a post by its ID.
 Hook for creating a new post.
 
 **Returns:** React Query mutation object with:
+
 - `mutate` - Function to create a post
 - `mutateAsync` - Async function to create a post
 - `isPending` - Loading state
@@ -116,6 +121,7 @@ Hook for creating a new post.
 - `error` - Error object if mutation failed
 
 **Example:**
+
 ```typescript
 const addPostMutation = useAddPost();
 
@@ -123,7 +129,7 @@ const handleCreate = () => {
     addPostMutation.mutate({
         userId: 1,
         title: 'New Post',
-        body: 'Post content'
+        body: 'Post content',
     });
 };
 ```
@@ -137,6 +143,7 @@ const handleCreate = () => {
 Hook for fetching all posts.
 
 **Returns:** React Query query object with:
+
 - `data` - Array of posts
 - `isLoading` - Loading state
 - `isError` - Error state
@@ -144,6 +151,7 @@ Hook for fetching all posts.
 - `refetch` - Function to manually refetch
 
 **Example:**
+
 ```typescript
 const { data: posts, isLoading, error } = usePosts();
 
@@ -166,9 +174,11 @@ return (
 Hook for fetching a single post by ID.
 
 **Parameters:**
+
 - `postId` - The ID of the post to fetch
 
 **Returns:** React Query query object with:
+
 - `data` - Post object
 - `isLoading` - Loading state
 - `isError` - Error state
@@ -176,10 +186,12 @@ Hook for fetching a single post by ID.
 - `refetch` - Function to manually refetch
 
 **Features:**
+
 - Automatically disabled if `postId` is falsy
 - Only fetches when `postId` is provided
 
 **Example:**
+
 ```typescript
 const { data: post, isLoading } = usePost(1);
 
@@ -195,6 +207,7 @@ return <div>{post?.title}</div>;
 Hook for updating an existing post.
 
 **Returns:** React Query mutation object with:
+
 - `mutate` - Function to update a post
 - `mutateAsync` - Async function to update a post
 - `isPending` - Loading state
@@ -204,6 +217,7 @@ Hook for updating an existing post.
 - `error` - Error object if mutation failed
 
 **Example:**
+
 ```typescript
 const updatePostMutation = useUpdatePost();
 
@@ -212,7 +226,7 @@ const handleUpdate = () => {
         id: 1,
         userId: 1,
         title: 'Updated Title',
-        body: 'Updated content'
+        body: 'Updated content',
     });
 };
 ```
@@ -226,6 +240,7 @@ const handleUpdate = () => {
 Hook for deleting a post.
 
 **Returns:** React Query mutation object with:
+
 - `mutate` - Function to delete a post
 - `mutateAsync` - Async function to delete a post
 - `isPending` - Loading state
@@ -235,6 +250,7 @@ Hook for deleting a post.
 - `error` - Error object if mutation failed
 
 **Example:**
+
 ```typescript
 const deletePostMutation = useDeletePost();
 
@@ -322,7 +338,7 @@ addPost.mutate(newPost, {
     },
     onSuccess: (data) => {
         console.log('Post created:', data);
-    }
+    },
 });
 ```
 
@@ -334,4 +350,3 @@ addPost.mutate(newPost, {
 - React Query automatically handles caching, refetching, and background updates
 - Cache invalidation ensures data consistency after mutations
 - The `usePost` hook is disabled when `postId` is falsy to prevent unnecessary API calls
-
