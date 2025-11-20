@@ -1,4 +1,3 @@
-import { Link } from 'react-router';
 import { LoginForm } from '../../components/auth/LoginForm';
 import { logo } from '../../utills/image';
 
@@ -110,6 +109,7 @@ const Loginpage = () => {
 
                     {/* Footer */}
                     <div className="mt-6 text-center">
+                        {/*
                         <p className="text-xs text-primary-50">
                             Don't have an account?{' '}
                             <Link
@@ -119,6 +119,7 @@ const Loginpage = () => {
                                 Sign Up
                             </Link>
                         </p>
+                        */}
                         <p className="text-xs text-primary-50 mt-2">
                             © 2024 BKeep Accounting. All rights reserved.
                         </p>
