@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { FaFingerprint, FaUser, FaTimes } from 'react-icons/fa';
-import { useNavigate } from 'react-router';
-import { Link } from 'react-router';
+import { useEffect, useState } from 'react';
+import { FaFingerprint, FaTimes, FaUser } from 'react-icons/fa';
+import { Link, useNavigate } from 'react-router';
 import { APP_TITLE } from '../../constants';
 import {
     getStoredPasskeyUser,

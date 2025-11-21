@@ -128,7 +128,7 @@ const Documentspage = () => {
         setDragActive(false);
 
         if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-            handleFiles(e.dataTransfer.files);
+            handleFiles();
         }
     };
 
@@ -171,7 +171,6 @@ const Documentspage = () => {
                         <Button
                             variant="primary"
                             className="flex items-center gap-2 cursor-pointer"
-                            as="span"
                         >
                             <FaUpload />
                             Upload Files
@@ -215,7 +214,6 @@ const Documentspage = () => {
                                 placeholder="Search documents..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="pl-10"
                             />
                         </div>
                     </div>
