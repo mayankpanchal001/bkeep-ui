@@ -99,8 +99,8 @@
 }
 
 .sidebar-header {
-    @apply flex items-center gap-2 mb-2;
-    min-height: 56px;
+    @apply flex items-center gap-2;
+    min-height: 51px;
 }
 
 .sidebar-header-logo {

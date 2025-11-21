@@ -2,125 +2,90 @@ import { Link } from 'react-router';
 import { APP_TITLE } from '../../constants';
 import { logo } from '../../utills/image';
 
+const footerLinks = [
+    {
+        title: 'Product',
+        links: [
+            { label: 'Features', href: '#features' },
+            { label: 'Pricing', href: '#pricing' },
+            { label: 'FAQ', href: '#faq' },
+        ],
+    },
+    {
+        title: 'Company',
+        links: [
+            { label: 'About', href: '/' },
+            { label: 'Blog', href: '/' },
+            { label: 'Careers', href: '/' },
+        ],
+    },
+    {
+        title: 'Support',
+        links: [
+            { label: 'Help Center', href: '/' },
+            { label: 'Security', href: '/' },
+            { label: 'Contact', href: '/' },
+        ],
+    },
+];
+
 export default function Footer() {
     return (
-        <footer className="homepage-footer border-t border-primary-10 bg-white">
-            <div className="mx-auto max-w-6xl px-6 py-12">
-                <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
-                    <div>
-                        <div className="flex items-center gap-2 mb-4">
+        <footer className="border-t border-white/5 bg-[#050505]">
+            <div className="mx-auto max-w-6xl px-6 py-12 text-white/70">
+                <div className="grid gap-8 md:grid-cols-[1.2fr,repeat(3,1fr)]">
+                    <div className="space-y-4">
+                        <div className="flex items-center gap-2">
                             <img
                                 src={logo}
                                 alt={APP_TITLE}
-                                className="h-8 w-auto object-contain"
+                                className="h-9 w-auto object-contain"
                             />
-                            <span className="text-lg font-bold text-primary">
+                            <span className="text-sm font-semibold uppercase tracking-[0.3em] text-white">
                                 {APP_TITLE}
                             </span>
                         </div>
-                        <p className="text-sm text-primary-50">
-                            Modern accounting for global businesses.
+                        <p className="text-sm text-white/60">
+                            Empowering finance teams with AI automation,
+                            real-time visibility, and modern execution.
                         </p>
                     </div>
-                    <div>
-                        <h4 className="font-semibold text-primary mb-4">
-                            Product
-                        </h4>
-                        <ul className="space-y-2 text-sm text-primary-50">
-                            <li>
-                                <Link
-                                    to="/"
-                                    className="hover:text-primary transition-colors"
-                                >
-                                    Features
-                                </Link>
-                            </li>
-                            <li>
-                                <Link
-                                    to="/"
-                                    className="hover:text-primary transition-colors"
-                                >
-                                    Pricing
-                                </Link>
-                            </li>
-                            <li>
-                                <Link
-                                    to="/"
-                                    className="hover:text-primary transition-colors"
-                                >
-                                    Security
-                                </Link>
-                            </li>
-                        </ul>
-                    </div>
-                    <div>
-                        <h4 className="font-semibold text-primary mb-4">
-                            Company
-                        </h4>
-                        <ul className="space-y-2 text-sm text-primary-50">
-                            <li>
-                                <Link
-                                    to="/"
-                                    className="hover:text-primary transition-colors"
-                                >
-                                    About
-                                </Link>
-                            </li>
-                            <li>
-                                <Link
-                                    to="/"
-                                    className="hover:text-primary transition-colors"
-                                >
-                                    Blog
-                                </Link>
-                            </li>
-                            <li>
-                                <Link
-                                    to="/"
-                                    className="hover:text-primary transition-colors"
-                                >
-                                    Careers
-                                </Link>
-                            </li>
-                        </ul>
-                    </div>
-                    <div>
-                        <h4 className="font-semibold text-primary mb-4">
-                            Support
-                        </h4>
-                        <ul className="space-y-2 text-sm text-primary-50">
-                            <li>
-                                <Link
-                                    to="/"
-                                    className="hover:text-primary transition-colors"
-                                >
-                                    Help Center
-                                </Link>
-                            </li>
-                            <li>
-                                <Link
-                                    to="/"
-                                    className="hover:text-primary transition-colors"
-                                >
-                                    Contact
-                                </Link>
-                            </li>
-                            <li>
-                                <Link
-                                    to="/"
-                                    className="hover:text-primary transition-colors"
-                                >
-                                    Privacy
-                                </Link>
-                            </li>
-                        </ul>
-                    </div>
+                    {footerLinks.map((column) => (
+                        <div key={column.title}>
+                            <p className="text-sm font-semibold uppercase tracking-[0.35em] text-white/50">
+                                {column.title}
+                            </p>
+                            <ul className="mt-4 space-y-3 text-sm text-white/60">
+                                {column.links.map((link) => (
+                                    <li key={link.label}>
+                                        <Link
+                                            to={link.href}
+                                            className="transition hover:text-white"
+                                        >
+                                            {link.label}
+                                        </Link>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    ))}
                 </div>
-                <div className="mt-12 border-t border-primary-10 pt-8 text-center text-sm text-primary-50">
+                <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-white/5 pt-6 text-xs text-white/40 sm:flex-row">
                     <p>
                         © {new Date().getFullYear()} {APP_TITLE}. All rights
                         reserved.
                     </p>
+                    <div className="flex gap-6">
+                        <Link to="/" className="hover:text-white">
+                            Privacy
+                        </Link>
+                        <Link to="/" className="hover:text-white">
+                            Terms
+                        </Link>
+                        <Link to="/" className="hover:text-white">
+                            Contact
+                        </Link>
+                    </div>
                 </div>
             </div>
         </footer>

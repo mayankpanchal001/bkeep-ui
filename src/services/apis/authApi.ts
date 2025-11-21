@@ -27,6 +27,32 @@ export async function logoutRequest(): Promise<void> {
     await axiosInstance.post('/auth/logout');
 }
 
+export async function forgotPasswordRequest(
+    email: string
+): Promise<{ message: string }> {
+    const response = await axiosInstance.post('/auth/forgot-password', {
+        email,
+    });
+    return response.data;
+}
+
+type ResetPasswordPayload = {
+    token: string;
+    email: string;
+    password: string;
+};
+
+export async function resetPasswordRequest(
+    payload: ResetPasswordPayload
+): Promise<{ message: string }> {
+    const response = await axiosInstance.post('/auth/reset-password', {
+        email: payload.email,
+        token: payload.token,
+        password: payload.password,
+    });
+    return response.data;
+}
+
 export const useLogout = () => {
     const { clearAuth } = useAuth();
     const navigate = useNavigate();
@@ -65,6 +91,31 @@ export const useLogin = () => {
         },
         onError: (error) => {
             console.error('Login Failed:', error);
+        },
+    });
+};
+
+export const useForgotPassword = () => {
+    return useMutation({
+        mutationFn: (email: string) => forgotPasswordRequest(email),
+        onSuccess: () => {
+            // Success is handled in the component
+        },
+        onError: (error) => {
+            console.error('Forgot Password Failed:', error);
+        },
+    });
+};
+
+export const useResetPassword = () => {
+    return useMutation({
+        mutationFn: (payload: ResetPasswordPayload) =>
+            resetPasswordRequest(payload),
+        onSuccess: () => {
+            // Success is handled in the component
+        },
+        onError: (error) => {
+            console.error('Reset Password Failed:', error);
         },
     });
 };

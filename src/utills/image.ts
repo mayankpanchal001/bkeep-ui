@@ -1,3 +1,4 @@
+import dots from '/dots.png';
 import logo from '/logo.png';
 
-export { logo };
+export { dots, logo };

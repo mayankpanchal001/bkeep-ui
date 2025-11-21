@@ -1,27 +1,27 @@
-import { STATS } from './constants.tsx';
+import { PERFORMANCE_STATS } from './constants.tsx';
 
 export default function StatsSection() {
     return (
-        <section className="homepage-stats mx-auto max-w-6xl px-6 py-16 -mt-16 relative z-10">
-            <div className="grid grid-cols-2 gap-6 rounded-3xl border border-primary-10 bg-white p-8 shadow-lg md:grid-cols-4">
-                {STATS.map((stat) => (
-                    <div
-                        key={stat.label}
-                        className="group text-center transition-all duration-300 hover:scale-105 md:text-left"
-                    >
-                        <div className="flex items-center justify-center gap-3 mb-2 md:justify-start">
-                            <div className="text-primary-50 group-hover:text-primary transition-colors">
-                                {stat.icon}
-                            </div>
-                            <p className="text-3xl font-bold text-primary">
+        <section
+            id="metrics"
+            className="mx-auto max-w-6xl px-6 pb-16 pt-10 text-white"
+        >
+            <div className="rounded-[32px] border border-white/5 bg-[#0b0b0b] p-8 shadow-[0_40px_120px_rgba(0,0,0,0.35)]">
+                <div className="grid gap-6 text-center sm:grid-cols-3">
+                    {PERFORMANCE_STATS.map((stat) => (
+                        <div
+                            key={stat.label}
+                            className="space-y-2 rounded-2xl bg-white/5 px-6 py-4"
+                        >
+                            <p className="text-3xl font-semibold text-white">
                                 {stat.value}
                             </p>
+                            <p className="text-sm text-white/60">
+                                {stat.label}
+                            </p>
                         </div>
-                        <p className="mt-1 text-sm text-primary-50">
-                            {stat.label}
-                        </p>
-                    </div>
-                ))}
+                    ))}
+                </div>
             </div>
         </section>
     );

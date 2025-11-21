@@ -1,13 +1,7 @@
 import type { ReactNode } from 'react';
 import { useEffect, useRef, useState } from 'react';
-import {
-    FaChevronDown,
-    FaCog,
-    FaSignOutAlt,
-    FaUser,
-    FaUserCircle,
-} from 'react-icons/fa';
-import { LOGOUT_ITEM, USER_NAME } from '../../constants';
+import { FaCog, FaSignOutAlt, FaUserCircle } from 'react-icons/fa';
+import { LOGOUT_ITEM } from '../../constants';
 import { useLogout } from '../../services/apis/authApi';
 import { useAuth } from '../../stores/auth/authSelectore';
 
@@ -21,9 +15,10 @@ type MenuItem = {
 const PageHeaderMenu = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const { user } = useAuth();
+    console.log(user);
     const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
-    const hasLoggedUser = useRef(false);
+
     const { mutateAsync: logout, isPending: isLoggingOut } = useLogout();
 
     useEffect(() => {
@@ -52,13 +47,6 @@ const PageHeaderMenu = () => {
             document.removeEventListener('keydown', handleEscape);
         };
     }, [isMenuOpen]);
-
-    useEffect(() => {
-        if (!hasLoggedUser.current) {
-            console.log('User info:', user);
-            hasLoggedUser.current = true;
-        }
-    }, [user]);
 
     const handleToggleMenu = () => setIsMenuOpen((prev) => !prev);
 
@@ -110,26 +98,14 @@ const PageHeaderMenu = () => {
             <div className="relative" ref={menuRef}>
                 <button
                     onClick={handleToggleMenu}
-                    className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-primary-10 transition-colors focus:outline-none focus:ring-1 focus:ring-primary focus:ring-offset-2"
+                    className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-primary-10 transition-colors focus:outline-none cursor-pointer"
                     aria-label="User menu"
                     aria-expanded={isMenuOpen}
                 >
-                    <div className="w-8 h-8 rounded-full bg-primary-10 flex items-center justify-center text-primary border-2 border-primary-20 hover:border-primary transition-colors">
-                        <FaUser className="w-4 h-4" />
+                    <div className="w-8 h-8 rounded-full flex items-center justify-center bg-primary text-white transition-colors">
+                        {/* <FaUser className="w-4 h-4" /> */}
+                        {user?.name?.charAt(0)?.toUpperCase().slice(0, 2)}
                     </div>
-                    <div className="hidden md:flex flex-col items-start">
-                        <span className="text-sm font-medium text-primary">
-                            {USER_NAME}
-                        </span>
-                        <span className="text-xs text-primary-50">
-                            user@example.com
-                        </span>
-                    </div>
-                    <FaChevronDown
-                        className={`w-4 h-4 text-primary-50 transition-transform duration-200 ${
-                            isMenuOpen ? 'rotate-180' : ''
-                        }`}
-                    />
                 </button>
                 {/* Dropdown Menu */}
                 {isMenuOpen && (
@@ -138,14 +114,17 @@ const PageHeaderMenu = () => {
                         <div className="px-4 py-3 border-b border-primary-10">
                             <div className="flex items-center gap-3">
                                 <div className="w-12 h-12 rounded-full bg-primary-10 flex items-center justify-center text-primary border-2 border-primary-20">
-                                    <FaUser className="w-6 h-6" />
+                                    {user?.name
+                                        ?.charAt(0)
+                                        ?.toUpperCase()
+                                        .slice(0, 2)}
                                 </div>
                                 <div className="flex-1 min-w-0">
                                     <p className="text-sm font-semibold text-primary truncate">
-                                        {USER_NAME}
+                                        {user?.name}
                                     </p>
                                     <p className="text-xs text-primary-50 truncate">
-                                        user@example.com
+                                        {user?.email}
                                     </p>
                                 </div>
                             </div>

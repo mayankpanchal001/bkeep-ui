@@ -6,97 +6,6 @@
     -webkit-backdrop-filter: blur(12px);
 }
 
-/* Hero Section Styles */
-.homepage-hero {
-    min-height: calc(100vh - 80px);
-}
-
-/* Stats Section Styles */
-.homepage-stats {
-    margin-top: -4rem;
-}
-
-@media (max-width: 768px) {
-    .homepage-stats {
-        margin-top: -2rem;
-    }
-}
-
-/* Features Section Styles */
-.homepage-features .group:hover {
-    transform: translateY(-0.5rem);
-}
-
-/* Benefits Section Styles */
-.homepage-benefits .group:hover {
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
-}
-
-/* Industries Section Styles */
-.homepage-industries .group:hover {
-    transform: translateY(-0.25rem);
-}
-
-/* CTA Section Styles */
-.homepage-cta {
-    position: relative;
-}
-
-.homepage-cta::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(
-        circle at 50% 50%,
-        rgba(255, 255, 255, 0.1) 0%,
-        transparent 70%
-    );
-    pointer-events: none;
-}
-
-/* Footer Styles */
-.homepage-footer {
-    background: linear-gradient(to bottom, #ffffff 0%, #fcf7ef 100%);
-}
-
-.homepage-footer a {
-    position: relative;
-    transition: all 0.2s ease;
-}
-
-.homepage-footer a:hover {
-    padding-left: 0.25rem;
-}
-
-/* Responsive adjustments */
-@media (max-width: 640px) {
-    .homepage-hero {
-        min-height: auto;
-        padding-top: 2rem;
-        padding-bottom: 3rem;
-    }
-}
-
-/* Animation enhancements */
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.homepage-hero > div > div:first-child {
-    animation: fadeInUp 0.6s ease-out;
-}
-
-.homepage-hero > div > div:last-child {
-    animation: fadeInUp 0.8s ease-out 0.2s both;
-}
-
 /* Smooth scroll behavior */
 html {
     scroll-behavior: smooth;
@@ -104,8 +13,8 @@ html {
 
 /* Focus styles for accessibility */
 .homepage-nav a:focus,
-.homepage-footer a:focus {
-    outline: 2px solid var(--color-primary);
-    outline-offset: 2px;
+footer a:focus {
+    outline: 2px solid rgba(255, 106, 58, 0.8);
+    outline-offset: 4px;
     border-radius: 4px;
 }

@@ -1,13 +1,4 @@
-import { FaLaptopCode, FaShieldAlt } from 'react-icons/fa';
-import {
-    FaChartLine,
-    FaCircleNodes,
-    FaCreditCard,
-    FaGlobe,
-    FaMoneyBillTrendUp,
-    FaUsers,
-} from 'react-icons/fa6';
-import { APP_TITLE } from '../../constants';
+// Constants for homepage sections inspired by the Aset layout
 
 export const PAGE_HEADERS = [
     {
@@ -26,58 +17,209 @@ export const PAGE_HEADERS = [
         subtitle:
             'Deep dive into production, collections, and receivables with intelligent filters.',
     },
-];
-
-export const SOLUTION_FEATURES = [
     {
-        title: 'AI-Automated Accounting',
-        description:
-            'Automate bank reconciliation, categorisation and reporting so your team stays focused on clients and growth.',
-        icon: <FaCircleNodes className="text-primary" />,
-        gradient: 'from-blue-500/10 to-primary-10',
+        path: '/reports/income-statement',
+        title: 'Income Statement',
+        subtitle: 'View your revenue, expenses, and net income',
     },
     {
-        title: 'Global Invoicing & Payments',
-        description:
-            'Bill, collect, and reconcile in 150+ currencies with beautiful invoices and consolidated cash-flow visibility.',
-        icon: <FaCreditCard className="text-primary" />,
-        gradient: 'from-green-500/10 to-primary-10',
+        path: '/reports/balance-sheet',
+        title: 'Balance Sheet',
+        subtitle: 'View your assets, liabilities, and equity',
     },
     {
-        title: 'Real-time Spend Control',
-        description:
-            'Sync every card swipe and vendor bill automatically, approve expenses on the go, and keep budgets on track.',
-        icon: <FaMoneyBillTrendUp className="text-primary" />,
-        gradient: 'from-purple-500/10 to-primary-10',
+        path: '/chart-of-accounts',
+        title: 'Chart of Accounts',
+        subtitle: 'Manage your accounts and track balances',
+    },
+    {
+        path: '/settings',
+        title: 'Settings',
+        subtitle: 'Manage your account settings and preferences',
+    },
+    {
+        path: '/invoices',
+        title: 'Invoices',
+        subtitle: 'Create and manage your invoices',
+    },
+    {
+        path: '/expenses',
+        title: 'Expenses',
+        subtitle: 'Track and manage your business expenses',
+    },
+    {
+        path: '/documents',
+        title: 'Documents',
+        subtitle: 'Upload and manage your documents',
+    },
+    {
+        path: '/client-review',
+        title: 'Client Review',
+        subtitle: 'Review and categorize transactions that need your input',
     },
 ];
 
-export const STATS = [
-    { label: 'Currencies Supported', value: '150+', icon: <FaGlobe /> },
-    { label: 'Countries Using BKeep', value: '200+', icon: <FaUsers /> },
-    { label: 'Languages for Invoicing', value: '60+', icon: <FaChartLine /> },
-    { label: 'Bank Connections', value: '25k+', icon: <FaShieldAlt /> },
+export const TRUSTED_LOGOS = [
+    'Wealthro',
+    'Finyon',
+    'Aegra',
+    'Portivio',
+    'Vaultic',
+    'Altoris',
+    'Quantora',
+    'Fundara',
 ];
 
-export const INDUSTRIES = [
-    { name: 'Consulting', icon: <FaLaptopCode /> },
-    { name: 'Startups', icon: <FaChartLine /> },
-    { name: 'Creators & Freelancers', icon: <FaUsers /> },
-    { name: 'Real Estate', icon: <FaCircleNodes /> },
-    { name: 'Construction', icon: <FaShieldAlt /> },
-    { name: 'Professional Services', icon: <FaCreditCard /> },
+export const HERO_METRICS = [
+    { value: '98.7%', label: 'Client retention rate' },
+    { value: '$250M+', label: 'Assets managed with BKeep AI' },
+    { value: '120+', label: 'Automated strategies live' },
 ];
 
-export const VALUE_LIST = [
-    'Native multi-currency ledger & FX translation',
-    'AI-assisted cash flow forecasting & alerts',
-    'Instant bank feed reconciliation with 90% accuracy',
-    'Client billing, quotes, and recurring invoices in one workspace',
+export const PERFORMANCE_STATS = [
+    { value: '98.7%', label: 'Client retention rate' },
+    { value: '$250M+', label: 'Capital actively managed' },
+    { value: '120+', label: 'Automated AI strategies' },
 ];
 
-export const TESTIMONIAL = {
-    quote: `${APP_TITLE} takes the headache out of multi-entity accounting. We closed the month 3× faster once we automated reconciliation and billing in one place.`,
-    author: 'Jan Kutscher',
-    role: 'CEO at True Brew Birdie Ltd.',
-    avatar: '👤',
-};
+export const INVEST_FEATURES = [
+    {
+        title: 'Precision-driven portfolio growth',
+        description:
+            'Every allocation is data backed with real-time signals so you can scale faster with conviction.',
+        tag: 'Portfolio Intelligence',
+    },
+    {
+        title: 'Diversified assets on autopilot',
+        description:
+            'Blend equities, credit, and digital assets with automated rebalancing tuned to your risk profile.',
+        tag: 'Adaptive Allocation',
+    },
+    {
+        title: 'Insights in milliseconds',
+        description:
+            'Live dashboards track performance, exposure, and cash flow so your next move is always informed.',
+        tag: 'Live Analytics',
+    },
+    {
+        title: 'Maximize returns with less effort',
+        description:
+            'Let autonomous execution handle the busywork while you stay focused on strategy and relationships.',
+        tag: 'Autonomous Execution',
+    },
+];
+
+export const CAPABILITY_FEATURES = [
+    {
+        title: 'Transparent performance tracking',
+        description:
+            'Monitor every portfolio move with intuitive analytics, benchmark overlays, and exported reports.',
+        metric: 'Real-time analytics',
+    },
+    {
+        title: 'Seamless asset allocation',
+        description:
+            'Balance across asset classes with guardrails that adapt instantly to market volatility.',
+        metric: 'Dynamic allocation',
+    },
+    {
+        title: 'Smart risk management',
+        description:
+            'AI scans volatility, liquidity, and macro signals to adjust exposure before risk compounds.',
+        metric: 'Adaptive hedging',
+    },
+];
+
+export const OUTCOME_CARDS = [
+    {
+        title: 'AI-powered strategies',
+        description:
+            'Adaptive models trained on millions of market data points deliver institutional-grade precision.',
+    },
+    {
+        title: 'Real-time insights',
+        description:
+            'See how every desk, entity, or client is performing with streaming analytics you can trust.',
+    },
+    {
+        title: 'Automated execution',
+        description:
+            'Go from signal to trade without latency thanks to automated approvals and routing.',
+    },
+    {
+        title: 'Adaptive risk controls',
+        description:
+            'Reduce drawdowns with AI that tightens or widens exposure as volatility shifts.',
+    },
+];
+
+export const PRICING_PLANS = [
+    {
+        name: 'Core',
+        price: '$99',
+        cadence: 'Billed monthly',
+        description: 'Perfect for lean finance teams modernizing client work.',
+        features: [
+            '0.4% management fee',
+            'AI rebalancing & tracking',
+            'Market insights feed',
+            'Advisor support',
+        ],
+    },
+    {
+        name: 'Vision',
+        price: '$2,099',
+        cadence: 'Billed monthly',
+        description: 'Best for global firms scaling automation at speed.',
+        highlight: 'Best value',
+        features: [
+            '0.2%–0.4% management fee',
+            'Advanced AI strategies',
+            '2.75% cash interest',
+            'Investment team access',
+            'Priority onboarding & support',
+        ],
+    },
+];
+
+export const TESTIMONIALS = [
+    {
+        quote: 'BKeep AI gave us clarity and automation across every treasury workflow. It feels like an institutional desk in a single platform.',
+        name: 'Olivia Bennett',
+        role: 'Product Manager',
+    },
+    {
+        quote: 'I fine-tune portfolio strategies in minutes now. The live analytics and automation easily save hours every week.',
+        name: 'Ethan Carter',
+        role: 'Wealth Advisor',
+    },
+    {
+        quote: 'As a founder, I finally have a treasury dashboard that is just as intuitive as it is intelligent.',
+        name: 'Jenna Wallace',
+        role: 'Startup Founder',
+    },
+    {
+        quote: 'The AI insights helped us balance risk across both traditional and crypto assets without adding headcount.',
+        name: 'Marcus Reed',
+        role: 'Crypto Analyst',
+    },
+];
+
+export const FAQ_ITEMS = [
+    {
+        question: 'How is BKeep different from legacy investment tools?',
+        answer: 'BKeep combines real-time AI models, automated execution, and transparent analytics so you can adapt instantly. No manual exports or disconnected spreadsheets.',
+    },
+    {
+        question: 'Is BKeep suitable for new teams or individual investors?',
+        answer: 'Yes. We designed the experience to feel approachable for new investors while still offering the controls that institutional teams expect.',
+    },
+    {
+        question: 'Can I customize strategies and risk preferences?',
+        answer: 'Every workspace supports bespoke risk bands, hedging logic, and approval policies so your automation mirrors how your firm already operates.',
+    },
+    {
+        question: 'How secure is my data?',
+        answer: 'Customer data is encrypted in transit and at rest, and every workspace includes audit trails, SSO, and granular access controls.',
+    },
+];

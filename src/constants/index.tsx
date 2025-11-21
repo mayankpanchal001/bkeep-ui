@@ -1,5 +1,13 @@
-import { FaFileAlt, FaSignOutAlt } from 'react-icons/fa';
-import { FaHouse, FaMoneyBillTransfer } from 'react-icons/fa6';
+import {
+    FaCog,
+    FaCommentDots,
+    FaFileAlt,
+    FaFileInvoiceDollar,
+    FaReceipt,
+    FaSignOutAlt,
+    FaUpload,
+} from 'react-icons/fa';
+import { FaBook, FaHouse, FaMoneyBillTransfer } from 'react-icons/fa6';
 import { SidebarItemProps } from '../types';
 
 export const SIDEBAR_ITEMS: SidebarItemProps[] = [
@@ -18,12 +26,36 @@ export const SIDEBAR_ITEMS: SidebarItemProps[] = [
         icon: <FaFileAlt />,
         path: '/reports',
     },
-
-    // {
-    //     label: 'Settings',
-    //     icon: <FaCog />,
-    //     path: '/settings',
-    // },
+    {
+        label: 'Chart of Accounts',
+        icon: <FaBook />,
+        path: '/chart-of-accounts',
+    },
+    {
+        label: 'Invoices',
+        icon: <FaFileInvoiceDollar />,
+        path: '/invoices',
+    },
+    {
+        label: 'Expenses',
+        icon: <FaReceipt />,
+        path: '/expenses',
+    },
+    {
+        label: 'Documents',
+        icon: <FaUpload />,
+        path: '/documents',
+    },
+    {
+        label: 'Client Review',
+        icon: <FaCommentDots />,
+        path: '/client-review',
+    },
+    {
+        label: 'Settings',
+        icon: <FaCog />,
+        path: '/settings',
+    },
 ];
 
 export const LOGOUT_ITEM = {
@@ -33,4 +65,5 @@ export const LOGOUT_ITEM = {
 };
 
 export const APP_TITLE = 'BKeep Accounting';
-export const USER_NAME =  'Mauank';
+
+export const USER_NAME = 'Mauank';

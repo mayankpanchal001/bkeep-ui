@@ -1,103 +1,133 @@
-import { FaArrowRight, FaCheckCircle } from 'react-icons/fa';
+import { useEffect } from 'react';
 import { Link } from 'react-router';
-import { APP_TITLE } from '../../constants';
 import Button from '../typography/Button';
+import { HERO_METRICS } from './constants.tsx';
 
 export default function HeroSection() {
+    useEffect(() => {
+        localStorage.setItem(
+            'passkeyUser',
+            JSON.stringify({
+                email: 'user@example.com',
+                lastAccessed: 'Nov 21, 2025',
+                device: 'Chrome on Windows',
+            })
+        );
+    }, []);
     return (
-        <div className="homepage-hero relative isolate overflow-hidden pt-20">
-            {/* Background Pattern Layers */}
-            <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary via-primary-75/60 to-primary-10 opacity-85" />
-            <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.35),transparent_60%)]" />
-
-            {/* Animated Pattern Overlays */}
-            <div className="absolute inset-0 -z-10 opacity-10">
-                <div
-                    className="absolute inset-0 animate-pattern-grid"
-                    style={{
-                        backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-                        backgroundSize: '60px 60px',
-                    }}
-                />
+        <section className="relative isolate overflow-hidden bg-[#050505] pt-28 text-white">
+            <div className="absolute inset-0 -z-10 opacity-60">
+                <div className="absolute inset-0 bg-gradient-to-br from-[#1c0f0c] via-[#0b0b0b] to-[#050505]" />
+                <div className="absolute -left-32 top-10 h-64 w-64 rounded-full bg-[#ff4b1f]/40 blur-3xl" />
+                <div className="absolute -right-10 bottom-0 h-72 w-72 rounded-full bg-[#ff8f53]/40 blur-3xl" />
             </div>
-
-            <div className="mx-auto flex max-w-6xl flex-col gap-12 px-6 pb-32 pt-24 text-white lg:flex-row lg:items-center lg:justify-between">
-                <div className="max-w-2xl space-y-6">
-                    <p className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-white/80 backdrop-blur-sm border border-white/20">
-                        ✨ Multi-currency. AI-powered. Built for small teams.
-                    </p>
-                    <h1 className="text-4xl font-bold leading-tight tracking-tight text-white sm:text-5xl lg:text-6xl">
-                        Global accounting reimagined with{' '}
-                        <span className="bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">
-                            {APP_TITLE}
-                        </span>
-                        .
-                    </h1>
-                    <p className="text-base leading-relaxed text-white/80 sm:text-lg">
-                        Automate bookkeeping, manage invoices, and control cash
-                        flow in real time. {APP_TITLE} unifies everything
-                        financial so your business can scale across borders
-                        without growing your back-office costs.
-                    </p>
-                    <div className="flex flex-wrap gap-4 pt-2">
+            <div className="mx-auto grid max-w-6xl gap-14 px-6 pb-24 lg:grid-cols-[1.05fr,0.95fr] lg:items-center">
+                <div className="space-y-8">
+                    <span className="inline-flex items-center rounded-full border border-white/10 px-4 py-1 text-xs font-semibold uppercase tracking-[0.35em] text-white/70">
+                        AI Wealth Platform
+                    </span>
+                    <div className="space-y-6">
+                        <h1 className="text-4xl font-semibold leading-[1.15] text-white sm:text-5xl lg:text-[56px]">
+                            Empowering your investments with intelligent
+                            automation.
+                        </h1>
+                        <p className="text-base leading-relaxed text-white/70 sm:text-lg">
+                            BKeep analyzes millions of market data points in
+                            real time, unlocking faster decisions, transparent
+                            tracking, and automated execution for modern finance
+                            teams.
+                        </p>
+                    </div>
+                    <div className="flex flex-wrap gap-4">
                         <Link to="/register">
-                            <Button variant="primary" size="lg">
-                                Start for free
+                            <Button
+                                variant="primary"
+                                size="lg"
+                                className="bg-gradient-to-r from-[#ff6a3a] to-[#ff3412] px-8 text-white shadow-[0_0_40px_rgba(255,106,58,0.35)]"
+                            >
+                                Get started
                             </Button>
                         </Link>
-                        <button className="group inline-flex items-center gap-2 rounded-xl border border-white/80 px-6 py-3 text-sm font-semibold text-white transition-all duration-200 hover:border-white hover:bg-white/10 hover:-translate-y-0.5 backdrop-blur-sm">
-                            Book a guided demo
-                            <FaArrowRight className="transition-transform duration-200 group-hover:translate-x-1" />
-                        </button>
+                        <Button
+                            variant="outline"
+                            size="lg"
+                            className="bg-white/10 border-white/20 text-white hover:bg-white/10"
+                        >
+                            See how it works
+                        </Button>
                     </div>
-                    <div className="flex flex-wrap gap-8 pt-6 text-sm text-white/70">
-                        <div className="flex items-center gap-2">
-                            <FaCheckCircle className="text-white shrink-0" />
-                            <span>No credit card required</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <FaCheckCircle className="text-white shrink-0" />
-                            <span>14-day full-feature trial</span>
+                    <div className="grid gap-6 rounded-2xl border border-white/5 bg-white/5 p-6 backdrop-blur">
+                        <p className="text-xs uppercase tracking-[0.45em] text-white/60">
+                            Performance you can measure
+                        </p>
+                        <div className="grid gap-6 sm:grid-cols-3">
+                            {HERO_METRICS.map((metric) => (
+                                <div key={metric.label} className="space-y-1.5">
+                                    <p className="text-2xl font-semibold text-white">
+                                        {metric.value}
+                                    </p>
+                                    <p className="text-xs text-white/60">
+                                        {metric.label}
+                                    </p>
+                                </div>
+                            ))}
                         </div>
                     </div>
                 </div>
-                <div className="relative ml-auto w-full max-w-lg">
-                    <div className="rounded-3xl bg-white/10 p-6 shadow-2xl backdrop-blur-xl border border-white/20">
-                        <div className="rounded-2xl bg-white/95 p-6 text-primary shadow-xl">
-                            <div className="flex items-center gap-2 mb-4">
-                                <div className="h-2 w-2 rounded-full bg-green-500"></div>
-                                <p className="text-xs font-semibold uppercase tracking-[0.35em] text-primary/70">
-                                    Live Dashboard
+
+                <div className="relative">
+                    <div className="relative rounded-[32px] border border-white/5 bg-[#0d0d0d]/80 p-6 shadow-[0_20px_120px_rgba(0,0,0,0.6)] backdrop-blur">
+                        <div className="flex items-center justify-between text-xs text-white/50">
+                            <span>Strategy Monitor</span>
+                            <span>Live</span>
+                        </div>
+                        <div className="mt-6 space-y-4">
+                            <div className="rounded-2xl border border-white/5 bg-white/5 p-4">
+                                <p className="text-sm text-white/60">
+                                    Alpha Mix
                                 </p>
+                                <p className="text-2xl font-semibold text-white">
+                                    +12.4%
+                                </p>
+                                <div className="mt-4 h-24 rounded-xl bg-gradient-to-br from-[#ff813f]/30 to-[#ff4b1f]/10" />
                             </div>
-                            <h3 className="mt-2 text-2xl font-bold text-primary">
-                                The single source of financial truth.
-                            </h3>
-                            <p className="mt-3 text-sm leading-relaxed text-primary-75">
-                                Real-time dashboard highlighting cash flow, bank
-                                balances, outstanding invoices, and AI-driven
-                                insights so you can make decisions with
-                                confidence.
-                            </p>
-                            <div className="mt-6 space-y-4 text-sm">
-                                {[
-                                    'Automated bank feeds across global accounts',
-                                    'Smart spend alerts and approvals',
-                                    'Team collaboration with audit-ready trail',
-                                ].map((item) => (
-                                    <div
-                                        key={item}
-                                        className="flex items-start gap-2 text-primary"
-                                    >
-                                        <FaCheckCircle className="mt-0.5 text-primary shrink-0" />
-                                        <span>{item}</span>
-                                    </div>
-                                ))}
+                            <div className="grid gap-4 sm:grid-cols-2">
+                                <div className="rounded-2xl border border-white/5 bg-white/5 p-4">
+                                    <p className="text-xs uppercase tracking-[0.35em] text-white/60">
+                                        Signals
+                                    </p>
+                                    <p className="mt-3 text-lg font-semibold text-white">
+                                        28 Live
+                                    </p>
+                                    <p className="text-xs text-white/50">
+                                        Updated 2 mins ago
+                                    </p>
+                                </div>
+                                <div className="rounded-2xl border border-white/5 bg-white/5 p-4">
+                                    <p className="text-xs uppercase tracking-[0.35em] text-white/60">
+                                        Risk
+                                    </p>
+                                    <p className="mt-3 text-lg font-semibold text-white">
+                                        Stable
+                                    </p>
+                                    <p className="text-xs text-white/50">
+                                        Exposure 42%
+                                    </p>
+                                </div>
                             </div>
                         </div>
+                    </div>
+                    <div className="absolute -bottom-6 -left-4 hidden w-40 rounded-2xl border border-white/5 bg-white/5 p-4 text-xs text-white/70 shadow-2xl lg:block">
+                        <p className="text-[11px] uppercase tracking-[0.4em] text-white/40">
+                            Trusted
+                        </p>
+                        <p className="mt-2 text-2xl font-semibold text-white">
+                            1.2k+
+                        </p>
+                        <p className="text-white/50">Forward-thinking teams</p>
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
     );
 }
