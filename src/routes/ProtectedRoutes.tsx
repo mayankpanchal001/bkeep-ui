@@ -9,7 +9,7 @@ const ProtectedRoutes = () => {
     // }
 
     return (
-        <ProtectedLayout showLoading={loading}>
+        <ProtectedLayout showLoading={false}>
             <Outlet />
         </ProtectedLayout>
     );
