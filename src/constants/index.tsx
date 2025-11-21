@@ -33,4 +33,4 @@ export const LOGOUT_ITEM = {
 };
 
 export const APP_TITLE = 'BKeep Accounting';
-export const USER_NAME = false;
+export const USER_NAME =  'Mauank';
