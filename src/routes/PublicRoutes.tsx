@@ -1,16 +1,16 @@
 import { Navigate, Outlet } from 'react-router';
 import PublicLayout from '../components/layouts/PublicLayout';
 import Loading from '../components/shared/Loading';
-import { USER_NAME } from '../constants';
+import { useAuth } from '../stores/auth/authSelectore';
 
 const PublicRoutes = () => {
-    const { user, isLoading } = { user: USER_NAME, isLoading: false };
+    const { accessToken, loading } = useAuth();
 
-    if (isLoading) {
+    if (loading) {
         return <Loading />;
     }
 
-    if (user) {
+    if (accessToken) {
         return <Navigate to="/dashboard" replace />;
     }
 

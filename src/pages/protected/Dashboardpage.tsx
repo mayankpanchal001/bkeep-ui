@@ -16,7 +16,6 @@ import RevenueBarChart from '../../components/dashboard/charts/RevenueBarChart';
 import ChartWidget from '../../components/dashboard/ChartWidget';
 import ResizableCard from '../../components/dashboard/ResizableCard';
 import SummaryCard from '../../components/dashboard/SummaryCard';
-import PageHeader from '../../components/shared/PageHeader';
 
 // TODO: Replace with API data fetching
 const useDashboardData = () => {
@@ -315,12 +314,6 @@ const Dashboardpage = () => {
 
     return (
         <div className="space-y-6">
-            {/* Page Header */}
-            <PageHeader
-                title="Dashboard"
-                subtitle="Welcome to your dashboard"
-            />
-
             {/* Summary Cards Grid */}
             <div ref={containerRef} className="flex flex-wrap gap-4 relative">
                 {cardOrder.map((cardId, index) => {
@@ -466,7 +459,7 @@ const Dashboardpage = () => {
                 </div>
 
                 {/* Right Column - AI Insights */}
-                <div className="space-y-6">
+                <div className="flex flex-col gap-4">
                     <div className="bg-white rounded-xl shadow-sm border border-primary-10 p-6">
                         <div className="flex items-center gap-2 mb-4">
                             <FaExclamationTriangle className="text-primary" />

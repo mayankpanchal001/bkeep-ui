@@ -1,4 +1,5 @@
 import toast from 'react-hot-toast';
+import { FaXmark } from 'react-icons/fa6';
 
 export const showSuccessToast = (message: string) => {
     toast.success(message, {
@@ -8,7 +9,7 @@ export const showSuccessToast = (message: string) => {
 
 export const showErrorToast = (message: string) => {
     toast.error(message, {
-        icon: '❌',
+        icon: <FaXmark className="text-primary" />,
     });
 };
 

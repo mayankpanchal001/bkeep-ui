@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 import { FaChevronDown, FaChevronRight } from 'react-icons/fa';
 import {
     incomeStatementPeriods,
-    incomeStatementSections,
     IncomeStatementSection,
+    incomeStatementSections,
 } from '../../constants/incomeStatementData';
 
 const IncomeStatementTable = () => {
@@ -150,10 +150,10 @@ const IncomeStatementTable = () => {
 
                     <tbody>
                         {incomeStatementSections.map((section) => (
-                            <>
+                            <Fragment key={section.id}>
                                 {renderSectionRow(section)}
                                 {renderLineItems(section)}
-                            </>
+                            </Fragment>
                         ))}
                     </tbody>
                 </table>

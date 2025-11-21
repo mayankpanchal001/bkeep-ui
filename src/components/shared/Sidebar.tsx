@@ -53,7 +53,7 @@ const Sidebar = ({ collapsed }: { collapsed: boolean }) => {
                             isSidebarCollapsed ? 'rotate-180' : ''
                         }`}
                     >
-                        <FaChevronLeft />
+                        <FaChevronLeft className="w-3 h-3" />
                     </span>
                     <span className="sidebar-item-label">Collapse Sidebar</span>
                 </div>

@@ -9,6 +9,25 @@ import {
 } from 'react-icons/fa6';
 import { APP_TITLE } from '../../constants';
 
+export const PAGE_HEADERS = [
+    {
+        path: '/dashboard',
+        title: 'Dashboard',
+        subtitle: 'Welcome to your dashboard',
+    },
+    {
+        path: '/transactions',
+        title: 'Transactions',
+        subtitle: 'View and manage all your financial transactions',
+    },
+    {
+        path: '/reports',
+        title: 'Reports',
+        subtitle:
+            'Deep dive into production, collections, and receivables with intelligent filters.',
+    },
+];
+
 export const SOLUTION_FEATURES = [
     {
         title: 'AI-Automated Accounting',

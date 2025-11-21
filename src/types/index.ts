@@ -1,5 +1,67 @@
 // Type for the application will come here
 
+// Auth Types Starts
+
+export type AuthState = {
+    user: UserType | null;
+    accessToken: string | null;
+    refreshToken: string | null;
+    loading: boolean;
+    error: string | null;
+    isAuthenticated: boolean;
+    logout: () => Promise<void>;
+    hydrateAuth: () => void;
+    refreshAccessToken: () => Promise<boolean>;
+    setAuth: (user: UserType, token: string, refreshToken: string) => void;
+    clearAuth: () => void;
+};
+
+export type UserType = {
+    id: string;
+    email: string;
+    name: string;
+    role: {
+        id: string;
+        name: string;
+        displayName: string;
+    };
+    permissions: [
+        {
+            id: string;
+            name: string;
+            displayName: string;
+        },
+        {
+            id: string;
+            name: string;
+            displayName: string;
+        },
+        {
+            id: string;
+            name: string;
+            displayName: string;
+        },
+    ];
+    tenant: {
+        id: string;
+        name: string;
+        schemaName: string;
+    };
+};
+
+export type LoginResponse = {
+    success: boolean;
+    statusCode: number;
+    message: string;
+    data: {
+        accessToken: string;
+        refreshToken: string;
+        user: UserType;
+    };
+};
+
+// Auth Types Ends
+
 export type SidebarItemProps = {
     label: string;
     icon: React.ReactElement;

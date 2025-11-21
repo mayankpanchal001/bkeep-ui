@@ -23,7 +23,7 @@
 }
 
 .protected-route-content {
-    @apply flex-1 w-full h-full p-4 overflow-auto;
+    @apply flex-1 w-full h-full overflow-auto;
 }
 
 .vertical-divider {
@@ -172,7 +172,7 @@
 
 /* Bottom Bar Styles */
 .bottombar-items {
-    @apply flex items-center gap-2 justify-around h-full px-2;
+    @apply flex items-center gap-2 justify-around h-full px-2 py-4;
 }
 
 .bottombar-item {

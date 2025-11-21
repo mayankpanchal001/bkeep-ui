@@ -22,7 +22,6 @@ import ExpensePieChart from '../../components/dashboard/charts/ExpensePieChart';
 import ProfitabilityLineChart from '../../components/dashboard/charts/ProfitabilityLineChart';
 import RevenueBarChart from '../../components/dashboard/charts/RevenueBarChart';
 import IncomeStatementTable from '../../components/reports/IncomeStatementTable';
-import PageHeader from '../../components/shared/PageHeader';
 import {
     exportToCSV,
     exportToExcel,
@@ -398,11 +397,6 @@ const Reportpage = () => {
 
     return (
         <div className="space-y-6">
-            <PageHeader
-                title="Reports"
-                subtitle="Deep dive into production, collections, and receivables with intelligent filters."
-            />
-
             {/* Filters and Controls Section */}
             <div className="bg-white border border-primary-10 rounded-2xl p-6 shadow-sm">
                 <div className="space-y-4">

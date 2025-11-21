@@ -1,16 +1,9 @@
 import { FaFileInvoiceDollar } from 'react-icons/fa';
-import PageHeader from '../../components/shared/PageHeader';
 import TransactionsTable from '../../components/transactions/TransactionsTable';
 
 const Transactionpage = () => {
     return (
         <div className="space-y-6">
-            {/* Page Header */}
-            <PageHeader
-                title="Transactions"
-                subtitle="View and manage all your financial transactions"
-            />
-
             {/* Summary Cards */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div className="bg-white rounded-xl shadow-sm border border-primary-10 p-4">

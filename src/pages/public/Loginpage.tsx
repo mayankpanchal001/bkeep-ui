@@ -107,19 +107,7 @@ const Loginpage = () => {
                         <LoginForm />
                     </div>
 
-                    {/* Footer */}
                     <div className="mt-6 text-center">
-                        {/*
-                        <p className="text-xs text-primary-50">
-                            Don't have an account?{' '}
-                            <Link
-                                to="/register"
-                                className="text-primary hover:text-primary-75 font-medium underline"
-                            >
-                                Sign Up
-                            </Link>
-                        </p>
-                        */}
                         <p className="text-xs text-primary-50 mt-2">
                             © 2024 BKeep Accounting. All rights reserved.
                         </p>
