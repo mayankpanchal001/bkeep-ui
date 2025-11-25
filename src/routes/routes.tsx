@@ -15,6 +15,7 @@ import Loginpage from '../pages/public/Loginpage';
 import PasskeyLoginpage from '../pages/public/PasskeyLoginpage';
 import Registerpage from '../pages/public/Registerpage';
 import ResetPasswordpage from '../pages/public/ResetPasswordpage';
+import ForgotPasswordpage from '../pages/public/ForgotPasswordpage';
 import ProtectedRoutes from './ProtectedRoutes';
 import PublicRoutes from './PublicRoutes';
 
@@ -37,6 +38,10 @@ const routes = createBrowserRouter([
             {
                 path: '/register',
                 element: <Registerpage />,
+            },
+            {
+                path: '/forgot-password',
+                element: <ForgotPasswordpage />,
             },
             {
                 path: '/reset-password',

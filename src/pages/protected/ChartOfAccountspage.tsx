@@ -2,10 +2,8 @@ import { useState } from 'react';
 import {
     FaChevronDown,
     FaChevronRight,
-    FaDownload,
     FaEdit,
     FaFilter,
-    FaPlus,
     FaSearch,
     FaTrash,
 } from 'react-icons/fa';
@@ -314,35 +312,22 @@ const ChartOfAccountspage = () => {
     };
 
     return (
-        <div className="space-y-6">
+        <div className="flex flex-col gap-4">
             {/* Header Actions */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                <div>
-                    <h2 className="text-2xl font-bold text-primary">
-                        Chart of Accounts
-                    </h2>
-                    <p className="text-sm text-primary-50 mt-1">
-                        Manage your accounts and track balances
-                    </p>
-                </div>
+            {/* <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
-                    <div className="relative">
-                        <button className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-primary bg-white border-2 border-primary-10 rounded-xl hover:border-primary hover:bg-primary-10 transition-all">
-                            <FaDownload />
-                            Export
-                            <FaChevronDown className="w-3 h-3" />
-                        </button>
-                    </div>
+                    <Button variant="outline" icon={<FaDownload />}>
+                        Export
+                    </Button>
                     <Button
                         onClick={() => setShowAddModal(true)}
                         variant="primary"
-                        className="flex items-center gap-2"
+                        icon={<FaPlus />}
                     >
-                        <FaPlus />
                         New Account
                     </Button>
                 </div>
-            </div>
+            </div> */}
 
             {/* Filters and Search */}
             <div className="bg-white rounded-xl shadow-sm border border-primary-10 p-4">

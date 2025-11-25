@@ -2,7 +2,6 @@ import { useState } from 'react';
 import {
     FaEdit,
     FaFilter,
-    FaPlus,
     FaReceipt,
     FaSearch,
     FaTag,
@@ -111,27 +110,7 @@ const Expensespage = () => {
     );
 
     return (
-        <div className="space-y-6">
-            {/* Header */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                <div>
-                    <h2 className="text-2xl font-bold text-primary">
-                        Expenses
-                    </h2>
-                    <p className="text-sm text-primary-50 mt-1">
-                        Track and manage your business expenses
-                    </p>
-                </div>
-                <Button
-                    onClick={() => setShowCreateModal(true)}
-                    variant="primary"
-                    className="flex items-center gap-2"
-                >
-                    <FaPlus />
-                    Add Expense
-                </Button>
-            </div>
-
+        <div className="flex flex-col gap-4">
             {/* Summary Cards */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div className="bg-white rounded-xl shadow-sm border border-primary-10 p-4">

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { FaLock, FaTimes, FaUser } from 'react-icons/fa';
-import { useNavigate } from 'react-router';
-import { useForgotPassword, useLogin } from '../../services/apis/authApi';
+import { FaLock, FaUser } from 'react-icons/fa';
+import { Link, useNavigate } from 'react-router';
+import { useLogin } from '../../services/apis/authApi';
 
-import { showErrorToast, showSuccessToast } from '../../utills/toast';
+import { showErrorToast } from '../../utills/toast';
 import Button from '../typography/Button';
 import { InputField } from '../typography/InputFields';
 
@@ -11,16 +11,12 @@ export function LoginForm() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
-    const [showForgotPassword, setShowForgotPassword] = useState(false);
-    const [forgotPasswordEmail, setForgotPasswordEmail] = useState('');
     const navigate = useNavigate();
     const {
         mutateAsync: login,
         isPending: isLoading,
         error: loginError,
     } = useLogin();
-    const { mutateAsync: forgotPassword, isPending: isForgotPasswordLoading } =
-        useForgotPassword();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -48,102 +44,8 @@ export function LoginForm() {
         }
     };
 
-    const handleForgotPassword = async (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!forgotPasswordEmail) {
-            showErrorToast('Please enter your email address');
-            return;
-        }
-
-        try {
-            await forgotPassword(forgotPasswordEmail);
-            showSuccessToast(
-                'Password reset link has been sent to your email address'
-            );
-            setShowForgotPassword(false);
-            setForgotPasswordEmail('');
-        } catch (err: unknown) {
-            let message = 'Failed to send password reset email';
-            if (err && typeof err === 'object' && 'response' in err) {
-                const response = (
-                    err as { response?: { data?: { message?: string } } }
-                ).response;
-                message = response?.data?.message || message;
-            } else if (err instanceof Error) {
-                message = err.message;
-            }
-            showErrorToast(message);
-        }
-    };
-
     return (
         <div className="space-y-6">
-            {/* Forgot Password Modal */}
-            {showForgotPassword && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4">
-                    <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl">
-                        <div className="flex items-center justify-between mb-4">
-                            <h3 className="text-xl font-semibold text-primary">
-                                Forgot Password?
-                            </h3>
-                            <button
-                                onClick={() => {
-                                    setShowForgotPassword(false);
-                                    setForgotPasswordEmail('');
-                                }}
-                                className="text-primary-50 hover:text-primary transition-colors"
-                            >
-                                <FaTimes className="w-5 h-5" />
-                            </button>
-                        </div>
-                        <p className="text-sm text-primary-75 mb-6">
-                            Enter your email address and we'll send you a link
-                            to reset your password.
-                        </p>
-                        <form
-                            onSubmit={handleForgotPassword}
-                            className="space-y-4"
-                        >
-                            <InputField
-                                id="forgot-password-email"
-                                label="Email ID"
-                                type="email"
-                                placeholder="Enter your email address"
-                                value={forgotPasswordEmail}
-                                onChange={(e) =>
-                                    setForgotPasswordEmail(e.target.value)
-                                }
-                                required
-                                icon={<FaUser className="w-4 h-4" />}
-                            />
-                            <div className="flex gap-3">
-                                <Button
-                                    type="button"
-                                    variant="outline"
-                                    className="flex-1"
-                                    onClick={() => {
-                                        setShowForgotPassword(false);
-                                        setForgotPasswordEmail('');
-                                    }}
-                                    disabled={isForgotPasswordLoading}
-                                >
-                                    Cancel
-                                </Button>
-                                <Button
-                                    type="submit"
-                                    variant="primary"
-                                    className="flex-1"
-                                    loading={isForgotPasswordLoading}
-                                    disabled={isForgotPasswordLoading}
-                                >
-                                    Send Reset Link
-                                </Button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            )}
-
             {/* Email/Password Form */}
             <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="space-y-4">
@@ -208,16 +110,12 @@ export function LoginForm() {
                 </div>
             </div>
             <div className="flex justify-center ">
-                <button
-                    type="button"
-                    onClick={() => {
-                        setForgotPasswordEmail(email);
-                        setShowForgotPassword(true);
-                    }}
+                <Link
+                    to="/forgot-password"
                     className="text-sm  text-primary hover:text-primary-75 transition-colors cursor-pointer"
                 >
                     Forgot Password?
-                </button>
+                </Link>
             </div>
 
             <div className="text-center pt-2">

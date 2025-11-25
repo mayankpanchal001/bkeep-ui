@@ -6,7 +6,6 @@ import {
     FaEye,
     FaFileInvoiceDollar,
     FaFilter,
-    FaPlus,
     FaSearch,
     FaTimesCircle,
     FaTrash,
@@ -124,27 +123,7 @@ const Invoicepage = () => {
         .reduce((sum, invoice) => sum + invoice.amount, 0);
 
     return (
-        <div className="space-y-6">
-            {/* Header */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                <div>
-                    <h2 className="text-2xl font-bold text-primary">
-                        Invoices
-                    </h2>
-                    <p className="text-sm text-primary-50 mt-1">
-                        Create and manage your invoices
-                    </p>
-                </div>
-                <Button
-                    onClick={() => setShowCreateModal(true)}
-                    variant="primary"
-                    className="flex items-center gap-2"
-                >
-                    <FaPlus />
-                    New Invoice
-                </Button>
-            </div>
-
+        <div className="flex flex-col gap-4">
             {/* Summary Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="bg-white rounded-xl shadow-sm border border-primary-10 p-4">
@@ -182,7 +161,7 @@ const Invoicepage = () => {
                             filteredInvoices.filter(
                                 (inv) => inv.status !== 'paid'
                             ).length
-                        }{' '}
+                        }
                         invoices
                     </div>
                 </div>
