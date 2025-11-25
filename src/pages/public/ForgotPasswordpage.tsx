@@ -100,4 +100,3 @@ const ForgotPasswordpage = () => {
 };
 
 export default ForgotPasswordpage;
-

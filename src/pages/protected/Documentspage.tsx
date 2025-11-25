@@ -248,9 +248,9 @@ const Documentspage = () => {
                 onDragOver={handleDrag}
                 onDrop={handleDrop}
                 onClick={handleUploadAreaClick}
-                className={`border-2 border-dashed rounded-xl p-12 text-center transition-colors cursor-pointer ${
+                className={`w-full max-w-3xl mx-auto border-2 border-dashed rounded-2xl p-10 sm:p-12 text-center transition-all cursor-pointer shadow-sm ${
                     dragActive
-                        ? 'border-primary bg-primary-10'
+                        ? 'border-primary bg-primary-10 shadow-md scale-[1.01]'
                         : 'border-primary-25 bg-primary-5 hover:border-primary hover:bg-primary-10'
                 }`}
             >

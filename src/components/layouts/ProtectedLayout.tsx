@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { useLocation } from 'react-router';
 import { PAGE_HEADERS } from '../homepage/constants';
 import Bottombar from '../shared/Bottombar';
@@ -15,6 +15,16 @@ const ProtectedLayout = ({
     showLoading?: boolean;
 }) => {
     const location = useLocation();
+    const [routeLoading, setRouteLoading] = useState(false);
+
+    useEffect(() => {
+        setRouteLoading(true);
+        const timeout = setTimeout(() => setRouteLoading(false), 300);
+
+        return () => clearTimeout(timeout);
+    }, [location.pathname]);
+
+    const shouldShowLoading = showLoading || routeLoading;
     const currentHeader = PAGE_HEADERS.find(
         (header) => header.path === location.pathname
     );
@@ -22,7 +32,7 @@ const ProtectedLayout = ({
     return (
         <main className="protected-route">
             <div className="protected-route-wrapper relative">
-                {showLoading && <Loading />}
+                {shouldShowLoading && <Loading />}
                 <Topbar />
                 <Sidebar collapsed={false} />
 
