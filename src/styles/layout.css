@@ -31,7 +31,7 @@
 }
 
 .protected-route-sidebar {
-    --sidebar-width: 200px;
+    --sidebar-width: 28ch;
     @apply hidden lg:flex flex-col gap-4 h-full p-4 bg-white border-r border-primary-10;
     width: var(--sidebar-width);
     min-width: var(--sidebar-width);

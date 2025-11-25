@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import axiosInstance from '../../services/axiosClient';
 import { AuthState, UserType } from '../../types';
+import { TenantStore } from '../tenant/tenantStore';
 
 export const AuthStore = create<AuthState>((set, get) => ({
     // 1. Initial State
@@ -10,6 +11,7 @@ export const AuthStore = create<AuthState>((set, get) => ({
     isAuthenticated: false,
     loading: false,
     error: null,
+    mfaEnabled: false,
 
     // 2. Actions
 
@@ -18,12 +20,17 @@ export const AuthStore = create<AuthState>((set, get) => ({
         localStorage.setItem('user', JSON.stringify(user));
         localStorage.setItem('accessToken', accessToken);
         localStorage.setItem('refreshToken', refreshToken);
+        localStorage.setItem(
+            'mfaEnabled',
+            JSON.stringify(Boolean(user?.mfaEnabled))
+        );
 
         set({
             user,
             accessToken,
             refreshToken,
             isAuthenticated: true,
+            mfaEnabled: Boolean(user?.mfaEnabled),
             error: null,
         });
     },
@@ -33,12 +40,15 @@ export const AuthStore = create<AuthState>((set, get) => ({
         localStorage.removeItem('user');
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
+        localStorage.removeItem('mfaEnabled');
+        TenantStore.getState().clearTenants();
 
         set({
             user: null,
             accessToken: null,
             refreshToken: null,
             isAuthenticated: false,
+            mfaEnabled: false,
             error: null,
         });
     },
@@ -63,6 +73,9 @@ export const AuthStore = create<AuthState>((set, get) => ({
             const userStr = localStorage.getItem('user');
             const accessToken = localStorage.getItem('accessToken');
             const refreshToken = localStorage.getItem('refreshToken');
+            const mfaEnabledStr = localStorage.getItem('mfaEnabled');
+            const mfaEnabled =
+                mfaEnabledStr !== null ? JSON.parse(mfaEnabledStr) : false;
 
             if (userStr && accessToken && refreshToken) {
                 set({
@@ -70,8 +83,10 @@ export const AuthStore = create<AuthState>((set, get) => ({
                     accessToken,
                     refreshToken,
                     isAuthenticated: true,
+                    mfaEnabled,
                 });
             }
+            TenantStore.getState().hydrateTenant();
         } catch (e) {
             console.error('Failed to hydrate auth', e);
             get().clearAuth();
@@ -101,5 +116,10 @@ export const AuthStore = create<AuthState>((set, get) => ({
             get().clearAuth(); // If refresh fails, force logout
             return false;
         }
+    },
+
+    setMfaEnabled: (enabled: boolean) => {
+        localStorage.setItem('mfaEnabled', JSON.stringify(enabled));
+        set({ mfaEnabled: enabled });
     },
 }));

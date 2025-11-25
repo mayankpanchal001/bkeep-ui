@@ -11,6 +11,8 @@ export const useAuth = () => {
     const hydrateAuth = AuthStore((state) => state.hydrateAuth);
     const setAuth = AuthStore((state) => state.setAuth);
     const clearAuth = AuthStore((state) => state.clearAuth);
+    const mfaEnabled = AuthStore((state) => state.mfaEnabled);
+    const setMfaEnabled = AuthStore((state) => state.setMfaEnabled);
 
     return {
         user,
@@ -23,5 +25,7 @@ export const useAuth = () => {
         hydrateAuth,
         setAuth,
         clearAuth,
+        mfaEnabled,
+        setMfaEnabled,
     };
 };

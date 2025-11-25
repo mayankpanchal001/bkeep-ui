@@ -1,5 +1,6 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import { useLocation } from 'react-router';
+import { useTenant } from '../../stores/tenant/tenantSelectore';
 import { PAGE_HEADERS } from '../homepage/constants';
 import Bottombar from '../shared/Bottombar';
 import Loading from '../shared/Loading';
@@ -15,6 +16,7 @@ const ProtectedLayout = ({
     showLoading?: boolean;
 }) => {
     const location = useLocation();
+    const { selectedTenant } = useTenant();
     const [routeLoading, setRouteLoading] = useState(false);
 
     useEffect(() => {
@@ -36,14 +38,20 @@ const ProtectedLayout = ({
                 <Topbar />
                 <Sidebar collapsed={false} />
 
-                <div className="protected-route-content relative">
+                <div
+                    className="protected-route-content relative"
+                    data-tenant-id={selectedTenant?.id || 'default'}
+                >
                     {currentHeader && (
                         <PageHeader
                             title={currentHeader.title}
                             subtitle={currentHeader.subtitle}
                         />
                     )}
-                    <div className="p-4 sm:h-[calc(100vh-100px)] overflow-auto">
+                    <div
+                        key={selectedTenant?.id || 'default-tenant'}
+                        className="p-4 sm:h-[calc(100vh-100px)] overflow-auto"
+                    >
                         {children}
                     </div>
                 </div>

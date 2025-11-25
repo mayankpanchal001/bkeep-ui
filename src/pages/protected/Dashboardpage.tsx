@@ -169,9 +169,13 @@ const useDashboardData = () => {
 const Dashboardpage = () => {
     const data = useDashboardData();
     const [cardOrder, setCardOrder] = useState<string[]>(() => {
-        const saved = localStorage.getItem('dashboard-card-order');
-        if (saved) {
-            return JSON.parse(saved);
+        try {
+            const saved = localStorage.getItem('dashboard-card-order');
+            if (saved) {
+                return JSON.parse(saved);
+            }
+        } catch (error) {
+            console.warn('Failed to load card order from localStorage', error);
         }
         return [
             'total-collections',
@@ -187,7 +191,14 @@ const Dashboardpage = () => {
     const cardRefs = useRef<Map<string, HTMLDivElement>>(new Map());
 
     useEffect(() => {
-        localStorage.setItem('dashboard-card-order', JSON.stringify(cardOrder));
+        try {
+            localStorage.setItem(
+                'dashboard-card-order',
+                JSON.stringify(cardOrder)
+            );
+        } catch (error) {
+            console.warn('Failed to save card order to localStorage', error);
+        }
     }, [cardOrder]);
 
     const handleDragStart = (cardId: string) => {
@@ -195,7 +206,7 @@ const Dashboardpage = () => {
     };
 
     const handleDragEnd = () => {
-        if (draggedCardId && dragOverIndex !== null) {
+        if (draggedCardId !== null && dragOverIndex !== null) {
             const currentIndex = cardOrder.indexOf(draggedCardId);
             if (currentIndex !== -1 && currentIndex !== dragOverIndex) {
                 const newOrder = [...cardOrder];
@@ -209,12 +220,12 @@ const Dashboardpage = () => {
     };
 
     useEffect(() => {
-        if (!draggedCardId) return;
+        if (!draggedCardId || !containerRef.current) return;
 
         const handleMouseMove = (e: MouseEvent) => {
-            if (!containerRef.current) return;
+            const containerRect = containerRef.current?.getBoundingClientRect();
+            if (!containerRect) return;
 
-            const containerRect = containerRef.current.getBoundingClientRect();
             const mouseX = e.clientX - containerRect.left;
             const mouseY = e.clientY - containerRect.top;
 
@@ -222,40 +233,41 @@ const Dashboardpage = () => {
             let newIndex = cardOrder.length;
             for (let i = 0; i < cardOrder.length; i++) {
                 const cardId = cardOrder[i];
+                if (cardId === draggedCardId) continue;
+
                 const cardElement = cardRefs.current.get(cardId);
-                if (cardElement && cardId !== draggedCardId) {
-                    const cardRect = cardElement.getBoundingClientRect();
-                    const relativeX = cardRect.left - containerRect.left;
-                    const relativeY = cardRect.top - containerRect.top;
+                if (!cardElement) continue;
 
-                    // Check if mouse is over this card
-                    if (
-                        mouseX >= relativeX &&
-                        mouseX <= relativeX + cardRect.width &&
-                        mouseY >= relativeY &&
-                        mouseY <= relativeY + cardRect.height
-                    ) {
-                        // Determine if we should insert before or after
-                        const cardCenterX = relativeX + cardRect.width / 2;
-                        const cardCenterY = relativeY + cardRect.height / 2;
+                const cardRect = cardElement.getBoundingClientRect();
+                const relativeX = cardRect.left - containerRect.left;
+                const relativeY = cardRect.top - containerRect.top;
 
-                        if (mouseX < cardCenterX || mouseY < cardCenterY) {
-                            newIndex = i;
-                        } else {
-                            newIndex = i + 1;
-                        }
-                        break;
-                    }
+                // Check if mouse is over this card
+                if (
+                    mouseX >= relativeX &&
+                    mouseX <= relativeX + cardRect.width &&
+                    mouseY >= relativeY &&
+                    mouseY <= relativeY + cardRect.height
+                ) {
+                    // Determine if we should insert before or after
+                    const cardCenterX = relativeX + cardRect.width / 2;
+                    const cardCenterY = relativeY + cardRect.height / 2;
 
-                    // If mouse is before this card
-                    if (
-                        mouseY < relativeY ||
-                        (mouseY < relativeY + cardRect.height &&
-                            mouseX < relativeX)
-                    ) {
+                    if (mouseX < cardCenterX || mouseY < cardCenterY) {
                         newIndex = i;
-                        break;
+                    } else {
+                        newIndex = i + 1;
                     }
+                    break;
+                }
+
+                // If mouse is before this card
+                if (
+                    mouseY < relativeY ||
+                    (mouseY < relativeY + cardRect.height && mouseX < relativeX)
+                ) {
+                    newIndex = i;
+                    break;
                 }
             }
 
@@ -313,178 +325,196 @@ const Dashboardpage = () => {
     ];
 
     return (
-        <div className="space-y-6">
-            {/* Summary Cards Grid */}
-            <div ref={containerRef} className="flex flex-wrap gap-4 relative">
-                {cardOrder.map((cardId, index) => {
-                    const config = cardConfigs.find((c) => c.id === cardId);
-                    if (!config) return null;
+        <div className="flex flex-col gap-6">
+            {/* Summary Cards Section - Top */}
+            <div>
+                <h2 className="text-lg font-semibold text-primary mb-4">
+                    Key Metrics
+                </h2>
+                <div
+                    ref={containerRef}
+                    className="flex flex-wrap gap-4 relative"
+                >
+                    {cardOrder.map((cardId, index) => {
+                        const config = cardConfigs.find((c) => c.id === cardId);
+                        if (!config) return null;
 
-                    const isDragging = draggedCardId === cardId;
-                    const showDropIndicator =
-                        dragOverIndex === index && draggedCardId && !isDragging;
+                        const isDragging = draggedCardId === cardId;
+                        const showDropIndicator =
+                            dragOverIndex === index &&
+                            draggedCardId !== null &&
+                            !isDragging;
 
-                    return (
-                        <div
-                            key={cardId}
-                            ref={(el) => {
-                                if (el) {
-                                    cardRefs.current.set(cardId, el);
-                                } else {
-                                    cardRefs.current.delete(cardId);
-                                }
-                            }}
-                            className="relative"
-                            style={{
-                                order: isDragging ? 999 : index,
-                            }}
-                        >
-                            {showDropIndicator && (
-                                <div className="absolute -left-2 top-0 bottom-0 w-1 bg-primary rounded z-40"></div>
-                            )}
-                            <ResizableCard
-                                id={cardId}
-                                defaultWidth={320}
-                                defaultHeight={320}
-                                isDragging={isDragging}
-                                onDragStart={() => handleDragStart(cardId)}
-                                onDragEnd={handleDragEnd}
+                        return (
+                            <div
+                                key={cardId}
+                                ref={(el) => {
+                                    if (el) {
+                                        cardRefs.current.set(cardId, el);
+                                    } else {
+                                        cardRefs.current.delete(cardId);
+                                    }
+                                }}
+                                className="relative"
+                                style={{
+                                    order: isDragging ? 999 : index,
+                                }}
                             >
-                                <SummaryCard
-                                    title={config.title}
-                                    value={config.value}
-                                    trend={config.trend}
-                                    breakdown={config.breakdown}
-                                    aiNotes={config.aiNotes}
-                                    indicator={config.indicator}
-                                    icon={config.icon}
-                                />
-                            </ResizableCard>
-                        </div>
-                    );
-                })}
+                                {showDropIndicator && (
+                                    <div className="absolute -left-2 top-0 bottom-0 w-1 bg-primary rounded z-40"></div>
+                                )}
+                                <ResizableCard
+                                    id={cardId}
+                                    defaultWidth={320}
+                                    defaultHeight={320}
+                                    isDragging={isDragging}
+                                    onDragStart={() => handleDragStart(cardId)}
+                                    onDragEnd={handleDragEnd}
+                                >
+                                    <SummaryCard
+                                        title={config.title}
+                                        value={config.value}
+                                        trend={config.trend}
+                                        breakdown={config.breakdown}
+                                        aiNotes={config.aiNotes}
+                                        indicator={config.indicator}
+                                        icon={config.icon}
+                                    />
+                                </ResizableCard>
+                            </div>
+                        );
+                    })}
+                </div>
             </div>
 
-            {/* Main Content Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                {/* Left Column - Charts */}
-                <div className="lg:col-span-2 space-y-6">
-                    {/* Revenue by Procedure Type */}
-                    <ChartWidget
-                        title="Revenue by Procedure Type"
-                        subtitle="This month's revenue breakdown"
-                        aiInsight="Cosmetic treatments dropped 10% this quarter — consider promotions."
-                    >
-                        <RevenueBarChart data={data.revenueByProcedure} />
-                    </ChartWidget>
-
-                    {/* Insurance Performance Tracker */}
-                    <ChartWidget
-                        title="Insurance Performance Tracker"
-                        subtitle="Top 5 insurance providers by claim volume"
-                        aiInsight="Claims from Sun Life average 52 days — slower than usual."
-                    >
-                        <InsuranceChart data={data.insurancePerformance} />
-                    </ChartWidget>
-
-                    {/* Two Column Grid for Smaller Charts */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {/* Dentist Productivity */}
+            {/* Charts Section - Main Visualizations */}
+            <div>
+                <h2 className="text-lg font-semibold text-primary mb-4">
+                    Analytics & Reports
+                </h2>
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    {/* Left Column - Main Charts */}
+                    <div className="lg:col-span-2 space-y-6">
+                        {/* Revenue by Procedure Type */}
                         <ChartWidget
-                            title="Dentist Productivity"
-                            subtitle="Revenue and procedures per dentist"
+                            title="Revenue by Procedure Type"
+                            subtitle="This month's revenue breakdown"
+                            aiInsight="Cosmetic treatments dropped 10% this quarter — consider promotions."
                         >
-                            <div className="space-y-4">
-                                {data.dentistProductivity.map((item, index) => (
-                                    <div
-                                        key={index}
-                                        className="border-l-4 border-primary pl-4"
-                                    >
-                                        <div className="font-semibold text-primary mb-1">
-                                            {item.name}
-                                        </div>
-                                        <div className="text-sm text-primary-75">
-                                            ${item.revenue.toLocaleString()}{' '}
-                                            revenue
-                                        </div>
-                                        <div className="text-xs text-primary-50">
-                                            {item.procedures} procedures
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
+                            <RevenueBarChart data={data.revenueByProcedure} />
                         </ChartWidget>
 
-                        {/* Chair Utilization */}
+                        {/* Insurance Performance Tracker */}
                         <ChartWidget
-                            title="Chair Utilization"
-                            subtitle="% of available hours used"
-                            aiInsight="Chair 2 in Location B underutilized — only 42% booked last month."
+                            title="Insurance Performance Tracker"
+                            subtitle="Top 5 insurance providers by claim volume"
+                            aiInsight="Claims from Sun Life average 52 days — slower than usual."
                         >
-                            <ChairUtilizationChart
-                                data={data.chairUtilization}
+                            <InsuranceChart data={data.insurancePerformance} />
+                        </ChartWidget>
+
+                        {/* Two Column Grid for Smaller Charts */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {/* Dentist Productivity */}
+                            <ChartWidget
+                                title="Dentist Productivity"
+                                subtitle="Revenue and procedures per dentist"
+                            >
+                                <div className="space-y-4">
+                                    {data.dentistProductivity.map(
+                                        (item, index) => (
+                                            <div
+                                                key={`${item.name}-${index}`}
+                                                className="border-l-4 border-primary pl-4"
+                                            >
+                                                <div className="font-semibold text-primary mb-1">
+                                                    {item.name}
+                                                </div>
+                                                <div className="text-sm text-primary-75">
+                                                    $
+                                                    {item.revenue.toLocaleString()}{' '}
+                                                    revenue
+                                                </div>
+                                                <div className="text-xs text-primary-50">
+                                                    {item.procedures} procedures
+                                                </div>
+                                            </div>
+                                        )
+                                    )}
+                                </div>
+                            </ChartWidget>
+
+                            {/* Chair Utilization */}
+                            <ChartWidget
+                                title="Chair Utilization"
+                                subtitle="% of available hours used"
+                                aiInsight="Chair 2 in Location B underutilized — only 42% booked last month."
+                            >
+                                <ChairUtilizationChart
+                                    data={data.chairUtilization}
+                                />
+                            </ChartWidget>
+                        </div>
+
+                        {/* Expense Breakdown */}
+                        <ChartWidget
+                            title="Expense Breakdown"
+                            subtitle="This month's expenses by category"
+                            aiInsight="Supply costs 12% higher than regional benchmark for similar practices."
+                            actions={
+                                <div className="flex gap-2">
+                                    <button className="text-xs px-2 py-1 bg-primary-10 text-primary rounded hover:bg-primary-25">
+                                        This Month
+                                    </button>
+                                    <button className="text-xs px-2 py-1 text-primary-50 rounded hover:bg-primary-10">
+                                        YTD
+                                    </button>
+                                </div>
+                            }
+                        >
+                            <ExpensePieChart data={data.expenseBreakdown} />
+                        </ChartWidget>
+
+                        {/* Profitability Trend */}
+                        <ChartWidget
+                            title="Profitability Trend"
+                            subtitle="Net profit margin over the last 5 months"
+                            aiInsight="Profitability is trending upward and exceeding target."
+                        >
+                            <ProfitabilityLineChart
+                                data={data.profitability.chartData}
                             />
                         </ChartWidget>
                     </div>
 
-                    {/* Expense Breakdown */}
-                    <ChartWidget
-                        title="Expense Breakdown"
-                        subtitle="This month's expenses by category"
-                        aiInsight="Supply costs 12% higher than regional benchmark for similar practices."
-                        actions={
-                            <div className="flex gap-2">
-                                <button className="text-xs px-2 py-1 bg-primary-10 text-primary rounded hover:bg-primary-25">
-                                    This Month
-                                </button>
-                                <button className="text-xs px-2 py-1 text-primary-50 rounded hover:bg-primary-10">
-                                    YTD
-                                </button>
+                    {/* Right Column - AI Insights */}
+                    <div className="flex flex-col gap-4">
+                        <div className="bg-white rounded-xl shadow-sm border border-primary-10 p-6 sticky top-0">
+                            <div className="flex items-center gap-2 mb-4">
+                                <FaExclamationTriangle className="text-primary" />
+                                <h3 className="text-lg font-semibold text-primary">
+                                    AI Insights & Actions
+                                </h3>
                             </div>
-                        }
-                    >
-                        <ExpensePieChart data={data.expenseBreakdown} />
-                    </ChartWidget>
-
-                    {/* Profitability Trend */}
-                    <ChartWidget
-                        title="Profitability Trend"
-                        subtitle="Net profit margin over the last 5 months"
-                        aiInsight="Profitability is trending upward and exceeding target."
-                    >
-                        <ProfitabilityLineChart
-                            data={data.profitability.chartData}
-                        />
-                    </ChartWidget>
-                </div>
-
-                {/* Right Column - AI Insights */}
-                <div className="flex flex-col gap-4">
-                    <div className="bg-white rounded-xl shadow-sm border border-primary-10 p-6">
-                        <div className="flex items-center gap-2 mb-4">
-                            <FaExclamationTriangle className="text-primary" />
-                            <h3 className="text-lg font-semibold text-primary">
-                                AI Insights & Actions
-                            </h3>
-                        </div>
-                        <div className="space-y-4">
-                            {data.aiInsights.map((insight, index) => (
-                                <AIInsightCard
-                                    key={index}
-                                    type={insight.type}
-                                    title={insight.title}
-                                    message={insight.message}
-                                    onAccept={() =>
-                                        console.log('Accepted', index)
-                                    }
-                                    onSnooze={() =>
-                                        console.log('Snoozed', index)
-                                    }
-                                    onDismiss={() =>
-                                        console.log('Dismissed', index)
-                                    }
-                                />
-                            ))}
+                            <div className="space-y-4">
+                                {data.aiInsights.map((insight, index) => (
+                                    <AIInsightCard
+                                        key={`insight-${index}`}
+                                        type={insight.type}
+                                        title={insight.title}
+                                        message={insight.message}
+                                        onAccept={() =>
+                                            console.log('Accepted', index)
+                                        }
+                                        onSnooze={() =>
+                                            console.log('Snoozed', index)
+                                        }
+                                        onDismiss={() =>
+                                            console.log('Dismissed', index)
+                                        }
+                                    />
+                                ))}
+                            </div>
                         </div>
                     </div>
                 </div>

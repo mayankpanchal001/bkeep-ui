@@ -9,17 +9,20 @@ export type AuthState = {
     loading: boolean;
     error: string | null;
     isAuthenticated: boolean;
+    mfaEnabled: boolean;
     logout: () => Promise<void>;
     hydrateAuth: () => void;
     refreshAccessToken: () => Promise<boolean>;
     setAuth: (user: UserType, token: string, refreshToken: string) => void;
     clearAuth: () => void;
+    setMfaEnabled: (enabled: boolean) => void;
 };
 
 export type UserType = {
     id: string;
     email: string;
     name: string;
+    mfaEnabled?: boolean;
     role: {
         id: string;
         name: string;
@@ -42,11 +45,7 @@ export type UserType = {
             displayName: string;
         },
     ];
-    tenant: {
-        id: string;
-        name: string;
-        schemaName: string;
-    };
+    tenant: Tenant;
 };
 
 export type LoginResponse = {
@@ -58,6 +57,24 @@ export type LoginResponse = {
         refreshToken: string;
         user: UserType;
     };
+};
+
+export type Tenant = {
+    id: string;
+    name: string;
+    schemaName: string;
+};
+
+export type TenantState = {
+    tenants: Tenant[];
+    selectedTenant: Tenant | null;
+    setTenants: (
+        tenants: Tenant[],
+        options?: { selectTenantId?: string }
+    ) => void;
+    selectTenant: (tenantId: string) => void;
+    hydrateTenant: () => void;
+    clearTenants: () => void;
 };
 
 // Auth Types Ends
