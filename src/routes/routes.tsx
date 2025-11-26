@@ -16,6 +16,7 @@ import PasskeyLoginpage from '../pages/public/PasskeyLoginpage';
 import Registerpage from '../pages/public/Registerpage';
 import ResetPasswordpage from '../pages/public/ResetPasswordpage';
 import ForgotPasswordpage from '../pages/public/ForgotPasswordpage';
+import OtpVerificationpage from '../pages/public/OtpVerificationpage';
 import ProtectedRoutes from './ProtectedRoutes';
 import PublicRoutes from './PublicRoutes';
 
@@ -42,6 +43,10 @@ const routes = createBrowserRouter([
             {
                 path: '/forgot-password',
                 element: <ForgotPasswordpage />,
+            },
+            {
+                path: '/enter-otp',
+                element: <OtpVerificationpage />,
             },
             {
                 path: '/reset-password',

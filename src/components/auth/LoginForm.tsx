@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FaLock, FaUser } from 'react-icons/fa';
-import { Link, useNavigate } from 'react-router';
+import { Link } from 'react-router';
 import { useLogin } from '../../services/apis/authApi';
 
 import { showErrorToast } from '../../utills/toast';
@@ -11,7 +11,6 @@ export function LoginForm() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
-    const navigate = useNavigate();
     const {
         mutateAsync: login,
         isPending: isLoading,
@@ -24,7 +23,6 @@ export function LoginForm() {
 
         try {
             await login({ email, password });
-            navigate('/dashboard');
         } catch (err: unknown) {
             let message = 'Invalid email or password';
             showErrorToast(message);

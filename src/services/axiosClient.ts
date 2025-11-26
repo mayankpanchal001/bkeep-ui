@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { API_ENDPOINT } from '../config/env';
+import { showErrorToast } from '../utills/toast';
 
 const axiosInstance = axios.create({
     // baseURL: import.meta.env.VITE_API_ENDPOINT,
@@ -23,25 +24,26 @@ axiosInstance.interceptors.request.use(
     (error) => Promise.reject(error)
 );
 
-// // Response interceptor to handle 401 responses
-// axiosInstance.interceptors.response.use(
-//     (response) => response,
-//     (error) => {
-//         if (error.response?.status === 401) {
-//             // Handle unauthorized access
-//             localStorage.removeItem('accessToken');
-//             localStorage.removeItem('user');
+// Response interceptor to handle 401 responses
+axiosInstance.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        if (error.response?.status === 401) {
+            // Handle unauthorized access
+            showErrorToast('Your session has expired. Logging you out...');
+            localStorage.removeItem('accessToken');
+            localStorage.removeItem('user');
 
-//             // Only redirect if we're not already on the login page
-//             if (
-//                 window.location.pathname !== '/login' &&
-//                 window.location.pathname !== '/'
-//             ) {
-//                 window.location.href = '/login';
-//             }
-//         }
-//         return Promise.reject(error);
-//     }
-// );
+            // Only redirect if we're not already on the login page
+            if (
+                window.location.pathname !== '/login' &&
+                window.location.pathname !== '/'
+            ) {
+                window.location.href = '/login';
+            }
+        }
+        return Promise.reject(error);
+    }
+);
 
 export default axiosInstance;

@@ -15,7 +15,7 @@ type MenuItem = {
 const PageHeaderMenu = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const { user } = useAuth();
-    console.log(user);
+
     const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
 

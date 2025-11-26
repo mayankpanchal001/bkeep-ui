@@ -1,5 +1,12 @@
 import { useState } from 'react';
-import { FaBell, FaDatabase, FaLock, FaPalette, FaUser } from 'react-icons/fa';
+import {
+    FaBell,
+    FaDatabase,
+    FaLock,
+    FaPalette,
+    FaUser,
+    FaUsers,
+} from 'react-icons/fa';
 import {
     DataPrivacyTab,
     NotificationsTab,
@@ -7,6 +14,7 @@ import {
     ProfileTab,
     SecurityTab,
     SettingsTabs,
+    UsersTab,
     type SettingsFormData,
     type SettingsTab,
 } from '../../components/settings';
@@ -35,6 +43,7 @@ const Settingspage = () => {
         { id: 'notifications', label: 'Notifications', icon: <FaBell /> },
         { id: 'security', label: 'Security', icon: <FaLock /> },
         { id: 'preferences', label: 'Preferences', icon: <FaPalette /> },
+        { id: 'users', label: 'Users', icon: <FaUsers /> },
         { id: 'data', label: 'Data & Privacy', icon: <FaDatabase /> },
     ];
 
@@ -72,6 +81,8 @@ const Settingspage = () => {
                         onSubmit={handleSubmit}
                     />
                 );
+            case 'users':
+                return <UsersTab />;
             case 'data':
                 return <DataPrivacyTab />;
             default:

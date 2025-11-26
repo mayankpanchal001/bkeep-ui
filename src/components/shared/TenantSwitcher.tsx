@@ -18,11 +18,6 @@ const TenantSwitcher = ({ compact = false }: TenantSwitcherProps) => {
 
     return (
         <div className="flex flex-col gap-1 min-w-[120px]">
-            {!compact && (
-                <span className="text-[10px] uppercase tracking-wide text-primary-50">
-                    Tenant
-                </span>
-            )}
             <div className="flex items-center gap-2 px-3 py-2 bg-white border border-primary-10 rounded-xl shadow-sm">
                 <FaBuilding className="text-primary-50 w-4 h-4" />
                 <select
@@ -42,11 +37,6 @@ const TenantSwitcher = ({ compact = false }: TenantSwitcherProps) => {
                     ))}
                 </select>
             </div>
-            {!compact && selectedTenant?.schemaName && (
-                <span className="text-[10px] uppercase tracking-wide text-primary-40">
-                    {selectedTenant.schemaName}
-                </span>
-            )}
         </div>
     );
 };

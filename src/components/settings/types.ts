@@ -20,7 +20,8 @@ export type SettingsTabId =
     | 'notifications'
     | 'security'
     | 'preferences'
-    | 'data';
+    | 'data'
+    | 'users';
 
 export interface SettingsTab {
     id: SettingsTabId;

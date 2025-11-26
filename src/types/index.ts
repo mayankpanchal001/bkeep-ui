@@ -2,6 +2,34 @@
 
 // Auth Types Starts
 
+export type Permission = {
+    id: string;
+    name: string;
+    displayName: string;
+};
+
+export type Tenant = {
+    id: string;
+    name: string;
+    schemaName: string;
+    isPrimary?: boolean;
+};
+
+export type UserType = {
+    id: string;
+    email: string;
+    name: string;
+    mfaEnabled?: boolean;
+    role: {
+        id: string;
+        name: string;
+        displayName: string;
+    };
+    permissions: Permission[];
+    tenants: Tenant[];
+    selectedTenantId: string;
+};
+
 export type AuthState = {
     user: UserType | null;
     accessToken: string | null;
@@ -18,51 +46,18 @@ export type AuthState = {
     setMfaEnabled: (enabled: boolean) => void;
 };
 
-export type UserType = {
-    id: string;
-    email: string;
-    name: string;
-    mfaEnabled?: boolean;
-    role: {
-        id: string;
-        name: string;
-        displayName: string;
-    };
-    permissions: [
-        {
-            id: string;
-            name: string;
-            displayName: string;
-        },
-        {
-            id: string;
-            name: string;
-            displayName: string;
-        },
-        {
-            id: string;
-            name: string;
-            displayName: string;
-        },
-    ];
-    tenant: Tenant;
-};
-
 export type LoginResponse = {
     success: boolean;
     statusCode: number;
     message: string;
     data: {
-        accessToken: string;
-        refreshToken: string;
-        user: UserType;
+        accessToken?: string;
+        refreshToken?: string;
+        user?: UserType;
+        requiresMfa?: boolean;
+        mfaType?: string;
+        email?: string;
     };
-};
-
-export type Tenant = {
-    id: string;
-    name: string;
-    schemaName: string;
 };
 
 export type TenantState = {
@@ -78,6 +73,29 @@ export type TenantState = {
 };
 
 // Auth Types Ends
+
+// Users Types
+export type PaginationInfo = {
+    page: number;
+    limit: number;
+    offset: number;
+    total: number;
+    totalPages: number;
+    hasNextPage: boolean;
+    hasPreviousPage: boolean;
+};
+
+export type UsersListResponse = {
+    success: boolean;
+    statusCode: number;
+    message: string;
+    data: {
+        items: UserType[];
+        pagination: PaginationInfo;
+    };
+};
+
+// Users Types Ends
 
 export type SidebarItemProps = {
     label: string;

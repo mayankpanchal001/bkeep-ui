@@ -77,21 +77,6 @@ const SecurityTab = () => {
                         </Button>
                     </div>
                 </div>
-                <div className="p-4 border border-primary-10 rounded-xl">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <div className="font-medium text-primary">
-                                Active Sessions
-                            </div>
-                            <div className="text-sm text-primary-50">
-                                Manage your active login sessions
-                            </div>
-                        </div>
-                        <Button variant="outline" size="sm">
-                            View Sessions
-                        </Button>
-                    </div>
-                </div>
             </div>
         </div>
     );

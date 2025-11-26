@@ -43,6 +43,11 @@ type ResetPasswordPayload = {
     password: string;
 };
 
+type VerifyMfaPayload = {
+    email: string;
+    code: string;
+};
+
 export async function resetPasswordRequest(
     payload: ResetPasswordPayload
 ): Promise<{ message: string }> {
@@ -51,6 +56,13 @@ export async function resetPasswordRequest(
         token: payload.token,
         password: payload.password,
     });
+    return response.data;
+}
+
+export async function verifyMfaRequest(
+    payload: VerifyMfaPayload
+): Promise<LoginResponse> {
+    const response = await axiosInstance.post('/auth/mfa/verify', payload);
     return response.data;
 }
 
@@ -125,30 +137,49 @@ export const useLogout = () => {
 export const useLogin = () => {
     const { setAuth } = useAuth();
     const { setTenants } = useTenant();
+    const navigate = useNavigate();
 
     return useMutation({
         mutationFn: (payload: LoginPayload) => loginRequest(payload),
 
         onSuccess: (data) => {
-            const authData = data?.data;
+            const payload = data?.data;
 
+            // If backend says MFA is required, route to OTP page
+            if (payload?.requiresMfa) {
+                showSuccessToast(
+                    data?.message ||
+                        'Verification code sent. Please enter the code to continue.'
+                );
+                navigate('/enter-otp', {
+                    state: {
+                        email: payload.email,
+                        mfaType: payload.mfaType,
+                    },
+                });
+                return;
+            }
+
+            // Normal login flow with tokens + user
             if (
-                authData?.user &&
-                authData?.accessToken &&
-                authData?.refreshToken
+                payload?.user &&
+                payload?.accessToken &&
+                payload?.refreshToken
             ) {
                 setAuth(
-                    authData.user,
-                    authData.accessToken,
-                    authData.refreshToken
+                    payload.user,
+                    payload.accessToken,
+                    payload.refreshToken
                 );
 
-                const tenants = buildTenantsFromLogin(authData.user.tenant);
+                const tenants = buildTenantsFromLogin(payload.user.tenants);
                 setTenants(tenants, {
-                    selectTenantId: authData.user.tenant.id,
+                    selectTenantId: payload.user.selectedTenantId,
                 });
+
+                navigate('/dashboard');
+                console.log('Login Successful: Store Updated');
             }
-            console.log('Login Successful: Store Updated');
         },
         onError: (error) => {
             console.error('Login Failed:', error);
@@ -156,29 +187,14 @@ export const useLogin = () => {
     });
 };
 
-const buildTenantsFromLogin = (primaryTenant?: Tenant): Tenant[] => {
-    const mockTenants: Tenant[] = [
-        primaryTenant,
-        {
-            id: 'demo-ops',
-            name: 'Demo Operations 1',
-            schemaName: 'ops1',
-        },
-        {
-            id: 'demo-research',
-            name: 'Demo Operations 2',
-            schemaName: 'ops',
-        },
-        {
-            id: 'demo-research',
-            name: 'Demo Operations 3',
-            schemaName: 'ops3',
-        },
-    ].filter(Boolean) as Tenant[];
+const buildTenantsFromLogin = (tenantsFromApi?: Tenant[]): Tenant[] => {
+    if (!tenantsFromApi) return [];
 
     const uniqueTenants = new Map<string, Tenant>();
-    mockTenants.forEach((tenant) => {
-        uniqueTenants.set(tenant.id, tenant);
+    tenantsFromApi.forEach((tenant) => {
+        if (tenant && tenant.id) {
+            uniqueTenants.set(tenant.id, tenant);
+        }
     });
 
     return Array.from(uniqueTenants.values());
@@ -205,6 +221,53 @@ export const useResetPassword = () => {
         },
         onError: (error) => {
             console.error('Reset Password Failed:', error);
+        },
+    });
+};
+
+export const useVerifyMfa = () => {
+    const { setAuth } = useAuth();
+    const { setTenants } = useTenant();
+    const navigate = useNavigate();
+
+    return useMutation({
+        mutationFn: (payload: VerifyMfaPayload) => verifyMfaRequest(payload),
+        onSuccess: (data) => {
+            const payload = data?.data;
+
+            if (
+                payload?.user &&
+                payload?.accessToken &&
+                payload?.refreshToken
+            ) {
+                setAuth(
+                    payload.user,
+                    payload.accessToken,
+                    payload.refreshToken
+                );
+
+                const tenants = buildTenantsFromLogin(payload.user.tenants);
+                setTenants(tenants, {
+                    selectTenantId: payload.user.selectedTenantId,
+                });
+
+                showSuccessToast(
+                    data?.message || 'Successfully verified. Welcome back!'
+                );
+                navigate('/dashboard');
+            } else {
+                showErrorToast('Verification failed. Please try again.');
+            }
+        },
+        onError: (error) => {
+            console.error('Verify MFA Failed:', error);
+            const maybeAxiosError = error as {
+                response?: { data?: { message?: string } };
+            };
+            const message =
+                maybeAxiosError.response?.data?.message ||
+                'Invalid or expired code. Please try again.';
+            showErrorToast(message);
         },
     });
 };
