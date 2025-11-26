@@ -180,8 +180,8 @@ const UsersTab = () => {
                         <div className="flex items-center justify-between pt-4 border-t border-primary-10">
                             <div className="text-sm text-primary-50">
                                 Showing page {pagination.page} of{' '}
-                                {pagination.totalPages} (
-                                {pagination.total} total users)
+                                {pagination.totalPages} ({pagination.total}{' '}
+                                total users)
                             </div>
                             <div className="flex gap-2">
                                 <Button
@@ -214,4 +214,3 @@ const UsersTab = () => {
 };
 
 export default UsersTab;
-

@@ -14,10 +14,7 @@ const OtpVerificationpage = () => {
     const email = state?.email;
     const mfaType = state?.mfaType || 'email';
 
-    const {
-        mutateAsync: verifyMfa,
-        isPending: isVerifying,
-    } = useVerifyMfa();
+    const { mutateAsync: verifyMfa, isPending: isVerifying } = useVerifyMfa();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -86,5 +83,3 @@ const OtpVerificationpage = () => {
 };
 
 export default OtpVerificationpage;
-
-
