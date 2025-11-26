@@ -30,4 +30,3 @@ const SettingsTabs = ({ tabs, activeTab, onTabChange }: SettingsTabsProps) => {
 };
 
 export default SettingsTabs;
-

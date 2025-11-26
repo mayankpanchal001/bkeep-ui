@@ -15,11 +15,15 @@ export interface SettingsFormData {
     };
 }
 
-export type SettingsTabId = 'profile' | 'notifications' | 'security' | 'preferences' | 'data';
+export type SettingsTabId =
+    | 'profile'
+    | 'notifications'
+    | 'security'
+    | 'preferences'
+    | 'data';
 
 export interface SettingsTab {
     id: SettingsTabId;
     label: string;
     icon: React.ReactNode;
 }
-

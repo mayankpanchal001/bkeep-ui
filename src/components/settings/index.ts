@@ -5,4 +5,3 @@ export { default as SecurityTab } from './SecurityTab';
 export { default as PreferencesTab } from './PreferencesTab';
 export { default as DataPrivacyTab } from './DataPrivacyTab';
 export type { SettingsFormData, SettingsTab, SettingsTabId } from './types';
-

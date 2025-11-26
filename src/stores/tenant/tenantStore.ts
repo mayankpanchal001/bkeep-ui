@@ -35,7 +35,8 @@ const removeFromStorage = (key: string) => {
     }
 };
 
-const getInitialTenants = () => readFromStorage<Tenant[]>(TENANT_LIST_KEY) || [];
+const getInitialTenants = () =>
+    readFromStorage<Tenant[]>(TENANT_LIST_KEY) || [];
 const getInitialSelectedTenant = () =>
     readFromStorage<Tenant>(SELECTED_TENANT_KEY);
 
@@ -96,4 +97,3 @@ export const TenantStore = create<TenantState>((set, get) => ({
         });
     },
 }));
-

@@ -44,4 +44,3 @@ const DataPrivacyTab = () => {
 };
 
 export default DataPrivacyTab;
-

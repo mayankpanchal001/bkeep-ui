@@ -63,4 +63,3 @@ const NotificationsTab = ({
 };
 
 export default NotificationsTab;
-

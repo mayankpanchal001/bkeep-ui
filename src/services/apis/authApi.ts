@@ -131,6 +131,7 @@ export const useLogin = () => {
 
         onSuccess: (data) => {
             const authData = data?.data;
+
             if (
                 authData?.user &&
                 authData?.accessToken &&
