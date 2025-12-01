@@ -1,11 +1,15 @@
 import { useDisableMFA, useEnableMFA } from '../../services/apis/authApi';
 import { useAuth } from '../../stores/auth/authSelectore';
 import Button from '../typography/Button';
+import ChangePasswordModal from './ChangePasswordModal';
+import { useState } from 'react';
 
 const SecurityTab = () => {
     const { mfaEnabled } = useAuth();
     const { mutate: enableMFA, isPending: isEnabling } = useEnableMFA();
     const { mutate: disableMFA, isPending: isDisabling } = useDisableMFA();
+
+    const [isChangePasswordModalOpen, setIsChangePasswordModalOpen] = useState(false);
 
     const handleMfaToggle = () => {
         if (mfaEnabled) {
@@ -39,7 +43,8 @@ const SecurityTab = () => {
                                 Update your password to keep your account secure
                             </div>
                         </div>
-                        <Button variant="outline" size="sm">
+                        <Button variant="outline" size="sm"
+                        onClick={() => setIsChangePasswordModalOpen(true)}>
                             Change Password
                         </Button>
                     </div>
@@ -78,6 +83,14 @@ const SecurityTab = () => {
                     </div>
                 </div>
             </div>
+
+
+
+
+            <ChangePasswordModal
+                isOpen={isChangePasswordModalOpen}
+                onClose={() => setIsChangePasswordModalOpen(false)}
+            />
         </div>
     );
 };

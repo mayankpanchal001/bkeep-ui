@@ -269,5 +269,35 @@ export const useVerifyMfa = () => {
                 'Invalid or expired code. Please try again.';
             showErrorToast(message);
         },
+
+    });
+};
+
+
+
+
+type ChangePasswordPayload = {
+    currentPassword: string;
+    newPassword: string;
+};
+
+export async function changePasswordRequest(
+    payload: ChangePasswordPayload
+): Promise<{ message: string }> {
+    const response = await axiosInstance.post('/auth/change-password', payload);
+    return response.data;
+}
+
+export const useChangePassword = () => {
+    return useMutation({
+        mutationFn: (payload: ChangePasswordPayload) =>
+            changePasswordRequest(payload),
+        onSuccess: (data) => {
+            showSuccessToast(data?.message || 'Password changed successfully');
+        },
+        onError: (error) => {
+            console.error('Change Password Failed:', error);
+           
+        },
     });
 };
