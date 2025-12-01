@@ -257,7 +257,10 @@ const ProfileTab = ({
                             </div>
                             <div className="text-sm font-semibold text-primary">
                                 <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary-10 text-primary">
-                                    {roleDisplayName || user?.role?.displayName || user?.role?.name || '—'}
+                                    {roleDisplayName ||
+                                        user?.role?.displayName ||
+                                        user?.role?.name ||
+                                        '—'}
                                 </span>
                             </div>
                         </div>
