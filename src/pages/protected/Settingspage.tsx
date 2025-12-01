@@ -12,6 +12,7 @@ import {
     NotificationsTab,
     PreferencesTab,
     ProfileTab,
+    RolesTab,
     SecurityTab,
     SettingsTabs,
     UsersTab,
@@ -44,6 +45,7 @@ const Settingspage = () => {
         { id: 'security', label: 'Security', icon: <FaLock /> },
         { id: 'preferences', label: 'Preferences', icon: <FaPalette /> },
         { id: 'users', label: 'Users', icon: <FaUsers /> },
+        { id: 'roles', label: 'Roles', icon: <FaLock /> },
         { id: 'data', label: 'Data & Privacy', icon: <FaDatabase /> },
     ];
 
@@ -61,6 +63,9 @@ const Settingspage = () => {
                         formData={formData}
                         onFormDataChange={setFormData}
                         onSubmit={handleSubmit}
+                        roleDisplayName={
+                            user?.role?.displayName || user?.role?.name
+                        }
                     />
                 );
             case 'notifications':
@@ -83,6 +88,8 @@ const Settingspage = () => {
                 );
             case 'users':
                 return <UsersTab />;
+            case 'roles':
+                return <RolesTab />;
             case 'data':
                 return <DataPrivacyTab />;
             default:

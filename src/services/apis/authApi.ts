@@ -1,4 +1,4 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router';
 import { useAuth } from '../../stores/auth/authSelectore';
 import { useTenant } from '../../stores/tenant/tenantSelectore';
@@ -10,6 +10,31 @@ type LoginPayload = {
     email: string;
     password: string;
 };
+
+type ResetPasswordPayload = {
+    token: string;
+    email: string;
+    password: string;
+};
+
+type VerifyMfaPayload = {
+    email: string;
+    code: string;
+};
+
+type MfaStatusResponse = {
+    success: boolean;
+    statusCode: number;
+    message: string;
+    data?: {
+        mfaEnabled: boolean;
+    };
+};
+
+export async function getMfaStatusRequest(): Promise<MfaStatusResponse> {
+    const response = await axiosInstance.get('/auth/mfa/status');
+    return response.data;
+}
 
 export async function loginRequest({
     email,
@@ -36,17 +61,6 @@ export async function forgotPasswordRequest(
     });
     return response.data;
 }
-
-type ResetPasswordPayload = {
-    token: string;
-    email: string;
-    password: string;
-};
-
-type VerifyMfaPayload = {
-    email: string;
-    code: string;
-};
 
 export async function resetPasswordRequest(
     payload: ResetPasswordPayload
@@ -85,8 +99,16 @@ export async function disableMFA(): Promise<MFASettingsResponse> {
     return response.data;
 }
 
+export const useMfaStatus = () => {
+    return useQuery<MfaStatusResponse, Error>({
+        queryKey: ['mfa-status'],
+        queryFn: getMfaStatusRequest,
+    });
+};
+
 export const useEnableMFA = () => {
     const { setMfaEnabled } = useAuth();
+    const queryClient = useQueryClient();
     return useMutation({
         mutationFn: enableMFA,
         onSuccess: (data) => {
@@ -94,6 +116,7 @@ export const useEnableMFA = () => {
             showSuccessToast(
                 data?.message || 'Two-factor authentication enabled'
             );
+            queryClient.invalidateQueries({ queryKey: ['mfa-status'] });
         },
         onError: (error) => {
             console.error('Enable MFA Failed:', error);
@@ -104,6 +127,7 @@ export const useEnableMFA = () => {
 
 export const useDisableMFA = () => {
     const { setMfaEnabled } = useAuth();
+    const queryClient = useQueryClient();
     return useMutation({
         mutationFn: disableMFA,
         onSuccess: (data) => {
@@ -111,6 +135,7 @@ export const useDisableMFA = () => {
             showSuccessToast(
                 data?.message || 'Two-factor authentication disabled'
             );
+            queryClient.invalidateQueries({ queryKey: ['mfa-status'] });
         },
         onError: (error) => {
             console.error('Disable MFA Failed:', error);

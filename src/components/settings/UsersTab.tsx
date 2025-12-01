@@ -1,11 +1,18 @@
 import { useState } from 'react';
-import { FaSearch, FaUsers } from 'react-icons/fa';
+import { FaEdit, FaPlus, FaSearch, FaUsers } from 'react-icons/fa';
 import { useUsers, type UsersQueryParams } from '../../services/apis/usersApi';
-import { InputField } from '../typography/InputFields';
+
+import { UserType } from '../../types';
 import Button from '../typography/Button';
+import { InputField } from '../typography/InputFields';
+import EditUserModal from './EditUserModal';
+import InviteUserModal from './InviteUserModal';
 
 const UsersTab = () => {
     const [search, setSearch] = useState('');
+    const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [selectedUser, setSelectedUser] = useState<UserType | null>(null);
     const [filters, setFilters] = useState<UsersQueryParams>({
         page: 1,
         limit: 20,
@@ -14,6 +21,16 @@ const UsersTab = () => {
     });
 
     const { data, isLoading, isError } = useUsers(filters);
+
+    const handleEditUser = (user: UserType) => {
+        setSelectedUser(user);
+        setIsEditModalOpen(true);
+    };
+
+    const handleCloseEditModal = () => {
+        setIsEditModalOpen(false);
+        setSelectedUser(null);
+    };
 
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
@@ -51,12 +68,22 @@ const UsersTab = () => {
                 <h3 className="text-lg font-semibold text-primary">
                     Users Management
                 </h3>
-                <div className="flex items-center gap-2 text-sm text-primary-50">
-                    <FaUsers className="w-4 h-4" />
-                    <span>
-                        {pagination?.total || 0} user
-                        {pagination?.total !== 1 ? 's' : ''}
-                    </span>
+                <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-2 text-sm text-primary-50">
+                        <FaUsers className="w-4 h-4" />
+                        <span>
+                            {pagination?.total || 0} user
+                            {pagination?.total !== 1 ? 's' : ''}
+                        </span>
+                    </div>
+                    <Button
+                        variant="primary"
+                        size="sm"
+                        onClick={() => setIsInviteModalOpen(true)}
+                    >
+                        <FaPlus className="mr-2" />
+                        Invite User
+                    </Button>
                 </div>
             </div>
 
@@ -145,10 +172,13 @@ const UsersTab = () => {
                                     <th className="text-left py-3 px-4 text-sm font-semibold text-primary">
                                         Status
                                     </th>
+                                    <th className="text-right py-3 px-4 text-sm font-semibold text-primary">
+                                        Actions
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {users.map((user) => (
+                                {users.map((user: UserType) => (
                                     <tr
                                         key={user.id}
                                         className="border-b border-primary-10 hover:bg-primary-5 transition-colors"
@@ -156,18 +186,30 @@ const UsersTab = () => {
                                         <td className="py-3 px-4 text-sm text-primary">
                                             {user.name}
                                         </td>
+
                                         <td className="py-3 px-4 text-sm text-primary-75">
                                             {user.email}
                                         </td>
+
                                         <td className="py-3 px-4 text-sm text-primary-75">
-                                            {user.role?.displayName ||
-                                                user.role?.name ||
-                                                'N/A'}
+                                            {user.role?.displayName || 'N/A'}
                                         </td>
                                         <td className="py-3 px-4 text-sm">
                                             <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
                                                 Active
                                             </span>
+                                        </td>
+                                        <td className="py-3 px-4 text-sm text-right">
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                onClick={() =>
+                                                    handleEditUser(user)
+                                                }
+                                            >
+                                                <FaEdit className="mr-1" />
+                                                Edit
+                                            </Button>
                                         </td>
                                     </tr>
                                 ))}
@@ -209,6 +251,17 @@ const UsersTab = () => {
                     )}
                 </>
             )}
+
+            <InviteUserModal
+                isOpen={isInviteModalOpen}
+                onClose={() => setIsInviteModalOpen(false)}
+            />
+
+            <EditUserModal
+                isOpen={isEditModalOpen}
+                onClose={handleCloseEditModal}
+                user={selectedUser}
+            />
         </div>
     );
 };

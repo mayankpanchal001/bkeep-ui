@@ -95,6 +95,22 @@ export type UsersListResponse = {
     };
 };
 
+export type Role = {
+    id: string;
+    name: string;
+    displayName: string;
+};
+
+export type PermissionCategory = {
+    name: string;
+    permissions: {
+        id: string;
+        name: string;
+        displayName: string;
+        access: 'full' | 'view' | 'no';
+    }[];
+};
+
 // Users Types Ends
 
 export type SidebarItemProps = {

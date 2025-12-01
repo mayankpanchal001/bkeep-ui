@@ -4,7 +4,6 @@ import { Link, useLocation } from 'react-router';
 import { APP_TITLE, SIDEBAR_ITEMS } from '../../constants';
 import { LOGO_IMAGE } from '../../constants/images';
 import HorizontalRuler from './HorizontalRuler';
-import TenantSwitcher from './TenantSwitcher';
 
 const Sidebar = ({ collapsed }: { collapsed: boolean }) => {
     const location = useLocation();
@@ -24,10 +23,6 @@ const Sidebar = ({ collapsed }: { collapsed: boolean }) => {
                 </div>
             </div>
 
-            {/* <HorizontalRuler /> */}
-            <div>
-                <TenantSwitcher compact />
-            </div>
             <HorizontalRuler />
 
             <div className="flex-1 flex flex-col gap-4">

@@ -1,18 +1,65 @@
-import { useDisableMFA, useEnableMFA } from '../../services/apis/authApi';
+import { useState } from 'react';
+import {
+    useDisableMFA,
+    useEnableMFA,
+    useMfaStatus,
+} from '../../services/apis/authApi';
 import { useAuth } from '../../stores/auth/authSelectore';
+import ConfirmationDialog from '../shared/ConfirmationDialog';
 import Button from '../typography/Button';
 
 const SecurityTab = () => {
-    const { mfaEnabled } = useAuth();
+    const { mfaEnabled, setMfaEnabled } = useAuth();
     const { mutate: enableMFA, isPending: isEnabling } = useEnableMFA();
     const { mutate: disableMFA, isPending: isDisabling } = useDisableMFA();
+    const { data: mfaStatusData, isLoading: isStatusLoading } = useMfaStatus();
+    const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+    const [pendingAction, setPendingAction] = useState<
+        'enable' | 'disable' | null
+    >(null);
+
+    if (!isStatusLoading && mfaStatusData?.data?.mfaEnabled !== undefined) {
+        const enabled = !!mfaStatusData.data.mfaEnabled;
+        if (enabled !== mfaEnabled) {
+            setMfaEnabled(enabled);
+        }
+    }
+
+    const statusLabel = isStatusLoading
+        ? 'Checking...'
+        : mfaEnabled
+          ? 'Enabled'
+          : 'Disabled';
+
+    const statusClass = isStatusLoading
+        ? 'text-primary-50'
+        : mfaEnabled
+          ? 'text-green-600'
+          : 'text-red-500';
 
     const handleMfaToggle = () => {
         if (mfaEnabled) {
-            disableMFA();
-            return;
+            setPendingAction('disable');
+            setShowConfirmDialog(true);
+        } else {
+            setPendingAction('enable');
+            setShowConfirmDialog(true);
         }
-        enableMFA();
+    };
+
+    const handleConfirmMfa = () => {
+        if (pendingAction === 'enable') {
+            enableMFA();
+        } else if (pendingAction === 'disable') {
+            disableMFA();
+        }
+        setShowConfirmDialog(false);
+        setPendingAction(null);
+    };
+
+    const handleCancelMfa = () => {
+        setShowConfirmDialog(false);
+        setPendingAction(null);
     };
 
     const mfaButtonLabel = mfaEnabled
@@ -55,14 +102,8 @@ const SecurityTab = () => {
                             </div>
                             <div className="text-xs text-primary-40 mt-2">
                                 Status:{' '}
-                                <span
-                                    className={
-                                        mfaEnabled
-                                            ? 'text-green-600'
-                                            : 'text-red-500'
-                                    }
-                                >
-                                    {mfaEnabled ? 'Enabled' : 'Disabled'}
+                                <span className={statusClass}>
+                                    {statusLabel}
                                 </span>
                             </div>
                         </div>
@@ -71,13 +112,40 @@ const SecurityTab = () => {
                             size="sm"
                             onClick={handleMfaToggle}
                             loading={isEnabling || isDisabling}
-                            disabled={isEnabling || isDisabling}
+                            disabled={
+                                isEnabling || isDisabling || isStatusLoading
+                            }
                         >
                             {mfaButtonLabel}
                         </Button>
                     </div>
                 </div>
             </div>
+
+            {/* MFA Confirmation Dialog */}
+            <ConfirmationDialog
+                isOpen={showConfirmDialog}
+                onClose={handleCancelMfa}
+                onConfirm={handleConfirmMfa}
+                title={
+                    pendingAction === 'enable'
+                        ? 'Enable Two-Factor Authentication'
+                        : 'Disable Two-Factor Authentication'
+                }
+                message={
+                    pendingAction === 'enable'
+                        ? 'Are you sure you want to enable two-factor authentication? You will need to verify your identity with a code sent to your email when logging in.'
+                        : 'Are you sure you want to disable two-factor authentication? This will reduce the security of your account.'
+                }
+                confirmText={
+                    pendingAction === 'enable' ? 'Enable 2FA' : 'Disable 2FA'
+                }
+                cancelText="Cancel"
+                confirmVariant={
+                    pendingAction === 'disable' ? 'danger' : 'primary'
+                }
+                loading={isEnabling || isDisabling}
+            />
         </div>
     );
 };
