@@ -12,7 +12,6 @@ import {
     NotificationsTab,
     PreferencesTab,
     ProfileTab,
-    RolesTab,
     SecurityTab,
     SettingsTabs,
     UsersTab,
@@ -88,8 +87,7 @@ const Settingspage = () => {
                 );
             case 'users':
                 return <UsersTab />;
-            case 'roles':
-                return <RolesTab />;
+
             case 'data':
                 return <DataPrivacyTab />;
             default:

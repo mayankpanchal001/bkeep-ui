@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router';
 import { useAuth } from '../../stores/auth/authSelectore';
 import { useTenant } from '../../stores/tenant/tenantSelectore';
 import { LoginResponse, Tenant } from '../../types';
+import { storePasskeyUser } from '../../utills/passkey';
 import { showErrorToast, showSuccessToast } from '../../utills/toast';
 import axiosInstance from '../axiosClient';
 
@@ -31,8 +32,62 @@ type MfaStatusResponse = {
     };
 };
 
+// Passkey Types
+type PasskeyLoginInitPayload = {
+    email: string;
+};
+
+type PasskeyLoginInitResponse = {
+    success: boolean;
+    statusCode: number;
+    message: string;
+    data: {
+        challenge: string;
+        allowCredentials: {
+            id: string;
+            type: 'public-key';
+            transports?: AuthenticatorTransport[];
+        }[];
+        timeout: number;
+        userVerification: UserVerificationRequirement;
+        rpId: string;
+    };
+};
+
+type PasskeyLoginVerifyPayload = {
+    email: string;
+    credentialId: string;
+    authenticatorData: string;
+    clientDataJSON: string;
+    signature: string;
+    userHandle?: string;
+};
+
+type PasskeyLoginVerifyResponse = LoginResponse;
+
 export async function getMfaStatusRequest(): Promise<MfaStatusResponse> {
     const response = await axiosInstance.get('/auth/mfa/status');
+    return response.data;
+}
+
+// Passkey API functions
+export async function passkeyLoginInitRequest(
+    payload: PasskeyLoginInitPayload
+): Promise<PasskeyLoginInitResponse> {
+    const response = await axiosInstance.post(
+        '/auth/passkey/login/init',
+        payload
+    );
+    return response.data;
+}
+
+export async function passkeyLoginVerifyRequest(
+    payload: PasskeyLoginVerifyPayload
+): Promise<PasskeyLoginVerifyResponse> {
+    const response = await axiosInstance.post(
+        '/auth/passkey/login/verify',
+        payload
+    );
     return response.data;
 }
 
@@ -202,6 +257,9 @@ export const useLogin = () => {
                     selectTenantId: payload.user.selectedTenantId,
                 });
 
+                // Store user email for passkey login
+                storePasskeyUser(payload.user.email);
+
                 navigate('/dashboard');
                 console.log('Login Successful: Store Updated');
             }
@@ -276,6 +334,9 @@ export const useVerifyMfa = () => {
                     selectTenantId: payload.user.selectedTenantId,
                 });
 
+                // Store user email for passkey login
+                storePasskeyUser(payload.user.email);
+
                 showSuccessToast(
                     data?.message || 'Successfully verified. Welcome back!'
                 );
@@ -323,6 +384,74 @@ export const useChangePassword = () => {
         onError: (error) => {
             console.error('Change Password Failed:', error);
            
+        },
+    });
+};
+
+// Passkey Login Hooks
+export const usePasskeyLoginInit = () => {
+    return useMutation({
+        mutationFn: (payload: PasskeyLoginInitPayload) =>
+            passkeyLoginInitRequest(payload),
+        onError: (error) => {
+            console.error('Passkey Login Init Failed:', error);
+            const maybeAxiosError = error as {
+                response?: { data?: { message?: string } };
+            };
+            const message =
+                maybeAxiosError.response?.data?.message ||
+                'Failed to initialize passkey login';
+            showErrorToast(message);
+        },
+    });
+};
+
+export const usePasskeyLoginVerify = () => {
+    const { setAuth } = useAuth();
+    const { setTenants } = useTenant();
+    const navigate = useNavigate();
+
+    return useMutation({
+        mutationFn: (payload: PasskeyLoginVerifyPayload) =>
+            passkeyLoginVerifyRequest(payload),
+        onSuccess: (data) => {
+            const payload = data?.data;
+
+            if (
+                payload?.user &&
+                payload?.accessToken &&
+                payload?.refreshToken
+            ) {
+                setAuth(
+                    payload.user,
+                    payload.accessToken,
+                    payload.refreshToken
+                );
+
+                const tenants = buildTenantsFromLogin(payload.user.tenants);
+                setTenants(tenants, {
+                    selectTenantId: payload.user.selectedTenantId,
+                });
+
+                showSuccessToast(
+                    data?.message || 'Passkey authentication successful!'
+                );
+                navigate('/dashboard');
+            } else {
+                showErrorToast(
+                    'Passkey verification failed. Please try again.'
+                );
+            }
+        },
+        onError: (error) => {
+            console.error('Passkey Login Verify Failed:', error);
+            const maybeAxiosError = error as {
+                response?: { data?: { message?: string } };
+            };
+            const message =
+                maybeAxiosError.response?.data?.message ||
+                'Passkey authentication failed. Please try again.';
+            showErrorToast(message);
         },
     });
 };
