@@ -7,6 +7,8 @@ import {
 import { useAuth } from '../../stores/auth/authSelectore';
 import ConfirmationDialog from '../shared/ConfirmationDialog';
 import Button from '../typography/Button';
+import ChangePasswordModal from './ChangePasswordModal';
+import { useState } from 'react';
 
 const SecurityTab = () => {
     const { mfaEnabled, setMfaEnabled } = useAuth();
@@ -36,6 +38,8 @@ const SecurityTab = () => {
         : mfaEnabled
           ? 'text-green-600'
           : 'text-red-500';
+
+    const [isChangePasswordModalOpen, setIsChangePasswordModalOpen] = useState(false);
 
     const handleMfaToggle = () => {
         if (mfaEnabled) {
@@ -86,7 +90,8 @@ const SecurityTab = () => {
                                 Update your password to keep your account secure
                             </div>
                         </div>
-                        <Button variant="outline" size="sm">
+                        <Button variant="outline" size="sm"
+                        onClick={() => setIsChangePasswordModalOpen(true)}>
                             Change Password
                         </Button>
                     </div>
@@ -122,6 +127,12 @@ const SecurityTab = () => {
                 </div>
             </div>
 
+
+
+
+            <ChangePasswordModal
+                isOpen={isChangePasswordModalOpen}
+                onClose={() => setIsChangePasswordModalOpen(false)}
             {/* MFA Confirmation Dialog */}
             <ConfirmationDialog
                 isOpen={showConfirmDialog}
