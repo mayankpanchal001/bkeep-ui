@@ -3,18 +3,29 @@ import { FaFingerprint, FaTimes, FaUser } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router';
 import { APP_TITLE } from '../../constants';
 import {
+    usePasskeyLoginInit,
+    usePasskeyLoginVerify,
+} from '../../services/apis/authApi';
+import {
+    arrayBufferToBase64url,
+    base64urlToArrayBuffer,
     getStoredPasskeyUser,
+    isWebAuthnSupported,
     removePasskeyUser,
     storePasskeyUser,
 } from '../../utills/passkey';
-import { showErrorToast, showSuccessToast } from '../../utills/toast';
+import { showErrorToast } from '../../utills/toast';
 import Button from '../typography/Button';
 
 export function PasskeyLoginForm() {
     const [storedUser, setStoredUser] = useState(getStoredPasskeyUser());
     const [isAuthenticating, setIsAuthenticating] = useState(false);
     const [showSessionTimeout, setShowSessionTimeout] = useState(false);
+    const [webAuthnSupported, setWebAuthnSupported] = useState(true);
     const navigate = useNavigate();
+
+    const { mutateAsync: initPasskeyLogin } = usePasskeyLoginInit();
+    const { mutateAsync: verifyPasskeyLogin } = usePasskeyLoginVerify();
 
     useEffect(() => {
         // Check for stored user ID
@@ -22,6 +33,9 @@ export function PasskeyLoginForm() {
         if (user) {
             setStoredUser(user);
         }
+
+        // Check if WebAuthn is supported
+        setWebAuthnSupported(isWebAuthnSupported());
 
         // Check if redirected from session timeout
         const urlParams = new URLSearchParams(window.location.search);
@@ -36,38 +50,85 @@ export function PasskeyLoginForm() {
             return;
         }
 
+        if (!webAuthnSupported) {
+            showErrorToast('WebAuthn is not supported in this browser');
+            return;
+        }
+
         setIsAuthenticating(true);
 
         try {
-            // WebAuthn authentication
-            const credential = await navigator.credentials.get({
-                publicKey: {
-                    challenge: new Uint8Array(32), // Should come from server
-                    allowCredentials: [], // Should come from server based on user
-                    timeout: 60000,
-                    userVerification: 'required',
-                },
+            // Step 1: Get challenge and credentials from server
+            const initResponse = await initPasskeyLogin({
+                email: storedUser.email,
             });
 
-            if (credential) {
-                // Send credential to server for verification
-                // For now, we'll simulate success
-                showSuccessToast('Passkey authentication successful');
+            const options = initResponse.data;
 
-                // Update last accessed
-                if (storedUser) {
-                    storePasskeyUser(storedUser.email);
-                    setStoredUser(getStoredPasskeyUser());
-                }
+            // Step 2: Build the WebAuthn options
+            const publicKeyCredentialRequestOptions: PublicKeyCredentialRequestOptions =
+                {
+                    challenge: base64urlToArrayBuffer(options.challenge),
+                    allowCredentials: options.allowCredentials.map((cred) => ({
+                        id: base64urlToArrayBuffer(cred.id),
+                        type: cred.type,
+                        transports: cred.transports,
+                    })),
+                    timeout: options.timeout,
+                    userVerification: options.userVerification,
+                    rpId: options.rpId,
+                };
 
-                // Navigate to dashboard
-                setTimeout(() => {
-                    navigate('/dashboard');
-                }, 500);
+            // Step 3: Get credential from authenticator
+            const credential = (await navigator.credentials.get({
+                publicKey: publicKeyCredentialRequestOptions,
+            })) as PublicKeyCredential | null;
+
+            if (!credential) {
+                throw new Error('No credential returned from authenticator');
             }
+
+            const response =
+                credential.response as AuthenticatorAssertionResponse;
+
+            // Step 4: Send credential to server for verification
+            await verifyPasskeyLogin({
+                email: storedUser.email,
+                credentialId: arrayBufferToBase64url(credential.rawId),
+                authenticatorData: arrayBufferToBase64url(
+                    response.authenticatorData
+                ),
+                clientDataJSON: arrayBufferToBase64url(response.clientDataJSON),
+                signature: arrayBufferToBase64url(response.signature),
+                userHandle: response.userHandle
+                    ? arrayBufferToBase64url(response.userHandle)
+                    : undefined,
+            });
+
+            // Update last accessed timestamp
+            storePasskeyUser(
+                storedUser.email,
+                arrayBufferToBase64url(credential.rawId)
+            );
+            setStoredUser(getStoredPasskeyUser());
+
+            // Navigation is handled by the verifyPasskeyLogin hook
         } catch (error) {
             console.error('Passkey authentication failed:', error);
-            showErrorToast('Passkey authentication failed. Please try again.');
+            // Error toast is shown by the hooks, but handle WebAuthn-specific errors
+            if (error instanceof DOMException) {
+                if (error.name === 'NotAllowedError') {
+                    showErrorToast(
+                        'Authentication was cancelled or not allowed'
+                    );
+                } else if (error.name === 'SecurityError') {
+                    showErrorToast(
+                        'Security error during authentication. Please try again.'
+                    );
+                } else if (error.name === 'AbortError') {
+                    showErrorToast('Authentication was aborted');
+                }
+            }
         } finally {
             setIsAuthenticating(false);
         }
@@ -84,6 +145,21 @@ export function PasskeyLoginForm() {
         setStoredUser(null);
         showSuccessToast('User ID removed');
     };
+
+    if (!webAuthnSupported) {
+        return (
+            <div className="text-center py-8">
+                <p className="text-sm text-red-600 mb-4">
+                    Passkey authentication is not supported in this browser.
+                    Please use a modern browser or sign in with email and
+                    password.
+                </p>
+                <Link to="/login">
+                    <Button variant="primary">Go to Sign In</Button>
+                </Link>
+            </div>
+        );
+    }
 
     if (!storedUser) {
         return (
