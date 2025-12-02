@@ -12,10 +12,7 @@ export type StoredPasskeyUser = {
 /**
  * Store passkey user information in localStorage
  */
-export function storePasskeyUser(
-    email: string,
-    credentialId?: string
-): void {
+export function storePasskeyUser(email: string, credentialId?: string): void {
     const existingUser = getStoredPasskeyUser();
     const user: StoredPasskeyUser = {
         email,
