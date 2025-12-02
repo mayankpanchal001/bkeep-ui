@@ -208,15 +208,6 @@ const ProfileTab = ({
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         <div className="bg-white rounded-xl border border-primary-10 p-4">
                             <div className="text-xs font-medium text-primary-50 mb-2">
-                                User ID
-                            </div>
-                            <div className="text-xs font-mono text-primary-75 break-all">
-                                {user?.id || '—'}
-                            </div>
-                        </div>
-
-                        <div className="bg-white rounded-xl border border-primary-10 p-4">
-                            <div className="text-xs font-medium text-primary-50 mb-2">
                                 Full Name
                             </div>
                             <div className="text-sm font-semibold text-primary">
@@ -267,28 +258,10 @@ const ProfileTab = ({
 
                         <div className="bg-white rounded-xl border border-primary-10 p-4">
                             <div className="text-xs font-medium text-primary-50 mb-2">
-                                Timezone
-                            </div>
-                            <div className="text-sm font-semibold text-primary">
-                                {formData.timezone || '—'}
-                            </div>
-                        </div>
-
-                        <div className="bg-white rounded-xl border border-primary-10 p-4">
-                            <div className="text-xs font-medium text-primary-50 mb-2">
                                 Currency
                             </div>
                             <div className="text-sm font-semibold text-primary">
                                 {formData.currency || '—'}
-                            </div>
-                        </div>
-
-                        <div className="bg-white rounded-xl border border-primary-10 p-4">
-                            <div className="text-xs font-medium text-primary-50 mb-2">
-                                Date Format
-                            </div>
-                            <div className="text-sm font-semibold text-primary">
-                                {formData.dateFormat || '—'}
                             </div>
                         </div>
                     </div>

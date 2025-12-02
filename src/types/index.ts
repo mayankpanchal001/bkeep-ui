@@ -20,6 +20,12 @@ export type UserType = {
     email: string;
     name: string;
     mfaEnabled?: boolean;
+    isVerified?: boolean;
+    isActive?: boolean;
+    lastLoggedInAt?: string;
+    createdAt?: string;
+    updatedAt?: string;
+    roles: Role[];
     role: {
         id: string;
         name: string;

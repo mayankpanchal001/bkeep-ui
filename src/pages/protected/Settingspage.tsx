@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import {
     FaBell,
+    FaBuilding,
     FaDatabase,
     FaLock,
     FaPalette,
@@ -14,6 +15,7 @@ import {
     ProfileTab,
     SecurityTab,
     SettingsTabs,
+    TenantsTab,
     UsersTab,
     type SettingsFormData,
     type SettingsTab,
@@ -38,13 +40,25 @@ const Settingspage = () => {
         },
     });
 
+    // Check if user is superadmin
+    const isSuperAdmin = user?.role?.name === 'superadmin';
+
     const tabs: SettingsTab[] = [
         { id: 'profile', label: 'Profile', icon: <FaUser /> },
+        // Only show tenants tab for superadmin
+        ...(isSuperAdmin
+            ? [
+                  {
+                      id: 'tenants' as const,
+                      label: 'Tenants',
+                      icon: <FaBuilding />,
+                  },
+              ]
+            : []),
         { id: 'notifications', label: 'Notifications', icon: <FaBell /> },
         { id: 'security', label: 'Security', icon: <FaLock /> },
         { id: 'preferences', label: 'Preferences', icon: <FaPalette /> },
         { id: 'users', label: 'Users', icon: <FaUsers /> },
-        { id: 'roles', label: 'Roles', icon: <FaLock /> },
         { id: 'data', label: 'Data & Privacy', icon: <FaDatabase /> },
     ];
 
@@ -87,7 +101,8 @@ const Settingspage = () => {
                 );
             case 'users':
                 return <UsersTab />;
-
+            case 'tenants':
+                return <TenantsTab />;
             case 'data':
                 return <DataPrivacyTab />;
             default:

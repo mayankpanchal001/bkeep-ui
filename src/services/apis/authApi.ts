@@ -355,12 +355,8 @@ export const useVerifyMfa = () => {
                 'Invalid or expired code. Please try again.';
             showErrorToast(message);
         },
-
     });
 };
-
-
-
 
 type ChangePasswordPayload = {
     currentPassword: string;
@@ -383,7 +379,6 @@ export const useChangePassword = () => {
         },
         onError: (error) => {
             console.error('Change Password Failed:', error);
-           
         },
     });
 };

@@ -55,10 +55,8 @@ export const useUsers = (params: UsersQueryParams = {}) => {
 };
 
 export type InviteUserPayload = {
-    name: string;
     email: string;
     roleId: string;
-    permissions?: string[];
 };
 
 type InviteUserResponse = {
@@ -74,7 +72,7 @@ type InviteUserResponse = {
 export async function inviteUserRequest(
     payload: InviteUserPayload
 ): Promise<InviteUserResponse> {
-    const response = await axiosInstance.post('/users/invite', payload);
+    const response = await axiosInstance.post('/users/invitation', payload);
     return response.data;
 }
 
@@ -149,6 +147,52 @@ export const useUpdateUser = () => {
             const message =
                 maybeAxiosError.response?.data?.message ||
                 'Failed to update user';
+            showErrorToast(message);
+        },
+    });
+};
+
+// Resend Invitation
+type ResendInvitationResponse = {
+    success: boolean;
+    statusCode: number;
+    message: string;
+    data?: {
+        id: string;
+        email: string;
+    };
+};
+
+export async function resendInvitationRequest(
+    invitationId: string
+): Promise<ResendInvitationResponse> {
+    const response = await axiosInstance.post(
+        `/users/invitations/${invitationId}/resend`
+    );
+    return response.data;
+}
+
+export const useResendInvitation = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: (invitationId: string) =>
+            resendInvitationRequest(invitationId),
+        onSuccess: (data) => {
+            showSuccessToast(
+                data?.message || 'Invitation resent successfully'
+            );
+            // Invalidate users query to refresh the list
+            queryClient.invalidateQueries({ queryKey: ['users'] });
+        },
+        onError: (error) => {
+            console.error('Resend Invitation Failed:', error);
+            const maybeAxiosError = error as {
+                response?: { data?: { message?: string } };
+            };
+            const message =
+                maybeAxiosError.response?.data?.message ||
+                'Failed to resend invitation';
             showErrorToast(message);
         },
     });

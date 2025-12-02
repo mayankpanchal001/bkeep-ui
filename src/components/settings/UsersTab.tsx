@@ -1,9 +1,23 @@
-import { useState } from 'react';
-import { FaEdit, FaPlus, FaSearch, FaUsers } from 'react-icons/fa';
-import { useUsers, type UsersQueryParams } from '../../services/apis/usersApi';
+import { useEffect, useState } from 'react';
+import {
+    FaEdit,
+    FaPaperPlane,
+    FaPlus,
+    FaSearch,
+    FaTimes,
+    FaUsers,
+} from 'react-icons/fa';
+import { useGetRoles } from '../../services/apis/roleApi';
+import { useTenants } from '../../services/apis/tenantApi';
+import {
+    useResendInvitation,
+    useUsers,
+    type UsersQueryParams,
+} from '../../services/apis/usersApi';
 
 import { UserType } from '../../types';
 import Button from '../typography/Button';
+import Chips from '../typography/Chips';
 import { InputField } from '../typography/InputFields';
 import EditUserModal from './EditUserModal';
 import InviteUserModal from './InviteUserModal';
@@ -21,6 +35,25 @@ const UsersTab = () => {
     });
 
     const { data, isLoading, isError } = useUsers(filters);
+    const {
+        data: rolesData,
+        isLoading: isRolesLoading,
+        isError: isRolesError,
+    } = useGetRoles();
+    // Fetch tenants from API (available for future use in modals)
+    useTenants({ page: 1, limit: 100 });
+
+    const roles = rolesData?.data?.items || [];
+
+    const { mutateAsync: resendInvitation, isPending: isResendingInvitation } =
+        useResendInvitation();
+
+    // Sync search input with filters.search
+    useEffect(() => {
+        if (filters.search !== undefined) {
+            setSearch(filters.search);
+        }
+    }, [filters.search]);
 
     const handleEditUser = (user: UserType) => {
         setSelectedUser(user);
@@ -36,9 +69,27 @@ const UsersTab = () => {
         e.preventDefault();
         setFilters((prev) => ({
             ...prev,
-            search: search || undefined,
+            search: search.trim() || undefined,
             page: 1, // Reset to first page on new search
         }));
+    };
+
+    const handleClearSearch = () => {
+        setSearch('');
+        setFilters((prev) => ({
+            ...prev,
+            search: undefined,
+            page: 1,
+        }));
+    };
+
+    const handleResendInvitation = async (userId: string) => {
+        try {
+            await resendInvitation(userId);
+        } catch (error) {
+            // Error is handled by the mutation's onError
+            console.error('Resend invitation error:', error);
+        }
     };
 
     const handlePageChange = (newPage: number) => {
@@ -80,6 +131,9 @@ const UsersTab = () => {
                         variant="primary"
                         size="sm"
                         onClick={() => setIsInviteModalOpen(true)}
+                        disabled={
+                            isRolesLoading || isRolesError || roles.length === 0
+                        }
                     >
                         <FaPlus className="mr-2" />
                         Invite User
@@ -90,7 +144,7 @@ const UsersTab = () => {
             {/* Search and Filters */}
             <div className="space-y-4">
                 <form onSubmit={handleSearch} className="flex gap-2">
-                    <div className="flex-1">
+                    <div className="flex-1 relative">
                         <InputField
                             id="user-search"
                             placeholder="Search users by name or email..."
@@ -98,6 +152,16 @@ const UsersTab = () => {
                             onChange={(e) => setSearch(e.target.value)}
                             icon={<FaSearch className="w-4 h-4" />}
                         />
+                        {search && (
+                            <button
+                                type="button"
+                                onClick={handleClearSearch}
+                                className="absolute right-12 top-1/2 transform -translate-y-1/2 text-primary-50 hover:text-primary transition-colors"
+                                aria-label="Clear search"
+                            >
+                                <FaTimes className="w-4 h-4" />
+                            </button>
+                        )}
                     </div>
                     <Button type="submit" variant="primary">
                         Search
@@ -192,25 +256,60 @@ const UsersTab = () => {
                                         </td>
 
                                         <td className="py-3 px-4 text-sm text-primary-75">
-                                            {user.roles[0]?.displayName ||
+                                            {user.role?.displayName ||
+                                                user.role?.name ||
+                                                user.roles?.[0]?.displayName ||
+                                                user.roles?.[0]?.name ||
                                                 'N/A'}
                                         </td>
                                         <td className="py-3 px-4 text-sm">
-                                            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                                Active
-                                            </span>
+                                            <Chips
+                                                label={
+                                                    user.isVerified
+                                                        ? 'Verified'
+                                                        : 'Unverified'
+                                                }
+                                                variant={
+                                                    user.isVerified
+                                                        ? 'success'
+                                                        : 'danger'
+                                                }
+                                            />
                                         </td>
                                         <td className="py-3 px-4 text-sm text-right">
-                                            <Button
-                                                variant="outline"
-                                                size="sm"
-                                                onClick={() =>
-                                                    handleEditUser(user)
-                                                }
-                                            >
-                                                <FaEdit className="mr-1" />
-                                                Edit
-                                            </Button>
+                                            <div className="flex items-center justify-end gap-2">
+                                                {!user.isVerified && (
+                                                    <Button
+                                                        variant="outline"
+                                                        size="sm"
+                                                        onClick={() =>
+                                                            handleResendInvitation(
+                                                                user.id
+                                                            )
+                                                        }
+                                                        loading={
+                                                            isResendingInvitation
+                                                        }
+                                                        disabled={
+                                                            isResendingInvitation
+                                                        }
+                                                        title="Resend invitation email"
+                                                    >
+                                                        <FaPaperPlane className="mr-1" />
+                                                        Resend
+                                                    </Button>
+                                                )}
+                                                <Button
+                                                    variant="outline"
+                                                    size="sm"
+                                                    onClick={() =>
+                                                        handleEditUser(user)
+                                                    }
+                                                >
+                                                    <FaEdit className="mr-1" />
+                                                    Edit
+                                                </Button>
+                                            </div>
                                         </td>
                                     </tr>
                                 ))}
@@ -256,13 +355,16 @@ const UsersTab = () => {
             <InviteUserModal
                 isOpen={isInviteModalOpen}
                 onClose={() => setIsInviteModalOpen(false)}
+                roles={roles}
             />
 
-            <EditUserModal
-                isOpen={isEditModalOpen}
-                onClose={handleCloseEditModal}
-                user={selectedUser}
-            />
+            {selectedUser && (
+                <EditUserModal
+                    isOpen={isEditModalOpen}
+                    onClose={handleCloseEditModal}
+                    user={selectedUser}
+                />
+            )}
         </div>
     );
 };

@@ -1,31 +1,46 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
     useDisableMFA,
     useEnableMFA,
     useMfaStatus,
 } from '../../services/apis/authApi';
+import { useDisableTOTP, useTOTPStatus } from '../../services/apis/mfaApi';
 import { useAuth } from '../../stores/auth/authSelectore';
 import ConfirmationDialog from '../shared/ConfirmationDialog';
 import Button from '../typography/Button';
 import ChangePasswordModal from './ChangePasswordModal';
-import { useState } from 'react';
+import TOTPSetupModal from './TOTPSetupModal';
 
 const SecurityTab = () => {
     const { mfaEnabled, setMfaEnabled } = useAuth();
     const { mutate: enableMFA, isPending: isEnabling } = useEnableMFA();
     const { mutate: disableMFA, isPending: isDisabling } = useDisableMFA();
     const { data: mfaStatusData, isLoading: isStatusLoading } = useMfaStatus();
+    const { data: totpStatusData, isLoading: isTotpStatusLoading } =
+        useTOTPStatus();
+    const { mutate: disableTOTP, isPending: isDisablingTOTP } =
+        useDisableTOTP();
+
     const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+    const [showTotpConfirmDialog, setShowTotpConfirmDialog] = useState(false);
     const [pendingAction, setPendingAction] = useState<
         'enable' | 'disable' | null
     >(null);
 
-    if (!isStatusLoading && mfaStatusData?.data?.mfaEnabled !== undefined) {
-        const enabled = !!mfaStatusData.data.mfaEnabled;
-        if (enabled !== mfaEnabled) {
-            setMfaEnabled(enabled);
+    const [isChangePasswordModalOpen, setIsChangePasswordModalOpen] =
+        useState(false);
+    const [isTOTPSetupModalOpen, setIsTOTPSetupModalOpen] = useState(false);
+
+    const totpEnabled = totpStatusData?.data?.totpEnabled ?? false;
+
+    useEffect(() => {
+        if (!isStatusLoading && mfaStatusData?.data?.mfaEnabled !== undefined) {
+            const enabled = !!mfaStatusData.data.mfaEnabled;
+            if (enabled !== mfaEnabled) {
+                setMfaEnabled(enabled);
+            }
         }
-    }
+    }, [isStatusLoading, mfaStatusData, mfaEnabled, setMfaEnabled]);
 
     const statusLabel = isStatusLoading
         ? 'Checking...'
@@ -39,7 +54,17 @@ const SecurityTab = () => {
           ? 'text-green-600'
           : 'text-red-500';
 
-    const [isChangePasswordModalOpen, setIsChangePasswordModalOpen] = useState(false);
+    const totpStatusLabel = isTotpStatusLoading
+        ? 'Checking...'
+        : totpEnabled
+          ? 'Enabled'
+          : 'Disabled';
+
+    const totpStatusClass = isTotpStatusLoading
+        ? 'text-primary-50'
+        : totpEnabled
+          ? 'text-green-600'
+          : 'text-red-500';
 
     const handleMfaToggle = () => {
         if (mfaEnabled) {
@@ -66,6 +91,23 @@ const SecurityTab = () => {
         setPendingAction(null);
     };
 
+    const handleTotpSetup = () => {
+        setIsTOTPSetupModalOpen(true);
+    };
+
+    const handleDisableTOTP = () => {
+        setShowTotpConfirmDialog(true);
+    };
+
+    const handleConfirmDisableTOTP = () => {
+        disableTOTP();
+        setShowTotpConfirmDialog(false);
+    };
+
+    const handleCancelDisableTOTP = () => {
+        setShowTotpConfirmDialog(false);
+    };
+
     const mfaButtonLabel = mfaEnabled
         ? isDisabling
             ? 'Disabling...'
@@ -90,8 +132,10 @@ const SecurityTab = () => {
                                 Update your password to keep your account secure
                             </div>
                         </div>
-                        <Button variant="outline" size="sm"
-                        onClick={() => setIsChangePasswordModalOpen(true)}>
+                        <Button
+                            size="sm"
+                            onClick={() => setIsChangePasswordModalOpen(true)}
+                        >
                             Change Password
                         </Button>
                     </div>
@@ -100,10 +144,10 @@ const SecurityTab = () => {
                     <div className="flex items-center justify-between mb-4">
                         <div>
                             <div className="font-medium text-primary">
-                                Two-Factor Authentication
+                                Two-Factor Authentication (Email)
                             </div>
                             <div className="text-sm text-primary-50">
-                                Add an extra layer of security to your account
+                                Receive verification codes via email
                             </div>
                             <div className="text-xs text-primary-40 mt-2">
                                 Status:{' '}
@@ -113,7 +157,6 @@ const SecurityTab = () => {
                             </div>
                         </div>
                         <Button
-                            variant="outline"
                             size="sm"
                             onClick={handleMfaToggle}
                             loading={isEnabling || isDisabling}
@@ -125,14 +168,53 @@ const SecurityTab = () => {
                         </Button>
                     </div>
                 </div>
+                <div className="p-4 border border-primary-10 rounded-xl">
+                    <div className="flex items-center justify-between mb-4">
+                        <div>
+                            <div className="font-medium text-primary">
+                                Authenticator App (TOTP)
+                            </div>
+                            <div className="text-sm text-primary-50">
+                                Use an authenticator app like Google
+                                Authenticator or Authy
+                            </div>
+                            <div className="text-xs text-primary-40 mt-2">
+                                Status:{' '}
+                                <span className={totpStatusClass}>
+                                    {totpStatusLabel}
+                                </span>
+                            </div>
+                        </div>
+                        <Button
+                            size="sm"
+                            onClick={
+                                totpEnabled
+                                    ? handleDisableTOTP
+                                    : handleTotpSetup
+                            }
+                            loading={isDisablingTOTP}
+                            disabled={isDisablingTOTP || isTotpStatusLoading}
+                        >
+                            {totpEnabled
+                                ? isDisablingTOTP
+                                    ? 'Disabling...'
+                                    : 'Disable TOTP'
+                                : 'Enable TOTP'}
+                        </Button>
+                    </div>
+                </div>
             </div>
-
-
-
 
             <ChangePasswordModal
                 isOpen={isChangePasswordModalOpen}
                 onClose={() => setIsChangePasswordModalOpen(false)}
+            />
+
+            <TOTPSetupModal
+                isOpen={isTOTPSetupModalOpen}
+                onClose={() => setIsTOTPSetupModalOpen(false)}
+            />
+
             {/* MFA Confirmation Dialog */}
             <ConfirmationDialog
                 isOpen={showConfirmDialog}
@@ -156,6 +238,19 @@ const SecurityTab = () => {
                     pendingAction === 'disable' ? 'danger' : 'primary'
                 }
                 loading={isEnabling || isDisabling}
+            />
+
+            {/* TOTP Disable Confirmation Dialog */}
+            <ConfirmationDialog
+                isOpen={showTotpConfirmDialog}
+                onClose={handleCancelDisableTOTP}
+                onConfirm={handleConfirmDisableTOTP}
+                title="Disable Authenticator App"
+                message="Are you sure you want to disable TOTP authenticator? This will reduce the security of your account."
+                confirmText="Disable TOTP"
+                cancelText="Cancel"
+                confirmVariant="danger"
+                loading={isDisablingTOTP}
             />
         </div>
     );

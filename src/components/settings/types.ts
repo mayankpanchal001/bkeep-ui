@@ -22,7 +22,8 @@ export type SettingsTabId =
     | 'preferences'
     | 'data'
     | 'users'
-    | 'roles';
+    | 'roles'
+    | 'tenants';
 
 export interface SettingsTab {
     id: SettingsTabId;
