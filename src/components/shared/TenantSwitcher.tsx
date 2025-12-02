@@ -25,16 +25,29 @@ const TenantSwitcher = ({ compact = false }: TenantSwitcherProps) => {
                     onChange={(event) => selectTenant(event.target.value)}
                     className={`bg-transparent ${selectClasses} flex-1 focus:outline-none`}
                 >
-                    {!selectedTenant && (
-                        <option value="" disabled>
-                            Select tenant
-                        </option>
-                    )}
-                    {tenants.map((tenant) => (
-                        <option key={tenant.id} value={tenant.id}>
-                            {tenant.name} ({tenant.schemaName})
-                        </option>
-                    ))}
+                    <optgroup label="All tenants">
+                        {!selectedTenant && (
+                            <option value="" disabled>
+                                Select tenant
+                            </option>
+                        )}
+
+                        {tenants.map((tenant) => (
+                            <option key={tenant.id} value={tenant.id}>
+                                {tenant.name}
+                            </option>
+                        ))}
+                        <option value="primary">Primary tenant</option>
+                        <option value="secondary">Secondary tenant</option>
+                        <option value="tertiary">Tertiary tenant</option>
+                        <option value="quaternary">Quaternary tenant</option>
+                        <option value="quinary">Quinary tenant</option>
+                        <option value="senary">Senary tenant</option>
+                        <option value="septenary">Septenary tenant</option>
+                        <option value="octonary">Octonary tenant</option>
+                        <option value="nonary">Nonary tenant</option>
+                        <option value="denary">Denary tenant</option>
+                    </optgroup>
                 </select>
             </div>
         </div>

@@ -27,10 +27,6 @@ const OtpVerificationpage = () => {
         await verifyMfa({ email, code });
     };
 
-    const handleBackToLogin = () => {
-        navigate('/login');
-    };
-
     return (
         <div className="min-h-screen flex items-center justify-center bg-lightBg px-4">
             <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-6 lg:p-8 border border-primary-10">
@@ -59,14 +55,13 @@ const OtpVerificationpage = () => {
                         <Button
                             type="submit"
                             variant="primary"
-                            size="lg"
                             className="w-full"
                             loading={isVerifying}
                             disabled={isVerifying}
                         >
                             {isVerifying ? 'Verifying...' : 'Verify & Continue'}
                         </Button>
-                        <Button
+                        {/* <Button
                             type="button"
                             variant="outline"
                             size="sm"
@@ -74,7 +69,7 @@ const OtpVerificationpage = () => {
                             onClick={handleBackToLogin}
                         >
                             Back to Login
-                        </Button>
+                        </Button> */}
                     </div>
                 </form>
             </div>
