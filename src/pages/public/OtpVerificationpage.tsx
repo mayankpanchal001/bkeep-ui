@@ -24,8 +24,10 @@ const OtpVerificationpage = () => {
     const { setAuth } = useAuth();
     const { setTenants } = useTenant();
 
-    const { mutateAsync: verifyMfa, isPending: isVerifyingMfa } = useVerifyMfa();
-    const { mutateAsync: verifyTOTP, isPending: isVerifyingTOTP } = useTOTPLogin();
+    const { mutateAsync: verifyMfa, isPending: isVerifyingMfa } =
+        useVerifyMfa();
+    const { mutateAsync: verifyTOTP, isPending: isVerifyingTOTP } =
+        useTOTPLogin();
 
     const isVerifying = isVerifyingMfa || isVerifyingTOTP;
 
@@ -81,7 +83,8 @@ const OtpVerificationpage = () => {
                     storePasskeyUser(payload.user.email);
 
                     showSuccessToast(
-                        response?.message || 'Successfully verified. Welcome back!'
+                        response?.message ||
+                            'Successfully verified. Welcome back!'
                     );
                     navigate('/dashboard');
                 }
@@ -114,7 +117,8 @@ const OtpVerificationpage = () => {
             case 'totp':
                 return (
                     <>
-                        Open your authenticator app and enter the 6-digit code for{' '}
+                        Open your authenticator app and enter the 6-digit code
+                        for{' '}
                         <span className="font-semibold text-primary">
                             {email || 'your account'}
                         </span>
@@ -141,7 +145,9 @@ const OtpVerificationpage = () => {
                 <h1 className="text-2xl font-bold text-primary mb-2">
                     {getTitle()}
                 </h1>
-                <p className="text-sm text-primary-50 mb-6">{getDescription()}</p>
+                <p className="text-sm text-primary-50 mb-6">
+                    {getDescription()}
+                </p>
 
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <InputField

@@ -179,9 +179,7 @@ export const useResendInvitation = () => {
         mutationFn: (invitationId: string) =>
             resendInvitationRequest(invitationId),
         onSuccess: (data) => {
-            showSuccessToast(
-                data?.message || 'Invitation resent successfully'
-            );
+            showSuccessToast(data?.message || 'Invitation resent successfully');
             // Invalidate users query to refresh the list
             queryClient.invalidateQueries({ queryKey: ['users'] });
         },

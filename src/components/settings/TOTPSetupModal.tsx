@@ -28,9 +28,9 @@ const TOTPSetupModal = ({
     onSuccess,
 }: TOTPSetupModalProps) => {
     const [step, setStep] = useState<'setup' | 'verify'>('setup');
-    const [totpData, setTotpData] = useState<MFA_TOTP_SETUP_RESPONSE['data'] | null>(
-        null
-    );
+    const [totpData, setTotpData] = useState<
+        MFA_TOTP_SETUP_RESPONSE['data'] | null
+    >(null);
     const [verificationCode, setVerificationCode] = useState('');
     const [copiedSecret, setCopiedSecret] = useState(false);
     const [copiedBackupCodes, setCopiedBackupCodes] = useState(false);
@@ -169,8 +169,9 @@ const TOTPSetupModal = ({
                                 Step 1: Scan QR Code
                             </h4>
                             <p className="text-sm text-blue-800">
-                                Open your authenticator app (Google Authenticator,
-                                Authy, 1Password, etc.) and scan the QR code below.
+                                Open your authenticator app (Google
+                                Authenticator, Authy, 1Password, etc.) and scan
+                                the QR code below.
                             </p>
                         </div>
 
@@ -221,14 +222,17 @@ const TOTPSetupModal = ({
                                 Save Your Backup Codes
                             </h4>
                             <p className="text-sm text-yellow-800 mb-3">
-                                Store these codes in a safe place. You can use them
-                                to access your account if you lose your
+                                Store these codes in a safe place. You can use
+                                them to access your account if you lose your
                                 authenticator device.
                             </p>
                             <div className="bg-white border border-yellow-200 rounded-lg p-3 mb-3">
                                 <div className="grid grid-cols-2 gap-2 font-mono text-sm">
                                     {totpData.backupCodes.map((code, index) => (
-                                        <div key={index} className="text-primary-75">
+                                        <div
+                                            key={index}
+                                            className="text-primary-75"
+                                        >
                                             {code}
                                         </div>
                                     ))}
@@ -295,8 +299,8 @@ const TOTPSetupModal = ({
                                 Step 2: Verify Your Setup
                             </h4>
                             <p className="text-sm text-blue-800">
-                                Enter the 6-digit code from your authenticator app
-                                to complete the setup.
+                                Enter the 6-digit code from your authenticator
+                                app to complete the setup.
                             </p>
                         </div>
 
@@ -346,4 +350,3 @@ const TOTPSetupModal = ({
 };
 
 export default TOTPSetupModal;
-
