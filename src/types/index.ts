@@ -30,7 +30,7 @@ export type UserType = {
         id: string;
         name: string;
         displayName: string;
-    };
+    }
     permissions: Permission[];
     tenants: Tenant[];
     selectedTenantId: string;

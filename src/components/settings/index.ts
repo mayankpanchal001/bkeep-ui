@@ -7,4 +7,6 @@ export { default as DataPrivacyTab } from './DataPrivacyTab';
 export { default as UsersTab } from './UsersTab';
 export { default as RolesTab } from './RolesTab';
 export { default as TenantsTab } from './TenantsTab';
+export { default as AccountsTab } from './AccountsTab';
 export type { SettingsFormData, SettingsTab, SettingsTabId } from './types';
+

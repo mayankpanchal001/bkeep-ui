@@ -23,6 +23,7 @@ export type SettingsTabId =
     | 'data'
     | 'users'
     | 'roles'
+    | 'accounts'
     | 'tenants';
 
 export interface SettingsTab {

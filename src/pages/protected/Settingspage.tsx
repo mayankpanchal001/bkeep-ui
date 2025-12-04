@@ -4,6 +4,7 @@ import {
     FaBuilding,
     FaDatabase,
     FaLock,
+    FaMoneyBill,
     FaPalette,
     FaUser,
     FaUsers,
@@ -17,6 +18,7 @@ import {
     SettingsTabs,
     TenantsTab,
     UsersTab,
+    AccountsTab,
     type SettingsFormData,
     type SettingsTab,
 } from '../../components/settings';
@@ -58,6 +60,7 @@ const Settingspage = () => {
         { id: 'notifications', label: 'Notifications', icon: <FaBell /> },
         { id: 'security', label: 'Security', icon: <FaLock /> },
         { id: 'preferences', label: 'Preferences', icon: <FaPalette /> },
+        { id: 'accounts', label: 'Accounts', icon: <FaMoneyBill /> },
         { id: 'users', label: 'Users', icon: <FaUsers /> },
         { id: 'data', label: 'Data & Privacy', icon: <FaDatabase /> },
     ];
@@ -99,6 +102,8 @@ const Settingspage = () => {
                         onSubmit={handleSubmit}
                     />
                 );
+            case 'accounts':
+                return <AccountsTab />;
             case 'users':
                 return <UsersTab />;
             case 'tenants':
