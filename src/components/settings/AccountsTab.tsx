@@ -5,12 +5,8 @@ import { useDeleteAccount } from "../../services/apis/accountsAPI";
 import useActivateAccount from "../../services/apis/accountsAPI";
  */
 
-
-
 function AccountsTab() {
-  return (
-    <div>AccountsTab</div>
-  )
+    return <div>AccountsTab</div>;
 }
 
-export default AccountsTab
+export default AccountsTab;

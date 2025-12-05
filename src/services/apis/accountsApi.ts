@@ -162,8 +162,7 @@ export async function restoreAccountRequest(
     return response.data;
 }
 
-
- //Multiple accounts
+//Multiple accounts
 export const useAccounts = (params: AccountsQueryParams = {}) => {
     return useQuery<AccountsListResponse, Error>({
         queryKey: ['accounts', params],
@@ -188,7 +187,6 @@ export const useAccountStatus = (id: string) => {
     });
 };
 
-
 export const useCreateAccount = () => {
     const queryClient = useQueryClient();
 
@@ -202,8 +200,9 @@ export const useCreateAccount = () => {
             console.error('Create Account Failed:', error);
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const maybeAxiosError = error as any;
-            const message = maybeAxiosError.response?.data?.message ||
-                           'Failed to create account';
+            const message =
+                maybeAxiosError.response?.data?.message ||
+                'Failed to create account';
             showErrorToast(message);
         },
     });
@@ -213,19 +212,27 @@ export const useUpdateAccount = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: ({ id, payload }: { id: string; payload: UpdateAccountPayload }) =>
-            updateAccountRequest(id, payload),
+        mutationFn: ({
+            id,
+            payload,
+        }: {
+            id: string;
+            payload: UpdateAccountPayload;
+        }) => updateAccountRequest(id, payload),
         onSuccess: (data) => {
             showSuccessToast(data?.message || 'Account updated successfully');
             queryClient.invalidateQueries({ queryKey: ['accounts'] });
-            queryClient.invalidateQueries({ queryKey: ['account', data.data.id] });
+            queryClient.invalidateQueries({
+                queryKey: ['account', data.data.id],
+            });
         },
         onError: (error) => {
             console.error('Update Account Failed:', error);
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const maybeAxiosError = error as any;
-            const message = maybeAxiosError.response?.data?.message ||
-                           'Failed to update account';
+            const message =
+                maybeAxiosError.response?.data?.message ||
+                'Failed to update account';
             showErrorToast(message);
         },
     });
@@ -244,13 +251,13 @@ export const useDeleteAccount = () => {
             console.error('Delete Account Failed:', error);
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const maybeAxiosError = error as any;
-            const message = maybeAxiosError.response?.data?.message ||
-                           'Failed to delete account';
+            const message =
+                maybeAxiosError.response?.data?.message ||
+                'Failed to delete account';
             showErrorToast(message);
         },
     });
 };
-
 
 export const useActivateAccount = () => {
     const queryClient = useQueryClient();
@@ -260,19 +267,21 @@ export const useActivateAccount = () => {
         onSuccess: (data) => {
             showSuccessToast(data?.message || 'Account activated successfully');
             queryClient.invalidateQueries({ queryKey: ['accounts'] });
-            queryClient.invalidateQueries({ queryKey: ['account', data.data.id] });
+            queryClient.invalidateQueries({
+                queryKey: ['account', data.data.id],
+            });
         },
         onError: (error) => {
             console.error('Activate Account Failed:', error);
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const maybeAxiosError = error as any;
-            const message = maybeAxiosError.response?.data?.message ||
-                           'Failed to activate account';
+            const message =
+                maybeAxiosError.response?.data?.message ||
+                'Failed to activate account';
             showErrorToast(message);
         },
     });
 };
-
 
 export const useDeactivateAccount = () => {
     const queryClient = useQueryClient();
@@ -280,16 +289,21 @@ export const useDeactivateAccount = () => {
     return useMutation({
         mutationFn: deactivateAccountRequest,
         onSuccess: (data) => {
-            showSuccessToast(data?.message || 'Account deactivated successfully');
+            showSuccessToast(
+                data?.message || 'Account deactivated successfully'
+            );
             queryClient.invalidateQueries({ queryKey: ['accounts'] });
-            queryClient.invalidateQueries({ queryKey: ['account', data.data.id] });
+            queryClient.invalidateQueries({
+                queryKey: ['account', data.data.id],
+            });
         },
         onError: (error) => {
             console.error('Deactivate Account Failed:', error);
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const maybeAxiosError = error as any;
-            const message = maybeAxiosError.response?.data?.message ||
-                           'Failed to deactivate account';
+            const message =
+                maybeAxiosError.response?.data?.message ||
+                'Failed to deactivate account';
             showErrorToast(message);
         },
     });
@@ -299,20 +313,28 @@ export const useUpdateAccountActivation = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: ({ id, payload }: { id: string; payload: UpdateActivationPayload }) =>
-            updateAccountActivationRequest(id, payload),
+        mutationFn: ({
+            id,
+            payload,
+        }: {
+            id: string;
+            payload: UpdateActivationPayload;
+        }) => updateAccountActivationRequest(id, payload),
         onSuccess: (data) => {
             const action = data.data.isActive ? 'activated' : 'deactivated';
             showSuccessToast(data?.message || `Account ${action} successfully`);
             queryClient.invalidateQueries({ queryKey: ['accounts'] });
-            queryClient.invalidateQueries({ queryKey: ['account', data.data.id] });
+            queryClient.invalidateQueries({
+                queryKey: ['account', data.data.id],
+            });
         },
         onError: (error) => {
             console.error('Update Account Activation Failed:', error);
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const maybeAxiosError = error as any;
-            const message = maybeAxiosError.response?.data?.message ||
-                           'Failed to update account activation';
+            const message =
+                maybeAxiosError.response?.data?.message ||
+                'Failed to update account activation';
             showErrorToast(message);
         },
     });
@@ -331,8 +353,9 @@ export const useRestoreAccount = () => {
             console.error('Restore Account Failed:', error);
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const maybeAxiosError = error as any;
-            const message = maybeAxiosError.response?.data?.message ||
-                           'Failed to restore account';
+            const message =
+                maybeAxiosError.response?.data?.message ||
+                'Failed to restore account';
             showErrorToast(message);
         },
     });
