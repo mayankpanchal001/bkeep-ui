@@ -2,7 +2,10 @@ import { useNavigate, useParams } from 'react-router';
 import { JournalEntryForm } from '../../components/journal/JournalEntryForm';
 import Loading from '../../components/shared/Loading';
 import PageHeader from '../../components/shared/PageHeader';
-import { useJournalEntry, useUpdateJournalEntry } from '../../services/apis/journalApi';
+import {
+    useJournalEntry,
+    useUpdateJournalEntry,
+} from '../../services/apis/journalApi';
 import type { CreateJournalEntryPayload } from '../../types/journal';
 
 export default function EditJournalEntrypage() {
@@ -68,4 +71,3 @@ export default function EditJournalEntrypage() {
         </div>
     );
 }
-

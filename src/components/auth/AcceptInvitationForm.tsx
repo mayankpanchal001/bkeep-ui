@@ -159,7 +159,9 @@ const AcceptInvitationForm = () => {
                             <FaEnvelope className="w-4 h-4 text-primary" />
                         </div>
                         <div className="flex-1 min-w-0">
-                            <p className="text-xs text-primary-50">Email Address</p>
+                            <p className="text-xs text-primary-50">
+                                Email Address
+                            </p>
                             <p className="text-sm font-medium text-primary truncate">
                                 {invitationData.email}
                             </p>
@@ -362,4 +364,3 @@ const AcceptInvitationForm = () => {
 };
 
 export default AcceptInvitationForm;
-

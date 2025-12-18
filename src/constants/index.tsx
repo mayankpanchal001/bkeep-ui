@@ -7,7 +7,12 @@ import {
     FaSignOutAlt,
     FaUpload,
 } from 'react-icons/fa';
-import { FaBook, FaBookJournalWhills, FaHouse, FaMoneyBillTransfer } from 'react-icons/fa6';
+import {
+    FaBook,
+    FaBookJournalWhills,
+    FaHouse,
+    FaMoneyBillTransfer,
+} from 'react-icons/fa6';
 import { SidebarItemProps } from '../types';
 
 export const SIDEBAR_ITEMS: SidebarItemProps[] = [

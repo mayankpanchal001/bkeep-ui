@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import { FaPlus, FaTrash } from 'react-icons/fa';
-import type { CreateJournalEntryPayload, JournalEntryLine } from '../../types/journal';
+import type {
+    CreateJournalEntryPayload,
+    JournalEntryLine,
+} from '../../types/journal';
 import Button from '../typography/Button';
 import { InputField } from '../typography/InputFields';
 
@@ -26,8 +29,22 @@ export function JournalEntryForm({
     );
     const [lines, setLines] = useState<JournalEntryLine[]>(
         initialData?.lines || [
-            { accountId: '', debit: 0, credit: 0, description: '', name: '', salesTax: 0 },
-            { accountId: '', debit: 0, credit: 0, description: '', name: '', salesTax: 0 },
+            {
+                accountId: '',
+                debit: 0,
+                credit: 0,
+                description: '',
+                name: '',
+                salesTax: 0,
+            },
+            {
+                accountId: '',
+                debit: 0,
+                credit: 0,
+                description: '',
+                name: '',
+                salesTax: 0,
+            },
         ]
     );
     const [memo, setMemo] = useState(initialData?.memo || '');
@@ -40,8 +57,14 @@ export function JournalEntryForm({
     >(initialData?.recurringFrequency);
 
     const calculateTotals = () => {
-        const totalDebit = lines.reduce((sum, line) => sum + (Number(line.debit) || 0), 0);
-        const totalCredit = lines.reduce((sum, line) => sum + (Number(line.credit) || 0), 0);
+        const totalDebit = lines.reduce(
+            (sum, line) => sum + (Number(line.debit) || 0),
+            0
+        );
+        const totalCredit = lines.reduce(
+            (sum, line) => sum + (Number(line.credit) || 0),
+            0
+        );
         return { totalDebit, totalCredit };
     };
 
@@ -51,7 +74,14 @@ export function JournalEntryForm({
     const handleAddLine = () => {
         setLines([
             ...lines,
-            { accountId: '', debit: 0, credit: 0, description: '', name: '', salesTax: 0 },
+            {
+                accountId: '',
+                debit: 0,
+                credit: 0,
+                description: '',
+                name: '',
+                salesTax: 0,
+            },
         ]);
     };
 
@@ -92,7 +122,7 @@ export function JournalEntryForm({
             journalNo,
             journalDate,
             isAdjusting,
-            lines: lines.map(line => ({
+            lines: lines.map((line) => ({
                 accountId: line.accountId,
                 debit: Number(line.debit),
                 credit: Number(line.credit),
@@ -111,8 +141,22 @@ export function JournalEntryForm({
 
     const handleClearAll = () => {
         setLines([
-            { accountId: '', debit: 0, credit: 0, description: '', name: '', salesTax: 0 },
-            { accountId: '', debit: 0, credit: 0, description: '', name: '', salesTax: 0 },
+            {
+                accountId: '',
+                debit: 0,
+                credit: 0,
+                description: '',
+                name: '',
+                salesTax: 0,
+            },
+            {
+                accountId: '',
+                debit: 0,
+                credit: 0,
+                description: '',
+                name: '',
+                salesTax: 0,
+            },
         ]);
     };
 
@@ -144,7 +188,10 @@ export function JournalEntryForm({
                         onChange={(e) => setIsAdjusting(e.target.checked)}
                         className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
                     />
-                    <label htmlFor="isAdjusting" className="text-sm font-medium text-primary">
+                    <label
+                        htmlFor="isAdjusting"
+                        className="text-sm font-medium text-primary"
+                    >
                         Is Adjusting Journal Entry?
                     </label>
                 </div>
@@ -176,9 +223,7 @@ export function JournalEntryForm({
                             <th className="px-2 py-2 text-left text-xs font-medium text-primary-75 uppercase tracking-wider">
                                 SALES TAX
                             </th>
-                            <th className="px-2 py-2 text-left text-xs font-medium text-primary-75 uppercase tracking-wider">
-
-                            </th>
+                            <th className="px-2 py-2 text-left text-xs font-medium text-primary-75 uppercase tracking-wider"></th>
                         </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
@@ -285,7 +330,9 @@ export function JournalEntryForm({
                                     {lines.length > 2 && (
                                         <button
                                             type="button"
-                                            onClick={() => handleRemoveLine(index)}
+                                            onClick={() =>
+                                                handleRemoveLine(index)
+                                            }
                                             className="text-red-600 hover:text-red-800"
                                         >
                                             <FaTrash />
@@ -297,7 +344,10 @@ export function JournalEntryForm({
                     </tbody>
                     <tfoot className="bg-gray-50">
                         <tr>
-                            <td colSpan={2} className="px-2 py-2 text-right font-semibold text-sm text-primary">
+                            <td
+                                colSpan={2}
+                                className="px-2 py-2 text-right font-semibold text-sm text-primary"
+                            >
                                 Total
                             </td>
                             <td className="px-2 py-2 font-semibold text-sm text-primary">
@@ -323,11 +373,7 @@ export function JournalEntryForm({
 
             {/* Action Buttons for Lines */}
             <div className="flex gap-2">
-                <Button
-                    type="button"
-                    variant="outline"
-                    onClick={handleAddLine}
-                >
+                <Button type="button" variant="outline" onClick={handleAddLine}>
                     <FaPlus className="w-4 h-4" />
                     Add lines
                 </Button>
@@ -396,7 +442,10 @@ export function JournalEntryForm({
                         onChange={(e) => setIsRecurring(e.target.checked)}
                         className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
                     />
-                    <label htmlFor="isRecurring" className="text-sm font-medium text-primary">
+                    <label
+                        htmlFor="isRecurring"
+                        className="text-sm font-medium text-primary"
+                    >
                         Make recurring
                     </label>
                 </div>
@@ -410,7 +459,11 @@ export function JournalEntryForm({
                             value={recurringFrequency || ''}
                             onChange={(e) =>
                                 setRecurringFrequency(
-                                    e.target.value as 'daily' | 'weekly' | 'monthly' | 'yearly'
+                                    e.target.value as
+                                        | 'daily'
+                                        | 'weekly'
+                                        | 'monthly'
+                                        | 'yearly'
                                 )
                             }
                             className="px-2 py-1.5 text-sm border border-primary-10 rounded focus:ring-1 focus:ring-primary focus:border-transparent"
@@ -458,4 +511,3 @@ export function JournalEntryForm({
         </form>
     );
 }
-

@@ -194,4 +194,3 @@ const ThemeSwitcher = ({ compact = false }: ThemeSwitcherProps) => {
 };
 
 export default ThemeSwitcher;
-

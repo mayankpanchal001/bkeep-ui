@@ -25,7 +25,11 @@ export default function ViewJournalEntrypage() {
     };
 
     const handleDelete = () => {
-        if (window.confirm('Are you sure you want to delete this journal entry?')) {
+        if (
+            window.confirm(
+                'Are you sure you want to delete this journal entry?'
+            )
+        ) {
             deleteEntry(id!, {
                 onSuccess: () => {
                     navigate('/journal-entries');
@@ -35,13 +39,17 @@ export default function ViewJournalEntrypage() {
     };
 
     const handlePost = () => {
-        if (window.confirm('Are you sure you want to post this journal entry?')) {
+        if (
+            window.confirm('Are you sure you want to post this journal entry?')
+        ) {
             postEntry(id!);
         }
     };
 
     const handleVoid = () => {
-        if (window.confirm('Are you sure you want to void this journal entry?')) {
+        if (
+            window.confirm('Are you sure you want to void this journal entry?')
+        ) {
             voidEntry(id!);
         }
     };
@@ -61,14 +69,22 @@ export default function ViewJournalEntrypage() {
     const getStatusBadge = (status: string) => {
         const statusConfig = {
             draft: { bg: 'bg-gray-100', text: 'text-gray-700', label: 'Draft' },
-            posted: { bg: 'bg-green-100', text: 'text-green-700', label: 'Posted' },
+            posted: {
+                bg: 'bg-green-100',
+                text: 'text-green-700',
+                label: 'Posted',
+            },
             voided: { bg: 'bg-red-100', text: 'text-red-700', label: 'Voided' },
         };
 
-        const config = statusConfig[status as keyof typeof statusConfig] || statusConfig.draft;
+        const config =
+            statusConfig[status as keyof typeof statusConfig] ||
+            statusConfig.draft;
 
         return (
-            <span className={`px-3 py-1 text-sm font-medium rounded-full ${config.bg} ${config.text}`}>
+            <span
+                className={`px-3 py-1 text-sm font-medium rounded-full ${config.bg} ${config.text}`}
+            >
                 {config.label}
             </span>
         );
@@ -78,7 +94,9 @@ export default function ViewJournalEntrypage() {
         <div className="space-y-4">
             <PageHeader
                 title={`Journal Entry ${journalEntry.journalNo}`}
-                subtitle={new Date(journalEntry.journalDate).toLocaleDateString()}
+                subtitle={new Date(
+                    journalEntry.journalDate
+                ).toLocaleDateString()}
                 actions={
                     <div className="flex gap-2">
                         {journalEntry.status === 'draft' && (
@@ -90,7 +108,10 @@ export default function ViewJournalEntrypage() {
                                 <Button variant="primary" onClick={handlePost}>
                                     Post
                                 </Button>
-                                <Button variant="outline" onClick={handleDelete}>
+                                <Button
+                                    variant="outline"
+                                    onClick={handleDelete}
+                                >
                                     <FaTrash className="w-4 h-4" />
                                     Delete
                                 </Button>
@@ -118,14 +139,18 @@ export default function ViewJournalEntrypage() {
                         <label className="block text-sm font-medium text-primary-50 mb-1">
                             Journal No.
                         </label>
-                        <p className="text-primary font-medium">{journalEntry.journalNo}</p>
+                        <p className="text-primary font-medium">
+                            {journalEntry.journalNo}
+                        </p>
                     </div>
                     <div>
                         <label className="block text-sm font-medium text-primary-50 mb-1">
                             Date
                         </label>
                         <p className="text-primary font-medium">
-                            {new Date(journalEntry.journalDate).toLocaleDateString()}
+                            {new Date(
+                                journalEntry.journalDate
+                            ).toLocaleDateString()}
                         </p>
                     </div>
                     {journalEntry.isAdjusting && (
@@ -133,7 +158,9 @@ export default function ViewJournalEntrypage() {
                             <label className="block text-sm font-medium text-primary-50 mb-1">
                                 Type
                             </label>
-                            <p className="text-blue-600 font-medium">Adjusting Entry</p>
+                            <p className="text-blue-600 font-medium">
+                                Adjusting Entry
+                            </p>
                         </div>
                     )}
                 </div>
@@ -142,7 +169,9 @@ export default function ViewJournalEntrypage() {
             {/* Journal Lines */}
             <div className="bg-white rounded-lg border border-primary-10 overflow-hidden">
                 <div className="px-4 py-2 border-b border-primary-10">
-                    <h3 className="text-base font-semibold text-primary">Journal Lines</h3>
+                    <h3 className="text-base font-semibold text-primary">
+                        Journal Lines
+                    </h3>
                 </div>
                 <div className="overflow-x-auto">
                     <table className="w-full">
@@ -178,17 +207,24 @@ export default function ViewJournalEntrypage() {
                                         {line.name || '—'}
                                     </td>
                                     <td className="px-3 py-2 text-sm text-right text-primary">
-                                        {line.debit > 0 ? `$${line.debit.toFixed(2)}` : '—'}
+                                        {line.debit > 0
+                                            ? `$${line.debit.toFixed(2)}`
+                                            : '—'}
                                     </td>
                                     <td className="px-3 py-2 text-sm text-right text-primary">
-                                        {line.credit > 0 ? `$${line.credit.toFixed(2)}` : '—'}
+                                        {line.credit > 0
+                                            ? `$${line.credit.toFixed(2)}`
+                                            : '—'}
                                     </td>
                                 </tr>
                             ))}
                         </tbody>
                         <tfoot className="bg-gray-50">
                             <tr>
-                                <td colSpan={3} className="px-3 py-2 text-right font-semibold text-sm text-primary">
+                                <td
+                                    colSpan={3}
+                                    className="px-3 py-2 text-right font-semibold text-sm text-primary"
+                                >
                                     Total
                                 </td>
                                 <td className="px-3 py-2 text-right font-semibold text-sm text-primary">
@@ -206,36 +242,46 @@ export default function ViewJournalEntrypage() {
             {/* Memo */}
             {journalEntry.memo && (
                 <div className="bg-white rounded-lg border border-primary-10 p-3">
-                    <h3 className="text-sm font-medium text-primary mb-1">Memo</h3>
-                    <p className="text-sm text-primary-75 whitespace-pre-wrap">{journalEntry.memo}</p>
+                    <h3 className="text-sm font-medium text-primary mb-1">
+                        Memo
+                    </h3>
+                    <p className="text-sm text-primary-75 whitespace-pre-wrap">
+                        {journalEntry.memo}
+                    </p>
                 </div>
             )}
 
             {/* Attachments */}
-            {journalEntry.attachments && journalEntry.attachments.length > 0 && (
-                <div className="bg-white rounded-lg border border-primary-10 p-3">
-                    <h3 className="text-sm font-medium text-primary mb-2">Attachments</h3>
-                    <div className="space-y-2">
-                        {journalEntry.attachments.map((attachment, index) => (
-                            <div
-                                key={index}
-                                className="flex items-center justify-between p-3 border border-primary-10 rounded-lg"
-                            >
-                                <span className="text-sm text-primary">{attachment}</span>
-                                <a
-                                    href={attachment}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="text-sm text-primary hover:underline"
-                                >
-                                    Download
-                                </a>
-                            </div>
-                        ))}
+            {journalEntry.attachments &&
+                journalEntry.attachments.length > 0 && (
+                    <div className="bg-white rounded-lg border border-primary-10 p-3">
+                        <h3 className="text-sm font-medium text-primary mb-2">
+                            Attachments
+                        </h3>
+                        <div className="space-y-2">
+                            {journalEntry.attachments.map(
+                                (attachment, index) => (
+                                    <div
+                                        key={index}
+                                        className="flex items-center justify-between p-3 border border-primary-10 rounded-lg"
+                                    >
+                                        <span className="text-sm text-primary">
+                                            {attachment}
+                                        </span>
+                                        <a
+                                            href={attachment}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="text-sm text-primary hover:underline"
+                                        >
+                                            Download
+                                        </a>
+                                    </div>
+                                )
+                            )}
+                        </div>
                     </div>
-                </div>
-            )}
+                )}
         </div>
     );
 }
-

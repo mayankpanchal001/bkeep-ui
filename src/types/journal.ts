@@ -75,4 +75,3 @@ export type JournalEntryFilters = {
     endDate?: string;
     isAdjusting?: boolean;
 };
-

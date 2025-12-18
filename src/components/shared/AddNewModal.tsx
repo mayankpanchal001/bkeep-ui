@@ -108,8 +108,13 @@ const AddNewModal = ({ isOpen, onClose }: AddNewModalProps) => {
     };
 
     // Split options into two columns
-    const leftColumn = ADD_NEW_OPTIONS.slice(0, Math.ceil(ADD_NEW_OPTIONS.length / 2));
-    const rightColumn = ADD_NEW_OPTIONS.slice(Math.ceil(ADD_NEW_OPTIONS.length / 2));
+    const leftColumn = ADD_NEW_OPTIONS.slice(
+        0,
+        Math.ceil(ADD_NEW_OPTIONS.length / 2)
+    );
+    const rightColumn = ADD_NEW_OPTIONS.slice(
+        Math.ceil(ADD_NEW_OPTIONS.length / 2)
+    );
 
     return (
         <div
@@ -171,4 +176,3 @@ const AddNewModal = ({ isOpen, onClose }: AddNewModalProps) => {
 };
 
 export default AddNewModal;
-

@@ -86,8 +86,7 @@ const CreateTenantModal = ({ isOpen, onClose }: CreateTenantModalProps) => {
             newErrors.schemaName =
                 'Schema name can only contain lowercase letters, numbers, and underscores';
         } else if (formData.schemaName.length < 2) {
-            newErrors.schemaName =
-                'Schema name must be at least 2 characters';
+            newErrors.schemaName = 'Schema name must be at least 2 characters';
         }
 
         setErrors(newErrors);
@@ -206,4 +205,3 @@ const CreateTenantModal = ({ isOpen, onClose }: CreateTenantModalProps) => {
 };
 
 export default CreateTenantModal;
-
