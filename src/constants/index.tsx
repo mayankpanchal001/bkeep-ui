@@ -7,7 +7,7 @@ import {
     FaSignOutAlt,
     FaUpload,
 } from 'react-icons/fa';
-import { FaBook, FaHouse, FaMoneyBillTransfer } from 'react-icons/fa6';
+import { FaBook, FaBookJournalWhills, FaHouse, FaMoneyBillTransfer } from 'react-icons/fa6';
 import { SidebarItemProps } from '../types';
 
 export const SIDEBAR_ITEMS: SidebarItemProps[] = [
@@ -30,6 +30,11 @@ export const SIDEBAR_ITEMS: SidebarItemProps[] = [
         label: 'Chart of Accounts',
         icon: <FaBook />,
         path: '/chart-of-accounts',
+    },
+    {
+        label: 'Journal Entries',
+        icon: <FaBookJournalWhills />,
+        path: '/journal-entries',
     },
     {
         label: 'Invoices',

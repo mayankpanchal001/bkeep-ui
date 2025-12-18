@@ -54,6 +54,7 @@ const TOTPSetupModal = ({
         return () => {
             document.body.style.overflow = 'unset';
         };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isOpen]);
 
     useEffect(() => {

@@ -17,6 +17,7 @@ const InviteUserModal = ({
     roles = [],
 }: InviteUserModalProps) => {
     const [formData, setFormData] = useState({
+        name: '',
         email: '',
         roleId: '',
     });
@@ -60,6 +61,12 @@ const InviteUserModal = ({
     const validateForm = () => {
         const newErrors: Record<string, string> = {};
 
+        if (!formData.name.trim()) {
+            newErrors.name = 'Name is required';
+        } else if (formData.name.trim().length < 2) {
+            newErrors.name = 'Name must be at least 2 characters';
+        }
+
         if (!formData.email.trim()) {
             newErrors.email = 'Email is required';
         } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
@@ -83,11 +90,12 @@ const InviteUserModal = ({
 
         try {
             await inviteUser({
+                name: formData.name,
                 email: formData.email,
                 roleId: formData.roleId,
             });
             // Reset form on success
-            setFormData({ email: '', roleId: '' });
+            setFormData({ name: '', email: '', roleId: '' });
             setErrors({});
             onClose();
         } catch (error) {
@@ -119,38 +127,71 @@ const InviteUserModal = ({
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-6">
-                    {/* Enter email */}
+                    {/* User Information */}
                     <div>
                         <h3 className="text-lg font-semibold text-primary mb-4">
-                            Enter email address
+                            User Information
                         </h3>
-                        <div>
-                            <InputField
-                                id="user-email"
-                                label="Email"
-                                type="email"
-                                value={formData.email}
-                                onChange={(e) => {
-                                    setFormData({
-                                        ...formData,
-                                        email: e.target.value,
-                                    });
-                                    if (errors.email) {
-                                        setErrors((prev) => ({
-                                            ...prev,
-                                            email: '',
-                                        }));
-                                    }
-                                }}
-                                required
-                                placeholder="user@example.com"
-                            />
-                            {errors.email && (
-                                <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
-                                    <FaExclamationTriangle className="w-3 h-3" />
-                                    {errors.email}
-                                </p>
-                            )}
+                        <div className="space-y-4">
+                            {/* Name Field */}
+                            <div>
+                                <InputField
+                                    id="user-name"
+                                    label="Full Name"
+                                    type="text"
+                                    value={formData.name}
+                                    onChange={(e) => {
+                                        setFormData({
+                                            ...formData,
+                                            name: e.target.value,
+                                        });
+                                        if (errors.name) {
+                                            setErrors((prev) => ({
+                                                ...prev,
+                                                name: '',
+                                            }));
+                                        }
+                                    }}
+                                    required
+                                    placeholder="John Doe"
+                                />
+                                {errors.name && (
+                                    <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
+                                        <FaExclamationTriangle className="w-3 h-3" />
+                                        {errors.name}
+                                    </p>
+                                )}
+                            </div>
+
+                            {/* Email Field */}
+                            <div>
+                                <InputField
+                                    id="user-email"
+                                    label="Email"
+                                    type="email"
+                                    value={formData.email}
+                                    onChange={(e) => {
+                                        setFormData({
+                                            ...formData,
+                                            email: e.target.value,
+                                        });
+                                        if (errors.email) {
+                                            setErrors((prev) => ({
+                                                ...prev,
+                                                email: '',
+                                            }));
+                                        }
+                                    }}
+                                    required
+                                    placeholder="user@example.com"
+                                />
+                                {errors.email && (
+                                    <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
+                                        <FaExclamationTriangle className="w-3 h-3" />
+                                        {errors.email}
+                                    </p>
+                                )}
+                            </div>
                         </div>
                     </div>
 

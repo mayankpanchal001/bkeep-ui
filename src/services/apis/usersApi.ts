@@ -55,6 +55,7 @@ export const useUsers = (params: UsersQueryParams = {}) => {
 };
 
 export type InviteUserPayload = {
+    name: string;
     email: string;
     roleId: string;
 };

@@ -5,10 +5,12 @@ import {
     useMfaStatus,
 } from '../../services/apis/authApi';
 import { useDisableTOTP, useTOTPStatus } from '../../services/apis/mfaApi';
+import { usePasskeyStats } from '../../services/apis/passkeyApi';
 import { useAuth } from '../../stores/auth/authSelectore';
 import ConfirmationDialog from '../shared/ConfirmationDialog';
 import Button from '../typography/Button';
 import ChangePasswordModal from './ChangePasswordModal';
+import PasskeyManagementModal from './PasskeyManagementModal';
 import TOTPSetupModal from './TOTPSetupModal';
 
 const SecurityTab = () => {
@@ -30,8 +32,13 @@ const SecurityTab = () => {
     const [isChangePasswordModalOpen, setIsChangePasswordModalOpen] =
         useState(false);
     const [isTOTPSetupModalOpen, setIsTOTPSetupModalOpen] = useState(false);
+    const [isPasskeyModalOpen, setIsPasskeyModalOpen] = useState(false);
+
+    const { data: passkeyStatsData, isLoading: isLoadingPasskeyStats } =
+        usePasskeyStats();
 
     const totpEnabled = totpStatusData?.data?.totpEnabled ?? false;
+    const passkeyStats = passkeyStatsData?.data?.stats;
 
     useEffect(() => {
         if (!isStatusLoading && mfaStatusData?.data?.mfaEnabled !== undefined) {
@@ -172,11 +179,11 @@ const SecurityTab = () => {
                     <div className="flex items-center justify-between mb-4">
                         <div>
                             <div className="font-medium text-primary">
-                                Authenticator App (TOTP)
+                                Authenticator App
                             </div>
                             <div className="text-sm text-primary-50">
-                                Use an authenticator app like Google
-                                Authenticator or Authy
+                                Use an authenticator app like Google/Microsoft
+                                Authenticator
                             </div>
                             <div className="text-xs text-primary-40 mt-2">
                                 Status:{' '}
@@ -203,6 +210,45 @@ const SecurityTab = () => {
                         </Button>
                     </div>
                 </div>
+                <div className="p-4 border border-primary-10 rounded-xl">
+                    <div className="flex items-center justify-between mb-4">
+                        <div>
+                            <div className="font-medium text-primary">
+                                Passkeys
+                            </div>
+                            <div className="text-sm text-primary-50">
+                                Use biometrics or security keys for passwordless
+                                sign-in
+                            </div>
+                            <div className="text-xs text-primary-40 mt-2">
+                                {isLoadingPasskeyStats ? (
+                                    'Loading...'
+                                ) : passkeyStats?.total ? (
+                                    <>
+                                        {passkeyStats.active} active of{' '}
+                                        {passkeyStats.total} total passkey
+                                        {passkeyStats.total !== 1 ? 's' : ''}
+                                        {' • '}
+                                        {passkeyStats.platform} device
+                                        {passkeyStats.platform !== 1 ? 's' : ''}
+                                        {', '}
+                                        {passkeyStats.roaming} security key
+                                        {passkeyStats.roaming !== 1 ? 's' : ''}
+                                    </>
+                                ) : (
+                                    'No passkeys configured'
+                                )}
+                            </div>
+                        </div>
+                        <Button
+                            size="sm"
+                            onClick={() => setIsPasskeyModalOpen(true)}
+                            disabled={isLoadingPasskeyStats}
+                        >
+                            Manage Passkeys
+                        </Button>
+                    </div>
+                </div>
             </div>
 
             <ChangePasswordModal
@@ -213,6 +259,11 @@ const SecurityTab = () => {
             <TOTPSetupModal
                 isOpen={isTOTPSetupModalOpen}
                 onClose={() => setIsTOTPSetupModalOpen(false)}
+            />
+
+            <PasskeyManagementModal
+                isOpen={isPasskeyModalOpen}
+                onClose={() => setIsPasskeyModalOpen(false)}
             />
 
             {/* MFA Confirmation Dialog */}

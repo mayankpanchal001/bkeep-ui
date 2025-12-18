@@ -9,6 +9,7 @@ type ButtonProps = {
     loading?: boolean;
     children: React.ReactNode;
     className?: string;
+    isRounded?: boolean;
 } & React.ButtonHTMLAttributes<HTMLButtonElement>;
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
@@ -22,13 +23,15 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
             loading = false,
             children,
             className,
+            isRounded = false,
             ...rest
         },
         ref
     ) => {
         // Define base classes for all buttons
         const baseClasses =
-            'inline-flex gap-2 uppercase items-center justify-center font-medium rounded-md transition-all duration-200 focus:outline-none disabled:pointer-events-none disabled:opacity-50 cursor-pointer hover:scale-95 ';
+            'inline-flex gap-2 uppercase items-center justify-center font-medium transition-all duration-200 focus:outline-none disabled:pointer-events-none disabled:opacity-50 cursor-pointer hover:scale-95 ' +
+            (isRounded ? 'rounded-full' : 'rounded-md');
 
         // Define size-specific classes
         const sizeClasses = {

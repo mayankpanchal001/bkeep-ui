@@ -31,7 +31,7 @@
 }
 
 .protected-route-sidebar {
-    --sidebar-width: 28ch;
+    --sidebar-width: 20ch;
     @apply hidden lg:flex flex-col gap-4 h-full p-4 bg-white border-r border-primary-10;
     width: var(--sidebar-width);
     min-width: var(--sidebar-width);
@@ -40,19 +40,20 @@
         min-width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     overflow: hidden;
 
+    --sidebar-item-width: 60px;
     &.collapsed {
         @apply bg-transparent;
-        width: 72px;
-        min-width: 72px;
+        width: var(--sidebar-item-width);
+        min-width: var(--sidebar-item-width);
     }
 }
 
 .sidebar-items {
-    @apply flex flex-col gap-2;
+    @apply flex flex-col gap-0.5;
 }
 
 .sidebar-item {
-    @apply flex items-center gap-3 cursor-pointer p-2 rounded-lg transition-all duration-200 hover:text-primary active:text-primary hover:bg-primary-10 active:bg-primary-25;
+    @apply flex items-center gap-2 cursor-pointer p-1.5 rounded-lg transition-all duration-200 hover:text-primary active:text-primary hover:bg-primary-10 active:bg-primary-25;
     min-height: 36px;
 
     &.active {
@@ -65,16 +66,15 @@
 }
 
 .sidebar-item-icon {
-    @apply flex items-center justify-center flex-shrink-0;
-    width: 20px;
-    height: 20px;
+    @apply flex w-4 h-4 items-center justify-center flex-shrink-0;
+
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     font-size: 18px;
     color: inherit;
 }
 
 .sidebar-item-label {
-    @apply text-sm font-medium whitespace-nowrap;
+    @apply text-xs font-medium whitespace-nowrap;
     transition:
         opacity 0.15s ease-in-out 0.05s,
         max-width 0.3s cubic-bezier(0.4, 0, 0.2, 1),

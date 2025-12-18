@@ -1,3 +1,4 @@
+import type { AuthenticationResponseJSON } from '@simplewebauthn/types';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router';
 import { useAuth } from '../../stores/auth/authSelectore';
@@ -42,25 +43,23 @@ type PasskeyLoginInitResponse = {
     statusCode: number;
     message: string;
     data: {
-        challenge: string;
-        allowCredentials: {
-            id: string;
-            type: 'public-key';
-            transports?: AuthenticatorTransport[];
-        }[];
-        timeout: number;
-        userVerification: UserVerificationRequirement;
-        rpId: string;
+        options: {
+            challenge: string;
+            allowCredentials: {
+                id: string;
+                type: 'public-key';
+                transports?: AuthenticatorTransport[];
+            }[];
+            timeout: number;
+            userVerification: UserVerificationRequirement;
+            rpId: string;
+        };
     };
 };
 
 type PasskeyLoginVerifyPayload = {
     email: string;
-    credentialId: string;
-    authenticatorData: string;
-    clientDataJSON: string;
-    signature: string;
-    userHandle?: string;
+    credential: AuthenticationResponseJSON;
 };
 
 type PasskeyLoginVerifyResponse = LoginResponse;
@@ -74,10 +73,9 @@ export async function getMfaStatusRequest(): Promise<MfaStatusResponse> {
 export async function passkeyLoginInitRequest(
     payload: PasskeyLoginInitPayload
 ): Promise<PasskeyLoginInitResponse> {
-    const response = await axiosInstance.post(
-        '/auth/passkey/login/init',
-        payload
-    );
+    const response = await axiosInstance.post('/auth/passkey/login/options', {
+        email: payload.email,
+    });
     return response.data;
 }
 
@@ -446,6 +444,115 @@ export const usePasskeyLoginVerify = () => {
             const message =
                 maybeAxiosError.response?.data?.message ||
                 'Passkey authentication failed. Please try again.';
+            showErrorToast(message);
+        },
+    });
+};
+
+// Invitation Types
+type VerifyInvitationResponse = {
+    success: boolean;
+    statusCode: number;
+    message: string;
+    data?: {
+        email: string;
+        name: string;
+        role: {
+            id: string;
+            name: string;
+            displayName: string;
+        };
+        tenant: {
+            id: string;
+            name: string;
+        };
+        expiresAt: string;
+    };
+};
+
+type AcceptInvitationPayload = {
+    token: string;
+    password: string;
+};
+
+type AcceptInvitationResponse = {
+    success: boolean;
+    statusCode: number;
+    message: string;
+    data?: {
+        user: {
+            id: string;
+            email: string;
+            name: string;
+            role: string;
+        };
+        accessToken: string;
+        refreshToken: string;
+    };
+};
+
+// Verify Invitation Token
+export async function verifyInvitationRequest(
+    token: string
+): Promise<VerifyInvitationResponse> {
+    const response = await axiosInstance.get(
+        `/auth/verify-invitation?token=${token}`
+    );
+    return response.data;
+}
+
+export const useVerifyInvitation = (token: string) => {
+    return useQuery<VerifyInvitationResponse, Error>({
+        queryKey: ['verify-invitation', token],
+        queryFn: () => verifyInvitationRequest(token),
+        enabled: !!token,
+        retry: false,
+    });
+};
+
+// Accept Invitation
+export async function acceptInvitationRequest(
+    payload: AcceptInvitationPayload
+): Promise<AcceptInvitationResponse> {
+    const response = await axiosInstance.post(
+        '/auth/accept-invitation',
+        payload
+    );
+    return response.data;
+}
+
+export const useAcceptInvitation = () => {
+    const navigate = useNavigate();
+    const { setAuth } = useAuth();
+
+    return useMutation({
+        mutationFn: (payload: AcceptInvitationPayload) =>
+            acceptInvitationRequest(payload),
+        onSuccess: (data) => {
+            showSuccessToast(
+                data?.message || 'Invitation accepted successfully!'
+            );
+
+            if (data?.data) {
+                // Set auth data
+                setAuth(
+                    data.data.user,
+                    data.data.accessToken,
+                    data.data.refreshToken
+                );
+
+                // Navigate to dashboard
+                navigate('/dashboard');
+            }
+        },
+        onError: (error) => {
+            console.error('Accept Invitation Failed:', error);
+            const maybeAxiosError = error as {
+                response?: { data?: { message?: string } };
+            };
+            const message =
+                maybeAxiosError.response?.data?.message ||
+                'Failed to accept invitation. Please try again.';
             showErrorToast(message);
         },
     });

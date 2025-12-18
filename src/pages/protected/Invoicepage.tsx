@@ -6,10 +6,12 @@ import {
     FaEye,
     FaFileInvoiceDollar,
     FaFilter,
+    FaPlus,
     FaSearch,
     FaTimesCircle,
     FaTrash,
 } from 'react-icons/fa';
+import CreateInvoiceModal from '../../components/invoice/CreateInvoiceModal';
 import Button from '../../components/typography/Button';
 import { InputField } from '../../components/typography/InputFields';
 
@@ -122,8 +124,36 @@ const Invoicepage = () => {
         .filter((inv) => inv.status !== 'paid')
         .reduce((sum, invoice) => sum + invoice.amount, 0);
 
+    // When modal is open, show it instead of the regular content
+    if (showCreateModal) {
+        return (
+            <div className="relative h-full -m-4">
+                <CreateInvoiceModal
+                    isOpen={showCreateModal}
+                    onClose={() => setShowCreateModal(false)}
+                    onSaveDraft={(data) => {
+                        console.log('Saving draft:', data);
+                        setShowCreateModal(false);
+                    }}
+                    onSendInvoice={(data) => {
+                        console.log('Sending invoice:', data);
+                        setShowCreateModal(false);
+                    }}
+                />
+            </div>
+        );
+    }
+
     return (
         <div className="flex flex-col gap-4">
+            {/* Header with Create Button */}
+            <div className="flex justify-end">
+                <Button onClick={() => setShowCreateModal(true)}>
+                    <FaPlus className="w-3 h-3" />
+                    Create Invoice
+                </Button>
+            </div>
+
             {/* Summary Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="bg-white rounded-xl shadow-sm border border-primary-10 p-4">
@@ -315,85 +345,6 @@ const Invoicepage = () => {
                     </table>
                 </div>
             </div>
-
-            {/* Create Invoice Modal */}
-            {showCreateModal && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4">
-                    <div className="w-full max-w-2xl rounded-2xl bg-white p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
-                        <div className="flex items-center justify-between mb-4">
-                            <h3 className="text-xl font-semibold text-primary">
-                                Create New Invoice
-                            </h3>
-                            <button
-                                onClick={() => setShowCreateModal(false)}
-                                className="text-primary-50 hover:text-primary"
-                            >
-                                <FaTimesCircle className="w-5 h-5" />
-                            </button>
-                        </div>
-                        <form className="space-y-4">
-                            <div className="grid grid-cols-2 gap-4">
-                                <InputField
-                                    id="client-name"
-                                    label="Client Name"
-                                    placeholder="Enter client name"
-                                    required
-                                />
-                                <InputField
-                                    id="invoice-number"
-                                    label="Invoice Number"
-                                    placeholder="INV-2024-XXX"
-                                    required
-                                />
-                            </div>
-                            <div className="grid grid-cols-2 gap-4">
-                                <InputField
-                                    id="invoice-date"
-                                    label="Invoice Date"
-                                    type="date"
-                                    required
-                                />
-                                <InputField
-                                    id="due-date"
-                                    label="Due Date"
-                                    type="date"
-                                    required
-                                />
-                            </div>
-                            <InputField
-                                id="description"
-                                label="Description"
-                                placeholder="Enter description"
-                                required
-                            />
-                            <InputField
-                                id="amount"
-                                label="Amount"
-                                type="number"
-                                placeholder="0.00"
-                                required
-                            />
-                            <div className="flex gap-3 pt-4">
-                                <Button
-                                    type="button"
-                                    variant="outline"
-                                    className="flex-1"
-                                    onClick={() => setShowCreateModal(false)}
-                                >
-                                    Cancel
-                                </Button>
-                                <Button
-                                    type="submit"
-                                    variant="primary"
-                                    className="flex-1"
-                                >
-                                    Create Invoice
-                                </Button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            )}
         </div>
     );
 };

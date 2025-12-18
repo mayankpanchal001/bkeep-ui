@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FaLock, FaUser } from 'react-icons/fa';
+import { FaFingerprint, FaLock, FaUser } from 'react-icons/fa';
 import { Link } from 'react-router';
 import { useLogin } from '../../services/apis/authApi';
 
@@ -107,12 +107,20 @@ export function LoginForm() {
                     </span>
                 </div>
             </div>
-            <div className="flex justify-center ">
+            <div className="flex justify-center gap-4">
                 <Link
                     to="/forgot-password"
                     className="text-sm  text-primary hover:text-primary-75 transition-colors cursor-pointer"
                 >
                     Forgot Password?
+                </Link>
+                <span className="text-primary-25">•</span>
+                <Link
+                    to="/passkey-login"
+                    className="text-sm text-primary hover:text-primary-75 transition-colors cursor-pointer flex items-center gap-1"
+                >
+                    <FaFingerprint className="w-4 h-4" />
+                    Sign in with Passkey
                 </Link>
             </div>
 

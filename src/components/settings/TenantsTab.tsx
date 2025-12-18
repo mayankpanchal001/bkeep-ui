@@ -1,11 +1,13 @@
 import { useState } from 'react';
-import { FaBuilding } from 'react-icons/fa';
+import { FaBuilding, FaPlus } from 'react-icons/fa';
 import {
     useTenants,
     type TenantsQueryParams,
 } from '../../services/apis/tenantApi';
 import { Tenant } from '../../types';
 import Button from '../typography/Button';
+import Chips from '../typography/Chips';
+import CreateTenantModal from './CreateTenantModal';
 
 const TenantsTab = () => {
     const [filters, setFilters] = useState<TenantsQueryParams>({
@@ -14,6 +16,7 @@ const TenantsTab = () => {
         sort: 'createdAt',
         order: 'asc',
     });
+    const [showCreateModal, setShowCreateModal] = useState(false);
 
     const { data, isLoading, isError } = useTenants(filters);
 
@@ -53,6 +56,10 @@ const TenantsTab = () => {
                                 : ''}
                         </span>
                     </div>
+                    <Button onClick={() => setShowCreateModal(true)} size="sm">
+                        <FaPlus className="w-3 h-3" />
+                        Create Tenant
+                    </Button>
                 </div>
             </div>
 
@@ -97,14 +104,15 @@ const TenantsTab = () => {
                                             </span>
                                         </button>
                                     </th>
+
                                     <th className="text-left py-3 px-4 text-sm font-semibold text-primary">
-                                        Schema Name
-                                    </th>
-                                    <th className="text-left py-3 px-4 text-sm font-semibold text-primary">
-                                        ID
+                                        Created At
                                     </th>
                                     <th className="text-left py-3 px-4 text-sm font-semibold text-primary">
                                         Status
+                                    </th>
+                                    <th className="text-left py-3 px-4 text-sm font-semibold text-primary">
+                                        Is Primary
                                     </th>
                                 </tr>
                             </thead>
@@ -117,22 +125,38 @@ const TenantsTab = () => {
                                         <td className="py-3 px-4 text-sm text-primary font-medium">
                                             {tenant.name}
                                         </td>
-                                        <td className="py-3 px-4 text-sm text-primary-75">
-                                            {tenant.schemaName || '—'}
-                                        </td>
-                                        <td className="py-3 px-4 text-sm text-primary-75 font-mono text-xs">
-                                            {tenant.id}
+                                        <td className="py-3 px-4 text-sm">
+                                            {new Date(
+                                                tenant.createdAt
+                                            ).toLocaleDateString()}
                                         </td>
                                         <td className="py-3 px-4 text-sm">
-                                            {tenant.isPrimary ? (
-                                                <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                                                    Primary
-                                                </span>
-                                            ) : (
-                                                <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                                                    Secondary
-                                                </span>
-                                            )}
+                                            <Chips
+                                                label={
+                                                    tenant.isActive
+                                                        ? 'Active'
+                                                        : 'Inactive'
+                                                }
+                                                variant={
+                                                    tenant.isActive
+                                                        ? 'success'
+                                                        : 'danger'
+                                                }
+                                            />
+                                        </td>
+                                        <td className="py-3 px-4 text-sm text-center">
+                                            <Chips
+                                                label={
+                                                    tenant.isPrimary
+                                                        ? 'Primary'
+                                                        : 'NA'
+                                                }
+                                                variant={
+                                                    tenant.isPrimary
+                                                        ? 'success'
+                                                        : 'danger'
+                                                }
+                                            />
                                         </td>
                                     </tr>
                                 ))}
@@ -174,6 +198,12 @@ const TenantsTab = () => {
                     )}
                 </>
             )}
+
+            {/* Create Tenant Modal */}
+            <CreateTenantModal
+                isOpen={showCreateModal}
+                onClose={() => setShowCreateModal(false)}
+            />
         </div>
     );
 };

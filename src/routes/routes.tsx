@@ -2,14 +2,19 @@ import { createBrowserRouter } from 'react-router';
 import BalanceSheetpage from '../pages/protected/BalanceSheetpage';
 import ChartOfAccountspage from '../pages/protected/ChartOfAccountspage';
 import ClientReviewpage from '../pages/protected/ClientReviewpage';
+import CreateJournalEntrypage from '../pages/protected/CreateJournalEntrypage';
 import Dashboardpage from '../pages/protected/Dashboardpage';
 import Documentspage from '../pages/protected/Documentspage';
+import EditJournalEntrypage from '../pages/protected/EditJournalEntrypage';
 import Expensespage from '../pages/protected/Expensespage';
 import IncomeStatementpage from '../pages/protected/IncomeStatementpage';
 import Invoicepage from '../pages/protected/Invoicepage';
+import JournalEntriespage from '../pages/protected/JournalEntriespage';
 import Reportpage from '../pages/protected/Reportpage';
 import Settingspage from '../pages/protected/Settingspage';
 import Transactionpage from '../pages/protected/Transactionpage';
+import ViewJournalEntrypage from '../pages/protected/ViewJournalEntrypage';
+import AcceptInvitationpage from '../pages/public/AcceptInvitationpage';
 import ForgotPasswordpage from '../pages/public/ForgotPasswordpage';
 import Homepage from '../pages/public/Homepage';
 import Loginpage from '../pages/public/Loginpage';
@@ -51,6 +56,10 @@ const routes = createBrowserRouter([
             {
                 path: '/reset-password',
                 element: <ResetPasswordpage />,
+            },
+            {
+                path: '/accept-invitation',
+                element: <AcceptInvitationpage />,
             },
         ],
     },
@@ -100,6 +109,22 @@ const routes = createBrowserRouter([
             {
                 path: '/client-review',
                 element: <ClientReviewpage />,
+            },
+            {
+                path: '/journal-entries',
+                element: <JournalEntriespage />,
+            },
+            {
+                path: '/journal-entries/new',
+                element: <CreateJournalEntrypage />,
+            },
+            {
+                path: '/journal-entries/:id',
+                element: <ViewJournalEntrypage />,
+            },
+            {
+                path: '/journal-entries/:id/edit',
+                element: <EditJournalEntrypage />,
             },
         ],
     },

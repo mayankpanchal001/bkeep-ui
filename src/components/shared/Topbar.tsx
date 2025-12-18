@@ -1,6 +1,7 @@
 import { APP_TITLE } from '../../constants';
 import PageHeaderMenu from './PageHeaderMenu';
 import TenantSwitcher from './TenantSwitcher';
+import ThemeSwitcher from './ThemeSwitcher';
 import logo from '/logo.png';
 
 const Topbar = () => {
@@ -16,8 +17,9 @@ const Topbar = () => {
                     <span className="topbar-logo-text">{APP_TITLE}</span>
                 </div>
                 <div className="flex items-center gap-4">
-                    <div className="hidden md:block">
+                    <div className="hidden md:flex items-center gap-3">
                         <TenantSwitcher />
+                        <ThemeSwitcher />
                     </div>
                     <div className="inline-block lg:hidden">
                         <PageHeaderMenu />

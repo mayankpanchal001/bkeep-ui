@@ -4,7 +4,6 @@ import {
     FaBuilding,
     FaDatabase,
     FaLock,
-    FaPalette,
     FaUser,
     FaUsers,
 } from 'react-icons/fa';
@@ -57,7 +56,6 @@ const Settingspage = () => {
             : []),
         { id: 'notifications', label: 'Notifications', icon: <FaBell /> },
         { id: 'security', label: 'Security', icon: <FaLock /> },
-        { id: 'preferences', label: 'Preferences', icon: <FaPalette /> },
         { id: 'users', label: 'Users', icon: <FaUsers /> },
         { id: 'data', label: 'Data & Privacy', icon: <FaDatabase /> },
     ];

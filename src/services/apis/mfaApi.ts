@@ -44,19 +44,21 @@ export type MFA_TOTP_DISABLE_RESPONSE = {
 
 // API Functions
 export async function getTOTPStatus(): Promise<TOTP_STATUS_RESPONSE> {
-    const response = await axiosInstance.get('/auth/totp/status');
+    const response = await axiosInstance.get('/authenticator/status');
     return response.data;
 }
 
 export async function setupTOTP(): Promise<MFA_TOTP_SETUP_RESPONSE> {
-    const response = await axiosInstance.post('/auth/totp/setup');
+    const response = await axiosInstance.post('/authenticator/setup');
     return response.data;
 }
 
 export async function verifyTOTP(
     code: string
 ): Promise<MFA_TOTP_VERIFY_RESPONSE> {
-    const response = await axiosInstance.post('/auth/totp/verify', { code });
+    const response = await axiosInstance.post('/authenticator/verify', {
+        code,
+    });
     return response.data;
 }
 
@@ -106,7 +108,7 @@ export async function loginTOTP(
 }
 
 export async function disableTOTP(): Promise<MFA_TOTP_DISABLE_RESPONSE> {
-    const response = await axiosInstance.post('/auth/totp/disable');
+    const response = await axiosInstance.post('/authenticator/deactivate');
     return response.data;
 }
 

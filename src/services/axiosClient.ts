@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { API_ENDPOINT } from '../config/env';
+import { showErrorToast } from '../utills/toast';
 
 const axiosInstance = axios.create({
     // baseURL: import.meta.env.VITE_API_ENDPOINT,
@@ -23,26 +24,34 @@ axiosInstance.interceptors.request.use(
     (error) => Promise.reject(error)
 );
 
-// Response interceptor to handle 401 responses
-// axiosInstance.interceptors.response.use(
-//     (response) => response,
-//     (error) => {
-//         if (error.response?.status === 401) {
-//             // Handle unauthorized access
-//             showErrorToast('Your session has expired. Logging you out...');
-//             localStorage.removeItem('accessToken');
-//             localStorage.removeItem('user');
+// Response interceptor to handle 401 and 403 responses
+axiosInstance.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        if (error.response?.status === 401) {
+            // Handle unauthorized access
+            showErrorToast('Your session has expired. Logging you out...');
+            localStorage.removeItem('accessToken');
+            localStorage.removeItem('refreshToken');
+            localStorage.removeItem('user');
+            localStorage.removeItem('mfaEnabled');
 
-//             // Only redirect if we're not already on the login page
-//             if (
-//                 window.location.pathname !== '/login' &&
-//                 window.location.pathname !== '/'
-//             ) {
-//                 window.location.href = '/login';
-//             }
-//         }
-//         return Promise.reject(error);
-//     }
-// );
+            // Only redirect if we're not already on the login page
+            if (
+                window.location.pathname !== '/login' &&
+                window.location.pathname !== '/'
+            ) {
+                window.location.href = '/login';
+            }
+        } else if (error.response?.status === 403) {
+            // Handle forbidden access - don't logout, just show error
+            const message =
+                error.response?.data?.message ||
+                'You do not have permission to access this resource';
+            showErrorToast(message);
+        }
+        return Promise.reject(error);
+    }
+);
 
 export default axiosInstance;

@@ -1,12 +1,15 @@
 import { useEffect, useState, type ReactNode } from 'react';
+import { FaPlus } from 'react-icons/fa';
 import { useLocation } from 'react-router';
 import { useTenant } from '../../stores/tenant/tenantSelectore';
 import { PAGE_HEADERS } from '../homepage/constants';
+import AddNewModal from '../shared/AddNewModal';
 import Bottombar from '../shared/Bottombar';
 import Loading from '../shared/Loading';
 import PageHeader from '../shared/PageHeader';
 import Sidebar from '../shared/Sidebar';
 import Topbar from '../shared/Topbar';
+import Button from '../typography/Button';
 
 const ProtectedLayout = ({
     children,
@@ -18,6 +21,7 @@ const ProtectedLayout = ({
     const location = useLocation();
     const { selectedTenant } = useTenant();
     const [routeLoading, setRouteLoading] = useState(false);
+    const [showAddNewModal, setShowAddNewModal] = useState(false);
 
     useEffect(() => {
         setRouteLoading(true);
@@ -55,7 +59,19 @@ const ProtectedLayout = ({
                         {children}
                     </div>
                 </div>
-
+                <div className="absolute bottom-4 right-4">
+                    <Button
+                        isRounded={true}
+                        onClick={() => setShowAddNewModal(true)}
+                    >
+                        <FaPlus />
+                        Add New
+                    </Button>
+                </div>
+                <AddNewModal
+                    isOpen={showAddNewModal}
+                    onClose={() => setShowAddNewModal(false)}
+                />
                 <Bottombar />
             </div>
         </main>

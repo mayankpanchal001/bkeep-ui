@@ -11,8 +11,10 @@ export type Permission = {
 export type Tenant = {
     id: string;
     name: string;
-    schemaName: string;
-    isPrimary?: boolean;
+    isActive: boolean;
+    isPrimary: boolean;
+    createdAt: string;
+    updatedAt: string;
 };
 
 export type UserType = {

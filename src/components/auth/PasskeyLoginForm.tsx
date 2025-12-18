@@ -1,3 +1,4 @@
+import { startAuthentication } from '@simplewebauthn/browser';
 import { useEffect, useState } from 'react';
 import { FaFingerprint, FaTimes, FaUser } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router';
@@ -7,14 +8,13 @@ import {
     usePasskeyLoginVerify,
 } from '../../services/apis/authApi';
 import {
-    arrayBufferToBase64url,
-    base64urlToArrayBuffer,
     getStoredPasskeyUser,
     isWebAuthnSupported,
     removePasskeyUser,
     storePasskeyUser,
 } from '../../utills/passkey';
-import { showErrorToast } from '../../utills/toast';
+import { logPasskeyDiagnostics } from '../../utills/passkeyDebug';
+import { showErrorToast, showSuccessToast } from '../../utills/toast';
 import Button from '../typography/Button';
 
 export function PasskeyLoginForm() {
@@ -28,14 +28,23 @@ export function PasskeyLoginForm() {
     const { mutateAsync: verifyPasskeyLogin } = usePasskeyLoginVerify();
 
     useEffect(() => {
+        // Run diagnostics on page load
+        logPasskeyDiagnostics().catch(console.error);
+
         // Check for stored user ID
         const user = getStoredPasskeyUser();
+
+        console.log('Stored passkey user:', user);
         if (user) {
             setStoredUser(user);
+        } else {
+            console.warn('No stored passkey user found in localStorage');
         }
 
         // Check if WebAuthn is supported
-        setWebAuthnSupported(isWebAuthnSupported());
+        const isSupported = isWebAuthnSupported();
+        console.log('WebAuthn supported:', isSupported);
+        setWebAuthnSupported(isSupported);
 
         // Check if redirected from session timeout
         const urlParams = new URLSearchParams(window.location.search);
@@ -46,89 +55,91 @@ export function PasskeyLoginForm() {
 
     const handlePasskeyLogin = async () => {
         if (!storedUser) {
-            showErrorToast('No passkey account found');
-            return;
-        }
-
-        if (!webAuthnSupported) {
-            showErrorToast('WebAuthn is not supported in this browser');
+            showErrorToast(
+                'No passkey account found. Please sign in with email and password first to set up passkey login.'
+            );
             return;
         }
 
         setIsAuthenticating(true);
+        console.log('Starting passkey authentication for:', storedUser.email);
 
         try {
             // Step 1: Get challenge and credentials from server
+            console.log('Step 1: Requesting passkey login options...');
             const initResponse = await initPasskeyLogin({
                 email: storedUser.email,
             });
 
-            const options = initResponse.data;
-
-            // Step 2: Build the WebAuthn options
-            const publicKeyCredentialRequestOptions: PublicKeyCredentialRequestOptions =
-                {
-                    challenge: base64urlToArrayBuffer(options.challenge),
-                    allowCredentials: options.allowCredentials.map((cred) => ({
-                        id: base64urlToArrayBuffer(cred.id),
-                        type: cred.type,
-                        transports: cred.transports,
-                    })),
-                    timeout: options.timeout,
-                    userVerification: options.userVerification,
-                    rpId: options.rpId,
-                };
-
-            // Step 3: Get credential from authenticator
-            const credential = (await navigator.credentials.get({
-                publicKey: publicKeyCredentialRequestOptions,
-            })) as PublicKeyCredential | null;
-
-            if (!credential) {
-                throw new Error('No credential returned from authenticator');
+            if (!initResponse?.data) {
+                console.error('No data in init response:', initResponse);
+                throw new Error('Failed to get passkey options from server');
             }
 
-            const response =
-                credential.response as AuthenticatorAssertionResponse;
+            console.log('initResponse', initResponse);
+            const options = initResponse.data.options;
 
-            // Step 4: Send credential to server for verification
+            // Step 2: Start authentication ceremony using SimpleWebAuthn
+            console.log('Step 2: Starting authentication with passkey...');
+            const credential = await startAuthentication({
+                optionsJSON: options,
+            });
+
+            // Step 3: Send credential to server for verification
+            console.log('Step 3: Verifying credential with backend...');
             await verifyPasskeyLogin({
                 email: storedUser.email,
-                credentialId: arrayBufferToBase64url(credential.rawId),
-                authenticatorData: arrayBufferToBase64url(
-                    response.authenticatorData
-                ),
-                clientDataJSON: arrayBufferToBase64url(response.clientDataJSON),
-                signature: arrayBufferToBase64url(response.signature),
-                userHandle: response.userHandle
-                    ? arrayBufferToBase64url(response.userHandle)
-                    : undefined,
+                credential,
             });
 
             // Update last accessed timestamp
-            storePasskeyUser(
-                storedUser.email,
-                arrayBufferToBase64url(credential.rawId)
-            );
+            console.log('Authentication successful, updating stored user...');
+            storePasskeyUser(storedUser.email, credential.id);
             setStoredUser(getStoredPasskeyUser());
 
             // Navigation is handled by the verifyPasskeyLogin hook
+            console.log('Passkey login completed successfully');
         } catch (error) {
             console.error('Passkey authentication failed:', error);
-            // Error toast is shown by the hooks, but handle WebAuthn-specific errors
-            if (error instanceof DOMException) {
+
+            // Handle different error types
+            if (
+                error instanceof Error &&
+                error.message.includes('No passkeys found')
+            ) {
+                // Show the specific error message we threw
+                showErrorToast(error.message);
+            } else if (error instanceof DOMException) {
+                // Handle WebAuthn-specific errors
                 if (error.name === 'NotAllowedError') {
                     showErrorToast(
-                        'Authentication was cancelled or not allowed'
+                        'Authentication was cancelled or not allowed. Please try again.'
                     );
                 } else if (error.name === 'SecurityError') {
                     showErrorToast(
-                        'Security error during authentication. Please try again.'
+                        'Security error during authentication. Please ensure you are on a secure connection (HTTPS).'
                     );
                 } else if (error.name === 'AbortError') {
-                    showErrorToast('Authentication was aborted');
+                    showErrorToast(
+                        'Authentication was aborted. Please try again.'
+                    );
+                } else if (error.name === 'NotSupportedError') {
+                    showErrorToast(
+                        'Your device does not support this type of passkey.'
+                    );
+                } else if (error.name === 'InvalidStateError') {
+                    showErrorToast('Passkey is not registered on this device.');
+                } else {
+                    showErrorToast(`Authentication error: ${error.message}`);
                 }
+            } else if (error instanceof Error) {
+                // Handle generic errors
+                showErrorToast(
+                    error.message ||
+                        'Passkey authentication failed. Please try again.'
+                );
             }
+            // Note: API errors are handled by the usePasskeyLoginInit and usePasskeyLoginVerify hooks
         } finally {
             setIsAuthenticating(false);
         }
@@ -163,13 +174,51 @@ export function PasskeyLoginForm() {
 
     if (!storedUser) {
         return (
-            <div className="text-center py-8">
-                <p className="text-sm text-primary-75 mb-4">
-                    No passkey account found. Please sign in with email and
-                    password first.
-                </p>
+            <div className="space-y-6 text-center py-8">
+                <div className="flex justify-center mb-4">
+                    <div className="w-16 h-16 rounded-full bg-primary-10 flex items-center justify-center">
+                        <FaFingerprint className="w-8 h-8 text-primary-50" />
+                    </div>
+                </div>
+
+                <div>
+                    <h3 className="text-lg font-semibold text-primary mb-2">
+                        No Passkey Account Found
+                    </h3>
+                    <p className="text-sm text-primary-75 mb-4">
+                        To use passkey login, you need to:
+                    </p>
+                </div>
+
+                <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 text-left">
+                    <ol className="text-sm text-blue-900 space-y-2">
+                        <li className="flex gap-2">
+                            <span className="font-semibold">1.</span>
+                            <span>Sign in with your email and password</span>
+                        </li>
+                        <li className="flex gap-2">
+                            <span className="font-semibold">2.</span>
+                            <span>Go to Settings → Security</span>
+                        </li>
+                        <li className="flex gap-2">
+                            <span className="font-semibold">3.</span>
+                            <span>
+                                Click "Passkey Management" and register a
+                                passkey
+                            </span>
+                        </li>
+                        <li className="flex gap-2">
+                            <span className="font-semibold">4.</span>
+                            <span>Return here to use passkey login</span>
+                        </li>
+                    </ol>
+                </div>
+
                 <Link to="/login">
-                    <Button variant="primary">Go to Sign In</Button>
+                    <Button variant="primary" size="lg" className="w-full">
+                        <FaUser className="w-4 h-4" />
+                        Sign In with Email & Password
+                    </Button>
                 </Link>
             </div>
         );
@@ -180,7 +229,7 @@ export function PasskeyLoginForm() {
             {/* Session Timeout Alert */}
             {showSessionTimeout && (
                 <div className="border border-blue-200 bg-blue-50 rounded-lg p-4 flex items-start gap-3">
-                    <div className="flex-shrink-0 mt-0.5">
+                    <div className="shrink-0 mt-0.5">
                         <svg
                             className="w-5 h-5 text-blue-600"
                             fill="currentColor"
@@ -203,7 +252,7 @@ export function PasskeyLoginForm() {
                     </div>
                     <button
                         onClick={() => setShowSessionTimeout(false)}
-                        className="flex-shrink-0 text-blue-600 hover:text-blue-800"
+                        className="shrink-0 text-blue-600 hover:text-blue-800"
                     >
                         <FaTimes className="w-4 h-4" />
                     </button>
@@ -213,7 +262,7 @@ export function PasskeyLoginForm() {
             {/* User ID Section */}
             <div className="border border-primary-10 bg-gray-50 rounded-lg p-4 mb-4">
                 <div className="flex items-center gap-3">
-                    <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
+                    <div className="shrink-0 w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
                         <FaUser className="w-5 h-5 text-gray-600" />
                     </div>
                     <div className="flex-1 min-w-0">
@@ -263,7 +312,7 @@ export function PasskeyLoginForm() {
                 <FaFingerprint className="w-5 h-5" />
                 {isAuthenticating
                     ? 'Authenticating with passkey...'
-                    : 'Sign in with Passkey'}
+                    : 'Sign in with Passkey '}
             </Button>
 
             {/* Other Actions */}
@@ -276,7 +325,7 @@ export function PasskeyLoginForm() {
                         onClick={handleUseDifferentAccount}
                         className="w-full flex items-center gap-3 px-4 py-3 rounded-lg border border-primary-10 bg-white hover:bg-primary-5 transition-colors text-left"
                     >
-                        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary-10 flex items-center justify-center">
+                        <div className="shrink-0 w-8 h-8 rounded-full bg-primary-10 flex items-center justify-center">
                             <FaUser className="w-4 h-4 text-primary" />
                         </div>
                         <span className="text-sm text-primary-75">
@@ -287,7 +336,7 @@ export function PasskeyLoginForm() {
                         onClick={handleRemoveUserID}
                         className="w-full flex items-center gap-3 px-4 py-3 rounded-lg border border-primary-10 bg-white hover:bg-primary-5 transition-colors text-left"
                     >
-                        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-red-10 flex items-center justify-center">
+                        <div className="shrink-0 w-8 h-8 rounded-full bg-red-10 flex items-center justify-center">
                             <FaTimes className="w-4 h-4 text-red-600" />
                         </div>
                         <span className="text-sm text-primary-75">
