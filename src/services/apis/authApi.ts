@@ -456,24 +456,26 @@ type VerifyInvitationResponse = {
     statusCode: number;
     message: string;
     data?: {
+        requiresPassword: boolean;
         email: string;
         name: string;
-        role: {
+        tenantName: string;
+        role?: {
             id: string;
             name: string;
             displayName: string;
         };
-        tenant: {
+        tenant?: {
             id: string;
             name: string;
         };
-        expiresAt: string;
+        expiresAt?: string;
     };
 };
 
 type AcceptInvitationPayload = {
     token: string;
-    password: string;
+    password?: string;
 };
 
 type AcceptInvitationResponse = {

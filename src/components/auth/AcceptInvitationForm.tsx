@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
     FaBuilding,
     FaCheck,
@@ -53,6 +53,37 @@ const AcceptInvitationForm = () => {
     const { mutateAsync: acceptInvitation, isPending: isAccepting } =
         useAcceptInvitation();
 
+    const [hasAutoAccepted, setHasAutoAccepted] = useState(false);
+
+    // Auto-accept invitation if password is not required
+    useEffect(() => {
+        const invitationData = verificationData?.data;
+        if (
+            invitationData &&
+            invitationData.requiresPassword === false &&
+            !isAccepting &&
+            !isVerifying &&
+            !hasAutoAccepted &&
+            token
+        ) {
+            setHasAutoAccepted(true);
+            // Automatically accept invitation without password
+            acceptInvitation({
+                token,
+            }).catch((error) => {
+                console.error('Auto-accept invitation error:', error);
+                setHasAutoAccepted(false); // Allow retry on error
+            });
+        }
+    }, [
+        verificationData?.data,
+        token,
+        isAccepting,
+        isVerifying,
+        hasAutoAccepted,
+        acceptInvitation,
+    ]);
+
     // Real-time password validation
     const passwordValidation = useMemo(() => {
         return PASSWORD_REQUIREMENTS.map((req) => ({
@@ -83,6 +114,20 @@ const AcceptInvitationForm = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        const invitationData = verificationData?.data;
+
+        // If password is not required, accept immediately
+        if (invitationData?.requiresPassword === false) {
+            try {
+                await acceptInvitation({
+                    token,
+                });
+            } catch (error) {
+                console.error('Accept invitation error:', error);
+            }
+            return;
+        }
 
         const newErrors: Record<string, string> = {};
 
@@ -157,6 +202,24 @@ const AcceptInvitationForm = () => {
     }
 
     const invitationData = verificationData.data;
+    const requiresPassword = invitationData?.requiresPassword !== false;
+
+    // Show loading state if auto-accepting
+    if (!requiresPassword && isAccepting) {
+        return (
+            <div className="flex flex-col items-center justify-center py-16">
+                <div className="relative">
+                    <FaSpinner className="w-16 h-16 text-primary animate-spin mb-6" />
+                </div>
+                <h2 className="text-2xl font-bold text-primary mb-3">
+                    Accepting Invitation
+                </h2>
+                <p className="text-sm text-primary-50 text-center max-w-sm">
+                    Please wait while we set up your account...
+                </p>
+            </div>
+        );
+    }
 
     return (
         <div className="space-y-6">
@@ -166,7 +229,9 @@ const AcceptInvitationForm = () => {
                     Accept Invitation
                 </h2>
                 <p className="text-sm text-primary-50">
-                    Complete your account setup to get started
+                    {requiresPassword
+                        ? 'Complete your account setup to get started'
+                        : 'Review your invitation details'}
                 </p>
             </div>
 
@@ -221,7 +286,8 @@ const AcceptInvitationForm = () => {
                                 </div>
                             </div>
                         )}
-                        {invitationData.tenant && (
+                        {(invitationData.tenantName ||
+                            invitationData.tenant) && (
                             <div className="flex items-start gap-4 p-3 bg-white/60 rounded-lg backdrop-blur-sm">
                                 <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
                                     <FaBuilding className="w-5 h-5 text-primary" />
@@ -231,7 +297,8 @@ const AcceptInvitationForm = () => {
                                         Organization
                                     </p>
                                     <p className="text-base font-semibold text-primary truncate">
-                                        {invitationData.tenant.name}
+                                        {invitationData.tenantName ||
+                                            invitationData.tenant?.name}
                                     </p>
                                 </div>
                             </div>
@@ -240,8 +307,9 @@ const AcceptInvitationForm = () => {
                 </div>
             )}
 
-            {/* Password Form */}
-            <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Password Form - Only show if password is required */}
+            {requiresPassword ? (
+                <form onSubmit={handleSubmit} className="space-y-6">
                 {/* Password Field */}
                 <div>
                     <InputField
@@ -363,7 +431,29 @@ const AcceptInvitationForm = () => {
                         ? 'Creating Account...'
                         : 'Accept & Create Account'}
                 </Button>
-            </form>
+                </form>
+            ) : (
+                <div className="space-y-6">
+                    <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
+                        <p className="text-sm text-blue-800 text-center">
+                            No password required. Click the button below to accept
+                            the invitation.
+                        </p>
+                    </div>
+                    <Button
+                        type="button"
+                        variant="primary"
+                        className="w-full"
+                        onClick={handleSubmit}
+                        loading={isAccepting}
+                        disabled={isAccepting}
+                    >
+                        {isAccepting
+                            ? 'Accepting Invitation...'
+                            : 'Accept Invitation'}
+                    </Button>
+                </div>
+            )}
 
             {/* Footer Link */}
             <div className="pt-4 border-t border-primary-10">
