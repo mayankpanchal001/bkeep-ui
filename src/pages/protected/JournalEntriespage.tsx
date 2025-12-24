@@ -147,12 +147,6 @@ export default function JournalEntriespage() {
             <PageHeader
                 title="Journal Entries"
                 subtitle={`${total} total entries`}
-                actions={
-                    <Button variant="primary" onClick={handleCreateNew}>
-                        <FaPlus className="w-4 h-4" />
-                        New Journal Entry
-                    </Button>
-                }
             />
 
             {/* Filters */}

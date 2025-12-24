@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { AuthenticationResponseJSON } from '@simplewebauthn/types';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router';
@@ -484,7 +485,30 @@ type AcceptInvitationResponse = {
             id: string;
             email: string;
             name: string;
-            role: string;
+            role?: {
+                id: string;
+                name: string;
+                displayName: string;
+            };
+            roles?: Array<{
+                id: string;
+                name: string;
+                displayName: string;
+            }>;
+            permissions?: Array<{
+                id: string;
+                name: string;
+                displayName: string;
+            }>;
+            tenants?: Array<{
+                id: string;
+                name: string;
+                isPrimary: boolean;
+                isActive?: boolean;
+                createdAt?: string;
+                updatedAt?: string;
+            }>;
+            selectedTenantId?: string;
         };
         accessToken: string;
         refreshToken: string;
@@ -534,9 +558,34 @@ export const useAcceptInvitation = () => {
             );
 
             if (data?.data) {
+                // Transform user data to match UserType
+                const userData = {
+                    ...data.data.user,
+                    roles:
+                        data.data.user.roles ||
+                        (data.data.user.role ? [data.data.user.role] : []),
+                    role: data.data.user.role || {
+                        id: '',
+                        name: '',
+                        displayName: '',
+                    },
+                    permissions: data.data.user.permissions || [],
+                    tenants: (data.data.user.tenants || []).map(
+                        (tenant: any) => ({
+                            ...tenant,
+                            isActive: tenant.isActive ?? true,
+                            createdAt:
+                                tenant.createdAt || new Date().toISOString(),
+                            updatedAt:
+                                tenant.updatedAt || new Date().toISOString(),
+                        })
+                    ),
+                    selectedTenantId: data.data.user.selectedTenantId || '',
+                };
+
                 // Set auth data
                 setAuth(
-                    data.data.user,
+                    userData,
                     data.data.accessToken,
                     data.data.refreshToken
                 );

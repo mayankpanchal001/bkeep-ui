@@ -1,40 +1,92 @@
+import { lazy, Suspense } from 'react';
 import { createBrowserRouter, Navigate } from 'react-router';
-import {
-    DataPrivacyTab,
-    RolesTab,
-    SecurityTab,
-    TenantsTab,
-    UsersTab,
-} from '../components/settings';
-import {
-    NotificationsTabWrapper,
-    ProfileTabWrapper,
-} from '../components/settings/SettingsTabWrappers';
-import BalanceSheetpage from '../pages/protected/BalanceSheetpage';
-import ChartOfAccountspage from '../pages/protected/ChartOfAccountspage';
-import ClientReviewpage from '../pages/protected/ClientReviewpage';
-import CreateJournalEntrypage from '../pages/protected/CreateJournalEntrypage';
-import Dashboardpage from '../pages/protected/Dashboardpage';
-import Documentspage from '../pages/protected/Documentspage';
-import EditJournalEntrypage from '../pages/protected/EditJournalEntrypage';
-import Expensespage from '../pages/protected/Expensespage';
-import IncomeStatementpage from '../pages/protected/IncomeStatementpage';
-import Invoicepage from '../pages/protected/Invoicepage';
-import JournalEntriespage from '../pages/protected/JournalEntriespage';
-import Reportpage from '../pages/protected/Reportpage';
-import Settingspage from '../pages/protected/Settingspage';
-import Transactionpage from '../pages/protected/Transactionpage';
-import ViewJournalEntrypage from '../pages/protected/ViewJournalEntrypage';
-import AcceptInvitationpage from '../pages/public/AcceptInvitationpage';
-import ForgotPasswordpage from '../pages/public/ForgotPasswordpage';
-import Homepage from '../pages/public/Homepage';
-import Loginpage from '../pages/public/Loginpage';
-import OtpVerificationpage from '../pages/public/OtpVerificationpage';
-import PasskeyLoginpage from '../pages/public/PasskeyLoginpage';
-import Registerpage from '../pages/public/Registerpage';
-import ResetPasswordpage from '../pages/public/ResetPasswordpage';
+import Loading from '../components/shared/Loading';
 import ProtectedRoutes from './ProtectedRoutes';
 import PublicRoutes from './PublicRoutes';
+
+// Lazy load pages for code splitting
+const Homepage = lazy(() => import('../pages/public/Homepage'));
+const Loginpage = lazy(() => import('../pages/public/Loginpage'));
+const PasskeyLoginpage = lazy(() => import('../pages/public/PasskeyLoginpage'));
+const Registerpage = lazy(() => import('../pages/public/Registerpage'));
+const ForgotPasswordpage = lazy(
+    () => import('../pages/public/ForgotPasswordpage')
+);
+const OtpVerificationpage = lazy(
+    () => import('../pages/public/OtpVerificationpage')
+);
+const ResetPasswordpage = lazy(
+    () => import('../pages/public/ResetPasswordpage')
+);
+const AcceptInvitationpage = lazy(
+    () => import('../pages/public/AcceptInvitationpage')
+);
+
+const Dashboardpage = lazy(() => import('../pages/protected/Dashboardpage'));
+const Transactionpage = lazy(
+    () => import('../pages/protected/Transactionpage')
+);
+const Reportpage = lazy(() => import('../pages/protected/Reportpage'));
+const IncomeStatementpage = lazy(
+    () => import('../pages/protected/IncomeStatementpage')
+);
+const BalanceSheetpage = lazy(
+    () => import('../pages/protected/BalanceSheetpage')
+);
+const ChartOfAccountspage = lazy(
+    () => import('../pages/protected/ChartOfAccountspage')
+);
+const Settingspage = lazy(() => import('../pages/protected/Settingspage'));
+const Invoicepage = lazy(() => import('../pages/protected/Invoicepage'));
+const Expensespage = lazy(() => import('../pages/protected/Expensespage'));
+const Documentspage = lazy(() => import('../pages/protected/Documentspage'));
+const ClientReviewpage = lazy(
+    () => import('../pages/protected/ClientReviewpage')
+);
+const JournalEntriespage = lazy(
+    () => import('../pages/protected/JournalEntriespage')
+);
+const CreateJournalEntrypage = lazy(
+    () => import('../pages/protected/CreateJournalEntrypage')
+);
+const ViewJournalEntrypage = lazy(
+    () => import('../pages/protected/ViewJournalEntrypage')
+);
+const EditJournalEntrypage = lazy(
+    () => import('../pages/protected/EditJournalEntrypage')
+);
+
+// Lazy load settings components
+const ProfileTabWrapper = lazy(() =>
+    import('../components/settings/SettingsTabWrappers').then((module) => ({
+        default: module.ProfileTabWrapper,
+    }))
+);
+const NotificationsTabWrapper = lazy(() =>
+    import('../components/settings/SettingsTabWrappers').then((module) => ({
+        default: module.NotificationsTabWrapper,
+    }))
+);
+const DataPrivacyTab = lazy(
+    () => import('../components/settings/DataPrivacyTab')
+);
+const RolesTab = lazy(() => import('../components/settings/RolesTab'));
+const SecurityTab = lazy(() => import('../components/settings/SecurityTab'));
+const TenantsTab = lazy(() => import('../components/settings/TenantsTab'));
+const UsersTab = lazy(() => import('../components/settings/UsersTab'));
+
+// Helper component to wrap lazy-loaded routes with Suspense
+const withSuspense = (
+    Component: React.LazyExoticComponent<
+        React.ComponentType<Record<string, never>>
+    >
+) => {
+    return (
+        <Suspense fallback={<Loading />}>
+            <Component />
+        </Suspense>
+    );
+};
 
 const routes = createBrowserRouter([
     {
@@ -42,35 +94,35 @@ const routes = createBrowserRouter([
         children: [
             {
                 path: '/',
-                element: <Homepage />,
+                element: withSuspense(Homepage),
             },
             {
                 path: '/login',
-                element: <Loginpage />,
+                element: withSuspense(Loginpage),
             },
             {
                 path: '/passkey-login',
-                element: <PasskeyLoginpage />,
+                element: withSuspense(PasskeyLoginpage),
             },
             {
                 path: '/register',
-                element: <Registerpage />,
+                element: withSuspense(Registerpage),
             },
             {
                 path: '/forgot-password',
-                element: <ForgotPasswordpage />,
+                element: withSuspense(ForgotPasswordpage),
             },
             {
                 path: '/enter-otp',
-                element: <OtpVerificationpage />,
+                element: withSuspense(OtpVerificationpage),
             },
             {
                 path: '/reset-password',
-                element: <ResetPasswordpage />,
+                element: withSuspense(ResetPasswordpage),
             },
             {
                 path: '/accept-invitation',
-                element: <AcceptInvitationpage />,
+                element: withSuspense(AcceptInvitationpage),
             },
         ],
     },
@@ -79,31 +131,31 @@ const routes = createBrowserRouter([
         children: [
             {
                 path: '/dashboard',
-                element: <Dashboardpage />,
+                element: withSuspense(Dashboardpage),
             },
             {
                 path: '/transactions',
-                element: <Transactionpage />,
+                element: withSuspense(Transactionpage),
             },
             {
                 path: '/reports',
-                element: <Reportpage />,
+                element: withSuspense(Reportpage),
             },
             {
                 path: '/reports/income-statement',
-                element: <IncomeStatementpage />,
+                element: withSuspense(IncomeStatementpage),
             },
             {
                 path: '/reports/balance-sheet',
-                element: <BalanceSheetpage />,
+                element: withSuspense(BalanceSheetpage),
             },
             {
                 path: '/chart-of-accounts',
-                element: <ChartOfAccountspage />,
+                element: withSuspense(ChartOfAccountspage),
             },
             {
                 path: '/settings',
-                element: <Settingspage />,
+                element: withSuspense(Settingspage),
                 children: [
                     {
                         index: true,
@@ -111,65 +163,65 @@ const routes = createBrowserRouter([
                     },
                     {
                         path: '/settings/profile',
-                        element: <ProfileTabWrapper />,
+                        element: withSuspense(ProfileTabWrapper),
                     },
                     {
                         path: '/settings/tenants',
-                        element: <TenantsTab />,
+                        element: withSuspense(TenantsTab),
                     },
                     {
                         path: '/settings/users',
-                        element: <UsersTab />,
+                        element: withSuspense(UsersTab),
                     },
                     {
                         path: '/settings/roles',
-                        element: <RolesTab />,
+                        element: withSuspense(RolesTab),
                     },
                     {
                         path: '/settings/security',
-                        element: <SecurityTab />,
+                        element: withSuspense(SecurityTab),
                     },
                     {
                         path: '/settings/data',
-                        element: <DataPrivacyTab />,
+                        element: withSuspense(DataPrivacyTab),
                     },
                     {
                         path: '/settings/notifications',
-                        element: <NotificationsTabWrapper />,
+                        element: withSuspense(NotificationsTabWrapper),
                     },
                 ],
             },
             {
                 path: '/invoices',
-                element: <Invoicepage />,
+                element: withSuspense(Invoicepage),
             },
             {
                 path: '/expenses',
-                element: <Expensespage />,
+                element: withSuspense(Expensespage),
             },
             {
                 path: '/documents',
-                element: <Documentspage />,
+                element: withSuspense(Documentspage),
             },
             {
                 path: '/client-review',
-                element: <ClientReviewpage />,
+                element: withSuspense(ClientReviewpage),
             },
             {
                 path: '/journal-entries',
-                element: <JournalEntriespage />,
+                element: withSuspense(JournalEntriespage),
             },
             {
                 path: '/journal-entries/new',
-                element: <CreateJournalEntrypage />,
+                element: withSuspense(CreateJournalEntrypage),
             },
             {
                 path: '/journal-entries/:id',
-                element: <ViewJournalEntrypage />,
+                element: withSuspense(ViewJournalEntrypage),
             },
             {
                 path: '/journal-entries/:id/edit',
-                element: <EditJournalEntrypage />,
+                element: withSuspense(EditJournalEntrypage),
             },
         ],
     },

@@ -1,58 +1,13 @@
-import { FaEdit, FaTrash } from 'react-icons/fa';
-import { useNavigate, useParams } from 'react-router';
+import { useParams } from 'react-router';
 import Loading from '../../components/shared/Loading';
 import PageHeader from '../../components/shared/PageHeader';
-import Button from '../../components/typography/Button';
-import {
-    useDeleteJournalEntry,
-    useJournalEntry,
-    usePostJournalEntry,
-    useVoidJournalEntry,
-} from '../../services/apis/journalApi';
+import { useJournalEntry } from '../../services/apis/journalApi';
 
 export default function ViewJournalEntrypage() {
     const { id } = useParams<{ id: string }>();
-    const navigate = useNavigate();
     const { data, isLoading } = useJournalEntry(id!);
-    const { mutate: deleteEntry } = useDeleteJournalEntry();
-    const { mutate: postEntry } = usePostJournalEntry();
-    const { mutate: voidEntry } = useVoidJournalEntry();
 
     const journalEntry = data?.data?.journalEntry;
-
-    const handleEdit = () => {
-        navigate(`/journal-entries/${id}/edit`);
-    };
-
-    const handleDelete = () => {
-        if (
-            window.confirm(
-                'Are you sure you want to delete this journal entry?'
-            )
-        ) {
-            deleteEntry(id!, {
-                onSuccess: () => {
-                    navigate('/journal-entries');
-                },
-            });
-        }
-    };
-
-    const handlePost = () => {
-        if (
-            window.confirm('Are you sure you want to post this journal entry?')
-        ) {
-            postEntry(id!);
-        }
-    };
-
-    const handleVoid = () => {
-        if (
-            window.confirm('Are you sure you want to void this journal entry?')
-        ) {
-            voidEntry(id!);
-        }
-    };
 
     if (isLoading) {
         return <Loading />;
@@ -97,33 +52,6 @@ export default function ViewJournalEntrypage() {
                 subtitle={new Date(
                     journalEntry.journalDate
                 ).toLocaleDateString()}
-                actions={
-                    <div className="flex gap-2">
-                        {journalEntry.status === 'draft' && (
-                            <>
-                                <Button variant="outline" onClick={handleEdit}>
-                                    <FaEdit className="w-4 h-4" />
-                                    Edit
-                                </Button>
-                                <Button variant="primary" onClick={handlePost}>
-                                    Post
-                                </Button>
-                                <Button
-                                    variant="outline"
-                                    onClick={handleDelete}
-                                >
-                                    <FaTrash className="w-4 h-4" />
-                                    Delete
-                                </Button>
-                            </>
-                        )}
-                        {journalEntry.status === 'posted' && (
-                            <Button variant="outline" onClick={handleVoid}>
-                                Void
-                            </Button>
-                        )}
-                    </div>
-                }
             />
 
             {/* Status and Details */}

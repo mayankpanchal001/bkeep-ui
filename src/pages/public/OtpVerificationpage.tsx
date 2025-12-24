@@ -1,14 +1,14 @@
 import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router';
-import { useAuth } from '../../stores/auth/authSelectore';
-import { useTenant } from '../../stores/tenant/tenantSelectore';
 import Button from '../../components/typography/Button';
 import { InputField } from '../../components/typography/InputFields';
 import { useVerifyMfa } from '../../services/apis/authApi';
 import { useTOTPLogin } from '../../services/apis/mfaApi';
-import { showSuccessToast } from '../../utills/toast';
-import { storePasskeyUser } from '../../utills/passkey';
+import { useAuth } from '../../stores/auth/authSelectore';
+import { useTenant } from '../../stores/tenant/tenantSelectore';
 import { Tenant } from '../../types';
+import { storePasskeyUser } from '../../utills/passkey';
+import { showSuccessToast } from '../../utills/toast';
 
 const OtpVerificationpage = () => {
     const location = useLocation();
@@ -68,13 +68,41 @@ const OtpVerificationpage = () => {
                     payload?.accessToken &&
                     payload?.refreshToken
                 ) {
+                    // Transform tenants to include all required properties
+                    const transformedTenants = (payload.user.tenants || []).map(
+                        (tenant: {
+                            id: string;
+                            name: string;
+                            isPrimary: boolean;
+                            isActive?: boolean;
+                            createdAt?: string;
+                            updatedAt?: string;
+                        }) => ({
+                            ...tenant,
+                            isActive: tenant.isActive ?? true,
+                            createdAt:
+                                tenant.createdAt || new Date().toISOString(),
+                            updatedAt:
+                                tenant.updatedAt || new Date().toISOString(),
+                        })
+                    );
+
+                    // Transform user data to match UserType
+                    const userData = {
+                        ...payload.user,
+                        roles: payload.user.role ? [payload.user.role] : [],
+                        permissions: payload.user.permissions || [],
+                        tenants: transformedTenants,
+                        selectedTenantId: payload.user.selectedTenantId || '',
+                    };
+
                     setAuth(
-                        payload.user,
+                        userData,
                         payload.accessToken,
                         payload.refreshToken
                     );
 
-                    const tenants = buildTenantsFromLogin(payload.user.tenants);
+                    const tenants = buildTenantsFromLogin(transformedTenants);
                     setTenants(tenants, {
                         selectTenantId: payload.user.selectedTenantId,
                     });
