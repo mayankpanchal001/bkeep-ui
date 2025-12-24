@@ -1,14 +1,14 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import {
+    FaBuilding,
+    FaCheck,
     FaCheckCircle,
     FaEnvelope,
     FaExclamationTriangle,
-    FaEye,
-    FaEyeSlash,
     FaLock,
     FaSpinner,
+    FaTimes,
     FaUser,
-    FaBuilding,
 } from 'react-icons/fa';
 import { useNavigate, useSearchParams } from 'react-router';
 import {
@@ -16,6 +16,23 @@ import {
     useVerifyInvitation,
 } from '../../services/apis/authApi';
 import Button from '../typography/Button';
+import { InputField } from '../typography/InputFields';
+
+interface PasswordRequirement {
+    label: string;
+    test: (pwd: string) => boolean;
+}
+
+const PASSWORD_REQUIREMENTS: PasswordRequirement[] = [
+    { label: 'At least 8 characters', test: (pwd) => pwd.length >= 8 },
+    { label: 'One uppercase letter', test: (pwd) => /[A-Z]/.test(pwd) },
+    { label: 'One lowercase letter', test: (pwd) => /[a-z]/.test(pwd) },
+    { label: 'One number', test: (pwd) => /[0-9]/.test(pwd) },
+    {
+        label: 'One special character',
+        test: (pwd) => /[!@#$%^&*(),.?":{}|<>]/.test(pwd),
+    },
+];
 
 const AcceptInvitationForm = () => {
     const [searchParams] = useSearchParams();
@@ -24,8 +41,6 @@ const AcceptInvitationForm = () => {
 
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    const [showPassword, setShowPassword] = useState(false);
-    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [errors, setErrors] = useState<Record<string, string>>({});
 
     // Verify invitation token
@@ -38,24 +53,32 @@ const AcceptInvitationForm = () => {
     const { mutateAsync: acceptInvitation, isPending: isAccepting } =
         useAcceptInvitation();
 
-    const validatePassword = (pwd: string): string[] => {
-        const issues: string[] = [];
-        if (pwd.length < 8) {
-            issues.push('at least 8 characters');
+    // Real-time password validation
+    const passwordValidation = useMemo(() => {
+        return PASSWORD_REQUIREMENTS.map((req) => ({
+            ...req,
+            met: req.test(password),
+        }));
+    }, [password]);
+
+    const isPasswordValid = useMemo(() => {
+        return passwordValidation.every((req) => req.met);
+    }, [passwordValidation]);
+
+    const handlePasswordChange = (value: string) => {
+        setPassword(value);
+        // Clear password error when user starts typing
+        if (errors.password) {
+            setErrors((prev) => ({ ...prev, password: '' }));
         }
-        if (!/[A-Z]/.test(pwd)) {
-            issues.push('one uppercase letter');
+    };
+
+    const handleConfirmPasswordChange = (value: string) => {
+        setConfirmPassword(value);
+        // Clear confirm password error when user starts typing
+        if (errors.confirmPassword) {
+            setErrors((prev) => ({ ...prev, confirmPassword: '' }));
         }
-        if (!/[a-z]/.test(pwd)) {
-            issues.push('one lowercase letter');
-        }
-        if (!/[0-9]/.test(pwd)) {
-            issues.push('one number');
-        }
-        if (!/[!@#$%^&*(),.?":{}|<>]/.test(pwd)) {
-            issues.push('one special character');
-        }
-        return issues;
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -64,9 +87,11 @@ const AcceptInvitationForm = () => {
         const newErrors: Record<string, string> = {};
 
         // Validate password
-        const passwordIssues = validatePassword(password);
-        if (passwordIssues.length > 0) {
-            newErrors.password = `Password must contain ${passwordIssues.join(', ')}`;
+        if (!isPasswordValid) {
+            const unmetRequirements = passwordValidation
+                .filter((req) => !req.met)
+                .map((req) => req.label.toLowerCase());
+            newErrors.password = `Password must contain ${unmetRequirements.join(', ')}`;
         }
 
         // Validate confirm password
@@ -92,13 +117,15 @@ const AcceptInvitationForm = () => {
     // Loading state
     if (isVerifying) {
         return (
-            <div className="text-center py-12">
-                <FaSpinner className="w-12 h-12 text-primary mx-auto animate-spin mb-4" />
-                <h2 className="text-xl font-semibold text-primary mb-2">
+            <div className="flex flex-col items-center justify-center py-16">
+                <div className="relative">
+                    <FaSpinner className="w-16 h-16 text-primary animate-spin mb-6" />
+                </div>
+                <h2 className="text-2xl font-bold text-primary mb-3">
                     Verifying Invitation
                 </h2>
-                <p className="text-primary-50">
-                    Please wait while we verify your invitation...
+                <p className="text-sm text-primary-50 text-center max-w-sm">
+                    Please wait while we verify your invitation token...
                 </p>
             </div>
         );
@@ -107,12 +134,14 @@ const AcceptInvitationForm = () => {
     // Error state
     if (verificationError || !verificationData?.success) {
         return (
-            <div className="text-center py-8">
-                <FaExclamationTriangle className="w-12 h-12 text-red-500 mx-auto mb-4" />
-                <h2 className="text-xl font-semibold text-primary mb-2">
+            <div className="flex flex-col items-center justify-center py-12">
+                <div className="w-20 h-20 rounded-full bg-red-50 flex items-center justify-center mb-6">
+                    <FaExclamationTriangle className="w-10 h-10 text-red-500" />
+                </div>
+                <h2 className="text-2xl font-bold text-primary mb-3">
                     Invalid or Expired Invitation
                 </h2>
-                <p className="text-primary-50 mb-6">
+                <p className="text-sm text-primary-50 text-center mb-8 max-w-md">
                     {verificationData?.message ||
                         'This invitation link is invalid or has expired. Please contact your administrator for a new invitation.'}
                 </p>
@@ -130,9 +159,10 @@ const AcceptInvitationForm = () => {
     const invitationData = verificationData.data;
 
     return (
-        <>
-            <div className="mb-6">
-                <h2 className="text-2xl font-bold text-primary mb-2">
+        <div className="space-y-6">
+            {/* Header */}
+            <div className="text-center mb-8">
+                <h2 className="text-3xl font-bold text-primary mb-2">
                     Accept Invitation
                 </h2>
                 <p className="text-sm text-primary-50">
@@ -140,197 +170,185 @@ const AcceptInvitationForm = () => {
                 </p>
             </div>
 
-            {/* Invitation Details */}
+            {/* Invitation Details Card */}
             {invitationData && (
-                <div className="bg-primary-5 rounded-xl p-4 mb-6 space-y-3">
-                    <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-lg bg-white flex items-center justify-center shrink-0">
-                            <FaUser className="w-4 h-4 text-primary" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                            <p className="text-xs text-primary-50">Full Name</p>
-                            <p className="text-sm font-medium text-primary truncate">
-                                {invitationData.name}
-                            </p>
-                        </div>
+                <div className="bg-gradient-to-br from-primary-5 to-primary-10 rounded-2xl p-6 mb-8 border border-primary-20 shadow-sm">
+                    <div className="flex items-center gap-2 mb-4">
+                        <FaCheckCircle className="w-5 h-5 text-primary" />
+                        <h3 className="text-sm font-semibold text-primary uppercase tracking-wide">
+                            Invitation Details
+                        </h3>
                     </div>
-                    <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-lg bg-white flex items-center justify-center shrink-0">
-                            <FaEnvelope className="w-4 h-4 text-primary" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                            <p className="text-xs text-primary-50">
-                                Email Address
-                            </p>
-                            <p className="text-sm font-medium text-primary truncate">
-                                {invitationData.email}
-                            </p>
-                        </div>
-                    </div>
-                    {invitationData.role && (
-                        <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-lg bg-white flex items-center justify-center shrink-0">
-                                <FaCheckCircle className="w-4 h-4 text-primary" />
+                    <div className="space-y-4">
+                        <div className="flex items-start gap-4 p-3 bg-white/60 rounded-lg backdrop-blur-sm">
+                            <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+                                <FaUser className="w-5 h-5 text-primary" />
                             </div>
                             <div className="flex-1 min-w-0">
-                                <p className="text-xs text-primary-50">Role</p>
-                                <p className="text-sm font-medium text-primary truncate">
-                                    {invitationData.role.displayName}
+                                <p className="text-xs font-medium text-primary-50 uppercase tracking-wide mb-1">
+                                    Full Name
+                                </p>
+                                <p className="text-base font-semibold text-primary truncate">
+                                    {invitationData.name}
                                 </p>
                             </div>
                         </div>
-                    )}
-                    {invitationData.tenant && (
-                        <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-lg bg-white flex items-center justify-center shrink-0">
-                                <FaBuilding className="w-4 h-4 text-primary" />
+                        <div className="flex items-start gap-4 p-3 bg-white/60 rounded-lg backdrop-blur-sm">
+                            <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+                                <FaEnvelope className="w-5 h-5 text-primary" />
                             </div>
                             <div className="flex-1 min-w-0">
-                                <p className="text-xs text-primary-50">
-                                    Organization
+                                <p className="text-xs font-medium text-primary-50 uppercase tracking-wide mb-1">
+                                    Email Address
                                 </p>
-                                <p className="text-sm font-medium text-primary truncate">
-                                    {invitationData.tenant.name}
+                                <p className="text-base font-semibold text-primary truncate">
+                                    {invitationData.email}
                                 </p>
                             </div>
                         </div>
-                    )}
+                        {invitationData.role && (
+                            <div className="flex items-start gap-4 p-3 bg-white/60 rounded-lg backdrop-blur-sm">
+                                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+                                    <FaCheckCircle className="w-5 h-5 text-primary" />
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                    <p className="text-xs font-medium text-primary-50 uppercase tracking-wide mb-1">
+                                        Role
+                                    </p>
+                                    <p className="text-base font-semibold text-primary truncate">
+                                        {invitationData.role.displayName}
+                                    </p>
+                                </div>
+                            </div>
+                        )}
+                        {invitationData.tenant && (
+                            <div className="flex items-start gap-4 p-3 bg-white/60 rounded-lg backdrop-blur-sm">
+                                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+                                    <FaBuilding className="w-5 h-5 text-primary" />
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                    <p className="text-xs font-medium text-primary-50 uppercase tracking-wide mb-1">
+                                        Organization
+                                    </p>
+                                    <p className="text-base font-semibold text-primary truncate">
+                                        {invitationData.tenant.name}
+                                    </p>
+                                </div>
+                            </div>
+                        )}
+                    </div>
                 </div>
             )}
 
             {/* Password Form */}
-            <form onSubmit={handleSubmit} className="space-y-5">
+            <form onSubmit={handleSubmit} className="space-y-6">
                 {/* Password Field */}
                 <div>
-                    <label
-                        htmlFor="password"
-                        className="block text-sm font-medium text-primary mb-2"
-                    >
-                        Create Password
-                    </label>
-                    <div className="relative">
-                        <div className="absolute left-3 top-1/2 -translate-y-1/2 text-primary-50">
-                            <FaLock className="w-4 h-4" />
-                        </div>
-                        <input
-                            id="password"
-                            type={showPassword ? 'text' : 'password'}
-                            value={password}
-                            onChange={(e) => {
-                                setPassword(e.target.value);
-                                if (errors.password) {
-                                    setErrors((prev) => ({
-                                        ...prev,
-                                        password: '',
-                                    }));
-                                }
-                            }}
-                            className="w-full pl-10 pr-10 py-2.5 border border-primary-20 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
-                            placeholder="Enter your password"
-                            required
-                            disabled={isAccepting}
-                        />
-                        <button
-                            type="button"
-                            onClick={() => setShowPassword(!showPassword)}
-                            className="absolute right-3 top-1/2 -translate-y-1/2 text-primary-50 hover:text-primary transition-colors"
-                            disabled={isAccepting}
-                        >
-                            {showPassword ? (
-                                <FaEyeSlash className="w-4 h-4" />
-                            ) : (
-                                <FaEye className="w-4 h-4" />
-                            )}
-                        </button>
-                    </div>
+                    <InputField
+                        id="password"
+                        label="Create Password"
+                        type="password"
+                        placeholder="Enter your password"
+                        value={password}
+                        onChange={(e) => handlePasswordChange(e.target.value)}
+                        required
+                        icon={<FaLock className="w-4 h-4" />}
+                        disabled={isAccepting}
+                    />
                     {errors.password && (
-                        <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
-                            <FaExclamationTriangle className="w-3 h-3" />
-                            {errors.password}
-                        </p>
+                        <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg">
+                            <p className="text-red-700 text-xs flex items-center gap-2">
+                                <FaExclamationTriangle className="w-3 h-3 shrink-0" />
+                                {errors.password}
+                            </p>
+                        </div>
                     )}
                 </div>
+
+                {/* Password Requirements - Interactive */}
+                {password && (
+                    <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-100 rounded-xl p-4 shadow-sm">
+                        <p className="text-xs font-semibold text-blue-900 mb-3 flex items-center gap-2">
+                            <FaLock className="w-3 h-3" />
+                            Password Requirements
+                        </p>
+                        <ul className="space-y-2">
+                            {passwordValidation.map((req, index) => (
+                                <li
+                                    key={index}
+                                    className={`flex items-center gap-2 text-xs transition-all duration-200 ${
+                                        req.met
+                                            ? 'text-green-700'
+                                            : 'text-blue-700'
+                                    }`}
+                                >
+                                    <div
+                                        className={`w-4 h-4 rounded-full flex items-center justify-center shrink-0 transition-all duration-200 ${
+                                            req.met
+                                                ? 'bg-green-500 text-white'
+                                                : 'bg-blue-200 text-blue-600'
+                                        }`}
+                                    >
+                                        {req.met ? (
+                                            <FaCheck className="w-2.5 h-2.5" />
+                                        ) : (
+                                            <FaTimes className="w-2.5 h-2.5" />
+                                        )}
+                                    </div>
+                                    <span
+                                        className={
+                                            req.met
+                                                ? 'line-through opacity-60'
+                                                : ''
+                                        }
+                                    >
+                                        {req.label}
+                                    </span>
+                                </li>
+                            ))}
+                        </ul>
+                        {isPasswordValid && (
+                            <div className="mt-3 pt-3 border-t border-green-200">
+                                <p className="text-xs font-medium text-green-700 flex items-center gap-2">
+                                    <FaCheckCircle className="w-3 h-3" />
+                                    Password meets all requirements
+                                </p>
+                            </div>
+                        )}
+                    </div>
+                )}
 
                 {/* Confirm Password Field */}
                 <div>
-                    <label
-                        htmlFor="confirmPassword"
-                        className="block text-sm font-medium text-primary mb-2"
-                    >
-                        Confirm Password
-                    </label>
-                    <div className="relative">
-                        <div className="absolute left-3 top-1/2 -translate-y-1/2 text-primary-50">
-                            <FaLock className="w-4 h-4" />
+                    <InputField
+                        id="confirmPassword"
+                        label="Confirm Password"
+                        type="password"
+                        placeholder="Confirm your password"
+                        value={confirmPassword}
+                        onChange={(e) =>
+                            handleConfirmPasswordChange(e.target.value)
+                        }
+                        required
+                        icon={<FaLock className="w-4 h-4" />}
+                        disabled={isAccepting}
+                    />
+                    {confirmPassword && password === confirmPassword && (
+                        <div className="mt-2 p-2 bg-green-50 border border-green-200 rounded-lg">
+                            <p className="text-green-700 text-xs flex items-center gap-2">
+                                <FaCheck className="w-3 h-3" />
+                                Passwords match
+                            </p>
                         </div>
-                        <input
-                            id="confirmPassword"
-                            type={showConfirmPassword ? 'text' : 'password'}
-                            value={confirmPassword}
-                            onChange={(e) => {
-                                setConfirmPassword(e.target.value);
-                                if (errors.confirmPassword) {
-                                    setErrors((prev) => ({
-                                        ...prev,
-                                        confirmPassword: '',
-                                    }));
-                                }
-                            }}
-                            className="w-full pl-10 pr-10 py-2.5 border border-primary-20 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
-                            placeholder="Confirm your password"
-                            required
-                            disabled={isAccepting}
-                        />
-                        <button
-                            type="button"
-                            onClick={() =>
-                                setShowConfirmPassword(!showConfirmPassword)
-                            }
-                            className="absolute right-3 top-1/2 -translate-y-1/2 text-primary-50 hover:text-primary transition-colors"
-                            disabled={isAccepting}
-                        >
-                            {showConfirmPassword ? (
-                                <FaEyeSlash className="w-4 h-4" />
-                            ) : (
-                                <FaEye className="w-4 h-4" />
-                            )}
-                        </button>
-                    </div>
-                    {errors.confirmPassword && (
-                        <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
-                            <FaExclamationTriangle className="w-3 h-3" />
-                            {errors.confirmPassword}
-                        </p>
                     )}
-                </div>
-
-                {/* Password Requirements */}
-                <div className="bg-blue-50 border border-blue-100 rounded-lg p-3">
-                    <p className="text-xs font-semibold text-blue-900 mb-2">
-                        Password Requirements:
-                    </p>
-                    <ul className="text-xs text-blue-700 space-y-1">
-                        <li className="flex items-center gap-2">
-                            <div className="w-1 h-1 rounded-full bg-blue-500" />
-                            At least 8 characters
-                        </li>
-                        <li className="flex items-center gap-2">
-                            <div className="w-1 h-1 rounded-full bg-blue-500" />
-                            One uppercase letter
-                        </li>
-                        <li className="flex items-center gap-2">
-                            <div className="w-1 h-1 rounded-full bg-blue-500" />
-                            One lowercase letter
-                        </li>
-                        <li className="flex items-center gap-2">
-                            <div className="w-1 h-1 rounded-full bg-blue-500" />
-                            One number
-                        </li>
-                        <li className="flex items-center gap-2">
-                            <div className="w-1 h-1 rounded-full bg-blue-500" />
-                            One special character
-                        </li>
-                    </ul>
+                    {errors.confirmPassword && (
+                        <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg">
+                            <p className="text-red-700 text-xs flex items-center gap-2">
+                                <FaExclamationTriangle className="w-3 h-3 shrink-0" />
+                                {errors.confirmPassword}
+                            </p>
+                        </div>
+                    )}
                 </div>
 
                 {/* Submit Button */}
@@ -339,7 +357,7 @@ const AcceptInvitationForm = () => {
                     variant="primary"
                     className="w-full"
                     loading={isAccepting}
-                    disabled={isAccepting}
+                    disabled={isAccepting || !isPasswordValid}
                 >
                     {isAccepting
                         ? 'Creating Account...'
@@ -348,18 +366,18 @@ const AcceptInvitationForm = () => {
             </form>
 
             {/* Footer Link */}
-            <div className="mt-6 text-center">
-                <p className="text-xs text-primary-50">
+            <div className="pt-4 border-t border-primary-10">
+                <p className="text-xs text-center text-primary-50">
                     Already have an account?{' '}
                     <button
                         onClick={() => navigate('/login')}
-                        className="text-primary hover:text-primary-75 font-medium underline"
+                        className="text-primary hover:text-primary-75 font-semibold underline transition-colors"
                     >
                         Sign In
                     </button>
                 </p>
             </div>
-        </>
+        </div>
     );
 };
 

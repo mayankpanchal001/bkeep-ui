@@ -152,7 +152,6 @@ export function ResetPasswordForm() {
                     <Button
                         type="submit"
                         variant="primary"
-                        size="lg"
                         className="w-full"
                         loading={isResetting}
                         disabled={isResetting}
@@ -163,7 +162,6 @@ export function ResetPasswordForm() {
                         <Button
                             type="button"
                             variant="outline"
-                            size="lg"
                             className="w-full"
                             disabled={isResetting}
                         >

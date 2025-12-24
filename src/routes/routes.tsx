@@ -1,4 +1,15 @@
-import { createBrowserRouter } from 'react-router';
+import { createBrowserRouter, Navigate } from 'react-router';
+import {
+    DataPrivacyTab,
+    RolesTab,
+    SecurityTab,
+    TenantsTab,
+    UsersTab,
+} from '../components/settings';
+import {
+    NotificationsTabWrapper,
+    ProfileTabWrapper,
+} from '../components/settings/SettingsTabWrappers';
 import BalanceSheetpage from '../pages/protected/BalanceSheetpage';
 import ChartOfAccountspage from '../pages/protected/ChartOfAccountspage';
 import ClientReviewpage from '../pages/protected/ClientReviewpage';
@@ -93,6 +104,40 @@ const routes = createBrowserRouter([
             {
                 path: '/settings',
                 element: <Settingspage />,
+                children: [
+                    {
+                        index: true,
+                        element: <Navigate to="/settings/profile" replace />,
+                    },
+                    {
+                        path: '/settings/profile',
+                        element: <ProfileTabWrapper />,
+                    },
+                    {
+                        path: '/settings/tenants',
+                        element: <TenantsTab />,
+                    },
+                    {
+                        path: '/settings/users',
+                        element: <UsersTab />,
+                    },
+                    {
+                        path: '/settings/roles',
+                        element: <RolesTab />,
+                    },
+                    {
+                        path: '/settings/security',
+                        element: <SecurityTab />,
+                    },
+                    {
+                        path: '/settings/data',
+                        element: <DataPrivacyTab />,
+                    },
+                    {
+                        path: '/settings/notifications',
+                        element: <NotificationsTabWrapper />,
+                    },
+                ],
             },
             {
                 path: '/invoices',

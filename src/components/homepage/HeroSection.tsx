@@ -42,7 +42,6 @@ export default function HeroSection() {
                         <Link to="/register">
                             <Button
                                 variant="primary"
-                                size="lg"
                                 className="bg-gradient-to-r from-[#ff6a3a] to-[#ff3412] px-8 text-white shadow-[0_0_40px_rgba(255,106,58,0.35)]"
                             >
                                 Get started
@@ -50,7 +49,6 @@ export default function HeroSection() {
                         </Link>
                         <Button
                             variant="outline"
-                            size="lg"
                             className="bg-white/10 border-white/20 text-white hover:bg-white/10"
                         >
                             See how it works

@@ -87,7 +87,6 @@ export function RegisterForm() {
                 <Button
                     type="button"
                     variant="outline"
-                    size="lg"
                     className="w-full"
                     onClick={handleGoogleRegister}
                     loading={isOAuthLoading === 'google'}
@@ -99,7 +98,6 @@ export function RegisterForm() {
                 <Button
                     type="button"
                     variant="outline"
-                    size="lg"
                     className="w-full"
                     onClick={handleOutlookRegister}
                     loading={isOAuthLoading === 'outlook'}
@@ -174,7 +172,6 @@ export function RegisterForm() {
                 <Button
                     type="submit"
                     variant="primary"
-                    size="lg"
                     className="w-full"
                     loading={isLoading}
                     disabled={isLoading || isOAuthLoading !== null}

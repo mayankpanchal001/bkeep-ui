@@ -215,7 +215,7 @@ export function PasskeyLoginForm() {
                 </div>
 
                 <Link to="/login">
-                    <Button variant="primary" size="lg" className="w-full">
+                    <Button variant="primary" className="w-full">
                         <FaUser className="w-4 h-4" />
                         Sign In with Email & Password
                     </Button>
@@ -303,7 +303,6 @@ export function PasskeyLoginForm() {
             <Button
                 type="button"
                 variant="primary"
-                size="lg"
                 className="w-full normal-case"
                 onClick={handlePasskeyLogin}
                 loading={isAuthenticating}

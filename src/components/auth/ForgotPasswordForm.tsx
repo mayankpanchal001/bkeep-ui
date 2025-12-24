@@ -81,11 +81,10 @@ export function ForgotPasswordForm() {
                     </div>
                 )}
 
-                <div className="space-y-2">
+                <div className="flex flex-col gap-4">
                     <Button
                         type="submit"
                         variant="primary"
-                        size="lg"
                         className="w-full"
                         loading={isForgotPasswordLoading}
                         disabled={isForgotPasswordLoading}
@@ -96,7 +95,6 @@ export function ForgotPasswordForm() {
                         <Button
                             type="button"
                             variant="outline"
-                            size="lg"
                             className="w-full"
                             disabled={isForgotPasswordLoading}
                         >

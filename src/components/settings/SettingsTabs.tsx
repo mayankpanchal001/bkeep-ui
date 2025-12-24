@@ -1,3 +1,4 @@
+import { Link } from 'react-router';
 import { SettingsTab } from './types';
 
 interface SettingsTabsProps {
@@ -13,13 +14,14 @@ const SettingsTabs = ({ tabs, activeTab, onTabChange }: SettingsTabsProps) => {
                 {tabs.map((tab) => {
                     const isActive = activeTab === tab.id;
                     return (
-                        <button
+                        <Link
                             key={tab.id}
+                            to={`/settings/${tab.id}`}
                             onClick={() => onTabChange(tab.id)}
                             className={`
                                 relative cursor-pointer flex items-center gap-2.5 px-5 py-3 rounded-xl text-sm font-semibold
                                 transition-all duration-300 ease-in-out whitespace-nowrap
-                                group
+                                group no-underline
                                 ${
                                     isActive
                                         ? 'text-primary'
@@ -54,7 +56,7 @@ const SettingsTabs = ({ tabs, activeTab, onTabChange }: SettingsTabsProps) => {
                             {!isActive && (
                                 <span className="absolute inset-0 bg-primary-5 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-0" />
                             )}
-                        </button>
+                        </Link>
                     );
                 })}
             </nav>

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect } from 'react';
 import {
     FaBell,
     FaBuilding,
@@ -6,41 +6,41 @@ import {
     FaLock,
     FaUser,
     FaUsers,
+    FaUserShield,
 } from 'react-icons/fa';
-import {
-    DataPrivacyTab,
-    NotificationsTab,
-    PreferencesTab,
-    ProfileTab,
-    SecurityTab,
-    SettingsTabs,
-    TenantsTab,
-    UsersTab,
-    type SettingsFormData,
-    type SettingsTab,
-} from '../../components/settings';
+import { Outlet, useLocation, useNavigate } from 'react-router';
+import { SettingsTabs, type SettingsTab } from '../../components/settings';
 import { useAuth } from '../../stores/auth/authSelectore';
 
 const Settingspage = () => {
     const { user } = useAuth();
-    const [activeTab, setActiveTab] = useState<string>('profile');
-    const [formData, setFormData] = useState<SettingsFormData>({
-        name: user?.name || '',
-        email: user?.email || '',
-        phone: '',
-        company: '',
-        timezone: 'America/New_York',
-        currency: 'USD',
-        dateFormat: 'MM/DD/YYYY',
-        notifications: {
-            email: true,
-            push: false,
-            sms: false,
-        },
-    });
+    const location = useLocation();
+    const navigate = useNavigate();
 
     // Check if user is superadmin
     const isSuperAdmin = user?.role?.name === 'superadmin';
+
+    // Get active tab from route
+    const getActiveTab = () => {
+        const path = location.pathname;
+        if (path.includes('/settings/profile')) return 'profile';
+        if (path.includes('/settings/tenants')) return 'tenants';
+        if (path.includes('/settings/users')) return 'users';
+        if (path.includes('/settings/roles')) return 'roles';
+        if (path.includes('/settings/security')) return 'security';
+        if (path.includes('/settings/data')) return 'data';
+        if (path.includes('/settings/notifications')) return 'notifications';
+        return 'profile';
+    };
+
+    const activeTab = getActiveTab();
+
+    // Redirect to profile if on base settings route
+    useEffect(() => {
+        if (location.pathname === '/settings') {
+            navigate('/settings/profile', { replace: true });
+        }
+    }, [location.pathname, navigate]);
 
     const tabs: SettingsTab[] = [
         { id: 'profile', label: 'Profile', icon: <FaUser /> },
@@ -54,58 +54,15 @@ const Settingspage = () => {
                   },
               ]
             : []),
-        { id: 'notifications', label: 'Notifications', icon: <FaBell /> },
-        { id: 'security', label: 'Security', icon: <FaLock /> },
         { id: 'users', label: 'Users', icon: <FaUsers /> },
+        { id: 'roles', label: 'Roles', icon: <FaUserShield /> },
+        { id: 'security', label: 'Security', icon: <FaLock /> },
         { id: 'data', label: 'Data & Privacy', icon: <FaDatabase /> },
+        { id: 'notifications', label: 'Notifications', icon: <FaBell /> },
     ];
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        // Handle form submission
-        console.log('Settings saved:', formData);
-    };
-
-    const renderTabContent = () => {
-        switch (activeTab) {
-            case 'profile':
-                return (
-                    <ProfileTab
-                        formData={formData}
-                        onFormDataChange={setFormData}
-                        onSubmit={handleSubmit}
-                        roleDisplayName={
-                            user?.role?.displayName || user?.role?.name
-                        }
-                    />
-                );
-            case 'notifications':
-                return (
-                    <NotificationsTab
-                        formData={formData}
-                        onFormDataChange={setFormData}
-                        onSubmit={handleSubmit}
-                    />
-                );
-            case 'security':
-                return <SecurityTab />;
-            case 'preferences':
-                return (
-                    <PreferencesTab
-                        formData={formData}
-                        onFormDataChange={setFormData}
-                        onSubmit={handleSubmit}
-                    />
-                );
-            case 'users':
-                return <UsersTab />;
-            case 'tenants':
-                return <TenantsTab />;
-            case 'data':
-                return <DataPrivacyTab />;
-            default:
-                return null;
-        }
+    const handleTabChange = (tabId: string) => {
+        navigate(`/settings/${tabId}`);
     };
 
     return (
@@ -113,11 +70,11 @@ const Settingspage = () => {
             <SettingsTabs
                 tabs={tabs}
                 activeTab={activeTab}
-                onTabChange={setActiveTab}
+                onTabChange={handleTabChange}
             />
 
             <div className="bg-white rounded-xl shadow-sm border border-primary-10 p-6">
-                {renderTabContent()}
+                <Outlet />
             </div>
         </div>
     );

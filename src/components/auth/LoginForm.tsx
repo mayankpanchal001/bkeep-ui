@@ -89,7 +89,6 @@ export function LoginForm() {
                 <Button
                     type="submit"
                     variant="primary"
-                    size="lg"
                     className="w-full"
                     loading={isLoading}
                     disabled={isLoading}

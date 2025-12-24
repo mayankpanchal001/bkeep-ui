@@ -8,7 +8,6 @@ import {
     FaUsers,
 } from 'react-icons/fa';
 import { useGetRoles } from '../../services/apis/roleApi';
-import { useTenants } from '../../services/apis/tenantApi';
 import {
     useResendInvitation,
     useUsers,
@@ -35,14 +34,8 @@ const UsersTab = () => {
     });
 
     const { data, isLoading, isError } = useUsers(filters);
-    const {
-        data: rolesData,
-        isLoading: isRolesLoading,
-        isError: isRolesError,
-    } = useGetRoles();
-    // Fetch tenants from API (available for future use in modals)
-    useTenants({ page: 1, limit: 100 });
 
+    const { data: rolesData } = useGetRoles();
     const roles = rolesData?.data?.items || [];
 
     const { mutateAsync: resendInvitation, isPending: isResendingInvitation } =
@@ -131,9 +124,6 @@ const UsersTab = () => {
                         variant="primary"
                         size="sm"
                         onClick={() => setIsInviteModalOpen(true)}
-                        disabled={
-                            isRolesLoading || isRolesError || roles.length === 0
-                        }
                     >
                         <FaPlus className="mr-2" />
                         Invite User

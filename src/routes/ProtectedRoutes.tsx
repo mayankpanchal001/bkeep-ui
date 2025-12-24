@@ -1,5 +1,6 @@
 import { Navigate, Outlet } from 'react-router';
 import ProtectedLayout from '../components/layouts/ProtectedLayout';
+import SEOUpdater from '../components/shared/SEOUpdater';
 import { useAuth } from '../stores/auth/authSelectore';
 
 const ProtectedRoutes = () => {
@@ -10,9 +11,12 @@ const ProtectedRoutes = () => {
     }
 
     return (
-        <ProtectedLayout showLoading={loading}>
-            <Outlet />
-        </ProtectedLayout>
+        <>
+            <SEOUpdater />
+            <ProtectedLayout showLoading={loading}>
+                <Outlet />
+            </ProtectedLayout>
+        </>
     );
 };
 
