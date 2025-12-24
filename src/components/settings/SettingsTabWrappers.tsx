@@ -1,9 +1,5 @@
 import { useState } from 'react';
-import {
-    NotificationsTab,
-    ProfileTab,
-    type SettingsFormData,
-} from './index';
+import { NotificationsTab, ProfileTab, type SettingsFormData } from './index';
 import { useAuth } from '../../stores/auth/authSelectore';
 
 export const ProfileTabWrapper = () => {
@@ -68,4 +64,3 @@ export const NotificationsTabWrapper = () => {
         />
     );
 };
-
