@@ -51,9 +51,7 @@ export function JournalEntryForm({
     const [isReversing, setIsReversing] = useState(
         initialData?.isReversing || false
     );
-    const [description, setDescription] = useState(
-        initialData?.memo || ''
-    );
+    const [description, setDescription] = useState(initialData?.memo || '');
     const [reference, setReference] = useState(initialData?.reference || '');
     const [lines, setLines] = useState<JournalEntryLine[]>(
         initialData?.lines || [

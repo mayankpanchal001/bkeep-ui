@@ -71,7 +71,9 @@ const ImportMappingModal = ({
                             Map Import Fields
                         </h2>
                         <p className="text-sm text-gray-500 mt-1">
-                            Map columns from <span className="font-medium">{filename}</span> to system fields
+                            Map columns from{' '}
+                            <span className="font-medium">{filename}</span> to
+                            system fields
                         </p>
                     </div>
                     <button
@@ -102,7 +104,9 @@ const ImportMappingModal = ({
                                             {field.label}
                                         </span>
                                         {field.required && (
-                                            <span className="text-red-500 ml-1">*</span>
+                                            <span className="text-red-500 ml-1">
+                                                *
+                                            </span>
                                         )}
                                     </div>
                                     <div className="text-xs text-gray-400 mt-0.5">
@@ -141,7 +145,11 @@ const ImportMappingModal = ({
 
                 {/* Footer */}
                 <div className="p-4 border-t border-gray-200 flex justify-end gap-3 bg-gray-50">
-                    <Button variant="outline" onClick={onClose} disabled={isUploading}>
+                    <Button
+                        variant="outline"
+                        onClick={onClose}
+                        disabled={isUploading}
+                    >
                         Cancel
                     </Button>
                     <Button

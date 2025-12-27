@@ -232,7 +232,9 @@ export async function restoreChartOfAccount(
  * Get import fields configuration
  */
 export async function getImportFields(): Promise<ImportFieldsResponse> {
-    const response = await axiosInstance.get('/chart-of-accounts/import/fields');
+    const response = await axiosInstance.get(
+        '/chart-of-accounts/import/fields'
+    );
     return response.data;
 }
 
