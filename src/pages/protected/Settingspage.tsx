@@ -66,14 +66,14 @@ const Settingspage = () => {
     };
 
     return (
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-2">
             <SettingsTabs
                 tabs={tabs}
                 activeTab={activeTab}
                 onTabChange={handleTabChange}
             />
 
-            <div className="bg-white rounded-xl shadow-sm border border-primary-10 p-6">
+            <div className="bg-white rounded-2 shadow-sm border border-primary-10 p-6">
                 <Outlet />
             </div>
         </div>

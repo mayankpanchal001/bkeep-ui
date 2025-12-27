@@ -129,7 +129,7 @@ const SecurityTab = () => {
                 Security Settings
             </h3>
             <div className="space-y-4">
-                <div className="p-4 border border-primary-10 rounded-xl">
+                <div className="p-4 border border-primary-10 rounded-2">
                     <div className="flex items-center justify-between mb-4">
                         <div>
                             <div className="font-medium text-primary">
@@ -147,7 +147,7 @@ const SecurityTab = () => {
                         </Button>
                     </div>
                 </div>
-                <div className="p-4 border border-primary-10 rounded-xl">
+                <div className="p-4 border border-primary-10 rounded-2">
                     <div className="flex items-center justify-between mb-4">
                         <div>
                             <div className="font-medium text-primary">
@@ -175,7 +175,7 @@ const SecurityTab = () => {
                         </Button>
                     </div>
                 </div>
-                <div className="p-4 border border-primary-10 rounded-xl">
+                <div className="p-4 border border-primary-10 rounded-2">
                     <div className="flex items-center justify-between mb-4">
                         <div>
                             <div className="font-medium text-primary">
@@ -210,7 +210,7 @@ const SecurityTab = () => {
                         </Button>
                     </div>
                 </div>
-                <div className="p-4 border border-primary-10 rounded-xl">
+                <div className="p-4 border border-primary-10 rounded-2">
                     <div className="flex items-center justify-between mb-4">
                         <div>
                             <div className="font-medium text-primary">

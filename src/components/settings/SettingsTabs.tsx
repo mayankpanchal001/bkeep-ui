@@ -9,8 +9,8 @@ interface SettingsTabsProps {
 
 const SettingsTabs = ({ tabs, activeTab, onTabChange }: SettingsTabsProps) => {
     return (
-        <div className="bg-white rounded-2xl shadow-sm border border-primary-10 overflow-hidden">
-            <nav className="flex flex-wrap gap-1 overflow-x-auto px-2 py-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+        <div className="bg-white rounded-2 border border-primary/25 overflow-hidden">
+            <nav className="flex flex-wrap gap-1 overflow-x-auto px-2 py-2 ">
                 {tabs.map((tab) => {
                     const isActive = activeTab === tab.id;
                     return (
@@ -19,7 +19,7 @@ const SettingsTabs = ({ tabs, activeTab, onTabChange }: SettingsTabsProps) => {
                             to={`/settings/${tab.id}`}
                             onClick={() => onTabChange(tab.id)}
                             className={`
-                                relative cursor-pointer flex items-center gap-2.5 px-5 py-3 rounded-xl text-sm font-semibold
+                                relative cursor-pointer flex items-center gap-2.5 px-5 py-3 rounded-2 text-sm font-semibold
                                 transition-all duration-300 ease-in-out whitespace-nowrap
                                 group no-underline
                                 ${
@@ -31,7 +31,7 @@ const SettingsTabs = ({ tabs, activeTab, onTabChange }: SettingsTabsProps) => {
                         >
                             {/* Active indicator background */}
                             {isActive && (
-                                <span className="absolute inset-0 bg-primary/10 rounded-xl z-0" />
+                                <span className="absolute inset-0 bg-primary/10 rounded-2 z-0" />
                             )}
 
                             {/* Icon with animation */}
@@ -54,7 +54,7 @@ const SettingsTabs = ({ tabs, activeTab, onTabChange }: SettingsTabsProps) => {
 
                             {/* Hover effect */}
                             {!isActive && (
-                                <span className="absolute inset-0 bg-primary-5 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-0" />
+                                <span className="absolute inset-0 bg-primary-5 rounded-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-0" />
                             )}
                         </Link>
                     );

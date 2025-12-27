@@ -11,7 +11,7 @@ export default function StatsSection() {
                     {PERFORMANCE_STATS.map((stat) => (
                         <div
                             key={stat.label}
-                            className="space-y-2 rounded-2xl bg-white/5 px-6 py-4"
+                            className="space-y-2 rounded-2 bg-white/5 px-6 py-4"
                         >
                             <p className="text-3xl font-semibold text-white">
                                 {stat.value}

@@ -1,7 +1,7 @@
-import { ResetPasswordForm } from '../../components/auth/ResetPasswordForm';
-import { logo } from '../../utills/image';
 import { Link } from 'react-router';
+import { ResetPasswordForm } from '../../components/auth/ResetPasswordForm';
 import { APP_TITLE } from '../../constants';
+import { logo } from '../../utills/image';
 
 const ResetPasswordpage = () => {
     return (
@@ -83,7 +83,7 @@ const ResetPasswordpage = () => {
                     </div>
 
                     {/* Reset Password Form Card */}
-                    <div className="bg-white rounded-2xl shadow-xl p-6 lg:p-8 border border-primary-10">
+                    <div className="bg-white rounded-2 shadow-xl p-6 lg:p-8 border border-primary-10">
                         <ResetPasswordForm />
                     </div>
 

@@ -315,7 +315,7 @@ const PasskeyManagementModal = ({
                     handleClose()
                 }
             >
-                <div className="w-full max-w-2xl rounded-2xl bg-white p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
+                <div className="w-full max-w-2xl rounded-2 bg-white p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
                     {/* Header */}
                     <div className="flex items-center justify-between mb-6">
                         <h3 className="text-xl font-semibold text-primary">
@@ -337,7 +337,7 @@ const PasskeyManagementModal = ({
                     <div className="space-y-6">
                         {/* WebAuthn Not Supported */}
                         {!webAuthnSupported && (
-                            <div className="bg-red-50 border border-red-200 rounded-xl p-4">
+                            <div className="bg-red-50 border border-red-200 rounded-2 p-4">
                                 <p className="text-sm text-red-800">
                                     Your browser doesn't support passkeys.
                                     Please use a modern browser like Chrome,
@@ -350,7 +350,7 @@ const PasskeyManagementModal = ({
                         {currentStep === 'list' && (
                             <div className="space-y-6">
                                 {/* Info Banner */}
-                                <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
+                                <div className="bg-blue-50 border border-blue-200 rounded-2 p-4">
                                     <p className="text-sm text-blue-800">
                                         Passkeys are a more secure and
                                         convenient way to sign in. Use your
@@ -379,7 +379,7 @@ const PasskeyManagementModal = ({
                                         </p>
                                     </div>
                                 ) : passkeys.length === 0 ? (
-                                    <div className="bg-gray-50 border border-primary-10 rounded-xl p-8 text-center">
+                                    <div className="bg-gray-50 border border-primary-10 rounded-2 p-8 text-center">
                                         <FaFingerprint className="w-12 h-12 text-primary-20 mx-auto mb-3" />
                                         <p className="text-sm font-medium text-primary mb-1">
                                             No passkeys registered yet
@@ -394,7 +394,7 @@ const PasskeyManagementModal = ({
                                         {passkeys.map((passkey) => (
                                             <div
                                                 key={passkey.id}
-                                                className={`border rounded-xl p-4 transition-colors ${
+                                                className={`border rounded-2 p-4 transition-colors ${
                                                     passkey.isActive
                                                         ? 'border-primary-10 bg-white'
                                                         : 'border-gray-200 bg-gray-50'
@@ -514,7 +514,7 @@ const PasskeyManagementModal = ({
                         {/* Register View */}
                         {currentStep === 'register' && (
                             <div className="space-y-6">
-                                <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
+                                <div className="bg-blue-50 border border-blue-200 rounded-2 p-4">
                                     <h4 className="font-semibold text-blue-900 mb-2 flex items-center gap-2">
                                         <FaFingerprint className="w-4 h-4" />
                                         Biometric Authentication
@@ -568,7 +568,7 @@ const PasskeyManagementModal = ({
                         {/* Rename View */}
                         {currentStep === 'rename' && selectedPasskey && (
                             <div className="space-y-6">
-                                <div className="bg-gray-50 border border-primary-10 rounded-xl p-4">
+                                <div className="bg-gray-50 border border-primary-10 rounded-2 p-4">
                                     <p className="text-sm text-primary-75">
                                         Update the name of this passkey to help
                                         you identify it more easily.

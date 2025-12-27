@@ -254,6 +254,7 @@ export default function JournalEntriespage() {
                                             </p>
                                             <Button
                                                 variant="primary"
+                                                size="sm"
                                                 onClick={handleCreateNew}
                                             >
                                                 <FaPlus className="w-4 h-4" />

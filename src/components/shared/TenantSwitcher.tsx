@@ -112,7 +112,7 @@ const TenantSwitcher = ({ compact = false }: TenantSwitcherProps) => {
                     !isSwitching && !isLoadingTenants && setIsOpen(!isOpen)
                 }
                 disabled={isSwitching || isLoadingTenants}
-                className={`flex items-center px-4 py-2 gap-2 bg-white border border-primary-10 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 ${buttonClasses} ${isSwitching || isLoadingTenants ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:border-primary-20'}`}
+                className={`flex items-center px-4 py-2 gap-2 bg-white border border-primary/25 rounded-2 transition-all duration-200 ${buttonClasses} ${isSwitching || isLoadingTenants ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:border-primary-20'}`}
             >
                 {isSwitching || isLoadingTenants ? (
                     <FaSpinner className="text-primary-50 w-4 h-4 animate-spin" />
@@ -131,7 +131,7 @@ const TenantSwitcher = ({ compact = false }: TenantSwitcherProps) => {
 
             {/* Dropdown Popup */}
             {isOpen && (
-                <div className="absolute top-full mt-2 right-0 w-64 bg-white border border-gray-200 rounded-lg shadow-xl z-50 max-h-96 overflow-hidden">
+                <div className="absolute top-full mt-2 right-0 w-64 bg-white border border-gray-200 rounded-2 z-50 max-h-96 overflow-hidden">
                     {/* Header */}
                     <div className="px-4 py-3 border-b border-gray-200 bg-gray-50">
                         <h3 className="text-sm font-semibold text-gray-700">
@@ -161,7 +161,7 @@ const TenantSwitcher = ({ compact = false }: TenantSwitcherProps) => {
                                 >
                                     <div className="flex items-center gap-3 flex-1 min-w-0">
                                         <div
-                                            className={`shrink-0 w-10 h-10 rounded-lg flex items-center justify-center ${
+                                            className={`shrink-0 w-10 h-10 rounded-2 flex items-center justify-center ${
                                                 isSelected
                                                     ? 'bg-primary text-white'
                                                     : 'bg-gray-100 text-gray-600'

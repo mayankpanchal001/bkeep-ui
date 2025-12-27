@@ -489,7 +489,7 @@ const Dashboardpage = () => {
 
                     {/* Right Column - AI Insights */}
                     <div className="flex flex-col gap-4">
-                        <div className="bg-white rounded-xl shadow-sm border border-primary-10 p-6 sticky top-0">
+                        <div className="bg-white rounded-2 shadow-sm border border-primary-10 p-6 sticky top-0">
                             <div className="flex items-center gap-2 mb-4">
                                 <FaExclamationTriangle className="text-primary" />
                                 <h3 className="text-lg font-semibold text-primary">

@@ -156,7 +156,7 @@ const Invoicepage = () => {
 
             {/* Summary Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="bg-white rounded-xl shadow-sm border border-primary-10 p-4">
+                <div className="bg-white rounded-2 shadow-sm border border-primary-10 p-4">
                     <div className="text-sm text-primary-50 mb-1">
                         Total Invoices
                     </div>
@@ -167,7 +167,7 @@ const Invoicepage = () => {
                         {filteredInvoices.length} invoices
                     </div>
                 </div>
-                <div className="bg-white rounded-xl shadow-sm border border-primary-10 p-4">
+                <div className="bg-white rounded-2 shadow-sm border border-primary-10 p-4">
                     <div className="text-sm text-primary-50 mb-1">Paid</div>
                     <div className="text-2xl font-bold text-green-600">
                         {currencyFormatter.format(paidAmount)}
@@ -181,7 +181,7 @@ const Invoicepage = () => {
                         invoices
                     </div>
                 </div>
-                <div className="bg-white rounded-xl shadow-sm border border-primary-10 p-4">
+                <div className="bg-white rounded-2 shadow-sm border border-primary-10 p-4">
                     <div className="text-sm text-primary-50 mb-1">Pending</div>
                     <div className="text-2xl font-bold text-orange-600">
                         {currencyFormatter.format(pendingAmount)}
@@ -198,7 +198,7 @@ const Invoicepage = () => {
             </div>
 
             {/* Filters */}
-            <div className="bg-white rounded-xl shadow-sm border border-primary-10 p-4">
+            <div className="bg-white rounded-2 shadow-sm border border-primary-10 p-4">
                 <div className="flex flex-col sm:flex-row gap-4">
                     <div className="flex-1">
                         <div className="relative">
@@ -216,7 +216,7 @@ const Invoicepage = () => {
                         <select
                             value={statusFilter}
                             onChange={(e) => setStatusFilter(e.target.value)}
-                            className="px-4 py-2 border border-primary-10 rounded-xl text-sm text-primary focus:outline-none focus:border-primary"
+                            className="px-4 py-2 border border-primary-10 rounded-2 text-sm text-primary focus:outline-none focus:border-primary"
                         >
                             <option value="all">All Status</option>
                             <option value="draft">Draft</option>
@@ -229,7 +229,7 @@ const Invoicepage = () => {
             </div>
 
             {/* Invoices Table */}
-            <div className="bg-white rounded-xl shadow-sm border border-primary-10 overflow-hidden">
+            <div className="bg-white rounded-2 shadow-sm border border-primary-10 overflow-hidden">
                 <div className="overflow-x-auto">
                     <table className="w-full">
                         <thead className="bg-primary-10">

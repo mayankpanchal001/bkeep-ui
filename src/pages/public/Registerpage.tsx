@@ -94,7 +94,7 @@ const Registerpage = () => {
                     </div>
 
                     <div className="flex flex-col gap-4">
-                        <div className="bg-white rounded-2xl shadow-xl p-6 lg:p-8 border border-primary-10">
+                        <div className="bg-white rounded-2 shadow-xl p-6 lg:p-8 border border-primary-10">
                             <div className="mb-6">
                                 <h2 className="text-2xl font-bold text-primary mb-2">
                                     Create Account

@@ -57,11 +57,19 @@ export default function EditJournalEntrypage() {
                     initialData={{
                         journalNo: journalEntry.journalNo,
                         journalDate: journalEntry.journalDate,
+                        entryType: journalEntry.isAdjusting
+                            ? 'adjusting'
+                            : 'standard',
                         isAdjusting: journalEntry.isAdjusting,
-                        lines: journalEntry.lines,
+                        lines: journalEntry.lines.map((line, index) => ({
+                            accountId: line.accountId,
+                            lineNumber: index + 1,
+                            debit: line.debit,
+                            credit: line.credit,
+                            description: line.description,
+                            memo: line.memo || line.description,
+                        })),
                         memo: journalEntry.memo,
-                        isRecurring: journalEntry.isRecurring,
-                        recurringFrequency: journalEntry.recurringFrequency,
                     }}
                     onSubmit={handleSubmit}
                     onCancel={handleCancel}

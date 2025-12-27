@@ -145,7 +145,7 @@ const TOTPSetupModal = ({
                 onClose()
             }
         >
-            <div className="w-full max-w-2xl rounded-2xl bg-white p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div className="w-full max-w-2xl rounded-2 bg-white p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
                 <div className="flex items-center justify-between mb-6">
                     <h3 className="text-xl font-semibold text-primary">
                         {step === 'setup'
@@ -164,7 +164,7 @@ const TOTPSetupModal = ({
                 {step === 'setup' ? (
                     <div className="space-y-6">
                         {/* Instructions */}
-                        <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
+                        <div className="bg-blue-50 border border-blue-200 rounded-2 p-4">
                             <h4 className="font-semibold text-blue-900 mb-2 flex items-center gap-2">
                                 <FaQrcode className="w-4 h-4" />
                                 Step 1: Scan QR Code
@@ -177,7 +177,7 @@ const TOTPSetupModal = ({
                         </div>
 
                         {/* QR Code */}
-                        <div className="flex justify-center p-6 bg-white border-2 border-primary-10 rounded-xl">
+                        <div className="flex justify-center p-6 bg-white border-2 border-primary-10 rounded-2">
                             <img
                                 src={totpData.qrCode}
                                 alt="TOTP QR Code"
@@ -186,7 +186,7 @@ const TOTPSetupModal = ({
                         </div>
 
                         {/* Manual Setup */}
-                        <div className="bg-gray-50 border border-primary-10 rounded-xl p-4">
+                        <div className="bg-gray-50 border border-primary-10 rounded-2 p-4">
                             <h4 className="font-semibold text-primary mb-3 flex items-center gap-2">
                                 <FaKey className="w-4 h-4" />
                                 Can't scan? Enter manually
@@ -218,7 +218,7 @@ const TOTPSetupModal = ({
                         </div>
 
                         {/* Backup Codes */}
-                        <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4">
+                        <div className="bg-yellow-50 border border-yellow-200 rounded-2 p-4">
                             <h4 className="font-semibold text-yellow-900 mb-2">
                                 Save Your Backup Codes
                             </h4>
@@ -295,7 +295,7 @@ const TOTPSetupModal = ({
                 ) : (
                     <form onSubmit={handleVerify} className="space-y-6">
                         {/* Verification Instructions */}
-                        <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
+                        <div className="bg-blue-50 border border-blue-200 rounded-2 p-4">
                             <h4 className="font-semibold text-blue-900 mb-2">
                                 Step 2: Verify Your Setup
                             </h4>

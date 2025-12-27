@@ -256,7 +256,7 @@ const CreateInvoiceModal = ({
     };
 
     return (
-        <div className="absolute inset-0 z-40 bg-lightBg flex flex-col rounded-2xl overflow-hidden">
+        <div className="absolute inset-0 z-40 bg-lightBg flex flex-col rounded-2 overflow-hidden">
             {/* Header */}
             <header className="flex items-center justify-between px-6 py-4 border-b border-primary-10 bg-white">
                 <div className="flex items-center gap-4">
@@ -284,7 +284,7 @@ const CreateInvoiceModal = ({
                             !formData.customer ||
                             formData.lineItems.length === 0
                         }
-                        className="px-4 py-2 text-sm font-medium bg-primary-10 text-primary-50 rounded-xl cursor-not-allowed disabled:opacity-50 enabled:bg-primary enabled:text-white enabled:cursor-pointer enabled:hover:bg-primary-75 transition-colors"
+                        className="px-4 py-2 text-sm font-medium bg-primary-10 text-primary-50 rounded-2 cursor-not-allowed disabled:opacity-50 enabled:bg-primary enabled:text-white enabled:cursor-pointer enabled:hover:bg-primary-75 transition-colors"
                     >
                         Send invoice
                     </button>
@@ -426,7 +426,7 @@ const CreateInvoiceModal = ({
 
                                         {/* Dropdown */}
                                         {showCustomerDropdown && (
-                                            <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-primary-10 rounded-xl shadow-lg z-10 max-h-80 overflow-hidden">
+                                            <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-primary-10 rounded-2 shadow-lg z-10 max-h-80 overflow-hidden">
                                                 <div className="p-3 border-b border-primary-10">
                                                     <div className="input-wrap flex items-center gap-2 px-3">
                                                         <FaSearch className="w-3 h-3 text-primary-50" />
@@ -1051,7 +1051,7 @@ const CreateInvoiceModal = ({
 
                 {/* Right Side - Invoice Preview */}
                 <div className="hidden md:flex flex-1 bg-lightBg items-center justify-center p-8 overflow-y-auto">
-                    <div className="w-full max-w-xl bg-white rounded-2xl shadow-sm border border-primary-10 p-8">
+                    <div className="w-full max-w-xl bg-white rounded-2 shadow-sm border border-primary-10 p-8">
                         {/* Logo and Invoice Header */}
                         <div className="flex justify-between items-start mb-6">
                             {companyInfo.logo ? (

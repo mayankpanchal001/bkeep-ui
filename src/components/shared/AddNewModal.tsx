@@ -1,6 +1,6 @@
-import { useEffect } from 'react';
+import { FaFileAlt } from 'react-icons/fa';
 import { useNavigate } from 'react-router';
-import { FaFileAlt, FaTimes } from 'react-icons/fa';
+import Popup from './Popup';
 
 type AddNewOption = {
     id: string;
@@ -74,34 +74,6 @@ type AddNewModalProps = {
 const AddNewModal = ({ isOpen, onClose }: AddNewModalProps) => {
     const navigate = useNavigate();
 
-    // Handle ESC key press
-    useEffect(() => {
-        const handleEscape = (e: KeyboardEvent) => {
-            if (e.key === 'Escape' && isOpen) {
-                onClose();
-            }
-        };
-
-        if (isOpen) {
-            document.addEventListener('keydown', handleEscape);
-            // Prevent body scroll when modal is open
-            document.body.style.overflow = 'hidden';
-        }
-
-        return () => {
-            document.removeEventListener('keydown', handleEscape);
-            document.body.style.overflow = 'unset';
-        };
-    }, [isOpen, onClose]);
-
-    if (!isOpen) return null;
-
-    const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
-        if (e.target === e.currentTarget) {
-            onClose();
-        }
-    };
-
     const handleOptionClick = (path: string) => {
         navigate(path);
         onClose();
@@ -117,61 +89,50 @@ const AddNewModal = ({ isOpen, onClose }: AddNewModalProps) => {
     );
 
     return (
-        <div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4"
-            onClick={handleBackdropClick}
+        <Popup
+            isOpen={isOpen}
+            onClose={onClose}
+            title="Add New"
+            size="4xl"
+            contentClassName="p-0"
         >
-            <div className="w-full max-w-4xl rounded-2xl bg-white p-6 shadow-2xl">
-                <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-xl font-semibold text-primary">
-                        Add New
-                    </h3>
-                    <button
-                        onClick={onClose}
-                        className="text-primary-50 hover:text-primary transition-colors"
-                        aria-label="Close"
-                    >
-                        <FaTimes className="w-5 h-5" />
-                    </button>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
+                {/* Left Column */}
+                <div className="divide-y divide-primary-10">
+                    {leftColumn.map((option) => (
+                        <button
+                            key={option.id}
+                            onClick={() => handleOptionClick(option.path)}
+                            className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-primary-10 transition-colors group"
+                        >
+                            {option.hasIcon && (
+                                <FaFileAlt className="w-4 h-4 text-primary-50 group-hover:text-primary transition-colors shrink-0" />
+                            )}
+                            <span className="text-sm text-primary-75 group-hover:text-primary transition-colors">
+                                {option.label}
+                            </span>
+                        </button>
+                    ))}
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-0 border-t border-primary-10">
-                    {/* Left Column */}
-                    <div className="divide-y divide-primary-10">
-                        {leftColumn.map((option) => (
-                            <button
-                                key={option.id}
-                                onClick={() => handleOptionClick(option.path)}
-                                className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-primary-10 transition-colors group"
-                            >
-                                {option.hasIcon && (
-                                    <FaFileAlt className="w-4 h-4 text-primary-50 group-hover:text-primary transition-colors flex-shrink-0" />
-                                )}
-                                <span className="text-sm text-primary-75 group-hover:text-primary transition-colors">
-                                    {option.label}
-                                </span>
-                            </button>
-                        ))}
-                    </div>
-                    {/* Right Column */}
-                    <div className="divide-y divide-primary-10 border-l border-primary-10 md:border-l">
-                        {rightColumn.map((option) => (
-                            <button
-                                key={option.id}
-                                onClick={() => handleOptionClick(option.path)}
-                                className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-primary-10 transition-colors group"
-                            >
-                                {option.hasIcon && (
-                                    <FaFileAlt className="w-4 h-4 text-primary-50 group-hover:text-primary transition-colors flex-shrink-0" />
-                                )}
-                                <span className="text-sm text-primary-75 group-hover:text-primary transition-colors">
-                                    {option.label}
-                                </span>
-                            </button>
-                        ))}
-                    </div>
+                {/* Right Column */}
+                <div className="divide-y divide-primary-10 border-l border-primary-10 md:border-l">
+                    {rightColumn.map((option) => (
+                        <button
+                            key={option.id}
+                            onClick={() => handleOptionClick(option.path)}
+                            className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-primary-10 transition-colors group"
+                        >
+                            {option.hasIcon && (
+                                <FaFileAlt className="w-4 h-4 text-primary-50 group-hover:text-primary transition-colors shrink-0" />
+                            )}
+                            <span className="text-sm text-primary-75 group-hover:text-primary transition-colors">
+                                {option.label}
+                            </span>
+                        </button>
+                    ))}
                 </div>
             </div>
-        </div>
+        </Popup>
     );
 };
 

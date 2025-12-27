@@ -105,7 +105,9 @@ export const SelectField = forwardRef<
     HTMLSelectElement,
     Omit<React.SelectHTMLAttributes<HTMLSelectElement>, 'className'> & {
         label?: string;
-        options?: { value: string; label: string }[];
+        options?:
+            | { value: string; label: string }[]
+            | { label: string; options: { value: string; label: string }[] }[];
     }
 >(({ id, label, required, options = [], ...rest }, ref) => {
     return (
@@ -124,13 +126,33 @@ export const SelectField = forwardRef<
                     required={required}
                     {...rest}
                 >
-                    <optgroup label={label}>
-                        {options.map((option) => (
+                    <option value="" disabled>
+                        Select {label}
+                    </option>
+                    {options.map((option, index) => {
+                        if ('options' in option) {
+                            return (
+                                <optgroup
+                                    key={option.label || index}
+                                    label={option.label}
+                                >
+                                    {option.options.map((subOption) => (
+                                        <option
+                                            key={subOption.value}
+                                            value={subOption.value}
+                                        >
+                                            {subOption.label}
+                                        </option>
+                                    ))}
+                                </optgroup>
+                            );
+                        }
+                        return (
                             <option key={option.value} value={option.value}>
                                 {option.label}
                             </option>
-                        ))}
-                    </optgroup>
+                        );
+                    })}
                 </select>
                 <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2">
                     <svg

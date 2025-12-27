@@ -2,9 +2,9 @@ import { useEffect, useRef, useState } from 'react';
 import {
     FaCheck,
     FaChevronDown,
+    FaDesktop,
     FaMoon,
     FaSun,
-    FaDesktop,
 } from 'react-icons/fa';
 
 type Theme = 'light' | 'dark' | 'system';
@@ -115,7 +115,7 @@ const ThemeSwitcher = ({ compact = false }: ThemeSwitcherProps) => {
             {/* Trigger Button */}
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className={`flex items-center gap-2 bg-white border border-primary-10 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 ${buttonClasses} cursor-pointer hover:border-primary-20`}
+                className={`flex items-center gap-2 bg-white border border-primary-10 rounded-2 shadow-sm hover:shadow-md transition-all duration-200 ${buttonClasses} cursor-pointer hover:border-primary-20`}
                 aria-label="Switch theme"
             >
                 <CurrentIcon className="text-primary-50 w-4 h-4" />

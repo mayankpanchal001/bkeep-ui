@@ -22,7 +22,7 @@ const NotificationsTab = ({
                 {Object.entries(formData.notifications).map(([key, value]) => (
                     <div
                         key={key}
-                        className="flex items-center justify-between p-4 border border-primary-10 rounded-xl"
+                        className="flex items-center justify-between p-4 border border-primary-10 rounded-2"
                     >
                         <div>
                             <div className="font-medium text-primary capitalize">

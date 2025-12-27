@@ -43,9 +43,9 @@ const ProfileTab = ({
     };
 
     return (
-        <div className="space-y-6">
+        <div className="flex flex-col gap-2">
             {/* Profile Header Card */}
-            <div className="bg-gradient-to-br from-primary/5 to-primary-10/30 rounded-2xl p-6 border border-primary-10">
+            <div className="bg-gradient-to-br from-primary/5 to-primary-10/30 rounded-2 p-6 border border-primary-10">
                 <div className="flex flex-col md:flex-row gap-6 items-start md:items-center">
                     {/* Avatar */}
                     <div className="relative">
@@ -106,7 +106,7 @@ const ProfileTab = ({
             {isEditing ? (
                 /* Edit Mode - Form */
                 <form onSubmit={handleSubmit} className="space-y-6">
-                    <div className="bg-white rounded-xl border border-primary-10 p-6">
+                    <div className="bg-white rounded-2 border border-primary-10 p-6">
                         <h3 className="text-lg font-semibold text-primary mb-6 flex items-center gap-2">
                             <FaUser className="text-primary-50" />
                             Personal Information
@@ -203,10 +203,10 @@ const ProfileTab = ({
                 </form>
             ) : (
                 /* View Mode - Display */
-                <div className="space-y-6">
+                <div className="flex flex-col gap-2">
                     {/* Primary Details */}
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        <div className="bg-white rounded-xl border border-primary-10 p-4">
+                        <div className="bg-white rounded-2 border border-primary-10 p-4">
                             <div className="text-xs font-medium text-primary-50 mb-2">
                                 Full Name
                             </div>
@@ -215,7 +215,7 @@ const ProfileTab = ({
                             </div>
                         </div>
 
-                        <div className="bg-white rounded-xl border border-primary-10 p-4">
+                        <div className="bg-white rounded-2 border border-primary-10 p-4">
                             <div className="text-xs font-medium text-primary-50 mb-2">
                                 Email Address
                             </div>
@@ -224,7 +224,7 @@ const ProfileTab = ({
                             </div>
                         </div>
 
-                        <div className="bg-white rounded-xl border border-primary-10 p-4">
+                        <div className="bg-white rounded-2 border border-primary-10 p-4">
                             <div className="text-xs font-medium text-primary-50 mb-2">
                                 Phone Number
                             </div>
@@ -233,7 +233,7 @@ const ProfileTab = ({
                             </div>
                         </div>
 
-                        <div className="bg-white rounded-xl border border-primary-10 p-4">
+                        <div className="bg-white rounded-2 border border-primary-10 p-4">
                             <div className="text-xs font-medium text-primary-50 mb-2">
                                 Company / Location
                             </div>
@@ -242,7 +242,7 @@ const ProfileTab = ({
                             </div>
                         </div>
 
-                        <div className="bg-white rounded-xl border border-primary-10 p-4">
+                        <div className="bg-white rounded-2 border border-primary-10 p-4">
                             <div className="text-xs font-medium text-primary-50 mb-2">
                                 Role
                             </div>
@@ -256,7 +256,7 @@ const ProfileTab = ({
                             </div>
                         </div>
 
-                        <div className="bg-white rounded-xl border border-primary-10 p-4">
+                        <div className="bg-white rounded-2 border border-primary-10 p-4">
                             <div className="text-xs font-medium text-primary-50 mb-2">
                                 Currency
                             </div>
@@ -267,7 +267,7 @@ const ProfileTab = ({
                     </div>
 
                     {/* Permissions */}
-                    <div className="bg-white rounded-xl border border-primary-10 p-6">
+                    <div className="bg-white rounded-2 border border-primary-10 p-6">
                         <div className="flex items-center justify-between mb-4">
                             <div>
                                 <div className="text-sm font-semibold text-primary">
@@ -303,7 +303,7 @@ const ProfileTab = ({
                     </div>
 
                     {/* Tenants / Organizations */}
-                    <div className="bg-white rounded-xl border border-primary-10 p-6">
+                    <div className="bg-white rounded-2 border border-primary-10 p-6">
                         <div className="flex items-center justify-between mb-4">
                             <div>
                                 <div className="text-sm font-semibold text-primary">

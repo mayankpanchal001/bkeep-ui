@@ -2,10 +2,15 @@
 
 :root {
     /* Primary color */
-    --r: 197;
+    /* --r: 197;
     --g: 90;
-    --b: 17;
-
+    --b: 17; */
+    /* --r: 13;
+    --g: 148;
+    --b: 136; */
+    --r: 61;
+    --g: 19;
+    --b: 8;
     /* Secondary color */
     --sr: 94;
     --sg: 23;
@@ -22,6 +27,8 @@
     --color-primary-25: rgba(0, 0, 0, 0.25);
     --color-primary-50: rgba(0, 0, 0, 0.75);
     --color-primary-75: rgba(0, 0, 0, 0.95);
+
+    --radius-2: 2px;
 
     --color-secondary: rgba(var(--sr), var(--sg), var(--sb), 1);
     --color-secondary-10: rgba(var(--sr), var(--sg), var(--sb), 0.1);

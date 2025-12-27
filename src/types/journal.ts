@@ -3,14 +3,12 @@
  */
 
 export type JournalEntryLine = {
-    id?: string;
     accountId: string;
-    accountName?: string;
+    lineNumber: number;
     debit: number;
     credit: number;
     description: string;
-    name?: string;
-    salesTax?: number;
+    memo?: string;
 };
 
 export type JournalEntry = {
@@ -35,9 +33,16 @@ export type JournalEntry = {
 export type CreateJournalEntryPayload = {
     journalNo?: string;
     journalDate: string;
+    entryType?: 'standard' | 'adjusting' | 'closing' | 'reversing';
     isAdjusting: boolean;
-    lines: Omit<JournalEntryLine, 'id'>[];
+    isClosing?: boolean;
+    isReversing?: boolean;
+    reversalDate?: string | null;
     memo?: string;
+    reference?: string;
+    sourceModule?: string;
+    sourceId?: string;
+    lines: JournalEntryLine[];
     attachments?: File[];
     isRecurring?: boolean;
     recurringFrequency?: 'daily' | 'weekly' | 'monthly' | 'yearly';

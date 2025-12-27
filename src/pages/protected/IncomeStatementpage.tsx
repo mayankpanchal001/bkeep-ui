@@ -54,7 +54,7 @@ const IncomeStatementpage = () => {
                 </div>
                 <div className="flex items-center gap-3">
                     <div className="relative">
-                        <button className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-primary bg-white border-2 border-primary-10 rounded-xl hover:border-primary hover:bg-primary-10 transition-all">
+                        <button className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-primary bg-white border-2 border-primary-10 rounded-2 hover:border-primary hover:bg-primary-10 transition-all">
                             <FaDownload />
                             Export
                         </button>
@@ -63,7 +63,7 @@ const IncomeStatementpage = () => {
             </div>
 
             {/* Date Range Selector */}
-            <div className="bg-white rounded-xl shadow-sm border border-primary-10 p-4">
+            <div className="bg-white rounded-2 shadow-sm border border-primary-10 p-4">
                 <div className="flex flex-col sm:flex-row gap-4 items-end">
                     <div className="flex-1 grid grid-cols-2 gap-4">
                         <div>
@@ -74,7 +74,7 @@ const IncomeStatementpage = () => {
                                 type="date"
                                 value={startDate}
                                 onChange={(e) => setStartDate(e.target.value)}
-                                className="w-full px-4 py-2 border border-primary-10 rounded-xl text-sm text-primary focus:outline-none focus:border-primary"
+                                className="w-full px-4 py-2 border border-primary-10 rounded-2 text-sm text-primary focus:outline-none focus:border-primary"
                             />
                         </div>
                         <div>
@@ -85,7 +85,7 @@ const IncomeStatementpage = () => {
                                 type="date"
                                 value={endDate}
                                 onChange={(e) => setEndDate(e.target.value)}
-                                className="w-full px-4 py-2 border border-primary-10 rounded-xl text-sm text-primary focus:outline-none focus:border-primary"
+                                className="w-full px-4 py-2 border border-primary-10 rounded-2 text-sm text-primary focus:outline-none focus:border-primary"
                             />
                         </div>
                     </div>
@@ -96,7 +96,7 @@ const IncomeStatementpage = () => {
                                 onClick={() =>
                                     setDateRange(range.toLowerCase())
                                 }
-                                className={`px-4 py-2 text-sm font-medium rounded-xl transition-all ${
+                                className={`px-4 py-2 text-sm font-medium rounded-2 transition-all ${
                                     dateRange === range.toLowerCase()
                                         ? 'bg-primary text-white'
                                         : 'bg-primary-10 text-primary hover:bg-primary-25'
@@ -155,7 +155,7 @@ const IncomeStatementpage = () => {
             </ChartWidget>
 
             {/* Income Statement Table */}
-            <div className="bg-white rounded-xl shadow-sm border border-primary-10 p-6">
+            <div className="bg-white rounded-2 shadow-sm border border-primary-10 p-6">
                 <h3 className="text-lg font-semibold text-primary mb-4">
                     Detailed Income Statement
                 </h3>

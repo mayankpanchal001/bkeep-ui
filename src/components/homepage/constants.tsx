@@ -38,6 +38,41 @@ export const PAGE_HEADERS = [
         subtitle: 'Manage your account settings and preferences',
     },
     {
+        path: '/settings/profile',
+        title: 'Profile Settings',
+        subtitle: 'Manage your personal information and account details',
+    },
+    {
+        path: '/settings/tenants',
+        title: 'Tenants Management',
+        subtitle: 'Manage your organization tenants and workspaces',
+    },
+    {
+        path: '/settings/users',
+        title: 'Users Management',
+        subtitle: 'Manage users, roles, and permissions for your organization',
+    },
+    {
+        path: '/settings/roles',
+        title: 'Roles Management',
+        subtitle: 'Configure and manage user roles and permissions',
+    },
+    {
+        path: '/settings/security',
+        title: 'Security Settings',
+        subtitle: 'Manage your account security, passwords, and authentication',
+    },
+    {
+        path: '/settings/data',
+        title: 'Data & Privacy',
+        subtitle: 'Manage your data privacy settings and preferences',
+    },
+    {
+        path: '/settings/notifications',
+        title: 'Notification Settings',
+        subtitle: 'Configure your notification preferences and alerts',
+    },
+    {
         path: '/invoices',
         title: 'Invoices',
         subtitle: 'Create and manage your invoices',

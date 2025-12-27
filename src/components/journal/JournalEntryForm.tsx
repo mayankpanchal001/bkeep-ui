@@ -1,11 +1,12 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { FaPlus, FaTrash } from 'react-icons/fa';
+import { useChartOfAccounts } from '../../services/apis/chartsAccountApi';
 import type {
     CreateJournalEntryPayload,
     JournalEntryLine,
 } from '../../types/journal';
 import Button from '../typography/Button';
-import { InputField } from '../typography/InputFields';
+import { InputField, SelectField } from '../typography/InputFields';
 
 type JournalEntryFormProps = {
     initialData?: Partial<CreateJournalEntryPayload>;
@@ -20,41 +21,58 @@ export function JournalEntryForm({
     onCancel,
     isLoading = false,
 }: JournalEntryFormProps) {
-    const [journalNo, setJournalNo] = useState(initialData?.journalNo || '');
-    const [journalDate, setJournalDate] = useState(
+    // Fetch chart of accounts
+    const { data: accountsData } = useChartOfAccounts();
+    const accounts = useMemo(() => {
+        return accountsData?.data?.items || [];
+    }, [accountsData]);
+
+    // Account options for dropdown
+    const accountOptions = useMemo(() => {
+        return accounts.map((account) => ({
+            value: account.id,
+            label: `${account.accountNumber} - ${account.accountName}`,
+        }));
+    }, [accounts]);
+
+    const [entryNumber, setEntryNumber] = useState(
+        initialData?.journalNo || ''
+    );
+    const [entryDate, setEntryDate] = useState(
         initialData?.journalDate || new Date().toISOString().split('T')[0]
     );
+    const [entryType, setEntryType] = useState<
+        'standard' | 'adjusting' | 'closing' | 'reversing'
+    >(initialData?.entryType || 'standard');
     const [isAdjusting, setIsAdjusting] = useState(
         initialData?.isAdjusting || false
     );
+    const [isClosing, setIsClosing] = useState(initialData?.isClosing || false);
+    const [isReversing, setIsReversing] = useState(
+        initialData?.isReversing || false
+    );
+    const [description, setDescription] = useState(
+        initialData?.memo || ''
+    );
+    const [reference, setReference] = useState(initialData?.reference || '');
     const [lines, setLines] = useState<JournalEntryLine[]>(
         initialData?.lines || [
             {
                 accountId: '',
+                lineNumber: 1,
                 debit: 0,
                 credit: 0,
                 description: '',
-                name: '',
-                salesTax: 0,
             },
             {
                 accountId: '',
+                lineNumber: 2,
                 debit: 0,
                 credit: 0,
                 description: '',
-                name: '',
-                salesTax: 0,
             },
         ]
     );
-    const [memo, setMemo] = useState(initialData?.memo || '');
-    const [attachments, setAttachments] = useState<File[]>([]);
-    const [isRecurring, setIsRecurring] = useState(
-        initialData?.isRecurring || false
-    );
-    const [recurringFrequency, setRecurringFrequency] = useState<
-        'daily' | 'weekly' | 'monthly' | 'yearly' | undefined
-    >(initialData?.recurringFrequency);
 
     const calculateTotals = () => {
         const totalDebit = lines.reduce(
@@ -76,18 +94,23 @@ export function JournalEntryForm({
             ...lines,
             {
                 accountId: '',
+                lineNumber: lines.length + 1,
                 debit: 0,
                 credit: 0,
                 description: '',
-                name: '',
-                salesTax: 0,
             },
         ]);
     };
 
     const handleRemoveLine = (index: number) => {
         if (lines.length > 2) {
-            setLines(lines.filter((_, i) => i !== index));
+            const updatedLines = lines
+                .filter((_, i) => i !== index)
+                .map((line, idx) => ({
+                    ...line,
+                    lineNumber: idx + 1,
+                }));
+            setLines(updatedLines);
         }
     };
 
@@ -104,12 +127,6 @@ export function JournalEntryForm({
         setLines(updatedLines);
     };
 
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files) {
-            setAttachments(Array.from(e.target.files));
-        }
-    };
-
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
@@ -118,22 +135,30 @@ export function JournalEntryForm({
             return;
         }
 
+        // Validate all lines have account IDs
+        const hasEmptyAccounts = lines.some((line) => !line.accountId);
+        if (hasEmptyAccounts) {
+            alert('Please select an account for all lines');
+            return;
+        }
+
         const payload: CreateJournalEntryPayload = {
-            journalNo,
-            journalDate,
+            journalNo: entryNumber || undefined,
+            journalDate: entryDate,
+            entryType,
             isAdjusting,
-            lines: lines.map((line) => ({
+            isClosing,
+            isReversing,
+            memo: description || undefined,
+            reference: reference || undefined,
+            lines: lines.map((line, index) => ({
                 accountId: line.accountId,
+                lineNumber: line.lineNumber || index + 1,
                 debit: Number(line.debit),
                 credit: Number(line.credit),
                 description: line.description,
-                name: line.name,
-                salesTax: Number(line.salesTax) || 0,
+                memo: line.memo || '',
             })),
-            memo,
-            attachments: attachments.length > 0 ? attachments : undefined,
-            isRecurring,
-            recurringFrequency,
         };
 
         onSubmit(payload);
@@ -143,19 +168,17 @@ export function JournalEntryForm({
         setLines([
             {
                 accountId: '',
+                lineNumber: 1,
                 debit: 0,
                 credit: 0,
                 description: '',
-                name: '',
-                salesTax: 0,
             },
             {
                 accountId: '',
+                lineNumber: 2,
                 debit: 0,
                 credit: 0,
                 description: '',
-                name: '',
-                salesTax: 0,
             },
         ]);
     };
@@ -165,21 +188,63 @@ export function JournalEntryForm({
             {/* Header Section */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 <InputField
-                    label="Journal date"
+                    label="Entry Date"
                     type="date"
-                    value={journalDate}
-                    onChange={(e) => setJournalDate(e.target.value)}
+                    value={entryDate}
+                    onChange={(e) => setEntryDate(e.target.value)}
                     required
                 />
 
                 <InputField
-                    label="Journal no."
+                    label="Entry Number"
                     type="text"
-                    value={journalNo}
-                    onChange={(e) => setJournalNo(e.target.value)}
+                    value={entryNumber}
+                    onChange={(e) => setEntryNumber(e.target.value)}
                     placeholder="Auto-generated if empty"
                 />
 
+                <SelectField
+                    label="Entry Type"
+                    value={entryType}
+                    onChange={(e) =>
+                        setEntryType(
+                            e.target.value as
+                                | 'standard'
+                                | 'adjusting'
+                                | 'closing'
+                                | 'reversing'
+                        )
+                    }
+                    options={[
+                        { value: 'standard', label: 'Standard' },
+                        { value: 'adjusting', label: 'Adjusting' },
+                        { value: 'closing', label: 'Closing' },
+                        { value: 'reversing', label: 'Reversing' },
+                    ]}
+                />
+            </div>
+
+            {/* Additional Fields */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <InputField
+                    label="Description"
+                    type="text"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    placeholder="e.g., Office supply purchase"
+                />
+
+                <InputField
+                    label="Reference"
+                    type="text"
+                    value={reference}
+                    onChange={(e) => setReference(e.target.value)}
+                    placeholder="e.g., INV-88922"
+                />
+            </div>
+
+            {/* Checkboxes */}
+            <div className="flex flex-wrap gap-4">
                 <div className="flex items-center gap-2">
                     <input
                         type="checkbox"
@@ -192,7 +257,37 @@ export function JournalEntryForm({
                         htmlFor="isAdjusting"
                         className="text-sm font-medium text-primary"
                     >
-                        Is Adjusting Journal Entry?
+                        Is Adjusting Entry
+                    </label>
+                </div>
+                <div className="flex items-center gap-2">
+                    <input
+                        type="checkbox"
+                        id="isClosing"
+                        checked={isClosing}
+                        onChange={(e) => setIsClosing(e.target.checked)}
+                        className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
+                    />
+                    <label
+                        htmlFor="isClosing"
+                        className="text-sm font-medium text-primary"
+                    >
+                        Is Closing Entry
+                    </label>
+                </div>
+                <div className="flex items-center gap-2">
+                    <input
+                        type="checkbox"
+                        id="isReversing"
+                        checked={isReversing}
+                        onChange={(e) => setIsReversing(e.target.checked)}
+                        className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
+                    />
+                    <label
+                        htmlFor="isReversing"
+                        className="text-sm font-medium text-primary"
+                    >
+                        Is Reversing Entry
                     </label>
                 </div>
             </div>
@@ -218,10 +313,7 @@ export function JournalEntryForm({
                                 DESCRIPTION
                             </th>
                             <th className="px-2 py-2 text-left text-xs font-medium text-primary-75 uppercase tracking-wider">
-                                NAME
-                            </th>
-                            <th className="px-2 py-2 text-left text-xs font-medium text-primary-75 uppercase tracking-wider">
-                                SALES TAX
+                                MEMO
                             </th>
                             <th className="px-2 py-2 text-left text-xs font-medium text-primary-75 uppercase tracking-wider"></th>
                         </tr>
@@ -230,11 +322,10 @@ export function JournalEntryForm({
                         {lines.map((line, index) => (
                             <tr key={index} className="hover:bg-gray-50">
                                 <td className="px-2 py-2 text-sm text-primary">
-                                    {index + 1}
+                                    {line.lineNumber || index + 1}
                                 </td>
                                 <td className="px-2 py-2">
-                                    <input
-                                        type="text"
+                                    <SelectField
                                         value={line.accountId}
                                         onChange={(e) =>
                                             handleLineChange(
@@ -243,9 +334,14 @@ export function JournalEntryForm({
                                                 e.target.value
                                             )
                                         }
-                                        className="w-full px-2 py-1 text-sm border border-primary-10 rounded focus:ring-1 focus:ring-primary focus:border-transparent"
-                                        placeholder="Account ID"
                                         required
+                                        options={[
+                                            {
+                                                value: '',
+                                                label: 'Select Account',
+                                            },
+                                            ...accountOptions,
+                                        ]}
                                     />
                                 </td>
                                 <td className="px-2 py-2">
@@ -298,32 +394,16 @@ export function JournalEntryForm({
                                 <td className="px-2 py-2">
                                     <input
                                         type="text"
-                                        value={line.name || ''}
+                                        value={line.memo || ''}
                                         onChange={(e) =>
                                             handleLineChange(
                                                 index,
-                                                'name',
+                                                'memo',
                                                 e.target.value
                                             )
                                         }
                                         className="w-full px-2 py-1 text-sm border border-primary-10 rounded focus:ring-1 focus:ring-primary focus:border-transparent"
-                                        placeholder="Name"
-                                    />
-                                </td>
-                                <td className="px-2 py-2">
-                                    <input
-                                        type="number"
-                                        step="0.01"
-                                        value={line.salesTax || 0}
-                                        onChange={(e) =>
-                                            handleLineChange(
-                                                index,
-                                                'salesTax',
-                                                parseFloat(e.target.value) || 0
-                                            )
-                                        }
-                                        className="w-full px-2 py-1 text-sm border border-primary-10 rounded focus:ring-1 focus:ring-primary focus:border-transparent"
-                                        placeholder="0.00"
+                                        placeholder="Memo"
                                     />
                                 </td>
                                 <td className="px-2 py-2">
@@ -356,7 +436,7 @@ export function JournalEntryForm({
                             <td className="px-2 py-2 font-semibold text-sm text-primary">
                                 ${totalCredit.toFixed(2)}
                             </td>
-                            <td colSpan={4}></td>
+                            <td colSpan={3}></td>
                         </tr>
                     </tfoot>
                 </table>
@@ -386,98 +466,6 @@ export function JournalEntryForm({
                 </Button>
             </div>
 
-            {/* Memo and Attachments */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <label className="block text-sm font-medium text-primary mb-1">
-                        Memo
-                    </label>
-                    <textarea
-                        value={memo}
-                        onChange={(e) => setMemo(e.target.value)}
-                        rows={3}
-                        className="w-full px-2 py-1.5 text-sm border border-primary-10 rounded focus:ring-1 focus:ring-primary focus:border-transparent"
-                        placeholder="Add notes about this journal entry..."
-                    />
-                </div>
-
-                <div>
-                    <label className="block text-sm font-medium text-primary mb-1">
-                        Attachments
-                    </label>
-                    <div className="border-2 border-dashed border-primary-10 rounded-lg p-4 text-center">
-                        <input
-                            type="file"
-                            multiple
-                            onChange={handleFileChange}
-                            className="hidden"
-                            id="file-upload"
-                            accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
-                        />
-                        <label
-                            htmlFor="file-upload"
-                            className="cursor-pointer text-primary hover:text-primary-75"
-                        >
-                            <p className="text-sm">Add attachment</p>
-                            <p className="text-xs text-primary-50 mt-1">
-                                Max file size: 20 MB
-                            </p>
-                        </label>
-                        {attachments.length > 0 && (
-                            <div className="mt-3 text-xs text-primary-75">
-                                {attachments.length} file(s) selected
-                            </div>
-                        )}
-                    </div>
-                </div>
-            </div>
-
-            {/* Recurring Options */}
-            <div className="border border-primary-10 rounded-lg p-3">
-                <div className="flex items-center gap-2 mb-2">
-                    <input
-                        type="checkbox"
-                        id="isRecurring"
-                        checked={isRecurring}
-                        onChange={(e) => setIsRecurring(e.target.checked)}
-                        className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
-                    />
-                    <label
-                        htmlFor="isRecurring"
-                        className="text-sm font-medium text-primary"
-                    >
-                        Make recurring
-                    </label>
-                </div>
-
-                {isRecurring && (
-                    <div className="ml-6">
-                        <label className="block text-sm font-medium text-primary mb-1">
-                            Frequency
-                        </label>
-                        <select
-                            value={recurringFrequency || ''}
-                            onChange={(e) =>
-                                setRecurringFrequency(
-                                    e.target.value as
-                                        | 'daily'
-                                        | 'weekly'
-                                        | 'monthly'
-                                        | 'yearly'
-                                )
-                            }
-                            className="px-2 py-1.5 text-sm border border-primary-10 rounded focus:ring-1 focus:ring-primary focus:border-transparent"
-                        >
-                            <option value="">Select frequency</option>
-                            <option value="daily">Daily</option>
-                            <option value="weekly">Weekly</option>
-                            <option value="monthly">Monthly</option>
-                            <option value="yearly">Yearly</option>
-                        </select>
-                    </div>
-                )}
-            </div>
-
             {/* Form Actions */}
             <div className="flex justify-between items-center pt-3 border-t border-primary-10">
                 <Button
@@ -497,14 +485,6 @@ export function JournalEntryForm({
                         loading={isLoading}
                     >
                         Save
-                    </Button>
-                    <Button
-                        type="submit"
-                        variant="primary"
-                        disabled={isLoading || !isBalanced}
-                        loading={isLoading}
-                    >
-                        Save and new
                     </Button>
                 </div>
             </div>

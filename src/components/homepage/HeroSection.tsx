@@ -54,7 +54,7 @@ export default function HeroSection() {
                             See how it works
                         </Button>
                     </div>
-                    <div className="grid gap-6 rounded-2xl border border-white/5 bg-white/5 p-6 backdrop-blur">
+                    <div className="grid gap-6 rounded-2 border border-white/5 bg-white/5 p-6 backdrop-blur">
                         <p className="text-xs uppercase tracking-[0.45em] text-white/60">
                             Performance you can measure
                         </p>
@@ -80,17 +80,17 @@ export default function HeroSection() {
                             <span>Live</span>
                         </div>
                         <div className="mt-6 space-y-4">
-                            <div className="rounded-2xl border border-white/5 bg-white/5 p-4">
+                            <div className="rounded-2 border border-white/5 bg-white/5 p-4">
                                 <p className="text-sm text-white/60">
                                     Alpha Mix
                                 </p>
                                 <p className="text-2xl font-semibold text-white">
                                     +12.4%
                                 </p>
-                                <div className="mt-4 h-24 rounded-xl bg-gradient-to-br from-[#ff813f]/30 to-[#ff4b1f]/10" />
+                                <div className="mt-4 h-24 rounded-2 bg-gradient-to-br from-[#ff813f]/30 to-[#ff4b1f]/10" />
                             </div>
                             <div className="grid gap-4 sm:grid-cols-2">
-                                <div className="rounded-2xl border border-white/5 bg-white/5 p-4">
+                                <div className="rounded-2 border border-white/5 bg-white/5 p-4">
                                     <p className="text-xs uppercase tracking-[0.35em] text-white/60">
                                         Signals
                                     </p>
@@ -101,7 +101,7 @@ export default function HeroSection() {
                                         Updated 2 mins ago
                                     </p>
                                 </div>
-                                <div className="rounded-2xl border border-white/5 bg-white/5 p-4">
+                                <div className="rounded-2 border border-white/5 bg-white/5 p-4">
                                     <p className="text-xs uppercase tracking-[0.35em] text-white/60">
                                         Risk
                                     </p>
@@ -115,7 +115,7 @@ export default function HeroSection() {
                             </div>
                         </div>
                     </div>
-                    <div className="absolute -bottom-6 -left-4 hidden w-40 rounded-2xl border border-white/5 bg-white/5 p-4 text-xs text-white/70 shadow-2xl lg:block">
+                    <div className="absolute -bottom-6 -left-4 hidden w-40 rounded-2 border border-white/5 bg-white/5 p-4 text-xs text-white/70 shadow-2xl lg:block">
                         <p className="text-[11px] uppercase tracking-[0.4em] text-white/40">
                             Trusted
                         </p>

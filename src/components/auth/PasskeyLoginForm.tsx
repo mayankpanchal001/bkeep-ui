@@ -190,7 +190,7 @@ export function PasskeyLoginForm() {
                     </p>
                 </div>
 
-                <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 text-left">
+                <div className="bg-blue-50 border border-blue-200 rounded-2 p-4 text-left">
                     <ol className="text-sm text-blue-900 space-y-2">
                         <li className="flex gap-2">
                             <span className="font-semibold">1.</span>

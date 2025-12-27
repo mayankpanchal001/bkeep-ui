@@ -1,7 +1,7 @@
-import { ForgotPasswordForm } from '../../components/auth/ForgotPasswordForm';
-import { logo } from '../../utills/image';
 import { Link } from 'react-router';
+import { ForgotPasswordForm } from '../../components/auth/ForgotPasswordForm';
 import { APP_TITLE } from '../../constants';
+import { logo } from '../../utills/image';
 
 const ForgotPasswordpage = () => {
     return (
@@ -83,7 +83,7 @@ const ForgotPasswordpage = () => {
                     </div>
 
                     {/* Forgot Password Form Card */}
-                    <div className="bg-white rounded-2xl shadow-xl p-6 lg:p-8 border border-primary-10">
+                    <div className="bg-white rounded-2 shadow-xl p-6 lg:p-8 border border-primary-10">
                         <ForgotPasswordForm />
                     </div>
 

@@ -113,7 +113,7 @@ const Expensespage = () => {
         <div className="flex flex-col gap-4">
             {/* Summary Cards */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div className="bg-white rounded-xl shadow-sm border border-primary-10 p-4">
+                <div className="bg-white rounded-2 shadow-sm border border-primary-10 p-4">
                     <div className="text-sm text-primary-50 mb-1">
                         Total Expenses
                     </div>
@@ -129,7 +129,7 @@ const Expensespage = () => {
                     .map(([category, amount]) => (
                         <div
                             key={category}
-                            className="bg-white rounded-xl shadow-sm border border-primary-10 p-4"
+                            className="bg-white rounded-2 shadow-sm border border-primary-10 p-4"
                         >
                             <div className="text-sm text-primary-50 mb-1">
                                 {category}
@@ -142,7 +142,7 @@ const Expensespage = () => {
             </div>
 
             {/* Filters */}
-            <div className="bg-white rounded-xl shadow-sm border border-primary-10 p-4">
+            <div className="bg-white rounded-2 shadow-sm border border-primary-10 p-4">
                 <div className="flex flex-col sm:flex-row gap-4">
                     <div className="flex-1">
                         <div className="relative">
@@ -160,7 +160,7 @@ const Expensespage = () => {
                         <select
                             value={categoryFilter}
                             onChange={(e) => setCategoryFilter(e.target.value)}
-                            className="px-4 py-2 border border-primary-10 rounded-xl text-sm text-primary focus:outline-none focus:border-primary"
+                            className="px-4 py-2 border border-primary-10 rounded-2 text-sm text-primary focus:outline-none focus:border-primary"
                         >
                             <option value="all">All Categories</option>
                             {CATEGORIES.map((category) => (
@@ -174,7 +174,7 @@ const Expensespage = () => {
             </div>
 
             {/* Expenses Table */}
-            <div className="bg-white rounded-xl shadow-sm border border-primary-10 overflow-hidden">
+            <div className="bg-white rounded-2 shadow-sm border border-primary-10 overflow-hidden">
                 <div className="overflow-x-auto">
                     <table className="w-full">
                         <thead className="bg-primary-10">
@@ -280,7 +280,7 @@ const Expensespage = () => {
             {/* Create Expense Modal */}
             {showCreateModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4">
-                    <div className="w-full max-w-2xl rounded-2xl bg-white p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
+                    <div className="w-full max-w-2xl rounded-2 bg-white p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
                         <div className="flex items-center justify-between mb-4">
                             <h3 className="text-xl font-semibold text-primary">
                                 Add New Expense
@@ -312,7 +312,7 @@ const Expensespage = () => {
                                     <label className="block text-sm font-medium text-primary mb-2">
                                         Category
                                     </label>
-                                    <select className="w-full px-4 py-2 border border-primary-10 rounded-xl text-sm text-primary focus:outline-none focus:border-primary">
+                                    <select className="w-full px-4 py-2 border border-primary-10 rounded-2 text-sm text-primary focus:outline-none focus:border-primary">
                                         {CATEGORIES.map((category) => (
                                             <option
                                                 key={category}
@@ -342,7 +342,7 @@ const Expensespage = () => {
                                 <label className="block text-sm font-medium text-primary mb-2">
                                     Payment Method
                                 </label>
-                                <select className="w-full px-4 py-2 border border-primary-10 rounded-xl text-sm text-primary focus:outline-none focus:border-primary">
+                                <select className="w-full px-4 py-2 border border-primary-10 rounded-2 text-sm text-primary focus:outline-none focus:border-primary">
                                     <option>Credit Card</option>
                                     <option>Bank Transfer</option>
                                     <option>Check</option>

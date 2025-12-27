@@ -237,7 +237,7 @@ const AcceptInvitationForm = () => {
 
             {/* Invitation Details Card */}
             {invitationData && (
-                <div className="bg-gradient-to-br from-primary-5 to-primary-10 rounded-2xl p-6 mb-8 border border-primary-20 shadow-sm">
+                <div className="bg-gradient-to-br from-primary-5 to-primary-10 rounded-2 p-6 mb-8 border border-primary-20 shadow-sm">
                     <div className="flex items-center gap-2 mb-4">
                         <FaCheckCircle className="w-5 h-5 text-primary" />
                         <h3 className="text-sm font-semibold text-primary uppercase tracking-wide">
@@ -246,7 +246,7 @@ const AcceptInvitationForm = () => {
                     </div>
                     <div className="space-y-4">
                         <div className="flex items-start gap-4 p-3 bg-white/60 rounded-lg backdrop-blur-sm">
-                            <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+                            <div className="w-12 h-12 rounded-2 bg-primary/10 flex items-center justify-center shrink-0">
                                 <FaUser className="w-5 h-5 text-primary" />
                             </div>
                             <div className="flex-1 min-w-0">
@@ -259,7 +259,7 @@ const AcceptInvitationForm = () => {
                             </div>
                         </div>
                         <div className="flex items-start gap-4 p-3 bg-white/60 rounded-lg backdrop-blur-sm">
-                            <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+                            <div className="w-12 h-12 rounded-2 bg-primary/10 flex items-center justify-center shrink-0">
                                 <FaEnvelope className="w-5 h-5 text-primary" />
                             </div>
                             <div className="flex-1 min-w-0">
@@ -273,7 +273,7 @@ const AcceptInvitationForm = () => {
                         </div>
                         {invitationData.role && (
                             <div className="flex items-start gap-4 p-3 bg-white/60 rounded-lg backdrop-blur-sm">
-                                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+                                <div className="w-12 h-12 rounded-2 bg-primary/10 flex items-center justify-center shrink-0">
                                     <FaCheckCircle className="w-5 h-5 text-primary" />
                                 </div>
                                 <div className="flex-1 min-w-0">
@@ -289,7 +289,7 @@ const AcceptInvitationForm = () => {
                         {(invitationData.tenantName ||
                             invitationData.tenant) && (
                             <div className="flex items-start gap-4 p-3 bg-white/60 rounded-lg backdrop-blur-sm">
-                                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+                                <div className="w-12 h-12 rounded-2 bg-primary/10 flex items-center justify-center shrink-0">
                                     <FaBuilding className="w-5 h-5 text-primary" />
                                 </div>
                                 <div className="flex-1 min-w-0">
@@ -310,134 +310,136 @@ const AcceptInvitationForm = () => {
             {/* Password Form - Only show if password is required */}
             {requiresPassword ? (
                 <form onSubmit={handleSubmit} className="space-y-6">
-                {/* Password Field */}
-                <div>
-                    <InputField
-                        id="password"
-                        label="Create Password"
-                        type="password"
-                        placeholder="Enter your password"
-                        value={password}
-                        onChange={(e) => handlePasswordChange(e.target.value)}
-                        required
-                        icon={<FaLock className="w-4 h-4" />}
-                        disabled={isAccepting}
-                    />
-                    {errors.password && (
-                        <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg">
-                            <p className="text-red-700 text-xs flex items-center gap-2">
-                                <FaExclamationTriangle className="w-3 h-3 shrink-0" />
-                                {errors.password}
-                            </p>
-                        </div>
-                    )}
-                </div>
-
-                {/* Password Requirements - Interactive */}
-                {password && (
-                    <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-100 rounded-xl p-4 shadow-sm">
-                        <p className="text-xs font-semibold text-blue-900 mb-3 flex items-center gap-2">
-                            <FaLock className="w-3 h-3" />
-                            Password Requirements
-                        </p>
-                        <ul className="space-y-2">
-                            {passwordValidation.map((req, index) => (
-                                <li
-                                    key={index}
-                                    className={`flex items-center gap-2 text-xs transition-all duration-200 ${
-                                        req.met
-                                            ? 'text-green-700'
-                                            : 'text-blue-700'
-                                    }`}
-                                >
-                                    <div
-                                        className={`w-4 h-4 rounded-full flex items-center justify-center shrink-0 transition-all duration-200 ${
-                                            req.met
-                                                ? 'bg-green-500 text-white'
-                                                : 'bg-blue-200 text-blue-600'
-                                        }`}
-                                    >
-                                        {req.met ? (
-                                            <FaCheck className="w-2.5 h-2.5" />
-                                        ) : (
-                                            <FaTimes className="w-2.5 h-2.5" />
-                                        )}
-                                    </div>
-                                    <span
-                                        className={
-                                            req.met
-                                                ? 'line-through opacity-60'
-                                                : ''
-                                        }
-                                    >
-                                        {req.label}
-                                    </span>
-                                </li>
-                            ))}
-                        </ul>
-                        {isPasswordValid && (
-                            <div className="mt-3 pt-3 border-t border-green-200">
-                                <p className="text-xs font-medium text-green-700 flex items-center gap-2">
-                                    <FaCheckCircle className="w-3 h-3" />
-                                    Password meets all requirements
+                    {/* Password Field */}
+                    <div>
+                        <InputField
+                            id="password"
+                            label="Create Password"
+                            type="password"
+                            placeholder="Enter your password"
+                            value={password}
+                            onChange={(e) =>
+                                handlePasswordChange(e.target.value)
+                            }
+                            required
+                            icon={<FaLock className="w-4 h-4" />}
+                            disabled={isAccepting}
+                        />
+                        {errors.password && (
+                            <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg">
+                                <p className="text-red-700 text-xs flex items-center gap-2">
+                                    <FaExclamationTriangle className="w-3 h-3 shrink-0" />
+                                    {errors.password}
                                 </p>
                             </div>
                         )}
                     </div>
-                )}
 
-                {/* Confirm Password Field */}
-                <div>
-                    <InputField
-                        id="confirmPassword"
-                        label="Confirm Password"
-                        type="password"
-                        placeholder="Confirm your password"
-                        value={confirmPassword}
-                        onChange={(e) =>
-                            handleConfirmPasswordChange(e.target.value)
-                        }
-                        required
-                        icon={<FaLock className="w-4 h-4" />}
-                        disabled={isAccepting}
-                    />
-                    {confirmPassword && password === confirmPassword && (
-                        <div className="mt-2 p-2 bg-green-50 border border-green-200 rounded-lg">
-                            <p className="text-green-700 text-xs flex items-center gap-2">
-                                <FaCheck className="w-3 h-3" />
-                                Passwords match
+                    {/* Password Requirements - Interactive */}
+                    {password && (
+                        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-100 rounded-2 p-4 shadow-sm">
+                            <p className="text-xs font-semibold text-blue-900 mb-3 flex items-center gap-2">
+                                <FaLock className="w-3 h-3" />
+                                Password Requirements
                             </p>
+                            <ul className="space-y-2">
+                                {passwordValidation.map((req, index) => (
+                                    <li
+                                        key={index}
+                                        className={`flex items-center gap-2 text-xs transition-all duration-200 ${
+                                            req.met
+                                                ? 'text-green-700'
+                                                : 'text-blue-700'
+                                        }`}
+                                    >
+                                        <div
+                                            className={`w-4 h-4 rounded-full flex items-center justify-center shrink-0 transition-all duration-200 ${
+                                                req.met
+                                                    ? 'bg-green-500 text-white'
+                                                    : 'bg-blue-200 text-blue-600'
+                                            }`}
+                                        >
+                                            {req.met ? (
+                                                <FaCheck className="w-2.5 h-2.5" />
+                                            ) : (
+                                                <FaTimes className="w-2.5 h-2.5" />
+                                            )}
+                                        </div>
+                                        <span
+                                            className={
+                                                req.met
+                                                    ? 'line-through opacity-60'
+                                                    : ''
+                                            }
+                                        >
+                                            {req.label}
+                                        </span>
+                                    </li>
+                                ))}
+                            </ul>
+                            {isPasswordValid && (
+                                <div className="mt-3 pt-3 border-t border-green-200">
+                                    <p className="text-xs font-medium text-green-700 flex items-center gap-2">
+                                        <FaCheckCircle className="w-3 h-3" />
+                                        Password meets all requirements
+                                    </p>
+                                </div>
+                            )}
                         </div>
                     )}
-                    {errors.confirmPassword && (
-                        <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg">
-                            <p className="text-red-700 text-xs flex items-center gap-2">
-                                <FaExclamationTriangle className="w-3 h-3 shrink-0" />
-                                {errors.confirmPassword}
-                            </p>
-                        </div>
-                    )}
-                </div>
 
-                {/* Submit Button */}
-                <Button
-                    type="submit"
-                    variant="primary"
-                    className="w-full"
-                    loading={isAccepting}
-                    disabled={isAccepting || !isPasswordValid}
-                >
-                    {isAccepting
-                        ? 'Creating Account...'
-                        : 'Accept & Create Account'}
-                </Button>
+                    {/* Confirm Password Field */}
+                    <div>
+                        <InputField
+                            id="confirmPassword"
+                            label="Confirm Password"
+                            type="password"
+                            placeholder="Confirm your password"
+                            value={confirmPassword}
+                            onChange={(e) =>
+                                handleConfirmPasswordChange(e.target.value)
+                            }
+                            required
+                            icon={<FaLock className="w-4 h-4" />}
+                            disabled={isAccepting}
+                        />
+                        {confirmPassword && password === confirmPassword && (
+                            <div className="mt-2 p-2 bg-green-50 border border-green-200 rounded-lg">
+                                <p className="text-green-700 text-xs flex items-center gap-2">
+                                    <FaCheck className="w-3 h-3" />
+                                    Passwords match
+                                </p>
+                            </div>
+                        )}
+                        {errors.confirmPassword && (
+                            <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg">
+                                <p className="text-red-700 text-xs flex items-center gap-2">
+                                    <FaExclamationTriangle className="w-3 h-3 shrink-0" />
+                                    {errors.confirmPassword}
+                                </p>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Submit Button */}
+                    <Button
+                        type="submit"
+                        variant="primary"
+                        className="w-full"
+                        loading={isAccepting}
+                        disabled={isAccepting || !isPasswordValid}
+                    >
+                        {isAccepting
+                            ? 'Creating Account...'
+                            : 'Accept & Create Account'}
+                    </Button>
                 </form>
             ) : (
                 <div className="space-y-6">
-                    <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
+                    <div className="bg-blue-50 border border-blue-200 rounded-2 p-4">
                         <p className="text-sm text-blue-800 text-center">
-                            No password required. Click the button below to accept
-                            the invitation.
+                            No password required. Click the button below to
+                            accept the invitation.
                         </p>
                     </div>
                     <Button
