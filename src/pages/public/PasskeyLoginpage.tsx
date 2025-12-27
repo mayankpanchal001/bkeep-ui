@@ -5,7 +5,7 @@ import { logo } from '../../utills/image';
 
 const PasskeyLoginpage = () => {
     return (
-        <div className="min-h-screen flex items-center justify-center bg-white p-6">
+        <div className="min-h-screen flex items-center justify-center bg-white p-4">
             <div className="w-full max-w-md">
                 {/* Logo and Title */}
                 <div className="text-center mb-8">
@@ -28,7 +28,7 @@ const PasskeyLoginpage = () => {
 
                 {/* Footer Links */}
                 <div className="mt-8 text-center">
-                    <div className="flex items-center justify-center gap-6 text-sm">
+                    <div className="flex items-center justify-center gap-4 text-sm">
                         <Link
                             to="/legal"
                             className="text-primary hover:underline"

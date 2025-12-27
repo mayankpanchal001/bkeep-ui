@@ -237,7 +237,7 @@ const AcceptInvitationForm = () => {
 
             {/* Invitation Details Card */}
             {invitationData && (
-                <div className="bg-gradient-to-br from-primary-5 to-primary-10 rounded-2 p-6 mb-8 border border-primary-20 shadow-sm">
+                <div className="bg-gradient-to-br from-primary-5 to-primary-10 rounded-2 p-4 mb-8 border border-primary-20 shadow-sm">
                     <div className="flex items-center gap-2 mb-4">
                         <FaCheckCircle className="w-5 h-5 text-primary" />
                         <h3 className="text-sm font-semibold text-primary uppercase tracking-wide">

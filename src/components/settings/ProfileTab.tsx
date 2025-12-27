@@ -45,8 +45,8 @@ const ProfileTab = ({
     return (
         <div className="flex flex-col gap-2">
             {/* Profile Header Card */}
-            <div className="bg-gradient-to-br from-primary/5 to-primary-10/30 rounded-2 p-6 border border-primary-10">
-                <div className="flex flex-col md:flex-row gap-6 items-start md:items-center">
+            <div className="bg-gradient-to-br from-primary/5 to-primary-10/30 rounded-2 p-4 border border-primary-10">
+                <div className="flex flex-col md:flex-row gap-4 items-start md:items-center">
                     {/* Avatar */}
                     <div className="relative">
                         <div className="w-28 h-28 rounded-full bg-gradient-to-br from-primary to-primary-75 flex items-center justify-center text-white text-3xl font-bold shadow-lg">
@@ -106,7 +106,7 @@ const ProfileTab = ({
             {isEditing ? (
                 /* Edit Mode - Form */
                 <form onSubmit={handleSubmit} className="space-y-6">
-                    <div className="bg-white rounded-2 border border-primary-10 p-6">
+                    <div className="bg-white rounded-2 border border-primary-10 p-4">
                         <h3 className="text-lg font-semibold text-primary mb-6 flex items-center gap-2">
                             <FaUser className="text-primary-50" />
                             Personal Information
@@ -267,7 +267,7 @@ const ProfileTab = ({
                     </div>
 
                     {/* Permissions */}
-                    <div className="bg-white rounded-2 border border-primary-10 p-6">
+                    <div className="bg-white rounded-2 border border-primary-10 p-4">
                         <div className="flex items-center justify-between mb-4">
                             <div>
                                 <div className="text-sm font-semibold text-primary">
@@ -303,7 +303,7 @@ const ProfileTab = ({
                     </div>
 
                     {/* Tenants / Organizations */}
-                    <div className="bg-white rounded-2 border border-primary-10 p-6">
+                    <div className="bg-white rounded-2 border border-primary-10 p-4">
                         <div className="flex items-center justify-between mb-4">
                             <div>
                                 <div className="text-sm font-semibold text-primary">

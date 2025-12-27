@@ -145,7 +145,7 @@ const TOTPSetupModal = ({
                 onClose()
             }
         >
-            <div className="w-full max-w-2xl rounded-2 bg-white p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div className="w-full max-w-2xl rounded-2 bg-white p-4 shadow-2xl max-h-[90vh] overflow-y-auto">
                 <div className="flex items-center justify-between mb-6">
                     <h3 className="text-xl font-semibold text-primary">
                         {step === 'setup'
@@ -177,7 +177,7 @@ const TOTPSetupModal = ({
                         </div>
 
                         {/* QR Code */}
-                        <div className="flex justify-center p-6 bg-white border-2 border-primary-10 rounded-2">
+                        <div className="flex justify-center p-4 bg-white border-2 border-primary-10 rounded-2">
                             <img
                                 src={totpData.qrCode}
                                 alt="TOTP QR Code"

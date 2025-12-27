@@ -295,5 +295,5 @@
     @apply px-4 py-3 text-sm;
 }
 .inner-section {
-    @apply bg-white rounded-2 shadow-sm border border-primary-10 p-6 hover:shadow-md transition-shadow;
+    @apply bg-white rounded-2 shadow-sm border border-primary-10 p-4 hover:shadow-md transition-shadow;
 }

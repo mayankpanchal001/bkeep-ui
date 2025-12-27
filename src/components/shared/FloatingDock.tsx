@@ -14,7 +14,7 @@ const FloatingDock = () => {
     };
 
     return (
-        <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-50">
+        <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50">
             <div className="flex items-end gap-2 px-4 py-2 bg-white/80 backdrop-blur-md border border-primary-10 rounded-2xl shadow-2xl transition-all duration-300">
                 {SIDEBAR_ITEMS.map((item, index) => {
                     const isActive = isItemActive(item.path);
@@ -34,8 +34,8 @@ const FloatingDock = () => {
                             {/* Tooltip */}
                             <div
                                 className={`
-                                absolute -top-10 left-1/2 -translate-x-1/2 px-2 py-1 
-                                bg-primary text-white text-xs rounded opacity-0 group-hover:opacity-100 
+                                absolute -top-10 left-1/2 -translate-x-1/2 px-2 py-1
+                                bg-primary text-white text-xs rounded opacity-0 group-hover:opacity-100
                                 transition-opacity whitespace-nowrap pointer-events-none shadow-lg
                                 mb-2
                             `}

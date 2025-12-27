@@ -132,7 +132,7 @@ const IncomeStatementpage = () => {
             </div>
 
             {/* Charts */}
-            <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
                 <ChartWidget
                     title="Revenue Breakdown"
                     subtitle="Revenue by category"
@@ -155,7 +155,7 @@ const IncomeStatementpage = () => {
             </ChartWidget>
 
             {/* Income Statement Table */}
-            <div className="bg-white rounded-2 shadow-sm border border-primary-10 p-6">
+            <div className="bg-white rounded-2 shadow-sm border border-primary-10 p-4">
                 <h3 className="text-lg font-semibold text-primary mb-4">
                     Detailed Income Statement
                 </h3>

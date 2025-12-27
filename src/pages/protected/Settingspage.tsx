@@ -73,7 +73,7 @@ const Settingspage = () => {
                 onTabChange={handleTabChange}
             />
 
-            <div className="bg-white rounded-2 shadow-sm border border-primary-10 p-6">
+            <div className="bg-white rounded-2 shadow-sm border border-primary-10 p-4">
                 <Outlet />
             </div>
         </div>

@@ -37,7 +37,7 @@ const Topbar = ({ onMenuClick }: TopbarProps) => {
                         >
                             <FaTh className="w-4 h-4" />
                         </button>
-                        |
+                        <div className="h-6 w-px bg-primary-10 ml-2"></div>
                         <div className="inline-block lg:hidden">
                             <PageHeaderMenu />
                         </div>

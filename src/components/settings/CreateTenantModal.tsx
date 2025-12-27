@@ -122,7 +122,7 @@ const CreateTenantModal = ({ isOpen, onClose }: CreateTenantModalProps) => {
             className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4"
             onClick={handleBackdropClick}
         >
-            <div className="w-full max-w-md rounded-2 bg-white p-6 shadow-2xl">
+            <div className="w-full max-w-md rounded-2 bg-white p-4 shadow-2xl">
                 <div className="flex items-start justify-between mb-4">
                     <h3 className="text-lg font-semibold text-primary">
                         Create New Tenant

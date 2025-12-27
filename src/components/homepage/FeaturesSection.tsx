@@ -22,11 +22,11 @@ export default function FeaturesSection() {
                         you stay focused on strategy.
                     </p>
                 </div>
-                <div className="grid gap-6 md:grid-cols-2">
+                <div className="grid gap-4 md:grid-cols-2">
                     {INVEST_FEATURES.map((feature) => (
                         <div
                             key={feature.title}
-                            className="rounded-3xl border border-white/5 bg-gradient-to-b from-white/8 to-white/0 p-6 shadow-[0_20px_60px_rgba(0,0,0,0.35)]"
+                            className="rounded-3xl border border-white/5 bg-gradient-to-b from-white/8 to-white/0 p-4 shadow-[0_20px_60px_rgba(0,0,0,0.35)]"
                         >
                             <span className="text-[11px] uppercase tracking-[0.4em] text-white/40">
                                 {feature.tag}

@@ -134,9 +134,9 @@ const BalanceSheetpage = () => {
             </div>
 
             {/* Balance Sheet Sections */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 {/* Assets */}
-                <div className="bg-white rounded-2 shadow-sm border border-primary-10 p-6">
+                <div className="bg-white rounded-2 shadow-sm border border-primary-10 p-4">
                     <h3 className="text-lg font-semibold text-primary mb-4">
                         Assets
                     </h3>
@@ -217,7 +217,7 @@ const BalanceSheetpage = () => {
                 </div>
 
                 {/* Liabilities & Equity */}
-                <div className="bg-white rounded-2 shadow-sm border border-primary-10 p-6">
+                <div className="bg-white rounded-2 shadow-sm border border-primary-10 p-4">
                     <h3 className="text-lg font-semibold text-primary mb-4">
                         Liabilities & Equity
                     </h3>

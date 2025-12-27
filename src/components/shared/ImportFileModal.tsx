@@ -1,8 +1,8 @@
 import { useRef, useState } from 'react';
 import { FaCloudUploadAlt, FaFileExcel } from 'react-icons/fa';
+import { downloadSampleData } from '../../services/apis/chartsAccountApi';
 import Button from '../typography/Button';
 import Popup from './Popup';
-import { downloadSampleData } from '../../services/apis/chartsAccountApi';
 
 interface ImportFileModalProps {
     isOpen: boolean;
@@ -99,11 +99,7 @@ const ImportFileModal = ({
             size="md"
             footer={
                 <div className="flex justify-between items-center w-full">
-                    <Button
-                        variant="ghost"
-                        onClick={handleDownloadSample}
-                        className="text-primary hover:text-primary-dark !px-0"
-                    >
+                    <Button onClick={handleDownloadSample}>
                         Download Sample File
                     </Button>
                     <div className="flex gap-2">
@@ -160,7 +156,6 @@ const ImportFileModal = ({
                                 {(selectedFile.size / 1024).toFixed(2)} KB
                             </p>
                             <Button
-                                variant="ghost"
                                 size="sm"
                                 className="mt-2 text-red-500 hover:text-red-700 hover:bg-red-50"
                                 onClick={(e) => {

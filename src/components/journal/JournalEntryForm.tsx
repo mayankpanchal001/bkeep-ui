@@ -2,8 +2,8 @@ import { useMemo, useState } from 'react';
 import { FaPlus, FaTrash } from 'react-icons/fa';
 import { useChartOfAccounts } from '../../services/apis/chartsAccountApi';
 import type {
+    CreateJournalEntryLine,
     CreateJournalEntryPayload,
-    JournalEntryLine,
 } from '../../types/journal';
 import Button from '../typography/Button';
 import { InputField, SelectField } from '../typography/InputFields';
@@ -53,7 +53,7 @@ export function JournalEntryForm({
     );
     const [description, setDescription] = useState(initialData?.memo || '');
     const [reference, setReference] = useState(initialData?.reference || '');
-    const [lines, setLines] = useState<JournalEntryLine[]>(
+    const [lines, setLines] = useState<CreateJournalEntryLine[]>(
         initialData?.lines || [
             {
                 accountId: '',
@@ -96,6 +96,9 @@ export function JournalEntryForm({
                 debit: 0,
                 credit: 0,
                 description: '',
+                id: 0,
+                accountName: '',
+                name: '',
             },
         ]);
     };
@@ -114,7 +117,7 @@ export function JournalEntryForm({
 
     const handleLineChange = (
         index: number,
-        field: keyof JournalEntryLine,
+        field: keyof CreateJournalEntryLine,
         value: string | number
     ) => {
         const updatedLines = [...lines];
@@ -170,6 +173,9 @@ export function JournalEntryForm({
                 debit: 0,
                 credit: 0,
                 description: '',
+                id: 0,
+                accountName: '',
+                name: '',
             },
             {
                 accountId: '',
@@ -177,6 +183,9 @@ export function JournalEntryForm({
                 debit: 0,
                 credit: 0,
                 description: '',
+                id: 0,
+                accountName: '',
+                name: '',
             },
         ]);
     };

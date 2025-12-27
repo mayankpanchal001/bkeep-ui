@@ -169,7 +169,7 @@ const OtpVerificationpage = () => {
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-lightBg px-4">
-            <div className="w-full max-w-md bg-white rounded-2 shadow-xl p-6 lg:p-8 border border-primary-10">
+            <div className="w-full max-w-md bg-white rounded-2 shadow-xl p-4 lg:p-8 border border-primary-10">
                 <h1 className="text-2xl font-bold text-primary mb-2">
                     {getTitle()}
                 </h1>

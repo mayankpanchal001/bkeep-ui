@@ -28,15 +28,15 @@ const InsuranceChart = ({ data }: InsuranceChartProps) => {
                 <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                 <XAxis
                     dataKey="name"
-                    tick={{ fontSize: 11, fill: '#8B6F47' }}
-                    stroke="#8B6F47"
+                    tick={{ fontSize: 11, fill: '#000' }}
+                    stroke="#000"
                     angle={-45}
                     textAnchor="end"
                     height={80}
                 />
                 <YAxis
-                    tick={{ fontSize: 12, fill: '#8B6F47' }}
-                    stroke="#8B6F47"
+                    tick={{ fontSize: 12, fill: '#000' }}
+                    stroke="#000"
                     tickFormatter={(value) => `$${value / 1000}k`}
                 />
                 <Tooltip

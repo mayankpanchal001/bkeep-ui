@@ -77,7 +77,7 @@ const Registerpage = () => {
                 </div>
             </div>
 
-            <div className="w-full lg:w-1/2 flex items-start lg:items-center justify-center bg-lightBg p-6 lg:p-12 overflow-auto h-full">
+            <div className="w-full lg:w-1/2 flex items-start lg:items-center justify-center bg-lightBg p-4 lg:p-12 overflow-auto h-full">
                 <div className="w-full max-w-md py-4 h-full">
                     <div className="lg:hidden flex flex-col items-center mb-8">
                         <img
@@ -94,7 +94,7 @@ const Registerpage = () => {
                     </div>
 
                     <div className="flex flex-col gap-4">
-                        <div className="bg-white rounded-2 shadow-xl p-6 lg:p-8 border border-primary-10">
+                        <div className="bg-white rounded-2 shadow-xl p-4 lg:p-8 border border-primary-10">
                             <div className="mb-6">
                                 <h2 className="text-2xl font-bold text-primary mb-2">
                                     Create Account

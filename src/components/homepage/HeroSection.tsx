@@ -54,11 +54,11 @@ export default function HeroSection() {
                             See how it works
                         </Button>
                     </div>
-                    <div className="grid gap-6 rounded-2 border border-white/5 bg-white/5 p-6 backdrop-blur">
+                    <div className="grid gap-4 rounded-2 border border-white/5 bg-white/5 p-4 backdrop-blur">
                         <p className="text-xs uppercase tracking-[0.45em] text-white/60">
                             Performance you can measure
                         </p>
-                        <div className="grid gap-6 sm:grid-cols-3">
+                        <div className="grid gap-4 sm:grid-cols-3">
                             {HERO_METRICS.map((metric) => (
                                 <div key={metric.label} className="space-y-1.5">
                                     <p className="text-2xl font-semibold text-white">
@@ -74,7 +74,7 @@ export default function HeroSection() {
                 </div>
 
                 <div className="relative">
-                    <div className="relative rounded-[32px] border border-white/5 bg-[#0d0d0d]/80 p-6 shadow-[0_20px_120px_rgba(0,0,0,0.6)] backdrop-blur">
+                    <div className="relative rounded-[32px] border border-white/5 bg-[#0d0d0d]/80 p-4 shadow-[0_20px_120px_rgba(0,0,0,0.6)] backdrop-blur">
                         <div className="flex items-center justify-between text-xs text-white/50">
                             <span>Strategy Monitor</span>
                             <span>Live</span>

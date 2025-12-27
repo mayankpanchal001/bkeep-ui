@@ -315,7 +315,7 @@ const PasskeyManagementModal = ({
                     handleClose()
                 }
             >
-                <div className="w-full max-w-2xl rounded-2 bg-white p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
+                <div className="w-full max-w-2xl rounded-2 bg-white p-4 shadow-2xl max-h-[90vh] overflow-y-auto">
                     {/* Header */}
                     <div className="flex items-center justify-between mb-6">
                         <h3 className="text-xl font-semibold text-primary">

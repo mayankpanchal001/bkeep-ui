@@ -329,7 +329,7 @@ const CreateInvoiceModal = ({
                         </button>
                     </div>
 
-                    <div className="flex-1 p-6">
+                    <div className="flex-1 p-4">
                         {/* Details Tab */}
                         {activeTab === 'details' && (
                             <div className="space-y-6">

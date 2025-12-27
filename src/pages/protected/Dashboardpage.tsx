@@ -325,7 +325,7 @@ const Dashboardpage = () => {
     ];
 
     return (
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-4">
             {/* Summary Cards Section - Top */}
             <div>
                 <h2 className="text-lg font-semibold text-primary mb-4">
@@ -392,7 +392,7 @@ const Dashboardpage = () => {
                 <h2 className="text-lg font-semibold text-primary mb-4">
                     Analytics & Reports
                 </h2>
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                     {/* Left Column - Main Charts */}
                     <div className="lg:col-span-2 space-y-6">
                         {/* Revenue by Procedure Type */}
@@ -414,7 +414,7 @@ const Dashboardpage = () => {
                         </ChartWidget>
 
                         {/* Two Column Grid for Smaller Charts */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             {/* Dentist Productivity */}
                             <ChartWidget
                                 title="Dentist Productivity"
@@ -489,7 +489,7 @@ const Dashboardpage = () => {
 
                     {/* Right Column - AI Insights */}
                     <div className="flex flex-col gap-4">
-                        <div className="bg-white rounded-2 shadow-sm border border-primary-10 p-6 sticky top-0">
+                        <div className="bg-white rounded-2 shadow-sm border border-primary-10 p-4 sticky top-0">
                             <div className="flex items-center gap-2 mb-4">
                                 <FaExclamationTriangle className="text-primary" />
                                 <h3 className="text-lg font-semibold text-primary">

@@ -3,7 +3,6 @@ import { APP_TITLE } from '../../constants';
 import { LOGO_IMAGE } from '../../constants/images';
 import PageHeaderMenu from './PageHeaderMenu';
 import TenantSwitcher from './TenantSwitcher';
-import ThemeSwitcher from './ThemeSwitcher';
 
 interface NavbarProps {
     onSearchClick?: () => void;
@@ -24,8 +23,6 @@ const Navbar = ({
                 <span className="text-lg font-bold text-primary">
                     {APP_TITLE}
                 </span>
-                <div className="h-6 w-px bg-primary-10 mx-2"></div>
-                <TenantSwitcher />
             </div>
 
             {/* Right Actions */}
@@ -61,7 +58,8 @@ const Navbar = ({
                     </kbd>
                 </button>
                 <div className="h-6 w-px bg-primary-10 mx-2"></div>
-                <ThemeSwitcher />
+                <TenantSwitcher />
+                <div className="h-6 w-px bg-primary-10 ml-2"></div>
                 <PageHeaderMenu />
             </div>
         </nav>

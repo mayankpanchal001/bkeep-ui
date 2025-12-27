@@ -3,12 +3,24 @@
  */
 
 export type JournalEntryLine = {
+    id: number;
+    accountName: string;
+    name: string;
     accountId: string;
     lineNumber: number;
     debit: number;
     credit: number;
     description: string;
     memo?: string;
+};
+
+export type CreateJournalEntryLine = Omit<
+    JournalEntryLine,
+    'id' | 'accountName' | 'name'
+> & {
+    id?: number; // Optional for new lines or updates
+    accountName?: string; // Optional for display
+    name?: string; // Optional for display
 };
 
 export type JournalEntry = {
@@ -42,7 +54,7 @@ export type CreateJournalEntryPayload = {
     reference?: string;
     sourceModule?: string;
     sourceId?: string;
-    lines: JournalEntryLine[];
+    lines: CreateJournalEntryLine[];
     attachments?: File[];
     isRecurring?: boolean;
     recurringFrequency?: 'daily' | 'weekly' | 'monthly' | 'yearly';

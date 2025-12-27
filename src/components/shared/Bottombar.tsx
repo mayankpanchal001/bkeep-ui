@@ -35,7 +35,7 @@ const Bottombar = ({ isOpen, onClose }: BottombarProps) => {
                     ${isOpen ? 'translate-y-0' : 'translate-y-full'}
                 `}
             >
-                <div className="p-6">
+                <div className="p-4">
                     <div className="flex items-center justify-between mb-6">
                         <h2 className="text-lg font-bold text-primary">Menu</h2>
                         <button

@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { FaArrowRight, FaTimes } from 'react-icons/fa';
+import { ImportField } from '../../services/apis/chartsAccountApi';
 import Button from '../typography/Button';
 import { SelectField } from '../typography/InputFields';
-import { ImportField } from '../../services/apis/chartsAccountApi';
 
 interface ImportMappingModalProps {
     isOpen: boolean;
@@ -85,7 +85,7 @@ const ImportMappingModal = ({
                 </div>
 
                 {/* Body */}
-                <div className="p-6 overflow-y-auto flex-1">
+                <div className="p-4 overflow-y-auto flex-1">
                     <div className="space-y-4">
                         <div className="grid grid-cols-12 gap-4 text-sm font-medium text-gray-500 border-b border-gray-100 pb-2 mb-2">
                             <div className="col-span-5">System Field</div>
@@ -135,7 +135,6 @@ const ImportMappingModal = ({
                                                 label: h,
                                             })),
                                         ]}
-                                        className="w-full text-sm"
                                     />
                                 </div>
                             </div>

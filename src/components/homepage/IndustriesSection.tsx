@@ -15,11 +15,11 @@ export default function IndustriesSection() {
                     confident execution.
                 </p>
             </div>
-            <div className="mt-12 grid gap-6 md:grid-cols-2">
+            <div className="mt-12 grid gap-4 md:grid-cols-2">
                 {OUTCOME_CARDS.map((card) => (
                     <div
                         key={card.title}
-                        className="rounded-3xl border border-white/5 bg-gradient-to-br from-white/8 to-transparent p-6"
+                        className="rounded-3xl border border-white/5 bg-gradient-to-br from-white/8 to-transparent p-4"
                     >
                         <h3 className="text-xl font-semibold text-white">
                             {card.title}

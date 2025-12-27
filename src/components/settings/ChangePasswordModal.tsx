@@ -89,7 +89,7 @@ const ChangePasswordModal = ({ isOpen, onClose }: changePasswordModalProps) => {
         // 1. Overlay (Dark background)
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4">
             {/* 2. Modal Container */}
-            <div className="w-full max-w-md rounded-2 bg-white p-6 shadow-2xl animate-in fade-in zoom-in duration-200">
+            <div className="w-full max-w-md rounded-2 bg-white p-4 shadow-2xl animate-in fade-in zoom-in duration-200">
                 {/* Header */}
                 <div className="flex items-center justify-between mb-6">
                     <h3 className="text-xl font-semibold text-primary">

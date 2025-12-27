@@ -74,26 +74,26 @@ const ProtectedLayout = ({
                 />
 
                 <div
-                    className="protected-route-content relative flex flex-col pb-24"
+                    className="protected-route-content relative flex flex-col"
                     data-tenant-id={selectedTenant?.id || 'default'}
                 >
-                    {currentHeader && (
-                        <div className="px-6 py-4">
+                    <div
+                        key={selectedTenant?.id || 'default-tenant'}
+                        className="flex-1"
+                    >
+                        {currentHeader && (
                             <PageHeader
                                 title={currentHeader.title}
                                 subtitle={currentHeader.subtitle}
                             />
+                        )}
+                        <div className="p-2 sm:p-4 overflow-auto">
+                            {children}
                         </div>
-                    )}
-                    <div
-                        key={selectedTenant?.id || 'default-tenant'}
-                        className="flex-1 px-6 pb-6 overflow-auto"
-                    >
-                        {children}
                     </div>
                 </div>
 
-                <div className="absolute bottom-32 lg:bottom-32 right-8 z-30">
+                <div className="absolute bottom-8 right-8 z-30">
                     <Button
                         size="md"
                         isRounded={true}
