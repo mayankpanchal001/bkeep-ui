@@ -83,7 +83,7 @@ const Loginpage = () => {
             </div>
 
             {/* Right Side - Login Form Section */}
-            <div className="w-full lg:w-1/2 flex items-center justify-center bg-lightBg p-6 lg:p-12 overflow-auto min-h-screen">
+            <div className="w-full lg:w-1/2 flex items-center justify-center bg-lightBg p-4 lg:p-12 overflow-auto min-h-screen">
                 <div className="w-full max-w-md">
                     {/* Mobile Logo - Only visible on small screens */}
                     <div className="lg:hidden flex flex-col items-center mb-8">
@@ -101,7 +101,7 @@ const Loginpage = () => {
                     </div>
 
                     {/* Login Form Card */}
-                    <div className="bg-white rounded-2xl shadow-xl p-6 lg:p-8 border border-primary-10">
+                    <div className="bg-white rounded-2 shadow-xl p-4 lg:p-8 border border-primary-10">
                         <div className="mb-6">
                             <h2 className="text-2xl font-bold text-primary mb-2">
                                 Sign In

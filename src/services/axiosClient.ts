@@ -24,7 +24,7 @@ axiosInstance.interceptors.request.use(
     (error) => Promise.reject(error)
 );
 
-// Response interceptor to handle 401 responses
+// Response interceptor to handle 401 and 403 responses
 axiosInstance.interceptors.response.use(
     (response) => response,
     (error) => {
@@ -32,7 +32,9 @@ axiosInstance.interceptors.response.use(
             // Handle unauthorized access
             showErrorToast('Your session has expired. Logging you out...');
             localStorage.removeItem('accessToken');
+            localStorage.removeItem('refreshToken');
             localStorage.removeItem('user');
+            localStorage.removeItem('mfaEnabled');
 
             // Only redirect if we're not already on the login page
             if (
@@ -41,6 +43,12 @@ axiosInstance.interceptors.response.use(
             ) {
                 window.location.href = '/login';
             }
+        } else if (error.response?.status === 403) {
+            // Handle forbidden access - don't logout, just show error
+            const message =
+                error.response?.data?.message ||
+                'You do not have permission to access this resource';
+            showErrorToast(message);
         }
         return Promise.reject(error);
     }

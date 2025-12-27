@@ -34,7 +34,7 @@ const SummaryCard = ({
     };
 
     return (
-        <div className="bg-white rounded-xl shadow-sm border border-primary-10 p-6 hover:shadow-md transition-shadow min-w-0 w-full h-full overflow-auto">
+        <div className="bg-white rounded-2 shadow-sm border border-primary-10 p-4 hover:shadow-md transition-shadow min-w-0 w-full h-full overflow-auto">
             <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-3">
                     {icon && <div className="text-primary text-xl">{icon}</div>}

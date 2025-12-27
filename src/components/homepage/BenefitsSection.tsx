@@ -23,7 +23,7 @@ export default function BenefitsSection() {
                 {CAPABILITY_FEATURES.map((feature) => (
                     <div
                         key={feature.title}
-                        className="rounded-[28px] border border-white/5 bg-[#0b0b0b] p-6 shadow-[0_25px_80px_rgba(0,0,0,0.35)]"
+                        className="rounded-[28px] border border-white/5 bg-[#0b0b0b] p-4 shadow-[0_25px_80px_rgba(0,0,0,0.35)]"
                     >
                         <span className="text-[11px] uppercase tracking-[0.35em] text-white/40">
                             {feature.metric}

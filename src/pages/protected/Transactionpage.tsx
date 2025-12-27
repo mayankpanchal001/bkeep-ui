@@ -6,7 +6,7 @@ const Transactionpage = () => {
         <div className="space-y-6">
             {/* Summary Cards */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div className="bg-white rounded-xl shadow-sm border border-primary-10 p-4">
+                <div className="bg-white rounded-2 shadow-sm border border-primary-10 p-4">
                     <div className="flex items-center gap-3 mb-2">
                         <div className="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center">
                             <FaFileInvoiceDollar className="w-5 h-5 text-green-600" />
@@ -21,7 +21,7 @@ const Transactionpage = () => {
                         </div>
                     </div>
                 </div>
-                <div className="bg-white rounded-xl shadow-sm border border-primary-10 p-4">
+                <div className="bg-white rounded-2 shadow-sm border border-primary-10 p-4">
                     <div className="flex items-center gap-3 mb-2">
                         <div className="w-10 h-10 rounded-lg bg-red-100 flex items-center justify-center">
                             <FaFileInvoiceDollar className="w-5 h-5 text-red-600" />
@@ -36,7 +36,7 @@ const Transactionpage = () => {
                         </div>
                     </div>
                 </div>
-                <div className="bg-white rounded-xl shadow-sm border border-primary-10 p-4">
+                <div className="bg-white rounded-2 shadow-sm border border-primary-10 p-4">
                     <div className="flex items-center gap-3 mb-2">
                         <div className="w-10 h-10 rounded-lg bg-primary-10 flex items-center justify-center">
                             <FaFileInvoiceDollar className="w-5 h-5 text-primary" />
@@ -51,7 +51,7 @@ const Transactionpage = () => {
                         </div>
                     </div>
                 </div>
-                <div className="bg-white rounded-xl shadow-sm border border-primary-10 p-4">
+                <div className="bg-white rounded-2 shadow-sm border border-primary-10 p-4">
                     <div className="flex items-center gap-3 mb-2">
                         <div className="w-10 h-10 rounded-lg bg-primary-10 flex items-center justify-center">
                             <FaFileInvoiceDollar className="w-5 h-5 text-primary" />

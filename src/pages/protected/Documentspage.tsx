@@ -248,7 +248,7 @@ const Documentspage = () => {
                 onDragOver={handleDrag}
                 onDrop={handleDrop}
                 onClick={handleUploadAreaClick}
-                className={`w-full max-w-3xl mx-auto border-2 border-dashed rounded-2xl p-10 sm:p-12 text-center transition-all cursor-pointer shadow-sm ${
+                className={`w-full max-w-3xl mx-auto border-2 border-dashed rounded-2 p-10 sm:p-12 text-center transition-all cursor-pointer shadow-sm ${
                     dragActive
                         ? 'border-primary bg-primary-10 shadow-md scale-[1.01]'
                         : 'border-primary-25 bg-primary-5 hover:border-primary hover:bg-primary-10'
@@ -267,7 +267,7 @@ const Documentspage = () => {
             </div>
 
             {/* Filters */}
-            <div className="bg-white rounded-xl shadow-sm border border-primary-10 p-4">
+            <div className="bg-white rounded-2 shadow-sm border border-primary-10 p-4">
                 <div className="flex flex-col sm:flex-row gap-4">
                     <div className="flex-1">
                         <div className="relative">
@@ -285,7 +285,7 @@ const Documentspage = () => {
                         <select
                             value={categoryFilter}
                             onChange={(e) => setCategoryFilter(e.target.value)}
-                            className="px-4 py-2 border border-primary-10 rounded-xl text-sm text-primary focus:outline-none focus:border-primary"
+                            className="px-4 py-2 border border-primary-10 rounded-2 text-sm text-primary focus:outline-none focus:border-primary"
                         >
                             {CATEGORIES.map((category) => (
                                 <option key={category} value={category}>
@@ -299,7 +299,7 @@ const Documentspage = () => {
 
             {/* Documents Grid */}
             {isUploading && (
-                <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 text-center">
+                <div className="bg-blue-50 border border-blue-200 rounded-2 p-4 text-center">
                     <p className="text-blue-700 font-medium">
                         Uploading files...
                     </p>
@@ -315,7 +315,7 @@ const Documentspage = () => {
                     filteredDocuments.map((doc) => (
                         <div
                             key={doc.id}
-                            className="bg-white rounded-xl shadow-sm border border-primary-10 p-4 hover:shadow-md transition-shadow"
+                            className="bg-white rounded-2 shadow-sm border border-primary-10 p-4 hover:shadow-md transition-shadow"
                         >
                             <div className="flex items-start justify-between mb-3">
                                 <div className="flex items-center gap-3 flex-1 min-w-0">

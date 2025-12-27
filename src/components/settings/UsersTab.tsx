@@ -1,11 +1,31 @@
-import { useState } from 'react';
-import { FaSearch, FaUsers } from 'react-icons/fa';
-import { useUsers, type UsersQueryParams } from '../../services/apis/usersApi';
-import { InputField } from '../typography/InputFields';
+import { useEffect, useState } from 'react';
+import {
+    FaEdit,
+    FaPaperPlane,
+    FaPlus,
+    FaSearch,
+    FaTimes,
+    FaUsers,
+} from 'react-icons/fa';
+import { useGetRoles } from '../../services/apis/roleApi';
+import {
+    useResendInvitation,
+    useUsers,
+    type UsersQueryParams,
+} from '../../services/apis/usersApi';
+
+import { UserType } from '../../types';
 import Button from '../typography/Button';
+import Chips from '../typography/Chips';
+import { InputField } from '../typography/InputFields';
+import EditUserModal from './EditUserModal';
+import InviteUserModal from './InviteUserModal';
 
 const UsersTab = () => {
     const [search, setSearch] = useState('');
+    const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [selectedUser, setSelectedUser] = useState<UserType | null>(null);
     const [filters, setFilters] = useState<UsersQueryParams>({
         page: 1,
         limit: 20,
@@ -15,13 +35,54 @@ const UsersTab = () => {
 
     const { data, isLoading, isError } = useUsers(filters);
 
+    const { data: rolesData } = useGetRoles();
+    const roles = rolesData?.data?.items || [];
+
+    const { mutateAsync: resendInvitation, isPending: isResendingInvitation } =
+        useResendInvitation();
+
+    // Sync search input with filters.search
+    useEffect(() => {
+        if (filters.search !== undefined) {
+            setSearch(filters.search);
+        }
+    }, [filters.search]);
+
+    const handleEditUser = (user: UserType) => {
+        setSelectedUser(user);
+        setIsEditModalOpen(true);
+    };
+
+    const handleCloseEditModal = () => {
+        setIsEditModalOpen(false);
+        setSelectedUser(null);
+    };
+
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
         setFilters((prev) => ({
             ...prev,
-            search: search || undefined,
+            search: search.trim() || undefined,
             page: 1, // Reset to first page on new search
         }));
+    };
+
+    const handleClearSearch = () => {
+        setSearch('');
+        setFilters((prev) => ({
+            ...prev,
+            search: undefined,
+            page: 1,
+        }));
+    };
+
+    const handleResendInvitation = async (userId: string) => {
+        try {
+            await resendInvitation(userId);
+        } catch (error) {
+            // Error is handled by the mutation's onError
+            console.error('Resend invitation error:', error);
+        }
     };
 
     const handlePageChange = (newPage: number) => {
@@ -51,19 +112,29 @@ const UsersTab = () => {
                 <h3 className="text-lg font-semibold text-primary">
                     Users Management
                 </h3>
-                <div className="flex items-center gap-2 text-sm text-primary-50">
-                    <FaUsers className="w-4 h-4" />
-                    <span>
-                        {pagination?.total || 0} user
-                        {pagination?.total !== 1 ? 's' : ''}
-                    </span>
+                <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-2 text-sm text-primary-50">
+                        <FaUsers className="w-4 h-4" />
+                        <span>
+                            {pagination?.total || 0} user
+                            {pagination?.total !== 1 ? 's' : ''}
+                        </span>
+                    </div>
+                    <Button
+                        variant="primary"
+                        size="sm"
+                        onClick={() => setIsInviteModalOpen(true)}
+                    >
+                        <FaPlus className="mr-2" />
+                        Invite User
+                    </Button>
                 </div>
             </div>
 
             {/* Search and Filters */}
             <div className="space-y-4">
                 <form onSubmit={handleSearch} className="flex gap-2">
-                    <div className="flex-1">
+                    <div className="flex-1 relative">
                         <InputField
                             id="user-search"
                             placeholder="Search users by name or email..."
@@ -71,6 +142,16 @@ const UsersTab = () => {
                             onChange={(e) => setSearch(e.target.value)}
                             icon={<FaSearch className="w-4 h-4" />}
                         />
+                        {search && (
+                            <button
+                                type="button"
+                                onClick={handleClearSearch}
+                                className="absolute right-12 top-1/2 transform -translate-y-1/2 text-primary-50 hover:text-primary transition-colors"
+                                aria-label="Clear search"
+                            >
+                                <FaTimes className="w-4 h-4" />
+                            </button>
+                        )}
                     </div>
                     <Button type="submit" variant="primary">
                         Search
@@ -145,10 +226,13 @@ const UsersTab = () => {
                                     <th className="text-left py-3 px-4 text-sm font-semibold text-primary">
                                         Status
                                     </th>
+                                    <th className="text-right py-3 px-4 text-sm font-semibold text-primary">
+                                        Actions
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {users.map((user) => (
+                                {users.map((user: UserType) => (
                                     <tr
                                         key={user.id}
                                         className="border-b border-primary-10 hover:bg-primary-5 transition-colors"
@@ -156,18 +240,66 @@ const UsersTab = () => {
                                         <td className="py-3 px-4 text-sm text-primary">
                                             {user.name}
                                         </td>
+
                                         <td className="py-3 px-4 text-sm text-primary-75">
                                             {user.email}
                                         </td>
+
                                         <td className="py-3 px-4 text-sm text-primary-75">
                                             {user.role?.displayName ||
                                                 user.role?.name ||
+                                                user.roles?.[0]?.displayName ||
+                                                user.roles?.[0]?.name ||
                                                 'N/A'}
                                         </td>
                                         <td className="py-3 px-4 text-sm">
-                                            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                                Active
-                                            </span>
+                                            <Chips
+                                                label={
+                                                    user.isVerified
+                                                        ? 'Verified'
+                                                        : 'Unverified'
+                                                }
+                                                variant={
+                                                    user.isVerified
+                                                        ? 'success'
+                                                        : 'danger'
+                                                }
+                                            />
+                                        </td>
+                                        <td className="py-3 px-4 text-sm text-right">
+                                            <div className="flex items-center justify-end gap-2">
+                                                {!user.isVerified && (
+                                                    <Button
+                                                        variant="outline"
+                                                        size="sm"
+                                                        onClick={() =>
+                                                            handleResendInvitation(
+                                                                user.id
+                                                            )
+                                                        }
+                                                        loading={
+                                                            isResendingInvitation
+                                                        }
+                                                        disabled={
+                                                            isResendingInvitation
+                                                        }
+                                                        title="Resend invitation email"
+                                                    >
+                                                        <FaPaperPlane className="mr-1" />
+                                                        Resend
+                                                    </Button>
+                                                )}
+                                                <Button
+                                                    variant="outline"
+                                                    size="sm"
+                                                    onClick={() =>
+                                                        handleEditUser(user)
+                                                    }
+                                                >
+                                                    <FaEdit className="mr-1" />
+                                                    Edit
+                                                </Button>
+                                            </div>
                                         </td>
                                     </tr>
                                 ))}
@@ -208,6 +340,20 @@ const UsersTab = () => {
                         </div>
                     )}
                 </>
+            )}
+
+            <InviteUserModal
+                isOpen={isInviteModalOpen}
+                onClose={() => setIsInviteModalOpen(false)}
+                roles={roles}
+            />
+
+            {selectedUser && (
+                <EditUserModal
+                    isOpen={isEditModalOpen}
+                    onClose={handleCloseEditModal}
+                    user={selectedUser}
+                />
             )}
         </div>
     );

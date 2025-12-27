@@ -1,12 +1,12 @@
 import {
+    CartesianGrid,
+    Legend,
     Line,
     LineChart,
     ResponsiveContainer,
     Tooltip,
     XAxis,
     YAxis,
-    CartesianGrid,
-    Legend,
 } from 'recharts';
 
 type ProfitabilityLineChartProps = {
@@ -23,12 +23,12 @@ const ProfitabilityLineChart = ({ data }: ProfitabilityLineChartProps) => {
                 <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                 <XAxis
                     dataKey="month"
-                    tick={{ fontSize: 12, fill: '#8B6F47' }}
-                    stroke="#8B6F47"
+                    tick={{ fontSize: 12, fill: '#000' }}
+                    stroke="#000"
                 />
                 <YAxis
-                    tick={{ fontSize: 12, fill: '#8B6F47' }}
-                    stroke="#8B6F47"
+                    tick={{ fontSize: 12, fill: '#000' }}
+                    stroke="#000"
                     tickFormatter={(value) => `${value}%`}
                 />
                 <Tooltip
@@ -53,11 +53,11 @@ const ProfitabilityLineChart = ({ data }: ProfitabilityLineChartProps) => {
                 <Line
                     type="monotone"
                     dataKey="target"
-                    stroke="#8B6F47"
+                    stroke="#000"
                     strokeWidth={2}
                     strokeDasharray="5 5"
                     name="Target"
-                    dot={{ fill: '#8B6F47', r: 4 }}
+                    dot={{ fill: '#000', r: 4 }}
                 />
             </LineChart>
         </ResponsiveContainer>

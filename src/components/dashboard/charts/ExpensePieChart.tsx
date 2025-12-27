@@ -18,7 +18,7 @@ const ExpensePieChart = ({ data }: ExpensePieChartProps) => {
         percentage: item.percentage,
     }));
 
-    const COLORS = ['#C56211', '#8B6F47', '#D4A574', '#F5E6D3', '#E8D5C4'];
+    const COLORS = ['#C56211', '#000', '#D4A574', '#F5E6D3', '#E8D5C4'];
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const CustomTooltip = ({ active, payload }: any) => {

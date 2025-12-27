@@ -11,8 +11,10 @@ export type Permission = {
 export type Tenant = {
     id: string;
     name: string;
-    schemaName: string;
-    isPrimary?: boolean;
+    isActive: boolean;
+    isPrimary: boolean;
+    createdAt: string;
+    updatedAt: string;
 };
 
 export type UserType = {
@@ -20,6 +22,12 @@ export type UserType = {
     email: string;
     name: string;
     mfaEnabled?: boolean;
+    isVerified?: boolean;
+    isActive?: boolean;
+    lastLoggedInAt?: string;
+    createdAt?: string;
+    updatedAt?: string;
+    roles: Role[];
     role: {
         id: string;
         name: string;
@@ -93,6 +101,22 @@ export type UsersListResponse = {
         items: UserType[];
         pagination: PaginationInfo;
     };
+};
+
+export type Role = {
+    id: string;
+    name: string;
+    displayName: string;
+};
+
+export type PermissionCategory = {
+    name: string;
+    permissions: {
+        id: string;
+        name: string;
+        displayName: string;
+        access: 'full' | 'view' | 'no';
+    }[];
 };
 
 // Users Types Ends

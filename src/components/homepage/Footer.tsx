@@ -75,7 +75,7 @@ export default function Footer() {
                         © {new Date().getFullYear()} {APP_TITLE}. All rights
                         reserved.
                     </p>
-                    <div className="flex gap-6">
+                    <div className="flex gap-4">
                         <Link to="/" className="hover:text-white">
                             Privacy
                         </Link>

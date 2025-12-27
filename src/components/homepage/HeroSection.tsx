@@ -42,7 +42,6 @@ export default function HeroSection() {
                         <Link to="/register">
                             <Button
                                 variant="primary"
-                                size="lg"
                                 className="bg-gradient-to-r from-[#ff6a3a] to-[#ff3412] px-8 text-white shadow-[0_0_40px_rgba(255,106,58,0.35)]"
                             >
                                 Get started
@@ -50,17 +49,16 @@ export default function HeroSection() {
                         </Link>
                         <Button
                             variant="outline"
-                            size="lg"
                             className="bg-white/10 border-white/20 text-white hover:bg-white/10"
                         >
                             See how it works
                         </Button>
                     </div>
-                    <div className="grid gap-6 rounded-2xl border border-white/5 bg-white/5 p-6 backdrop-blur">
+                    <div className="grid gap-4 rounded-2 border border-white/5 bg-white/5 p-4 backdrop-blur">
                         <p className="text-xs uppercase tracking-[0.45em] text-white/60">
                             Performance you can measure
                         </p>
-                        <div className="grid gap-6 sm:grid-cols-3">
+                        <div className="grid gap-4 sm:grid-cols-3">
                             {HERO_METRICS.map((metric) => (
                                 <div key={metric.label} className="space-y-1.5">
                                     <p className="text-2xl font-semibold text-white">
@@ -76,23 +74,23 @@ export default function HeroSection() {
                 </div>
 
                 <div className="relative">
-                    <div className="relative rounded-[32px] border border-white/5 bg-[#0d0d0d]/80 p-6 shadow-[0_20px_120px_rgba(0,0,0,0.6)] backdrop-blur">
+                    <div className="relative rounded-[32px] border border-white/5 bg-[#0d0d0d]/80 p-4 shadow-[0_20px_120px_rgba(0,0,0,0.6)] backdrop-blur">
                         <div className="flex items-center justify-between text-xs text-white/50">
                             <span>Strategy Monitor</span>
                             <span>Live</span>
                         </div>
                         <div className="mt-6 space-y-4">
-                            <div className="rounded-2xl border border-white/5 bg-white/5 p-4">
+                            <div className="rounded-2 border border-white/5 bg-white/5 p-4">
                                 <p className="text-sm text-white/60">
                                     Alpha Mix
                                 </p>
                                 <p className="text-2xl font-semibold text-white">
                                     +12.4%
                                 </p>
-                                <div className="mt-4 h-24 rounded-xl bg-gradient-to-br from-[#ff813f]/30 to-[#ff4b1f]/10" />
+                                <div className="mt-4 h-24 rounded-2 bg-gradient-to-br from-[#ff813f]/30 to-[#ff4b1f]/10" />
                             </div>
                             <div className="grid gap-4 sm:grid-cols-2">
-                                <div className="rounded-2xl border border-white/5 bg-white/5 p-4">
+                                <div className="rounded-2 border border-white/5 bg-white/5 p-4">
                                     <p className="text-xs uppercase tracking-[0.35em] text-white/60">
                                         Signals
                                     </p>
@@ -103,7 +101,7 @@ export default function HeroSection() {
                                         Updated 2 mins ago
                                     </p>
                                 </div>
-                                <div className="rounded-2xl border border-white/5 bg-white/5 p-4">
+                                <div className="rounded-2 border border-white/5 bg-white/5 p-4">
                                     <p className="text-xs uppercase tracking-[0.35em] text-white/60">
                                         Risk
                                     </p>
@@ -117,7 +115,7 @@ export default function HeroSection() {
                             </div>
                         </div>
                     </div>
-                    <div className="absolute -bottom-6 -left-4 hidden w-40 rounded-2xl border border-white/5 bg-white/5 p-4 text-xs text-white/70 shadow-2xl lg:block">
+                    <div className="absolute -bottom-6 -left-4 hidden w-40 rounded-2 border border-white/5 bg-white/5 p-4 text-xs text-white/70 shadow-2xl lg:block">
                         <p className="text-[11px] uppercase tracking-[0.4em] text-white/40">
                             Trusted
                         </p>

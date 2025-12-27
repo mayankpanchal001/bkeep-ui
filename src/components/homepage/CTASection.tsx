@@ -22,7 +22,6 @@ export default function CTASection() {
                         <Link to="/register">
                             <Button
                                 variant="primary"
-                                size="lg"
                                 className="bg-white text-[#1b0f0a] hover:bg-white/90"
                             >
                                 Get started
@@ -30,7 +29,6 @@ export default function CTASection() {
                         </Link>
                         <Button
                             variant="outline"
-                            size="lg"
                             className="border-white/40 text-white hover:bg-white/10"
                         >
                             Talk to sales

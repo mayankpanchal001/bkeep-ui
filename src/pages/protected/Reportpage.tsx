@@ -398,7 +398,7 @@ const Reportpage = () => {
     return (
         <div className="space-y-6">
             {/* Filters and Controls Section */}
-            <div className="bg-white border border-primary-10 rounded-2xl p-6 shadow-sm">
+            <div className="bg-white border border-primary-10 rounded-2 p-4 shadow-sm">
                 <div className="space-y-4">
                     {/* Time Range Selector */}
                     <div>
@@ -415,7 +415,7 @@ const Reportpage = () => {
                                         onClick={() =>
                                             setSelectedRange(option.value)
                                         }
-                                        className={`px-4 py-2.5 text-sm font-semibold rounded-xl transition-all duration-200 ${
+                                        className={`px-4 py-2.5 text-sm font-semibold rounded-2 transition-all duration-200 ${
                                             isActive
                                                 ? 'bg-primary text-white shadow-md scale-105'
                                                 : 'bg-primary-10 text-primary hover:bg-primary-25 hover:scale-105'
@@ -441,7 +441,7 @@ const Reportpage = () => {
                                 onClick={() =>
                                     setIsFilterMenuOpen(!isFilterMenuOpen)
                                 }
-                                className="flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-primary bg-white border-2 border-primary-10 rounded-xl hover:border-primary hover:bg-primary-10 hover:shadow-sm transition-all duration-200"
+                                className="flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-primary bg-white border-2 border-primary-10 rounded-2 hover:border-primary hover:bg-primary-10 hover:shadow-sm transition-all duration-200"
                                 type="button"
                             >
                                 <FaFilter className="text-primary" />
@@ -456,7 +456,7 @@ const Reportpage = () => {
                             </button>
 
                             {isFilterMenuOpen && (
-                                <div className="absolute left-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-primary-10 py-2 z-50 dropdown-animate">
+                                <div className="absolute left-0 mt-2 w-56 bg-white rounded-2 shadow-lg border border-primary-10 py-2 z-50 dropdown-animate">
                                     <button
                                         onClick={() => {
                                             setSelectedReportType('income');
@@ -497,7 +497,7 @@ const Reportpage = () => {
                                 onClick={() =>
                                     setIsExportMenuOpen(!isExportMenuOpen)
                                 }
-                                className="flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-primary rounded-xl shadow-sm hover:shadow-md transition-all duration-200 hover:bg-primary/90"
+                                className="flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-primary rounded-2 shadow-sm hover:shadow-md transition-all duration-200 hover:bg-primary/90"
                                 type="button"
                             >
                                 <FaDownload />
@@ -510,7 +510,7 @@ const Reportpage = () => {
                             </button>
 
                             {isExportMenuOpen && (
-                                <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-primary-10 py-2 z-50 dropdown-animate">
+                                <div className="absolute right-0 mt-2 w-48 bg-white rounded-2 shadow-lg border border-primary-10 py-2 z-50 dropdown-animate">
                                     <button
                                         onClick={handleExportExcel}
                                         className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-primary-75 hover:bg-primary-10 hover:text-primary transition-colors"
@@ -658,7 +658,7 @@ const Reportpage = () => {
             </div>
 
             {/* Charts and Analytics Section */}
-            <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
                 <div className="xl:col-span-2 space-y-6">
                     <ChartWidget
                         title="Revenue Mix"
@@ -685,7 +685,7 @@ const Reportpage = () => {
                             {data.collectionEfficiency.map((item) => (
                                 <div
                                     key={item.label}
-                                    className="bg-primary-10 rounded-xl px-4 py-3 border border-primary-10"
+                                    className="bg-primary-10 rounded-2 px-4 py-3 border border-primary-10"
                                 >
                                     <p className="text-xs font-semibold uppercase text-primary-50">
                                         {item.label}
@@ -775,7 +775,7 @@ const Reportpage = () => {
                         </div>
                     </ChartWidget>
 
-                    <div className="bg-white border border-primary-10 rounded-2xl p-6 shadow-sm">
+                    <div className="bg-white border border-primary-10 rounded-2 p-4 shadow-sm">
                         <div className="flex items-center gap-2 mb-4">
                             <FaChartPie className="text-primary" />
                             <h3 className="text-lg font-semibold text-primary">
@@ -796,13 +796,13 @@ const Reportpage = () => {
                         <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <button
                                 type="button"
-                                className="w-full px-4 py-2 text-sm font-semibold text-primary bg-primary-10 rounded-xl hover:bg-primary-25 transition"
+                                className="w-full px-4 py-2 text-sm font-semibold text-primary bg-primary-10 rounded-2 hover:bg-primary-25 transition"
                             >
                                 Schedule Report Email
                             </button>
                             <button
                                 type="button"
-                                className="w-full px-4 py-2 text-sm font-semibold text-white bg-primary rounded-xl hover:shadow-md transition"
+                                className="w-full px-4 py-2 text-sm font-semibold text-white bg-primary rounded-2 hover:shadow-md transition"
                             >
                                 Share with Partners
                             </button>

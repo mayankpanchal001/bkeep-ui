@@ -3,15 +3,48 @@ import axiosInstance from '../../services/axiosClient';
 import { AuthState, UserType } from '../../types';
 import { TenantStore } from '../tenant/tenantStore';
 
+// Helper to get initial state from localStorage (synchronous)
+const getInitialAuthState = () => {
+    try {
+        const userStr = localStorage.getItem('user');
+        const accessToken = localStorage.getItem('accessToken');
+        const refreshToken = localStorage.getItem('refreshToken');
+        const mfaEnabledStr = localStorage.getItem('mfaEnabled');
+        const mfaEnabled =
+            mfaEnabledStr !== null ? JSON.parse(mfaEnabledStr) : false;
+
+        if (userStr && accessToken && refreshToken) {
+            return {
+                user: JSON.parse(userStr),
+                accessToken,
+                refreshToken,
+                isAuthenticated: true,
+                mfaEnabled,
+            };
+        }
+    } catch (e) {
+        console.error('Failed to get initial auth state', e);
+    }
+    return {
+        user: null,
+        accessToken: null,
+        refreshToken: null,
+        isAuthenticated: false,
+        mfaEnabled: false,
+    };
+};
+
+const initialState = getInitialAuthState();
+
 export const AuthStore = create<AuthState>((set, get) => ({
-    // 1. Initial State
-    user: null,
-    accessToken: null,
-    refreshToken: null,
-    isAuthenticated: false,
+    // 1. Initial State - hydrated from localStorage synchronously
+    user: initialState.user,
+    accessToken: initialState.accessToken,
+    refreshToken: initialState.refreshToken,
+    isAuthenticated: initialState.isAuthenticated,
     loading: false,
     error: null,
-    mfaEnabled: false,
+    mfaEnabled: initialState.mfaEnabled,
 
     // 2. Actions
 

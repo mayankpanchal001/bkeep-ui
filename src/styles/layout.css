@@ -8,8 +8,13 @@
     @apply w-full h-[1px] bg-primary opacity-50;
 }
 
+/* .public-route-wrapper, */
+/* .protected-route-wrapper {
+    @apply bg-lightBg flex flex-col items-center justify-center h-full rounded-2 overflow-hidden;
+} */
+
 .protected-route-wrapper {
-    @apply flex flex-col lg:flex-row items-center justify-center h-full rounded-2xl overflow-hidden max-lg:pb-16 max-lg:pt-16;
+    @apply bg-lightBg flex flex-col items-stretch h-full rounded-2xl overflow-hidden max-lg:pb-4 max-lg:pt-16;
 }
 
 .protected-route-bottombar {
@@ -31,7 +36,7 @@
 }
 
 .protected-route-sidebar {
-    --sidebar-width: 28ch;
+    --sidebar-width: 20ch;
     @apply hidden lg:flex flex-col gap-4 h-full p-4 bg-white border-r border-primary-10;
     width: var(--sidebar-width);
     min-width: var(--sidebar-width);
@@ -40,19 +45,20 @@
         min-width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     overflow: hidden;
 
+    --sidebar-item-width: 60px;
     &.collapsed {
         @apply bg-transparent;
-        width: 72px;
-        min-width: 72px;
+        width: var(--sidebar-item-width);
+        min-width: var(--sidebar-item-width);
     }
 }
 
 .sidebar-items {
-    @apply flex flex-col gap-2;
+    @apply flex flex-col gap-0.5;
 }
 
 .sidebar-item {
-    @apply flex items-center gap-3 cursor-pointer p-2 rounded-lg transition-all duration-200 hover:text-primary active:text-primary hover:bg-primary-10 active:bg-primary-25;
+    @apply flex items-center gap-2 cursor-pointer p-1.5 rounded-lg transition-all duration-200 hover:text-primary active:text-primary hover:bg-primary-10 active:bg-primary-25;
     min-height: 36px;
 
     &.active {
@@ -65,16 +71,15 @@
 }
 
 .sidebar-item-icon {
-    @apply flex items-center justify-center flex-shrink-0;
-    width: 20px;
-    height: 20px;
+    @apply flex w-4 h-4 items-center justify-center flex-shrink-0;
+
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     font-size: 18px;
     color: inherit;
 }
 
 .sidebar-item-label {
-    @apply text-sm font-medium whitespace-nowrap;
+    @apply text-xs font-medium whitespace-nowrap;
     transition:
         opacity 0.15s ease-in-out 0.05s,
         max-width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
@@ -140,7 +145,7 @@
 
 /* Loading Overlay Styles */
 .loading-overlay {
-    @apply absolute inset-0 z-[9999] flex items-center justify-center bg-white/70 backdrop-blur-sm border border-primary-10 rounded-2xl;
+    @apply absolute inset-0 z-[9999] flex items-center justify-center bg-white/70 backdrop-blur-sm border border-primary-10 rounded-2;
 }
 
 .loading-spinner {
@@ -288,4 +293,7 @@
 
 .transaction-table-cell {
     @apply px-4 py-3 text-sm;
+}
+.inner-section {
+    @apply bg-white rounded-2 shadow-sm border border-primary-10 p-4 hover:shadow-md transition-shadow;
 }

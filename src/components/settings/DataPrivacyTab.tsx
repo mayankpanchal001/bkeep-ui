@@ -7,7 +7,7 @@ const DataPrivacyTab = () => {
                 Data & Privacy
             </h3>
             <div className="space-y-4">
-                <div className="p-4 border border-primary-10 rounded-xl">
+                <div className="p-4 border border-primary-10 rounded-2">
                     <div className="flex items-center justify-between mb-2">
                         <div>
                             <div className="font-medium text-primary">
@@ -20,7 +20,7 @@ const DataPrivacyTab = () => {
                         <Button variant="outline">Export</Button>
                     </div>
                 </div>
-                <div className="p-4 border border-red-200 bg-red-50 rounded-xl">
+                <div className="p-4 border border-red-200 bg-red-50 rounded-2">
                     <div className="flex items-center justify-between">
                         <div>
                             <div className="font-medium text-red-700">

@@ -14,11 +14,11 @@ const TestimonialsSection = () => {
                     Real stories from forward-thinking leaders.
                 </h2>
             </div>
-            <div className="mt-12 grid gap-6 md:grid-cols-2">
+            <div className="mt-12 grid gap-4 md:grid-cols-2">
                 {TESTIMONIALS.map((testimonial, index) => (
                     <div
                         key={`${testimonial.name}-${index}`}
-                        className="rounded-3xl border border-white/5 bg-[#0b0b0b] p-6 text-left"
+                        className="rounded-3xl border border-white/5 bg-[#0b0b0b] p-4 text-left"
                     >
                         <p className="text-sm text-white/70">
                             “{testimonial.quote}”
