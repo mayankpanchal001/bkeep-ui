@@ -10,7 +10,9 @@
         "lint:fix": "eslint . --fix",
         "format": "prettier --write .",
         "preview": "vite preview",
-        "prepare": "husky"
+        "prepare": "husky",
+        "build:docker": "docker-compose build --no-cache",
+        "deploy": "npm run build:docker && docker-compose up -d"
     },
     "dependencies": {
         "@simplewebauthn/browser": "^13.2.2",
