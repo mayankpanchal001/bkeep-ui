@@ -1,36 +1,104 @@
-import { useState } from 'react';
-import { FaChevronLeft } from 'react-icons/fa';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router';
 import { APP_TITLE, SIDEBAR_ITEMS } from '../../constants';
 import { LOGO_IMAGE } from '../../constants/images';
-import HorizontalRuler from './HorizontalRuler';
+import { useLogout } from '../../services/apis/authApi';
+import { useAuth } from '../../stores/auth/authSelectore';
+import ConfirmationDialog from '../shared/ConfirmationDialog';
+import { Icons } from '../shared/Icons';
 
 const Sidebar = ({ collapsed }: { collapsed: boolean }) => {
     const location = useLocation();
+    const { user } = useAuth();
+    const { mutateAsync: logout, isPending: isLoggingOut } = useLogout();
+    const [expandedItems, setExpandedItems] = useState<string[]>([]);
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+    const menuRef = useRef<HTMLDivElement>(null);
 
-    const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(collapsed);
+    // Close menu when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (
+                menuRef.current &&
+                !menuRef.current.contains(event.target as Node)
+            ) {
+                setIsMenuOpen(false);
+            }
+        };
 
-    // Check if a sidebar item should be active
-    // Parent items are active if current path starts with the item path
-    const isItemActive = (itemPath: string | undefined) => {
-        if (!itemPath) return false;
-
-        // Exact match
-        if (location.pathname === itemPath) return true;
-
-        // Check if current path is a child of this item
-        // e.g., /settings/users should make /settings active
-        // But /dashboard should not match /dashboard-something
-        if (location.pathname.startsWith(itemPath + '/')) {
-            return true;
+        if (isMenuOpen) {
+            document.addEventListener('mousedown', handleClickOutside);
         }
 
-        return false;
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [isMenuOpen]);
+
+    // Check if a sidebar item should be active
+    const isItemActive = useCallback(
+        (itemPath: string | undefined) => {
+            if (!itemPath) return false;
+            if (location.pathname === itemPath) return true;
+            if (location.pathname.startsWith(itemPath + '/')) {
+                return true;
+            }
+            return false;
+        },
+        [location.pathname]
+    );
+
+    // Auto-expand groups if child is active
+    useEffect(() => {
+        const groupsToExpand: string[] = [];
+
+        SIDEBAR_ITEMS.forEach((item) => {
+            if (
+                item.children &&
+                item.children.some((child) => isItemActive(child.path))
+            ) {
+                groupsToExpand.push(item.label);
+            }
+        });
+
+        if (groupsToExpand.length > 0) {
+            setExpandedItems((prev) => {
+                const newSet = new Set(prev);
+                let hasChanges = false;
+                groupsToExpand.forEach((label) => {
+                    if (!newSet.has(label)) {
+                        newSet.add(label);
+                        hasChanges = true;
+                    }
+                });
+                return hasChanges ? Array.from(newSet) : prev;
+            });
+        }
+    }, [location.pathname, isItemActive]);
+
+    const toggleExpand = (label: string) => {
+        if (collapsed) return; // Don't toggle if sidebar is collapsed
+        setExpandedItems((prev) =>
+            prev.includes(label)
+                ? prev.filter((l) => l !== label)
+                : [...prev, label]
+        );
+    };
+
+    const handleLogoutClick = () => {
+        setIsMenuOpen(false);
+        setShowLogoutConfirm(true);
+    };
+
+    const handleConfirmLogout = async () => {
+        await logout();
+        setShowLogoutConfirm(false);
     };
 
     return (
         <div
-            className={`protected-route-sidebar ${isSidebarCollapsed ? 'collapsed' : ''}`}
+            className={`protected-route-sidebar ${collapsed ? 'collapsed' : ''}`}
         >
             <div className="sidebar-header">
                 <div className="sidebar-header-logo">
@@ -41,41 +109,188 @@ const Sidebar = ({ collapsed }: { collapsed: boolean }) => {
                 </div>
             </div>
 
-            <HorizontalRuler />
-
-            <div className="flex-1 flex flex-col gap-4">
+            <div className="flex-1 flex flex-col gap-2 overflow-y-auto py-4">
                 <div className="sidebar-items flex-1">
-                    {SIDEBAR_ITEMS.map((item) => (
-                        <Link
-                            to={item.path || '/dashboard'}
-                            key={item.label}
-                            className={`sidebar-item ${isItemActive(item.path) ? 'active' : ''}`}
-                        >
-                            <span className="sidebar-item-icon">
-                                {item.icon}
-                            </span>
-                            <span className="sidebar-item-label">
-                                {item.label}
-                            </span>
-                        </Link>
-                    ))}
-                </div>
+                    {SIDEBAR_ITEMS.map((item) => {
+                        const isActive = isItemActive(item.path);
+                        const isExpanded = expandedItems.includes(item.label);
+                        const hasChildren =
+                            item.children && item.children.length > 0;
 
-                <HorizontalRuler />
-                <div
-                    className="sidebar-item sidebar-toggle"
-                    onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-                >
-                    <span
-                        className={`sidebar-item-icon ${
-                            isSidebarCollapsed ? 'rotate-180' : ''
-                        }`}
-                    >
-                        <FaChevronLeft className="w-3 h-3" />
-                    </span>
-                    <span className="sidebar-item-label">Collapse Sidebar</span>
+                        if (hasChildren) {
+                            return (
+                                <div key={item.label} className="flex flex-col">
+                                    <div
+                                        className={`sidebar-item ${isActive ? 'active' : ''} justify-between`}
+                                        onClick={() => toggleExpand(item.label)}
+                                        title={collapsed ? item.label : ''}
+                                    >
+                                        <div className="flex items-center gap-2 overflow-hidden">
+                                            <span className="sidebar-item-icon">
+                                                {item.icon}
+                                            </span>
+                                            <span className="sidebar-item-label">
+                                                {item.label}
+                                            </span>
+                                        </div>
+                                        {!collapsed && (
+                                            <span className="text-gray-400 text-xs">
+                                                {isExpanded ? (
+                                                    <Icons.ChevronDown />
+                                                ) : (
+                                                    <Icons.ChevronRight />
+                                                )}
+                                            </span>
+                                        )}
+                                        {!collapsed && isActive && (
+                                            <div className="ml-auto w-1 h-8 bg-primary rounded-l-full absolute right-0"></div>
+                                        )}
+                                    </div>
+
+                                    {/* Children */}
+                                    <div
+                                        className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                                            isExpanded && !collapsed
+                                                ? 'max-h-96 opacity-100'
+                                                : 'max-h-0 opacity-0'
+                                        }`}
+                                    >
+                                        <div className="flex flex-col gap-1 mt-1 ml-4 border-l border-primary-10 pl-2">
+                                            {item.children?.map((child) => (
+                                                <Link
+                                                    key={child.label}
+                                                    to={child.path || '#'}
+                                                    className={`sidebar-item min-h-[32px] py-1 ${
+                                                        isItemActive(child.path)
+                                                            ? 'active'
+                                                            : ''
+                                                    }`}
+                                                >
+                                                    <span className="sidebar-item-label text-xs">
+                                                        {child.label}
+                                                    </span>
+                                                </Link>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                            );
+                        }
+
+                        return (
+                            <Link
+                                to={item.path || '/dashboard'}
+                                key={item.label}
+                                className={`sidebar-item ${isActive ? 'active' : ''}`}
+                                title={collapsed ? item.label : ''}
+                            >
+                                <span className="sidebar-item-icon">
+                                    {item.icon}
+                                </span>
+                                <span className="sidebar-item-label">
+                                    {item.label}
+                                </span>
+                                {!collapsed && isActive && (
+                                    <div className="ml-auto w-1 h-8 bg-primary rounded-l-full absolute right-0"></div>
+                                )}
+                            </Link>
+                        );
+                    })}
                 </div>
             </div>
+
+            {/* User Profile Section */}
+            <div className="p-2 mt-auto" ref={menuRef}>
+                <div className="relative">
+                    {/* Menu Popup */}
+                    {isMenuOpen && (
+                        <div
+                            className={`absolute z-50 bg-white rounded-lg shadow-xl border border-primary-10 py-1 min-w-[240px] ${
+                                collapsed
+                                    ? 'left-full bottom-0 ml-2'
+                                    : 'bottom-full left-0 w-full mb-2'
+                            }`}
+                        >
+                            {/* User Info Header in Menu */}
+                            <div className="px-4 py-3 border-b border-primary-10 mb-1 flex items-center gap-3">
+                                <div className="w-8 h-8 rounded-lg bg-primary-10 flex items-center justify-center text-primary font-bold shrink-0">
+                                    {user?.name?.charAt(0) || 'U'}
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                    <p className="text-sm font-semibold text-gray-900 truncate">
+                                        {user?.name || 'User'}
+                                    </p>
+                                    <p className="text-xs text-gray-500 truncate">
+                                        {user?.email || 'user@example.com'}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="px-1">
+                                <button className="w-full flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md transition-colors">
+                                    <Icons.Profile className="w-4 h-4" />{' '}
+                                    Profile
+                                </button>
+                                <button className="w-full flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md transition-colors">
+                                    <Icons.Billing className="w-4 h-4" />{' '}
+                                    Billing
+                                </button>
+                                <button className="w-full flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md transition-colors">
+                                    <Icons.Notifications className="w-4 h-4" />{' '}
+                                    Notifications
+                                </button>
+                            </div>
+
+                            <div className="h-px bg-primary-10 my-1 mx-1" />
+
+                            <div className="px-1">
+                                <button
+                                    onClick={handleLogoutClick}
+                                    className="w-full flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
+                                >
+                                    <Icons.Logout className="w-4 h-4" /> Log out
+                                </button>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Trigger Area */}
+                    <div
+                        onClick={() => setIsMenuOpen(!isMenuOpen)}
+                        className={`flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer group ${collapsed ? 'justify-center' : ''}`}
+                    >
+                        <div className="w-8 h-8 rounded-lg bg-primary-10 flex items-center justify-center text-primary font-bold shrink-0">
+                            {user?.name?.charAt(0) || 'U'}
+                        </div>
+
+                        {!collapsed && (
+                            <div className="flex-1 min-w-0 text-left">
+                                <p className="text-sm font-medium text-gray-900 truncate">
+                                    {user?.name || 'User'}
+                                </p>
+                                <p className="text-xs text-gray-500 truncate">
+                                    {user?.email || 'user@example.com'}
+                                </p>
+                            </div>
+                        )}
+
+                        {!collapsed && (
+                            <Icons.ChevronsUpDown className="w-4 h-4 text-gray-400" />
+                        )}
+                    </div>
+                </div>
+            </div>
+
+            <ConfirmationDialog
+                isOpen={showLogoutConfirm}
+                onClose={() => setShowLogoutConfirm(false)}
+                onConfirm={handleConfirmLogout}
+                title="Sign out?"
+                message="You will need to sign in again to access your workspace."
+                confirmText="Sign out"
+                confirmVariant="danger"
+                loading={isLoggingOut}
+            />
         </div>
     );
 };

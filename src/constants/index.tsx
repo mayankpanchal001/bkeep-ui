@@ -1,76 +1,102 @@
-import {
-    FaCog,
-    FaCommentDots,
-    FaFileAlt,
-    FaFileInvoiceDollar,
-    FaReceipt,
-    FaSignOutAlt,
-    FaUpload,
-} from 'react-icons/fa';
-import {
-    FaBook,
-    FaBookJournalWhills,
-    FaHouse,
-    FaMoneyBillTransfer,
-} from 'react-icons/fa6';
+import { Icons } from '../components/shared/Icons';
 import { SidebarItemProps } from '../types';
 
 export const SIDEBAR_ITEMS: SidebarItemProps[] = [
     {
         label: 'Dashboard',
-        icon: <FaHouse />,
+        icon: <Icons.Dashboard />,
         path: '/dashboard',
     },
     {
         label: 'Transactions',
-        icon: <FaMoneyBillTransfer />,
+        icon: <Icons.Transactions />,
         path: '/transactions',
     },
     {
         label: 'Reports',
-        icon: <FaFileAlt />,
+        icon: <Icons.Reports />,
         path: '/reports',
+        children: [
+            {
+                label: 'Income Statement',
+                path: '/reports/income-statement',
+            },
+            {
+                label: 'Balance Sheet',
+                path: '/reports/balance-sheet',
+            },
+        ],
     },
     {
         label: 'Chart of Accounts',
-        icon: <FaBook />,
+        icon: <Icons.ChartOfAccounts />,
         path: '/chart-of-accounts',
     },
     {
         label: 'Journal Entries',
-        icon: <FaBookJournalWhills />,
+        icon: <Icons.JournalEntries />,
         path: '/journal-entries',
     },
     {
         label: 'Invoices',
-        icon: <FaFileInvoiceDollar />,
+        icon: <Icons.Invoices />,
         path: '/invoices',
     },
     {
         label: 'Expenses',
-        icon: <FaReceipt />,
+        icon: <Icons.Expenses />,
         path: '/expenses',
     },
     {
         label: 'Documents',
-        icon: <FaUpload />,
+        icon: <Icons.Documents />,
         path: '/documents',
     },
     {
         label: 'Client Review',
-        icon: <FaCommentDots />,
+        icon: <Icons.ClientReview />,
         path: '/client-review',
     },
     {
         label: 'Settings',
-        icon: <FaCog />,
+        icon: <Icons.Settings />,
         path: '/settings',
+        children: [
+            {
+                label: 'Profile',
+                path: '/settings/profile',
+            },
+            {
+                label: 'Tenants',
+                path: '/settings/tenants',
+            },
+            {
+                label: 'Users',
+                path: '/settings/users',
+            },
+            {
+                label: 'Roles',
+                path: '/settings/roles',
+            },
+            {
+                label: 'Security',
+                path: '/settings/security',
+            },
+            {
+                label: 'Data Privacy',
+                path: '/settings/data',
+            },
+            {
+                label: 'Notifications',
+                path: '/settings/notifications',
+            },
+        ],
     },
 ];
 
 export const LOGOUT_ITEM = {
     label: 'Logout',
-    icon: <FaSignOutAlt />,
+    icon: <Icons.Logout />,
     path: '/logout',
 };
 

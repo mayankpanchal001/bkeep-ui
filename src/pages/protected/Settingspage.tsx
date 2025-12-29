@@ -1,15 +1,7 @@
 import { useEffect } from 'react';
-import {
-    FaBell,
-    FaBuilding,
-    FaDatabase,
-    FaLock,
-    FaUser,
-    FaUsers,
-    FaUserShield,
-} from 'react-icons/fa';
 import { Outlet, useLocation, useNavigate } from 'react-router';
-import { SettingsTabs, type SettingsTab } from '../../components/settings';
+import { SettingsSidebar } from '../../components/settings/SettingsSidebar';
+import { Icons } from '../../components/shared/Icons';
 import { useAuth } from '../../stores/auth/authSelectore';
 
 const Settingspage = () => {
@@ -20,21 +12,6 @@ const Settingspage = () => {
     // Check if user is superadmin
     const isSuperAdmin = user?.role?.name === 'superadmin';
 
-    // Get active tab from route
-    const getActiveTab = () => {
-        const path = location.pathname;
-        if (path.includes('/settings/profile')) return 'profile';
-        if (path.includes('/settings/tenants')) return 'tenants';
-        if (path.includes('/settings/users')) return 'users';
-        if (path.includes('/settings/roles')) return 'roles';
-        if (path.includes('/settings/security')) return 'security';
-        if (path.includes('/settings/data')) return 'data';
-        if (path.includes('/settings/notifications')) return 'notifications';
-        return 'profile';
-    };
-
-    const activeTab = getActiveTab();
-
     // Redirect to profile if on base settings route
     useEffect(() => {
         if (location.pathname === '/settings') {
@@ -42,38 +19,54 @@ const Settingspage = () => {
         }
     }, [location.pathname, navigate]);
 
-    const tabs: SettingsTab[] = [
-        { id: 'profile', label: 'Profile', icon: <FaUser /> },
-        // Only show tenants tab for superadmin
+    const sidebarNavItems = [
+        {
+            title: 'Profile',
+            href: '/settings/profile',
+            icon: <Icons.Profile className="w-4 h-4" />,
+        },
         ...(isSuperAdmin
             ? [
                   {
-                      id: 'tenants' as const,
-                      label: 'Tenants',
-                      icon: <FaBuilding />,
+                      title: 'Tenants',
+                      href: '/settings/tenants',
+                      icon: <Icons.Building className="w-4 h-4" />,
                   },
               ]
             : []),
-        { id: 'users', label: 'Users', icon: <FaUsers /> },
-        { id: 'roles', label: 'Roles', icon: <FaUserShield /> },
-        { id: 'security', label: 'Security', icon: <FaLock /> },
-        { id: 'data', label: 'Data & Privacy', icon: <FaDatabase /> },
-        { id: 'notifications', label: 'Notifications', icon: <FaBell /> },
+        {
+            title: 'Users',
+            href: '/settings/users',
+            icon: <Icons.Users className="w-4 h-4" />,
+        },
+        {
+            title: 'Roles',
+            href: '/settings/roles',
+            icon: <Icons.Shield className="w-4 h-4" />,
+        },
+        {
+            title: 'Security',
+            href: '/settings/security',
+            icon: <Icons.Lock className="w-4 h-4" />,
+        },
+        {
+            title: 'Data & Privacy',
+            href: '/settings/data',
+            icon: <Icons.Database className="w-4 h-4" />,
+        },
+        {
+            title: 'Notifications',
+            href: '/settings/notifications',
+            icon: <Icons.Notifications className="w-4 h-4" />,
+        },
     ];
 
-    const handleTabChange = (tabId: string) => {
-        navigate(`/settings/${tabId}`);
-    };
-
     return (
-        <div className="flex flex-col gap-2">
-            <SettingsTabs
-                tabs={tabs}
-                activeTab={activeTab}
-                onTabChange={handleTabChange}
-            />
-
-            <div className="bg-white rounded-2 shadow-sm border border-primary-10 p-4">
+        <div className="flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0">
+            <aside className="lg:w-1/5">
+                <SettingsSidebar items={sidebarNavItems} />
+            </aside>
+            <div className="flex-1 lg:max-w-2xl">
                 <Outlet />
             </div>
         </div>

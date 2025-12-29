@@ -123,8 +123,9 @@ export type PermissionCategory = {
 
 export type SidebarItemProps = {
     label: string;
-    icon: React.ReactElement;
+    icon?: React.ReactElement;
     path?: string;
+    children?: SidebarItemProps[];
 };
 
 export type PostType = {
