@@ -32,11 +32,14 @@ const TransactionsTable = () => {
         );
     });
 
-    const totalPages = Math.ceil((filteredTransactions?.length || 0) / itemsPerPage);
-    const paginatedTransactions = filteredTransactions?.slice(
-        (currentPage - 1) * itemsPerPage,
-        currentPage * itemsPerPage
-    ) || [];
+    const totalPages = Math.ceil(
+        (filteredTransactions?.length || 0) / itemsPerPage
+    );
+    const paginatedTransactions =
+        filteredTransactions?.slice(
+            (currentPage - 1) * itemsPerPage,
+            currentPage * itemsPerPage
+        ) || [];
 
     const pagination = {
         page: currentPage,
@@ -73,7 +76,7 @@ const TransactionsTable = () => {
                         </span>
                     </div>
                 );
-            }
+            },
         },
         {
             header: 'Description',
@@ -84,7 +87,8 @@ const TransactionsTable = () => {
                     firstSplit?.recipientDescription ||
                     transaction.itemType ||
                     'N/A';
-                const displayLabel = firstSplit?.categoryAndGifi?.[0]?.displayLabel;
+                const displayLabel =
+                    firstSplit?.categoryAndGifi?.[0]?.displayLabel;
                 return (
                     <div className="flex flex-col">
                         <span className="text-sm font-medium text-primary">
@@ -97,7 +101,7 @@ const TransactionsTable = () => {
                         )}
                     </div>
                 );
-            }
+            },
         },
         {
             header: 'Type',
@@ -106,7 +110,7 @@ const TransactionsTable = () => {
                 <span className="text-xs text-primary-50 bg-primary-10 px-2 py-1 rounded">
                     {transaction.itemType || 'N/A'}
                 </span>
-            )
+            ),
         },
         {
             header: 'Amount',
@@ -135,7 +139,7 @@ const TransactionsTable = () => {
                         </span>
                     </div>
                 );
-            }
+            },
         },
         {
             header: 'Balance',
@@ -146,7 +150,7 @@ const TransactionsTable = () => {
                         currency: transaction.currency?.toUpperCase() || 'USD',
                     }).format(0)}
                 </span>
-            )
+            ),
         },
         {
             header: 'Tags',
@@ -172,7 +176,7 @@ const TransactionsTable = () => {
                             )}
                     </div>
                 );
-            }
+            },
         },
         {
             header: 'Action',
@@ -180,8 +184,8 @@ const TransactionsTable = () => {
                 <button className="text-primary hover:text-primary-75 text-sm font-medium">
                     View
                 </button>
-            )
-        }
+            ),
+        },
     ];
 
     if (isLoading) {

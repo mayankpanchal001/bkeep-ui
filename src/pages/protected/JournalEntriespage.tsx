@@ -1,9 +1,5 @@
 import { useState } from 'react';
-import {
-    FaFileAlt,
-    FaRedo,
-    FaUndo,
-} from 'react-icons/fa';
+import { FaFileAlt, FaRedo, FaUndo } from 'react-icons/fa';
 import { useNavigate } from 'react-router';
 import ConfirmationDialog from '../../components/shared/ConfirmationDialog';
 import { DataTable, Column } from '../../components/shared/DataTable';
@@ -263,7 +259,8 @@ export default function JournalEntriespage() {
         totalItems: total,
         onPageChange: (page: number) => setFilters({ ...filters, page }),
         hasPreviousPage: (filters.page || 1) > 1,
-        hasNextPage: (filters.page || 1) < Math.ceil(total / (filters.limit || 20)),
+        hasNextPage:
+            (filters.page || 1) < Math.ceil(total / (filters.limit || 20)),
     };
 
     const emptyState = (
@@ -275,11 +272,7 @@ export default function JournalEntriespage() {
             <p className="text-xs text-primary-50 mb-4">
                 Create your first journal entry to get started
             </p>
-            <Button
-                variant="primary"
-                size="sm"
-                onClick={handleCreateNew}
-            >
+            <Button variant="primary" size="sm" onClick={handleCreateNew}>
                 <Icons.Plus className="w-4 h-4 mr-2" />
                 Create Journal Entry
             </Button>

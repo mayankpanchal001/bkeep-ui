@@ -124,22 +124,34 @@ const MobileOffcanvas = ({ isOpen, onClose }: MobileOffcanvasProps) => {
                     <div className="flex flex-col gap-1">
                         {SIDEBAR_ITEMS.map((item) => {
                             const isActive = isItemActive(item.path);
-                            const isExpanded = expandedItems.includes(item.label);
-                            const hasChildren = item.children && item.children.length > 0;
+                            const isExpanded = expandedItems.includes(
+                                item.label
+                            );
+                            const hasChildren =
+                                item.children && item.children.length > 0;
 
                             if (hasChildren) {
                                 return (
-                                    <div key={item.label} className="flex flex-col">
+                                    <div
+                                        key={item.label}
+                                        className="flex flex-col"
+                                    >
                                         <div
                                             className={`
                                                 flex items-center justify-between px-3 py-2.5 rounded-lg cursor-pointer transition-colors
                                                 ${isActive ? 'bg-primary-5 text-primary' : 'text-gray-600 hover:bg-gray-50'}
                                             `}
-                                            onClick={() => toggleExpand(item.label)}
+                                            onClick={() =>
+                                                toggleExpand(item.label)
+                                            }
                                         >
                                             <div className="flex items-center gap-3">
-                                                <span className="text-xl">{item.icon}</span>
-                                                <span className="font-medium text-sm">{item.label}</span>
+                                                <span className="text-xl">
+                                                    {item.icon}
+                                                </span>
+                                                <span className="font-medium text-sm">
+                                                    {item.label}
+                                                </span>
                                             </div>
                                             <span className="text-gray-400">
                                                 {isExpanded ? (
@@ -165,9 +177,12 @@ const MobileOffcanvas = ({ isOpen, onClose }: MobileOffcanvasProps) => {
                                                         onClick={onClose}
                                                         className={`
                                                             flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors
-                                                            ${isItemActive(child.path) 
-                                                                ? 'text-primary font-medium bg-primary-5' 
-                                                                : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'
+                                                            ${
+                                                                isItemActive(
+                                                                    child.path
+                                                                )
+                                                                    ? 'text-primary font-medium bg-primary-5'
+                                                                    : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'
                                                             }
                                                         `}
                                                     >
@@ -187,14 +202,17 @@ const MobileOffcanvas = ({ isOpen, onClose }: MobileOffcanvasProps) => {
                                     onClick={onClose}
                                     className={`
                                         flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors
-                                        ${isActive 
-                                            ? 'bg-primary-5 text-primary font-medium' 
-                                            : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                                        ${
+                                            isActive
+                                                ? 'bg-primary-5 text-primary font-medium'
+                                                : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
                                         }
                                     `}
                                 >
                                     <span className="text-xl">{item.icon}</span>
-                                    <span className="text-sm">{item.label}</span>
+                                    <span className="text-sm">
+                                        {item.label}
+                                    </span>
                                 </Link>
                             );
                         })}

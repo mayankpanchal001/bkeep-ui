@@ -195,9 +195,7 @@ export function JournalEntryForm({
         {
             header: '#',
             cell: (line) => (
-                <span className="text-sm text-primary">
-                    {line.lineNumber}
-                </span>
+                <span className="text-sm text-primary">{line.lineNumber}</span>
             ),
             className: 'w-12',
         },

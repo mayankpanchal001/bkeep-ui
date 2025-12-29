@@ -56,7 +56,8 @@ const ProfileTab = ({
                                 {formData.name || 'User Name'}
                             </h2>
                             <p className="text-sm text-gray-500">
-                                Manage your personal information and account settings
+                                Manage your personal information and account
+                                settings
                             </p>
                         </div>
 

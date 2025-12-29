@@ -172,7 +172,7 @@ const CreateInvoiceModal = ({
             document.body.style.overflow = 'hidden';
         }
 
-    return () => {
+        return () => {
             document.removeEventListener('keydown', handleEscape);
             document.removeEventListener('mousedown', handleClickOutside);
             document.body.style.overflow = 'unset';

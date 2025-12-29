@@ -156,5 +156,4 @@ const TenantsTab = () => {
     );
 };
 
-
 export default TenantsTab;
