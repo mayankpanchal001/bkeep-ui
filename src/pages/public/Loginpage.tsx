@@ -41,13 +41,13 @@ const Loginpage = () => {
 
             {/* Right Side - Branding Section */}
             <div className="hidden lg:flex lg:w-1/2 p-2 bg-white min-h-screen">
-                <div className="w-full bg-black rounded-[20px] flex flex-col justify-center items-center p-20 relative overflow-hidden text-center">
-                    <div className="relative z-10 w-full flex flex-col items-center">
-                        <div className="mb-6">
+                <div className="w-full bg-black rounded-[20px] p-20 relative overflow-hidden">
+                    <div className="relative z-10 w-full flex flex-col items-start">
+                        <div className="mb-4">
                             <img
                                 src={logo}
                                 alt="Bkeep Logo"
-                                className="h-20 w-auto object-contain brightness-0 invert"
+                                className="h-16 w-auto object-contain brightness-0 invert"
                             />
                         </div>
                         <h1 className="text-[32px] font-semibold leading-[38px] text-[#FAFAFA] mb-2 tracking-tight">

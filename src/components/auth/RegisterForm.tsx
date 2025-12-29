@@ -1,12 +1,6 @@
 import React, { useState } from 'react';
-import {
-    FaEnvelope,
-    FaGoogle,
-    FaLock,
-    FaMicrosoft,
-    FaUser,
-} from 'react-icons/fa';
-import { useNavigate } from 'react-router';
+import { FaGoogle, FaMicrosoft } from 'react-icons/fa';
+import { Link, useNavigate } from 'react-router';
 import Button from '../typography/Button';
 import { InputField } from '../typography/InputFields';
 
@@ -81,89 +75,91 @@ export function RegisterForm() {
     };
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-8">
             {/* OAuth Register Buttons */}
-            <div className="space-y-3">
+            <div className="grid grid-cols-2 gap-3">
                 <Button
                     type="button"
                     variant="outline"
-                    className="w-full"
+                    className="w-full !rounded-xl !normal-case h-11 text-[13px] border-gray-200 hover:bg-gray-50 bg-white text-gray-700"
                     onClick={handleGoogleRegister}
                     loading={isOAuthLoading === 'google'}
                     disabled={isOAuthLoading !== null || isLoading}
-                    icon={<FaGoogle className="w-5 h-5" />}
+                    icon={<FaGoogle className="w-4 h-4 text-gray-500" />}
                 >
-                    Continue with Google
+                    Google
                 </Button>
                 <Button
                     type="button"
                     variant="outline"
-                    className="w-full"
+                    className="w-full !rounded-xl !normal-case h-11 text-[13px] border-gray-200 hover:bg-gray-50 bg-white text-gray-700"
                     onClick={handleOutlookRegister}
                     loading={isOAuthLoading === 'outlook'}
                     disabled={isOAuthLoading !== null || isLoading}
-                    icon={<FaMicrosoft className="w-5 h-5" />}
+                    icon={<FaMicrosoft className="w-4 h-4 text-gray-500" />}
                 >
-                    Continue with Outlook
+                    Outlook
                 </Button>
             </div>
 
             {/* Divider */}
             <div className="relative">
                 <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-primary-25"></div>
+                    <div className="w-full border-t border-gray-100"></div>
                 </div>
-                <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-white px-2 text-primary-50">
-                        Or continue with
-                    </span>
+                <div className="relative flex justify-center text-[12px] uppercase tracking-wider font-semibold">
+                    <span className="bg-white px-4 text-gray-400">OR</span>
                 </div>
             </div>
 
             {/* Registration Form */}
             <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="space-y-4">
+                <div className="space-y-5">
                     <InputField
+                        id="register-fullname"
                         label="Full Name"
                         type="text"
                         placeholder="John Doe"
                         value={fullName}
                         onChange={(e) => setFullName(e.target.value)}
                         required
-                        icon={<FaUser className="w-4 h-4" />}
+                        icon={undefined}
                     />
                     <InputField
-                        label="Email ID"
+                        id="register-email"
+                        label="Email Address"
                         type="email"
-                        placeholder="abc@gmail.com"
+                        placeholder="you@example.com"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         required
-                        icon={<FaEnvelope className="w-4 h-4" />}
+                        icon={undefined}
                     />
                     <InputField
+                        id="register-password"
                         label="Password"
                         type="password"
-                        placeholder="Enter your password"
+                        placeholder="••••••••"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
-                        icon={<FaLock className="w-4 h-4" />}
+                        icon={undefined}
                     />
                     <InputField
+                        id="register-confirm-password"
                         label="Confirm Password"
                         type="password"
-                        placeholder="Confirm your password"
+                        placeholder="••••••••"
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
                         required
-                        icon={<FaLock className="w-4 h-4" />}
+                        icon={undefined}
                     />
                 </div>
 
                 {error && (
-                    <div className="border border-red-300 bg-red-50 p-3 rounded-lg shadow-sm">
-                        <p className="text-sm text-red-700 font-medium">
+                    <div className="border border-red-100 bg-red-50/50 p-3.5 rounded-xl">
+                        <p className="text-[13px] text-center text-red-600 font-semibold tracking-tight">
                             {error}
                         </p>
                     </div>
@@ -172,7 +168,7 @@ export function RegisterForm() {
                 <Button
                     type="submit"
                     variant="primary"
-                    className="w-full"
+                    className="w-full !rounded-xl !normal-case h-12 text-sm"
                     loading={isLoading}
                     disabled={isLoading || isOAuthLoading !== null}
                 >
@@ -180,10 +176,15 @@ export function RegisterForm() {
                 </Button>
             </form>
 
-            <div className="text-center pt-2">
-                <p className="text-xs text-primary-50 text-balance">
-                    By creating an account, you agree to our Terms of Service
-                    and Privacy Policy
+            <div className="text-center">
+                <p className="text-[13px] text-gray-500 font-medium">
+                    Already have an account?{' '}
+                    <Link
+                        to="/login"
+                        className="text-black font-semibold hover:underline transition-all"
+                    >
+                        Sign In
+                    </Link>
                 </p>
             </div>
         </div>
