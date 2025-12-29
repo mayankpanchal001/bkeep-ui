@@ -1,13 +1,13 @@
-version: "3.8"
+version: '3.8'
 
 services:
-  frontend:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      args:
-        VITE_ENVIRONMENT: "production"
-        VITE_API_ENDPOINT: "http://72.62.161.70:8000/api/v1"
-    ports:
-      - "8080:80"
-    restart: unless-stopped
+    frontend:
+        build:
+            context: .
+            dockerfile: Dockerfile
+            args:
+                VITE_ENVIRONMENT: 'production'
+                VITE_API_ENDPOINT: 'http://72.62.161.70:8000/api/v1'
+        ports:
+            - '8080:80'
+        restart: unless-stopped
