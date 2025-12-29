@@ -1,6 +1,4 @@
 import React, { useState } from 'react';
-import { FaFingerprint, FaLock, FaUser } from 'react-icons/fa';
-import { Link } from 'react-router';
 import { useLogin } from '../../services/apis/authApi';
 
 import { showErrorToast } from '../../utills/toast';
@@ -43,44 +41,49 @@ export function LoginForm() {
     };
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-8">
             {/* Email/Password Form */}
             <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="space-y-4">
+                <div className="space-y-5">
                     <InputField
                         id="login-email"
-                        label="Email ID"
+                        label="Email Address"
                         type="email"
-                        placeholder="abc@gmail.com"
+                        placeholder="you@example.com"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         required
-                        icon={<FaUser className="w-4 h-4" />}
+                        icon={undefined}
                     />
-                    <div>
-                        <div className="flex items-center justify-between mb-2">
-                            <label
-                                htmlFor="login-password"
-                                className="text-sm font-medium text-primary"
-                            >
-                                Password
-                            </label>
-                        </div>
-                        <InputField
-                            id="login-password"
-                            type="password"
-                            placeholder="Enter your password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                            icon={<FaLock className="w-4 h-4" />}
-                        />
-                    </div>
+                    <InputField
+                        id="login-password"
+                        label="Password"
+                        type="password"
+                        placeholder="••••••••"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                        icon={undefined}
+                    />
+                </div>
+
+                <div className="flex items-center gap-2.5">
+                    <input
+                        id="remember-me"
+                        type="checkbox"
+                        className="h-4 w-4 text-black border-gray-300 rounded-md focus:ring-black/10 cursor-pointer accent-black transition-all"
+                    />
+                    <label
+                        htmlFor="remember-me"
+                        className="text-[13.5px] font-medium text-gray-500 cursor-pointer hover:text-gray-800 transition-colors"
+                    >
+                        Remember me for 30 days
+                    </label>
                 </div>
 
                 {error && (
-                    <div className="border border-red-300 bg-red-50 p-3 rounded-lg shadow-sm">
-                        <p className="text-sm text-center text-red-700 font-medium">
+                    <div className="border border-red-100 bg-red-50/50 p-3.5 rounded-xl">
+                        <p className="text-[13px] text-center text-red-600 font-semibold tracking-tight">
                             {error}
                         </p>
                     </div>
@@ -89,45 +92,13 @@ export function LoginForm() {
                 <Button
                     type="submit"
                     variant="primary"
-                    className="w-full"
+                    className="w-full !rounded-xl !normal-case h-12 text-sm"
                     loading={isLoading}
                     disabled={isLoading}
                 >
-                    Sign In
+                    Login to Account
                 </Button>
             </form>
-            <div className="relative">
-                <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-primary-25"></div>
-                </div>
-                <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-white px-2 text-primary-50">
-                        Or if you forgot your password
-                    </span>
-                </div>
-            </div>
-            <div className="flex justify-center gap-4">
-                <Link
-                    to="/forgot-password"
-                    className="text-sm  text-primary hover:text-primary-75 transition-colors cursor-pointer"
-                >
-                    Forgot Password?
-                </Link>
-                <span className="text-primary-25">•</span>
-                <Link
-                    to="/passkey-login"
-                    className="text-sm text-primary hover:text-primary-75 transition-colors cursor-pointer flex items-center gap-1"
-                >
-                    <FaFingerprint className="w-4 h-4" />
-                    Sign in with Passkey
-                </Link>
-            </div>
-
-            <div className="text-center pt-2">
-                <p className="text-xs text-primary-50">
-                    Secure login powered by our system
-                </p>
-            </div>
         </div>
     );
 }

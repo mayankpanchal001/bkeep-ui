@@ -7,7 +7,7 @@
 }
 
 input {
-    @apply accent-primary focus:accent-primary focus:ring-0 focus:ring-offset-0 focus:outline-none focus:border-0 focus:shadow-none focus:bg-transparent focus:text-primary focus:placeholder:text-primary-50 focus:placeholder:opacity-100 focus:placeholder:font-light;
+    @apply accent-primary focus:ring-0 focus:ring-offset-0 focus:outline-none;
 }
 
 /* .public-route, */
