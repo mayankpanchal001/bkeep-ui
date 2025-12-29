@@ -61,7 +61,7 @@ const ProtectedLayout = ({
                 <Sidebar collapsed={isSidebarCollapsed} />
 
                 {/* Main Content Area */}
-                <div className="flex-1 flex max-lg:py-16 flex-col h-full overflow-hidden relative">
+                <div className="flex-1 flex max-lg:pt-16 flex-col h-full overflow-hidden relative">
                     {/* Mobile Topbar */}
                     <Topbar onMenuClick={() => setShowMobileMenu(true)} />
 
