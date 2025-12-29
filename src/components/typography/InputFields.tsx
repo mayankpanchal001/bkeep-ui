@@ -6,11 +6,21 @@ type InputFieldProps = Omit<
 > & {
     label?: string;
     icon?: React.ReactNode;
+    error?: string;
 };
 
 export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
     (
-        { id, label, type = 'text', icon, required, placeholder, ...rest },
+        {
+            id,
+            label,
+            type = 'text',
+            icon,
+            required,
+            placeholder,
+            error,
+            ...rest
+        },
         ref
     ) => {
         const [showPassword, setShowPassword] = useState(false);
@@ -22,7 +32,7 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
         };
 
         return (
-            <div className="w-full">
+            <div className={`w-full ${error ? 'space-y-1.5' : 'space-y-0'}`}>
                 {label && (
                     <label className="input-label" htmlFor={id}>
                         {label}
@@ -36,7 +46,9 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
                         )}
                     </label>
                 )}
-                <div className={`relative input-wrap`}>
+                <div
+                    className={`relative input-wrap ${error ? '!border-red-500 shadow-[0_0_0_1px_rgba(239,68,68,0.1)]' : ''}`}
+                >
                     {icon && (
                         <div className="absolute left-2 top-2 text-gray-400">
                             {icon}
@@ -62,6 +74,7 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
                                 showPassword ? 'Hide password' : 'Show password'
                             }
                         >
+                            {/* SVG icons remain the same */}
                             {showPassword ? (
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -101,6 +114,11 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
                         </button>
                     )}
                 </div>
+                {error && (
+                    <p className="text-[12px] font-medium text-red-500 mt-1.5 animate-in fade-in slide-in-from-top-1 duration-200">
+                        {error}
+                    </p>
+                )}
             </div>
         );
     }

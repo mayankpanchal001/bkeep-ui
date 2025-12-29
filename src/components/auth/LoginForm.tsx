@@ -9,15 +9,43 @@ export function LoginForm() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const [fieldErrors, setFieldErrors] = useState<{
+        email?: string;
+        password?: string;
+    }>({});
     const {
         mutateAsync: login,
         isPending: isLoading,
         error: loginError,
     } = useLogin();
 
+    const validateForm = () => {
+        const errors: { email?: string; password?: string } = {};
+
+        // Email validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!email) {
+            errors.email = 'Email address is required';
+        } else if (!emailRegex.test(email)) {
+            errors.email = 'Please enter a valid email address.';
+        }
+
+        // Password validation
+        if (!password) {
+            errors.password = 'Password is required';
+        } else if (password.length < 6) {
+            errors.password = 'Password must be at least 6 characters.';
+        }
+
+        setFieldErrors(errors);
+        return Object.keys(errors).length === 0;
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError('');
+
+        if (!validateForm()) return;
 
         try {
             await login({ email, password });
@@ -41,7 +69,10 @@ export function LoginForm() {
     };
 
     return (
-        <div className="space-y-8">
+        <div className="space-y-6">
+            {/* Simple Spacing */}
+            <div className="pt-2"></div>
+
             {/* Email/Password Form */}
             <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="space-y-5">
@@ -51,7 +82,15 @@ export function LoginForm() {
                         type="email"
                         placeholder="you@example.com"
                         value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        onChange={(e) => {
+                            setEmail(e.target.value);
+                            if (fieldErrors.email)
+                                setFieldErrors({
+                                    ...fieldErrors,
+                                    email: undefined,
+                                });
+                        }}
+                        error={fieldErrors.email}
                         required
                         icon={undefined}
                     />
@@ -61,29 +100,37 @@ export function LoginForm() {
                         type="password"
                         placeholder="••••••••"
                         value={password}
-                        onChange={(e) => setPassword(e.target.value)}
+                        onChange={(e) => {
+                            setPassword(e.target.value);
+                            if (fieldErrors.password)
+                                setFieldErrors({
+                                    ...fieldErrors,
+                                    password: undefined,
+                                });
+                        }}
+                        error={fieldErrors.password}
                         required
                         icon={undefined}
                     />
                 </div>
 
-                <div className="flex items-center gap-2.5">
+                <div className="flex items-center gap-2">
                     <input
                         id="remember-me"
                         type="checkbox"
-                        className="h-4 w-4 text-black border-gray-300 rounded-md focus:ring-black/10 cursor-pointer accent-black transition-all"
+                        className="h-3.5 w-3.5 text-black border-gray-300 rounded focus:ring-black cursor-pointer accent-black"
                     />
                     <label
                         htmlFor="remember-me"
-                        className="text-[13.5px] font-medium text-gray-500 cursor-pointer hover:text-gray-800 transition-colors"
+                        className="text-[12.5px] font-medium text-gray-500 cursor-pointer hover:text-gray-800 transition-colors"
                     >
                         Remember me for 30 days
                     </label>
                 </div>
 
                 {error && (
-                    <div className="border border-red-100 bg-red-50/50 p-3.5 rounded-xl">
-                        <p className="text-[13px] text-center text-red-600 font-semibold tracking-tight">
+                    <div className="border border-red-100 bg-red-50/50 p-2.5 rounded-lg">
+                        <p className="text-[12px] text-center text-red-600 font-semibold tracking-tight">
                             {error}
                         </p>
                     </div>
@@ -92,11 +139,11 @@ export function LoginForm() {
                 <Button
                     type="submit"
                     variant="primary"
-                    className="w-full !rounded-xl !normal-case h-12 text-sm"
+                    className="w-full !rounded-md !normal-case h-9 text-sm font-semibold"
                     loading={isLoading}
                     disabled={isLoading}
                 >
-                    Login to Account
+                    Login
                 </Button>
             </form>
         </div>
