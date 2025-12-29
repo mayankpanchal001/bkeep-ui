@@ -1,14 +1,13 @@
 import { useState } from 'react';
 import {
-    FaEdit,
     FaFileAlt,
-    FaPlus,
     FaRedo,
-    FaTrash,
     FaUndo,
 } from 'react-icons/fa';
 import { useNavigate } from 'react-router';
 import ConfirmationDialog from '../../components/shared/ConfirmationDialog';
+import { DataTable, Column } from '../../components/shared/DataTable';
+import { Icons } from '../../components/shared/Icons';
 import Loading from '../../components/shared/Loading';
 import PageHeader from '../../components/shared/PageHeader';
 import Button from '../../components/typography/Button';
@@ -138,6 +137,155 @@ export default function JournalEntriespage() {
         );
     };
 
+    const columns: Column<JournalEntry>[] = [
+        {
+            header: 'Date',
+            accessorKey: 'journalDate',
+            cell: (entry) => (
+                <span className="whitespace-nowrap text-primary">
+                    {new Date(entry.journalDate).toLocaleDateString()}
+                </span>
+            ),
+        },
+        {
+            header: 'Journal No.',
+            accessorKey: 'journalNo',
+            cell: (entry) => (
+                <span className="whitespace-nowrap font-medium text-primary">
+                    {entry.journalNo}
+                    {entry.isAdjusting && (
+                        <span className="ml-2 text-xs text-blue-600">
+                            (Adj)
+                        </span>
+                    )}
+                </span>
+            ),
+        },
+        {
+            header: 'Description',
+            accessorKey: 'memo',
+            cell: (entry) => (
+                <span className="text-primary-75">
+                    {entry.memo || entry.lines[0]?.description || '—'}
+                </span>
+            ),
+        },
+        {
+            header: 'Debit',
+            accessorKey: 'totalDebit',
+            cell: (entry) => (
+                <span className="whitespace-nowrap text-primary">
+                    ${entry.totalDebit.toFixed(2)}
+                </span>
+            ),
+        },
+        {
+            header: 'Credit',
+            accessorKey: 'totalCredit',
+            cell: (entry) => (
+                <span className="whitespace-nowrap text-primary">
+                    ${entry.totalCredit.toFixed(2)}
+                </span>
+            ),
+        },
+        {
+            header: 'Status',
+            accessorKey: 'status',
+            cell: (entry) => getStatusBadge(entry.status),
+        },
+        {
+            header: 'Actions',
+            cell: (entry) => (
+                <div
+                    className="flex items-center gap-2"
+                    onClick={(e) => e.stopPropagation()}
+                >
+                    {entry.status === 'draft' && (
+                        <>
+                            <button
+                                onClick={() => handleEdit(entry.id)}
+                                className="text-blue-600 hover:text-blue-800"
+                                title="Edit"
+                            >
+                                <Icons.Edit className="w-4 h-4" />
+                            </button>
+                            <button
+                                onClick={() => handlePost(entry)}
+                                className="text-green-600 hover:text-green-800 text-sm font-medium hover:underline"
+                                title="Post"
+                            >
+                                Post
+                            </button>
+                            <button
+                                onClick={() => handleDelete(entry)}
+                                className="text-red-600 hover:text-red-800"
+                                title="Delete"
+                            >
+                                <Icons.Trash className="w-4 h-4" />
+                            </button>
+                        </>
+                    )}
+                    {entry.status === 'posted' && (
+                        <>
+                            <button
+                                onClick={() => handleVoid(entry)}
+                                className="text-yellow-600 hover:text-yellow-800 text-sm font-medium hover:underline"
+                                title="Void"
+                            >
+                                Void
+                            </button>
+                            <button
+                                onClick={() => handleReverse(entry)}
+                                className="text-purple-600 hover:text-purple-800"
+                                title="Reverse"
+                            >
+                                <FaUndo className="w-4 h-4" />
+                            </button>
+                        </>
+                    )}
+                    {entry.status === 'voided' && (
+                        <button
+                            onClick={() => handleRestore(entry)}
+                            className="text-green-600 hover:text-green-800"
+                            title="Restore"
+                        >
+                            <FaRedo className="w-4 h-4" />
+                        </button>
+                    )}
+                </div>
+            ),
+        },
+    ];
+
+    const pagination = {
+        page: filters.page || 1,
+        totalPages: Math.ceil(total / (filters.limit || 20)),
+        totalItems: total,
+        onPageChange: (page: number) => setFilters({ ...filters, page }),
+        hasPreviousPage: (filters.page || 1) > 1,
+        hasNextPage: (filters.page || 1) < Math.ceil(total / (filters.limit || 20)),
+    };
+
+    const emptyState = (
+        <div className="flex flex-col items-center justify-center py-8">
+            <FaFileAlt className="w-12 h-12 text-primary-20 mb-3" />
+            <p className="text-sm font-medium text-primary mb-1">
+                No journal entries found
+            </p>
+            <p className="text-xs text-primary-50 mb-4">
+                Create your first journal entry to get started
+            </p>
+            <Button
+                variant="primary"
+                size="sm"
+                onClick={handleCreateNew}
+            >
+                <Icons.Plus className="w-4 h-4 mr-2" />
+                Create Journal Entry
+            </Button>
+        </div>
+    );
+
     if (isLoading) {
         return <Loading />;
     }
@@ -208,232 +356,13 @@ export default function JournalEntriespage() {
             </div>
 
             {/* Journal Entries Table */}
-            <div className="bg-white rounded-lg border border-primary-10 overflow-hidden">
-                <div className="overflow-x-auto">
-                    <table className="w-full">
-                        <thead className="bg-gray-50">
-                            <tr>
-                                <th className="px-3 py-2 text-left text-xs font-medium text-primary-75 uppercase tracking-wider">
-                                    Date
-                                </th>
-                                <th className="px-3 py-2 text-left text-xs font-medium text-primary-75 uppercase tracking-wider">
-                                    Journal No.
-                                </th>
-                                <th className="px-3 py-2 text-left text-xs font-medium text-primary-75 uppercase tracking-wider">
-                                    Description
-                                </th>
-                                <th className="px-3 py-2 text-left text-xs font-medium text-primary-75 uppercase tracking-wider">
-                                    Debit
-                                </th>
-                                <th className="px-3 py-2 text-left text-xs font-medium text-primary-75 uppercase tracking-wider">
-                                    Credit
-                                </th>
-                                <th className="px-3 py-2 text-left text-xs font-medium text-primary-75 uppercase tracking-wider">
-                                    Status
-                                </th>
-                                <th className="px-3 py-2 text-left text-xs font-medium text-primary-75 uppercase tracking-wider">
-                                    Actions
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody className="bg-white divide-y divide-gray-200">
-                            {journalEntries.length === 0 ? (
-                                <tr>
-                                    <td
-                                        colSpan={7}
-                                        className="px-3 py-8 text-center"
-                                    >
-                                        <div className="flex flex-col items-center justify-center">
-                                            <FaFileAlt className="w-12 h-12 text-primary-20 mb-3" />
-                                            <p className="text-sm font-medium text-primary mb-1">
-                                                No journal entries found
-                                            </p>
-                                            <p className="text-xs text-primary-50 mb-4">
-                                                Create your first journal entry
-                                                to get started
-                                            </p>
-                                            <Button
-                                                variant="primary"
-                                                size="sm"
-                                                onClick={handleCreateNew}
-                                            >
-                                                <FaPlus className="w-4 h-4" />
-                                                Create Journal Entry
-                                            </Button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ) : (
-                                journalEntries.map((entry) => (
-                                    <tr
-                                        key={entry.id}
-                                        className="hover:bg-gray-50 cursor-pointer"
-                                        onClick={() => handleView(entry.id)}
-                                    >
-                                        <td className="px-3 py-2 whitespace-nowrap text-sm text-primary">
-                                            {new Date(
-                                                entry.journalDate
-                                            ).toLocaleDateString()}
-                                        </td>
-                                        <td className="px-3 py-2 whitespace-nowrap text-sm font-medium text-primary">
-                                            {entry.journalNo}
-                                            {entry.isAdjusting && (
-                                                <span className="ml-2 text-xs text-blue-600">
-                                                    (Adj)
-                                                </span>
-                                            )}
-                                        </td>
-                                        <td className="px-3 py-2 text-sm text-primary-75">
-                                            {entry.memo ||
-                                                entry.lines[0]?.description ||
-                                                '—'}
-                                        </td>
-                                        <td className="px-3 py-2 whitespace-nowrap text-sm text-primary">
-                                            ${entry.totalDebit.toFixed(2)}
-                                        </td>
-                                        <td className="px-3 py-2 whitespace-nowrap text-sm text-primary">
-                                            ${entry.totalCredit.toFixed(2)}
-                                        </td>
-                                        <td className="px-3 py-2 whitespace-nowrap">
-                                            {getStatusBadge(entry.status)}
-                                        </td>
-                                        <td className="px-3 py-2 whitespace-nowrap text-sm font-medium">
-                                            <div
-                                                className="flex items-center gap-2"
-                                                onClick={(e) =>
-                                                    e.stopPropagation()
-                                                }
-                                            >
-                                                {entry.status === 'draft' && (
-                                                    <>
-                                                        <button
-                                                            onClick={() =>
-                                                                handleEdit(
-                                                                    entry.id
-                                                                )
-                                                            }
-                                                            className="text-blue-600 hover:text-blue-800"
-                                                            title="Edit"
-                                                        >
-                                                            <FaEdit className="w-4 h-4" />
-                                                        </button>
-                                                        <button
-                                                            onClick={() =>
-                                                                handlePost(
-                                                                    entry
-                                                                )
-                                                            }
-                                                            className="text-green-600 hover:text-green-800"
-                                                            title="Post"
-                                                        >
-                                                            Post
-                                                        </button>
-                                                        <button
-                                                            onClick={() =>
-                                                                handleDelete(
-                                                                    entry
-                                                                )
-                                                            }
-                                                            className="text-red-600 hover:text-red-800"
-                                                            title="Delete"
-                                                        >
-                                                            <FaTrash className="w-4 h-4" />
-                                                        </button>
-                                                    </>
-                                                )}
-                                                {entry.status === 'posted' && (
-                                                    <>
-                                                        <button
-                                                            onClick={() =>
-                                                                handleVoid(
-                                                                    entry
-                                                                )
-                                                            }
-                                                            className="text-yellow-600 hover:text-yellow-800"
-                                                            title="Void"
-                                                        >
-                                                            Void
-                                                        </button>
-                                                        <button
-                                                            onClick={() =>
-                                                                handleReverse(
-                                                                    entry
-                                                                )
-                                                            }
-                                                            className="text-purple-600 hover:text-purple-800"
-                                                            title="Reverse"
-                                                        >
-                                                            <FaUndo className="w-4 h-4" />
-                                                        </button>
-                                                    </>
-                                                )}
-                                                {entry.status === 'voided' && (
-                                                    <button
-                                                        onClick={() =>
-                                                            handleRestore(entry)
-                                                        }
-                                                        className="text-green-600 hover:text-green-800"
-                                                        title="Restore"
-                                                    >
-                                                        <FaRedo className="w-4 h-4" />
-                                                    </button>
-                                                )}
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))
-                            )}
-                        </tbody>
-                    </table>
-                </div>
-
-                {/* Pagination */}
-                {total > (filters.limit || 20) && (
-                    <div className="px-3 py-2 border-t border-primary-10 flex items-center justify-between">
-                        <div className="text-sm text-primary-75">
-                            Showing{' '}
-                            {((filters.page || 1) - 1) * (filters.limit || 20) +
-                                1}{' '}
-                            to{' '}
-                            {Math.min(
-                                (filters.page || 1) * (filters.limit || 20),
-                                total
-                            )}{' '}
-                            of {total} entries
-                        </div>
-                        <div className="flex gap-2">
-                            <Button
-                                variant="outline"
-                                onClick={() =>
-                                    setFilters({
-                                        ...filters,
-                                        page: (filters.page || 1) - 1,
-                                    })
-                                }
-                                disabled={(filters.page || 1) === 1}
-                            >
-                                Previous
-                            </Button>
-                            <Button
-                                variant="outline"
-                                onClick={() =>
-                                    setFilters({
-                                        ...filters,
-                                        page: (filters.page || 1) + 1,
-                                    })
-                                }
-                                disabled={
-                                    (filters.page || 1) *
-                                        (filters.limit || 20) >=
-                                    total
-                                }
-                            >
-                                Next
-                            </Button>
-                        </div>
-                    </div>
-                )}
-            </div>
+            <DataTable
+                data={journalEntries}
+                columns={columns}
+                pagination={pagination}
+                emptyMessage={emptyState}
+                onRowClick={(entry) => handleView(entry.id)}
+            />
 
             {/* Delete Confirmation Dialog */}
             <ConfirmationDialog

@@ -7,6 +7,7 @@ import {
     FaTag,
     FaTrash,
 } from 'react-icons/fa';
+import { Column, DataTable } from '../../components/shared/DataTable';
 import Button from '../../components/typography/Button';
 import { InputField } from '../../components/typography/InputFields';
 
@@ -109,6 +110,87 @@ const Expensespage = () => {
         {} as Record<string, number>
     );
 
+    const columns: Column<Expense>[] = [
+        {
+            header: 'Date',
+            accessorKey: 'date',
+            cell: (expense) => (
+                <span className="text-primary-75">
+                    {new Date(expense.date).toLocaleDateString()}
+                </span>
+            ),
+        },
+        {
+            header: 'Vendor',
+            accessorKey: 'vendor',
+            cell: (expense) => (
+                <div className="font-medium text-primary">{expense.vendor}</div>
+            ),
+        },
+        {
+            header: 'Category',
+            accessorKey: 'category',
+            cell: (expense) => (
+                <span className="inline-flex items-center gap-1 px-2 py-1 bg-primary-10 text-primary rounded-full text-xs font-medium">
+                    <FaTag className="w-3 h-3" />
+                    {expense.category}
+                </span>
+            ),
+        },
+        {
+            header: 'Description',
+            accessorKey: 'description',
+            cell: (expense) => (
+                <span className="text-primary-75">{expense.description}</span>
+            ),
+        },
+        {
+            header: 'Amount',
+            accessorKey: 'amount',
+            className: 'text-right',
+            cell: (expense) => (
+                <span className="font-semibold text-primary">
+                    {currencyFormatter.format(expense.amount)}
+                </span>
+            ),
+        },
+        {
+            header: 'Payment Method',
+            accessorKey: 'paymentMethod',
+            cell: (expense) => (
+                <span className="text-primary-75">{expense.paymentMethod}</span>
+            ),
+        },
+        {
+            header: 'Actions',
+            className: 'text-center w-32',
+            cell: (expense) => (
+                <div className="flex items-center justify-center gap-2">
+                    {expense.receipt && (
+                        <button
+                            className="p-2 text-primary-50 hover:text-primary hover:bg-primary-10 rounded transition-colors"
+                            title="View Receipt"
+                        >
+                            <FaReceipt className="w-4 h-4" />
+                        </button>
+                    )}
+                    <button
+                        className="p-2 text-primary-50 hover:text-primary hover:bg-primary-10 rounded transition-colors"
+                        title="Edit"
+                    >
+                        <FaEdit className="w-4 h-4" />
+                    </button>
+                    <button
+                        className="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
+                        title="Delete"
+                    >
+                        <FaTrash className="w-4 h-4" />
+                    </button>
+                </div>
+            ),
+        },
+    ];
+
     return (
         <div className="flex flex-col gap-4">
             {/* Summary Cards */}
@@ -175,106 +257,11 @@ const Expensespage = () => {
 
             {/* Expenses Table */}
             <div className="bg-white rounded-2 shadow-sm border border-primary-10 overflow-hidden">
-                <div className="overflow-x-auto">
-                    <table className="w-full">
-                        <thead className="bg-primary-10">
-                            <tr>
-                                <th className="px-4 py-3 text-left text-sm font-semibold text-primary">
-                                    Date
-                                </th>
-                                <th className="px-4 py-3 text-left text-sm font-semibold text-primary">
-                                    Vendor
-                                </th>
-                                <th className="px-4 py-3 text-left text-sm font-semibold text-primary">
-                                    Category
-                                </th>
-                                <th className="px-4 py-3 text-left text-sm font-semibold text-primary">
-                                    Description
-                                </th>
-                                <th className="px-4 py-3 text-right text-sm font-semibold text-primary">
-                                    Amount
-                                </th>
-                                <th className="px-4 py-3 text-left text-sm font-semibold text-primary">
-                                    Payment Method
-                                </th>
-                                <th className="px-4 py-3 text-center text-sm font-semibold text-primary w-32">
-                                    Actions
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {filteredExpenses.length === 0 ? (
-                                <tr>
-                                    <td
-                                        colSpan={7}
-                                        className="px-4 py-8 text-center text-primary-50"
-                                    >
-                                        No expenses found
-                                    </td>
-                                </tr>
-                            ) : (
-                                filteredExpenses.map((expense) => (
-                                    <tr
-                                        key={expense.id}
-                                        className="border-b border-primary-10 hover:bg-primary-5"
-                                    >
-                                        <td className="px-4 py-3 text-primary-75">
-                                            {new Date(
-                                                expense.date
-                                            ).toLocaleDateString()}
-                                        </td>
-                                        <td className="px-4 py-3">
-                                            <div className="font-medium text-primary">
-                                                {expense.vendor}
-                                            </div>
-                                        </td>
-                                        <td className="px-4 py-3">
-                                            <span className="inline-flex items-center gap-1 px-2 py-1 bg-primary-10 text-primary rounded-full text-xs font-medium">
-                                                <FaTag className="w-3 h-3" />
-                                                {expense.category}
-                                            </span>
-                                        </td>
-                                        <td className="px-4 py-3 text-primary-75">
-                                            {expense.description}
-                                        </td>
-                                        <td className="px-4 py-3 text-right font-semibold text-primary">
-                                            {currencyFormatter.format(
-                                                expense.amount
-                                            )}
-                                        </td>
-                                        <td className="px-4 py-3 text-primary-75">
-                                            {expense.paymentMethod}
-                                        </td>
-                                        <td className="px-4 py-3">
-                                            <div className="flex items-center justify-center gap-2">
-                                                {expense.receipt && (
-                                                    <button
-                                                        className="p-2 text-primary-50 hover:text-primary hover:bg-primary-10 rounded transition-colors"
-                                                        title="View Receipt"
-                                                    >
-                                                        <FaReceipt className="w-4 h-4" />
-                                                    </button>
-                                                )}
-                                                <button
-                                                    className="p-2 text-primary-50 hover:text-primary hover:bg-primary-10 rounded transition-colors"
-                                                    title="Edit"
-                                                >
-                                                    <FaEdit className="w-4 h-4" />
-                                                </button>
-                                                <button
-                                                    className="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
-                                                    title="Delete"
-                                                >
-                                                    <FaTrash className="w-4 h-4" />
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))
-                            )}
-                        </tbody>
-                    </table>
-                </div>
+                <DataTable
+                    data={filteredExpenses}
+                    columns={columns}
+                    emptyMessage="No expenses found"
+                />
             </div>
 
             {/* Create Expense Modal */}

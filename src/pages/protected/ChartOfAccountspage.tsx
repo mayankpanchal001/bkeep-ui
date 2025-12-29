@@ -10,6 +10,7 @@ import {
 } from 'react-icons/fa';
 import * as XLSX from 'xlsx';
 import ConfirmationDialog from '../../components/shared/ConfirmationDialog';
+import { Column, DataTable } from '../../components/shared/DataTable';
 import ImportFileModal from '../../components/shared/ImportFileModal';
 import ImportMappingModal from '../../components/shared/ImportMappingModal';
 import Loading from '../../components/shared/Loading';
@@ -300,103 +301,108 @@ const ChartOfAccountspage = () => {
         setEditingAccount(null);
     };
 
-    // Handle open add modal
     const handleOpenAddModal = () => {
         resetForm();
         setShowAddModal(true);
     };
 
-    // Handle open edit modal
     const handleOpenEditModal = (account: ChartOfAccount) => {
+        setEditingAccount(account);
+        setFormData({
+            accountName: account.accountName,
+            accountType: account.accountType,
+            accountDetailType: account.accountDetailType,
+            openingBalance: Number(account.openingBalance) || 0,
+            description: account.description || '',
+        });
         const subType = getSubTypeByDetailType(
             account.accountType,
             account.accountDetailType
         );
         setSelectedAccountSubType(subType);
-        setFormData({
-            accountName: account.accountName,
-            accountType: account.accountType,
-            accountDetailType: account.accountDetailType,
-            openingBalance: parseFloat(account.openingBalance),
-            description: account.description || '',
-        });
         setFormErrors({});
-        setEditingAccount(account);
     };
 
-    // Handle close modal
     const handleCloseModal = () => {
         setShowAddModal(false);
+        setEditingAccount(null);
         resetForm();
     };
 
-    const handleDownloadSample = async () => {
-        try {
-            const blob = await downloadSampleData();
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'chart-of-accounts-sample.xlsx';
-            document.body.appendChild(a);
-            a.click();
-            window.URL.revokeObjectURL(url);
-            document.body.removeChild(a);
-        } catch (error) {
-            console.error('Failed to download sample data', error);
+    // Validation
+    const validateForm = () => {
+        const errors: Record<string, string> = {};
+        if (!formData.accountName.trim()) {
+            errors.accountName = 'Account Name is required';
+        }
+        if (!formData.accountType) {
+            errors.accountType = 'Account Type is required';
+        }
+        if (!formData.accountDetailType) {
+            errors.accountDetailType = 'Detail Type is required';
+        }
+        if (formData.openingBalance < 0) {
+            errors.openingBalance = 'Opening Balance cannot be negative';
+        }
+        setFormErrors(errors);
+        return Object.keys(errors).length === 0;
+    };
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!validateForm()) return;
+
+        if (editingAccount) {
+            updateMutation.mutate(
+                { id: editingAccount.id, payload: formData },
+                {
+                    onSuccess: () => {
+                        handleCloseModal();
+                    },
+                }
+            );
+        } else {
+            createMutation.mutate(formData, {
+                onSuccess: () => {
+                    handleCloseModal();
+                },
+            });
         }
     };
 
+    const handleDelete = () => {
+        if (deleteAccount) {
+            deleteMutation.mutate(deleteAccount.id, {
+                onSuccess: () => {
+                    setDeleteAccount(null);
+                },
+            });
+        }
+    };
+
+    // --- Import Handlers ---
     const handleImportClick = () => {
         setShowUploadModal(true);
     };
 
     const handleFileSelect = (file: File) => {
-        if (file) {
-            setSelectedFile(file);
-            setShowUploadModal(false);
+        setSelectedFile(file);
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const data = new Uint8Array(e.target?.result as ArrayBuffer);
+            const workbook = XLSX.read(data, { type: 'array' });
+            const sheetName = workbook.SheetNames[0];
+            const worksheet = workbook.Sheets[sheetName];
+            const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
 
-            // Read file headers
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                try {
-                    const data = e.target?.result;
-                    const workbook = XLSX.read(data, { type: 'binary' });
-                    const firstSheetName = workbook.SheetNames[0];
-                    const worksheet = workbook.Sheets[firstSheetName];
-                    const jsonData = XLSX.utils.sheet_to_json(worksheet, {
-                        header: 1,
-                    });
-
-                    if (jsonData.length > 0) {
-                        const headers = jsonData[0] as string[];
-                        setFileHeaders(headers);
-                        setShowMappingModal(true);
-                    }
-                } catch (error) {
-                    console.error('Error reading file headers:', error);
-                    // Reset selected file
-                    setSelectedFile(null);
-                }
-            };
-            reader.readAsBinaryString(file);
-        }
-    };
-
-    const handleImportConfirm = async (mapping: Record<string, string>) => {
-        if (!selectedFile) return;
-
-        try {
-            await importMutation.mutateAsync({
-                file: selectedFile,
-                mapping,
-            });
-            setShowMappingModal(false);
-            setSelectedFile(null);
-            setFileHeaders([]);
-        } catch (error) {
-            console.error('Import error:', error);
-            // Error handled in hook
-        }
+            if (jsonData.length > 0) {
+                const headers = jsonData[0] as string[];
+                setFileHeaders(headers);
+                setShowUploadModal(false);
+                setShowMappingModal(true);
+            }
+        };
+        reader.readAsArrayBuffer(file);
     };
 
     const handleImportModalClose = () => {
@@ -405,97 +411,116 @@ const ChartOfAccountspage = () => {
         setFileHeaders([]);
     };
 
-    // Handle form submit
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-
-        // Validate form
-        const errors: Record<string, string> = {};
-        if (!formData.accountName.trim()) {
-            errors.accountName = 'Account name is required';
-        }
-        if (!formData.accountType) {
-            errors.accountType = 'Account type is required';
-        }
-        if (!formData.accountDetailType) {
-            errors.accountDetailType = 'Detail type is required';
-        }
-
-        if (Object.keys(errors).length > 0) {
-            setFormErrors(errors);
-            return;
-        }
-
-        try {
-            if (editingAccount) {
-                // Update existing account
-                if (!editingAccount.id) {
-                    throw new Error('Account ID is required for update');
-                }
-                await updateMutation.mutateAsync({
-                    id: editingAccount.id,
-                    payload: {
-                        accountName: formData.accountName,
-                        accountType: formData.accountType,
-                        accountDetailType: formData.accountDetailType,
-                        openingBalance: formData.openingBalance,
-                        description: formData.description,
+    const handleImportConfirm = (mapping: Record<string, string>) => {
+        if (selectedFile) {
+            importMutation.mutate(
+                { file: selectedFile, mapping },
+                {
+                    onSuccess: () => {
+                        handleImportModalClose();
                     },
-                });
-            } else {
-                // Create new account
-                await createMutation.mutateAsync(formData);
-            }
-            handleCloseModal();
-        } catch (error) {
-            // Error is handled by the mutation
-            console.error('Form submission error:', error);
+                }
+            );
         }
     };
 
-    // Handle delete
-    const handleDelete = async () => {
-        if (!deleteAccount) return;
-
-        try {
-            await deleteMutation.mutateAsync(deleteAccount.id);
-            setDeleteAccount(null);
-        } catch (error) {
-            // Error is handled by the mutation
-            console.error('Delete error:', error);
-        }
+    const handleDownloadSample = () => {
+        downloadSampleData();
     };
 
-    if (isLoading) {
-        return (
-            <div className="flex items-center justify-center min-h-[400px]">
-                <Loading />
-            </div>
-        );
-    }
-
-    if (error) {
-        return (
-            <div className="flex items-center justify-center min-h-[400px]">
-                <div className="text-center">
-                    <p className="text-red-500 mb-4">
-                        Failed to load chart of accounts
-                    </p>
-                    <Button
-                        variant="primary"
-                        onClick={() => window.location.reload()}
-                    >
-                        Retry
-                    </Button>
+    const columns: Column<ChartOfAccount>[] = [
+        {
+            header: 'Account Name',
+            cell: (account) => (
+                <div className="flex flex-col">
+                    <div className="font-medium text-primary">
+                        {account.accountName}
+                    </div>
+                    <div className="text-xs text-primary-50 mt-1">
+                        {account.accountNumber}
+                    </div>
+                    {account.description && (
+                        <div className="text-xs text-primary-50 mt-1">
+                            {account.description}
+                        </div>
+                    )}
                 </div>
+            ),
+        },
+        {
+            header: 'Type',
+            cell: (account) => (
+                <span className="text-sm text-primary">
+                    {ACCOUNT_TYPE_DISPLAY[account.accountType]}
+                </span>
+            ),
+        },
+        {
+            header: 'Detail Type',
+            cell: (account) => (
+                <span className="text-sm text-primary-75 capitalize">
+                    {account.accountDetailType.replace(/-/g, ' ')}
+                </span>
+            ),
+        },
+        {
+            header: 'Current Balance',
+            className: 'text-right',
+            cell: (account) => (
+                <span className="font-semibold text-primary">
+                    {currencyFormatter.format(
+                        parseFloat(
+                            account.currentBalance ||
+                                String(account.openingBalance)
+                        )
+                    )}
+                </span>
+            ),
+        },
+        {
+            header: 'Actions',
+            className: 'text-center w-24',
+            cell: (account) => (
+                <div className="flex items-center justify-center gap-2">
+                    <button
+                        onClick={() => handleOpenEditModal(account)}
+                        className="p-2 text-primary-50 hover:text-primary hover:bg-primary-10 rounded transition-colors"
+                        title="Edit"
+                    >
+                        <FaEdit className="w-4 h-4" />
+                    </button>
+                    <button
+                        onClick={() => setDeleteAccount(account)}
+                        className="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
+                        title="Delete"
+                    >
+                        <FaTrash className="w-4 h-4" />
+                    </button>
+                </div>
+            ),
+        },
+    ];
+
+    if (isLoading) return <Loading />;
+    if (error)
+        return (
+            <div className="text-red-500">
+                Error loading accounts: {error.message}
             </div>
         );
-    }
 
     return (
-        <div className="flex flex-col gap-4">
-            {/* Header Actions */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="h-full flex flex-col gap-6 p-6">
+            {/* Header */}
+            <div className="flex items-center justify-between">
+                <div>
+                    <h1 className="text-2xl font-bold text-primary">
+                        Chart of Accounts
+                    </h1>
+                    <p className="text-sm text-primary-50 mt-1">
+                        Manage your business accounts and their balances
+                    </p>
+                </div>
                 <div className="flex items-center gap-3">
                     <Button
                         onClick={handleOpenAddModal}
@@ -560,117 +585,11 @@ const ChartOfAccountspage = () => {
 
             {/* Accounts Table */}
             <div className="bg-white rounded-2 shadow-sm border border-primary-10 overflow-hidden">
-                <div className="overflow-x-auto">
-                    <table className="w-full">
-                        <thead className="bg-primary-10">
-                            <tr>
-                                <th className="px-4 py-3 text-left text-sm font-semibold text-primary">
-                                    Account Name
-                                </th>
-                                <th className="px-4 py-3 text-left text-sm font-semibold text-primary">
-                                    Type
-                                </th>
-                                <th className="px-4 py-3 text-left text-sm font-semibold text-primary">
-                                    Detail Type
-                                </th>
-                                <th className="px-4 py-3 text-right text-sm font-semibold text-primary">
-                                    Current Balance
-                                </th>
-                                <th className="px-4 py-3 text-center text-sm font-semibold text-primary w-24">
-                                    Actions
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {accounts.length === 0 ? (
-                                <tr>
-                                    <td
-                                        colSpan={5}
-                                        className="px-4 py-8 text-center text-primary-50"
-                                    >
-                                        No accounts found
-                                    </td>
-                                </tr>
-                            ) : (
-                                accounts.map((account) => (
-                                    <tr
-                                        key={account.id || account.accountName}
-                                        className="border-b border-primary-10 hover:bg-primary-10 transition-colors"
-                                    >
-                                        <td className="px-4 py-3">
-                                            <div className="font-medium text-primary">
-                                                {account.accountName}
-                                            </div>
-                                            <div className="text-xs text-primary-50 mt-1">
-                                                {account.accountNumber}
-                                            </div>
-                                            {account.description && (
-                                                <div className="text-xs text-primary-50 mt-1">
-                                                    {account.description}
-                                                </div>
-                                            )}
-                                        </td>
-
-                                        <td className="px-4 py-3">
-                                            <span className="text-sm text-primary">
-                                                {
-                                                    ACCOUNT_TYPE_DISPLAY[
-                                                        account.accountType
-                                                    ]
-                                                }
-                                            </span>
-                                        </td>
-
-                                        <td className="px-4 py-3">
-                                            <span className="text-sm text-primary-75 capitalize">
-                                                {account.accountDetailType.replace(
-                                                    /-/g,
-                                                    ' '
-                                                )}
-                                            </span>
-                                        </td>
-                                        <td className="px-4 py-3 text-right">
-                                            <span className="font-semibold text-primary">
-                                                {currencyFormatter.format(
-                                                    parseFloat(
-                                                        account.currentBalance ||
-                                                            account.openingBalance
-                                                    )
-                                                )}
-                                            </span>
-                                        </td>
-                                        <td className="px-4 py-3">
-                                            <div className="flex items-center justify-center gap-2">
-                                                <button
-                                                    onClick={() =>
-                                                        handleOpenEditModal(
-                                                            account
-                                                        )
-                                                    }
-                                                    className="p-2 text-primary-50 hover:text-primary hover:bg-primary-10 rounded transition-colors"
-                                                    title="Edit"
-                                                >
-                                                    <FaEdit className="w-4 h-4" />
-                                                </button>
-                                                <button
-                                                    onClick={() =>
-                                                        setDeleteAccount(
-                                                            account
-                                                        )
-                                                    }
-                                                    className="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
-                                                    title="Delete"
-                                                >
-                                                    <FaTrash className="w-4 h-4" />
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))
-                            )}
-                        </tbody>
-                    </table>
-                </div>
+                <DataTable
+                    data={accounts}
+                    columns={columns}
+                    emptyMessage="No accounts found"
+                />
             </div>
 
             {/* Add/Edit Account Modal */}

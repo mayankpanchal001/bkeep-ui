@@ -18,9 +18,11 @@
 }
 
 @theme {
-    --color-lightBg: rgb(252 247 239);
-    --color-primary: rgba(var(--r), var(--g), var(--b), 1);
-    --color-primary-10: rgba(var(--r), var(--g), var(--b), 0.1);
+    /* --color-lightBg: rgb(252 247 239); */
+    --color-lightBg: #f7f7f7;
+    /* --color-primary: rgba(var(--r), var(--g), var(--b), 1); */
+    --color-primary: #242424;
+    --color-primary-10: #f7f7f7;
     /* --color-primary-25: rgba(var(--r), var(--g), var(--b), 0.25);
     --color-primary-50: rgba(var(--r), var(--g), var(--b), 0.5);
     --color-primary-75: rgba(var(--r), var(--g), var(--b), 0.75); */

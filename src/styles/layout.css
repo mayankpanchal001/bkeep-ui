@@ -9,7 +9,7 @@
 }
 
 .protected-route-wrapper {
-    @apply bg-lightBg flex flex-col lg:flex-row items-stretch h-full overflow-hidden max-lg:pb-4 max-lg:pt-16;
+    @apply bg-lightBg flex flex-col lg:flex-row items-stretch h-dvh overflow-hidden;
 }
 
 .protected-route-bottombar {
@@ -23,7 +23,7 @@
 }
 
 .protected-route-content {
-    @apply flex-1 w-full h-full overflow-auto;
+    @apply flex-1 w-full h-full sm:h-[calc(100dvh-120px)] p-4 overflow-auto;
 }
 
 .vertical-divider {

@@ -16,7 +16,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     (
         {
             variant = 'primary',
-            size = 'md',
+            size = 'sm',
             onClick,
             disabled = false,
             icon,
@@ -35,7 +35,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
         // Define size-specific classes
         const sizeClasses = {
-            sm: 'h-8 px-3 text-xs',
+            sm: 'h-7 px-3 text-[10px]',
             md: 'h-10 px-4 py-1 text-sm',
             lg: 'h-12 px-6 py-2 text-base',
         };

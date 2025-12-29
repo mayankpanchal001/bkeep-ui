@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { useEffect, useRef, useState } from 'react';
-import { FaCog, FaSignOutAlt, FaUserCircle } from 'react-icons/fa';
+import { FaSignOutAlt, FaUserCircle } from 'react-icons/fa';
+import { Link } from 'react-router';
 import { LOGOUT_ITEM } from '../../constants';
 import { useLogout } from '../../services/apis/authApi';
 import { useAuth } from '../../stores/auth/authSelectore';
@@ -8,6 +9,7 @@ import { useAuth } from '../../stores/auth/authSelectore';
 type MenuItem = {
     label: string;
     icon: ReactNode;
+    to?: string;
     onClick: () => void;
     isDanger?: boolean;
 };
@@ -71,19 +73,21 @@ const PageHeaderMenu = () => {
         {
             label: 'Profile',
             icon: <FaUserCircle className="w-4 h-4" />,
+            to: '/settings/profile',
             onClick: () => {
                 console.log('Profile clicked');
                 setIsMenuOpen(false);
             },
         },
-        {
-            label: 'Settings',
-            icon: <FaCog className="w-4 h-4" />,
-            onClick: () => {
-                console.log('Settings clicked');
-                setIsMenuOpen(false);
-            },
-        },
+        // {
+        //     label: 'Settings',
+        //     icon: <FaCog className="w-4 h-4" />,
+        //     to: '/settings',
+        //     onClick: () => {
+        //         console.log('Settings clicked');
+        //         setIsMenuOpen(false);
+        //     },
+        // },
         {
             label: LOGOUT_ITEM.label,
             icon: <FaSignOutAlt className="w-4 h-4" />,
@@ -133,7 +137,8 @@ const PageHeaderMenu = () => {
                         {/* Menu Items */}
                         <div className="py-1">
                             {menuItems.map((item, index) => (
-                                <button
+                                <Link
+                                    to={item.to || ''}
                                     key={`${item.label}-${index}`}
                                     onClick={item.onClick}
                                     className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm transition-colors ${
@@ -148,7 +153,7 @@ const PageHeaderMenu = () => {
                                     <span className="text-left">
                                         {item.label}
                                     </span>
-                                </button>
+                                </Link>
                             ))}
                         </div>
                     </div>

@@ -1,13 +1,65 @@
 import { useParams } from 'react-router';
+import { Column, DataTable } from '../../components/shared/DataTable';
 import Loading from '../../components/shared/Loading';
 import PageHeader from '../../components/shared/PageHeader';
 import { useJournalEntry } from '../../services/apis/journalApi';
+import { JournalEntryLine } from '../../types/journal';
 
 export default function ViewJournalEntrypage() {
     const { id } = useParams<{ id: string }>();
     const { data, isLoading } = useJournalEntry(id!);
 
     const journalEntry = data?.data?.journalEntry;
+
+    const columns: Column<JournalEntryLine>[] = [
+        {
+            header: '#',
+            accessorKey: 'lineNumber',
+            className: 'w-16 text-primary-50',
+        },
+        {
+            header: 'Account',
+            accessorKey: 'accountName',
+            cell: (line) => (
+                <div>
+                    <div className="font-medium text-primary">
+                        {line.accountName}
+                    </div>
+                    {line.name && (
+                        <div className="text-xs text-primary-50">
+                            {line.name}
+                        </div>
+                    )}
+                </div>
+            ),
+        },
+        {
+            header: 'Description',
+            accessorKey: 'description',
+            cell: (line) => (
+                <div className="text-primary-75">
+                    {line.description}
+                    {line.memo && line.memo !== line.description && (
+                        <div className="text-xs text-primary-50 mt-0.5">
+                            Memo: {line.memo}
+                        </div>
+                    )}
+                </div>
+            ),
+        },
+        {
+            header: 'Debit',
+            accessorKey: 'debit',
+            className: 'text-right font-medium text-primary',
+            cell: (line) => `$${line.debit.toFixed(2)}`,
+        },
+        {
+            header: 'Credit',
+            accessorKey: 'credit',
+            className: 'text-right font-medium text-primary',
+            cell: (line) => `$${line.credit.toFixed(2)}`,
+        },
+    ];
 
     if (isLoading) {
         return <Loading />;
@@ -101,70 +153,28 @@ export default function ViewJournalEntrypage() {
                         Journal Lines
                     </h3>
                 </div>
-                <div className="overflow-x-auto">
-                    <table className="w-full">
-                        <thead className="bg-gray-50">
-                            <tr>
-                                <th className="px-3 py-2 text-left text-xs font-medium text-primary-75 uppercase tracking-wider">
-                                    Account
-                                </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-primary-75 uppercase tracking-wider">
-                                    Description
-                                </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-primary-75 uppercase tracking-wider">
-                                    Name
-                                </th>
-                                <th className="px-6 py-3 text-right text-xs font-medium text-primary-75 uppercase tracking-wider">
-                                    Debit
-                                </th>
-                                <th className="px-6 py-3 text-right text-xs font-medium text-primary-75 uppercase tracking-wider">
-                                    Credit
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody className="bg-white divide-y divide-gray-200">
-                            {journalEntry.lines.map((line, index) => (
-                                <tr key={line.id || index}>
-                                    <td className="px-3 py-2 text-sm text-primary">
-                                        {line.accountName || line.accountId}
-                                    </td>
-                                    <td className="px-3 py-2 text-sm text-primary-75">
-                                        {line.description}
-                                    </td>
-                                    <td className="px-3 py-2 text-sm text-primary-75">
-                                        {line.name || '—'}
-                                    </td>
-                                    <td className="px-3 py-2 text-sm text-right text-primary">
-                                        {line.debit > 0
-                                            ? `$${line.debit.toFixed(2)}`
-                                            : '—'}
-                                    </td>
-                                    <td className="px-3 py-2 text-sm text-right text-primary">
-                                        {line.credit > 0
-                                            ? `$${line.credit.toFixed(2)}`
-                                            : '—'}
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                        <tfoot className="bg-gray-50">
-                            <tr>
-                                <td
-                                    colSpan={3}
-                                    className="px-3 py-2 text-right font-semibold text-sm text-primary"
-                                >
-                                    Total
-                                </td>
-                                <td className="px-3 py-2 text-right font-semibold text-sm text-primary">
-                                    ${journalEntry.totalDebit.toFixed(2)}
-                                </td>
-                                <td className="px-3 py-2 text-right font-semibold text-sm text-primary">
-                                    ${journalEntry.totalCredit.toFixed(2)}
-                                </td>
-                            </tr>
-                        </tfoot>
-                    </table>
-                </div>
+                <DataTable
+                    data={journalEntry.lines}
+                    columns={columns}
+                    containerClassName="border-none rounded-none"
+                    tableClassName="w-full"
+                    footerContent={
+                        <tr className="bg-gray-50 border-t border-primary-10">
+                            <td
+                                colSpan={3}
+                                className="px-3 py-2 text-right font-semibold text-sm text-primary"
+                            >
+                                Total
+                            </td>
+                            <td className="px-3 py-2 text-right font-semibold text-sm text-primary">
+                                ${journalEntry.totalDebit.toFixed(2)}
+                            </td>
+                            <td className="px-3 py-2 text-right font-semibold text-sm text-primary">
+                                ${journalEntry.totalCredit.toFixed(2)}
+                            </td>
+                        </tr>
+                    }
+                />
             </div>
 
             {/* Memo */}

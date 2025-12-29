@@ -7,6 +7,7 @@ import {
     FaTrash,
     FaUpload,
 } from 'react-icons/fa';
+import { DataTable, Column } from '../shared/DataTable';
 
 type Customer = {
     id: string;
@@ -171,7 +172,7 @@ const CreateInvoiceModal = ({
             document.body.style.overflow = 'hidden';
         }
 
-        return () => {
+    return () => {
             document.removeEventListener('keydown', handleEscape);
             document.removeEventListener('mousedown', handleClickOutside);
             document.body.style.overflow = 'unset';
@@ -254,6 +255,46 @@ const CreateInvoiceModal = ({
             currency: 'CAD',
         }).format(amount);
     };
+
+    const previewColumns: Column<LineItem>[] = [
+        {
+            header: 'Description',
+            accessorKey: 'description',
+            cell: (item) => (
+                <span className="text-primary">
+                    {item.description || 'Untitled Item'}
+                </span>
+            ),
+            className: 'text-left py-2 font-normal',
+        },
+        {
+            header: 'Qty',
+            accessorKey: 'qty',
+            cell: (item) => (
+                <div className="text-center text-primary">{item.qty}</div>
+            ),
+            className: 'text-center py-2 font-normal w-16',
+        },
+        {
+            header: 'Price',
+            accessorKey: 'price',
+            cell: (item) => (
+                <div className="text-right text-primary">
+                    {formatCurrency(item.price)}
+                </div>
+            ),
+            className: 'text-right py-2 font-normal w-20',
+        },
+        {
+            header: 'Amount',
+            cell: (item) => (
+                <div className="text-right text-primary">
+                    {formatCurrency(item.qty * item.price)}
+                </div>
+            ),
+            className: 'text-right py-2 font-normal w-20',
+        },
+    ];
 
     return (
         <div className="absolute inset-0 z-40 bg-lightBg flex flex-col rounded-2 overflow-hidden">
@@ -1152,58 +1193,17 @@ const CreateInvoiceModal = ({
 
                         {/* Line Items Table */}
                         <div className="border-t border-primary-10 pt-4">
-                            <table className="w-full text-sm">
-                                <thead>
-                                    <tr className="text-primary-75">
-                                        <th className="text-left py-2 font-normal">
-                                            Description
-                                        </th>
-                                        <th className="text-center py-2 font-normal w-16">
-                                            Qty
-                                        </th>
-                                        <th className="text-right py-2 font-normal w-20">
-                                            Price
-                                        </th>
-                                        <th className="text-right py-2 font-normal w-20">
-                                            Amount
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {formData.lineItems.length === 0 && (
-                                        <tr>
-                                            <td
-                                                colSpan={4}
-                                                className="py-8 text-center text-primary-50"
-                                            >
-                                                No items added
-                                            </td>
-                                        </tr>
-                                    )}
-                                    {formData.lineItems.map((item) => (
-                                        <tr
-                                            key={item.id}
-                                            className="border-t border-primary-10"
-                                        >
-                                            <td className="py-2 text-primary">
-                                                {item.description ||
-                                                    'Untitled Item'}
-                                            </td>
-                                            <td className="text-center py-2 text-primary">
-                                                {item.qty}
-                                            </td>
-                                            <td className="text-right py-2 text-primary">
-                                                {formatCurrency(item.price)}
-                                            </td>
-                                            <td className="text-right py-2 text-primary">
-                                                {formatCurrency(
-                                                    item.qty * item.price
-                                                )}
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+                            <DataTable
+                                data={formData.lineItems}
+                                columns={previewColumns}
+                                containerClassName="border-none rounded-none"
+                                tableClassName="w-full text-sm"
+                                emptyMessage={
+                                    <div className="py-8 text-center text-primary-50">
+                                        No items added
+                                    </div>
+                                }
+                            />
                         </div>
 
                         {/* Totals */}

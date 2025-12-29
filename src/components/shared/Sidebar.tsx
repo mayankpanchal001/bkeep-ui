@@ -1,4 +1,11 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import {
+    useCallback,
+    useEffect,
+    useLayoutEffect,
+    useRef,
+    useState,
+} from 'react';
+import { createPortal } from 'react-dom';
 import { Link, useLocation } from 'react-router';
 import { APP_TITLE, SIDEBAR_ITEMS } from '../../constants';
 import { LOGO_IMAGE } from '../../constants/images';
@@ -14,14 +21,45 @@ const Sidebar = ({ collapsed }: { collapsed: boolean }) => {
     const [expandedItems, setExpandedItems] = useState<string[]>([]);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+    const [menuStyle, setMenuStyle] = useState<React.CSSProperties>({});
     const menuRef = useRef<HTMLDivElement>(null);
+    const menuContentRef = useRef<HTMLDivElement>(null);
+
+    // Calculate menu position
+    useLayoutEffect(() => {
+        if (isMenuOpen && menuRef.current) {
+            const rect = menuRef.current.getBoundingClientRect();
+
+            if (collapsed) {
+                // Collapsed: Show to the right
+                setMenuStyle({
+                    position: 'fixed',
+                    left: `${rect.right + 8}px`,
+                    bottom: `${window.innerHeight - rect.bottom}px`,
+                    zIndex: 9999,
+                    minWidth: '240px',
+                });
+            } else {
+                // Expanded: Show above (Dropup)
+                setMenuStyle({
+                    position: 'fixed',
+                    left: `${rect.left}px`,
+                    bottom: `${window.innerHeight - rect.top + 8}px`,
+                    width: `${rect.width}px`,
+                    zIndex: 9999,
+                });
+            }
+        }
+    }, [isMenuOpen, collapsed]);
 
     // Close menu when clicking outside
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (
                 menuRef.current &&
-                !menuRef.current.contains(event.target as Node)
+                !menuRef.current.contains(event.target as Node) &&
+                menuContentRef.current &&
+                !menuContentRef.current.contains(event.target as Node)
             ) {
                 setIsMenuOpen(false);
             }
@@ -203,56 +241,57 @@ const Sidebar = ({ collapsed }: { collapsed: boolean }) => {
             <div className="p-2 mt-auto" ref={menuRef}>
                 <div className="relative">
                     {/* Menu Popup */}
-                    {isMenuOpen && (
-                        <div
-                            className={`absolute z-50 bg-white rounded-lg shadow-xl border border-primary-10 py-1 min-w-[240px] ${
-                                collapsed
-                                    ? 'left-full bottom-0 ml-2'
-                                    : 'bottom-full left-0 w-full mb-2'
-                            }`}
-                        >
-                            {/* User Info Header in Menu */}
-                            <div className="px-4 py-3 border-b border-primary-10 mb-1 flex items-center gap-3">
-                                <div className="w-8 h-8 rounded-lg bg-primary-10 flex items-center justify-center text-primary font-bold shrink-0">
-                                    {user?.name?.charAt(0) || 'U'}
+                    {isMenuOpen &&
+                        createPortal(
+                            <div
+                                ref={menuContentRef}
+                                style={menuStyle}
+                                className="bg-white rounded-lg shadow-xl border border-primary-10 py-1"
+                            >
+                                {/* User Info Header in Menu */}
+                                <div className="px-4 py-3 border-b border-primary-10 mb-1 flex items-center gap-3">
+                                    <div className="w-8 h-8 rounded-lg bg-primary-10 flex items-center justify-center text-primary font-bold shrink-0">
+                                        {user?.name?.charAt(0) || 'U'}
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                        <p className="text-sm font-semibold text-gray-900 truncate">
+                                            {user?.name || 'User'}
+                                        </p>
+                                        <p className="text-xs text-gray-500 truncate">
+                                            {user?.email || 'user@example.com'}
+                                        </p>
+                                    </div>
                                 </div>
-                                <div className="flex-1 min-w-0">
-                                    <p className="text-sm font-semibold text-gray-900 truncate">
-                                        {user?.name || 'User'}
-                                    </p>
-                                    <p className="text-xs text-gray-500 truncate">
-                                        {user?.email || 'user@example.com'}
-                                    </p>
+
+                                <div className="px-1">
+                                    <button className="w-full flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md transition-colors">
+                                        <Icons.Profile className="w-4 h-4" />{' '}
+                                        Profile
+                                    </button>
+                                    <button className="w-full flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md transition-colors">
+                                        <Icons.Billing className="w-4 h-4" />{' '}
+                                        Billing
+                                    </button>
+                                    <button className="w-full flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md transition-colors">
+                                        <Icons.Notifications className="w-4 h-4" />{' '}
+                                        Notifications
+                                    </button>
                                 </div>
-                            </div>
 
-                            <div className="px-1">
-                                <button className="w-full flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md transition-colors">
-                                    <Icons.Profile className="w-4 h-4" />{' '}
-                                    Profile
-                                </button>
-                                <button className="w-full flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md transition-colors">
-                                    <Icons.Billing className="w-4 h-4" />{' '}
-                                    Billing
-                                </button>
-                                <button className="w-full flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md transition-colors">
-                                    <Icons.Notifications className="w-4 h-4" />{' '}
-                                    Notifications
-                                </button>
-                            </div>
+                                <div className="h-px bg-primary-10 my-1 mx-1" />
 
-                            <div className="h-px bg-primary-10 my-1 mx-1" />
-
-                            <div className="px-1">
-                                <button
-                                    onClick={handleLogoutClick}
-                                    className="w-full flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
-                                >
-                                    <Icons.Logout className="w-4 h-4" /> Log out
-                                </button>
-                            </div>
-                        </div>
-                    )}
+                                <div className="px-1">
+                                    <button
+                                        onClick={handleLogoutClick}
+                                        className="w-full flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
+                                    >
+                                        <Icons.Logout className="w-4 h-4" /> Log
+                                        out
+                                    </button>
+                                </div>
+                            </div>,
+                            document.body
+                        )}
 
                     {/* Trigger Area */}
                     <div

@@ -1,12 +1,4 @@
 import { useEffect, useState } from 'react';
-import {
-    FaEdit,
-    FaPaperPlane,
-    FaPlus,
-    FaSearch,
-    FaTimes,
-    FaUsers,
-} from 'react-icons/fa';
 import { useGetRoles } from '../../services/apis/roleApi';
 import {
     useResendInvitation,
@@ -15,6 +7,8 @@ import {
 } from '../../services/apis/usersApi';
 
 import { UserType } from '../../types';
+import { DataTable, type Column } from '../shared/DataTable';
+import { Icons } from '../shared/Icons';
 import Button from '../typography/Button';
 import Chips from '../typography/Chips';
 import { InputField } from '../typography/InputFields';
@@ -28,7 +22,7 @@ const UsersTab = () => {
     const [selectedUser, setSelectedUser] = useState<UserType | null>(null);
     const [filters, setFilters] = useState<UsersQueryParams>({
         page: 1,
-        limit: 20,
+        limit: 10,
         sort: 'createdAt',
         order: 'asc',
     });
@@ -103,8 +97,89 @@ const UsersTab = () => {
         }));
     };
 
+    const handleSortChange = (sort: string, order: 'asc' | 'desc') => {
+        setFilters((prev) => ({
+            ...prev,
+            sort,
+            order,
+            page: 1,
+        }));
+    };
+
     const users = data?.data?.items || [];
     const pagination = data?.data?.pagination;
+
+    const columns: Column<UserType>[] = [
+        {
+            header: 'Name',
+            accessorKey: 'name',
+            sortable: true,
+            className: 'text-primary font-medium',
+        },
+        {
+            header: 'Email',
+            accessorKey: 'email',
+            className: 'text-primary-75',
+        },
+        {
+            header: 'Role',
+            accessorKey: 'role',
+            cell: (user) =>
+                user.role?.displayName ||
+                user.role?.name ||
+                user.roles?.[0]?.displayName ||
+                user.roles?.[0]?.name ||
+                'N/A',
+            className: 'text-primary-75',
+        },
+        {
+            header: 'Status',
+            accessorKey: 'isVerified',
+            cell: (user) => (
+                <Chips
+                    label={user.isVerified ? 'Verified' : 'Unverified'}
+                    variant={user.isVerified ? 'success' : 'danger'}
+                />
+            ),
+        },
+        {
+            header: 'Actions',
+            className: 'text-right',
+            cell: (user) => (
+                <div className="flex items-center justify-end gap-2">
+                    {!user.isVerified && (
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleResendInvitation(user.id)}
+                            loading={isResendingInvitation}
+                            disabled={isResendingInvitation}
+                            title="Resend invitation email"
+                        >
+                            <Icons.Send className="mr-1 w-3 h-3" />
+                            Resend
+                        </Button>
+                    )}
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleEditUser(user)}
+                    >
+                        <Icons.Edit className="mr-1 w-3 h-3" />
+                        Edit
+                    </Button>
+                </div>
+            ),
+        },
+    ];
+
+    if (isError) {
+        return (
+            <div className="text-center py-8 text-red-500">
+                Failed to load users. Please try again.
+            </div>
+        );
+    }
 
     return (
         <div className="space-y-6">
@@ -114,7 +189,7 @@ const UsersTab = () => {
                 </h3>
                 <div className="flex items-center gap-4">
                     <div className="flex items-center gap-2 text-sm text-primary-50">
-                        <FaUsers className="w-4 h-4" />
+                        <Icons.Users className="w-4 h-4" />
                         <span>
                             {pagination?.total || 0} user
                             {pagination?.total !== 1 ? 's' : ''}
@@ -125,7 +200,7 @@ const UsersTab = () => {
                         size="sm"
                         onClick={() => setIsInviteModalOpen(true)}
                     >
-                        <FaPlus className="mr-2" />
+                        <Icons.Plus className="mr-2 w-4 h-4" />
                         Invite User
                     </Button>
                 </div>
@@ -140,7 +215,7 @@ const UsersTab = () => {
                             placeholder="Search users by name or email..."
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
-                            icon={<FaSearch className="w-4 h-4" />}
+                            icon={<Icons.Search className="w-4 h-4" />}
                         />
                         {search && (
                             <button
@@ -149,7 +224,7 @@ const UsersTab = () => {
                                 className="absolute right-12 top-1/2 transform -translate-y-1/2 text-primary-50 hover:text-primary transition-colors"
                                 aria-label="Clear search"
                             >
-                                <FaTimes className="w-4 h-4" />
+                                <Icons.Close className="w-4 h-4" />
                             </button>
                         )}
                     </div>
@@ -195,153 +270,32 @@ const UsersTab = () => {
                 </div>
             </div>
 
-            {/* Users Table */}
-            {isLoading ? (
-                <div className="text-center py-8 text-primary-50">
-                    Loading users...
-                </div>
-            ) : isError ? (
-                <div className="text-center py-8 text-red-500">
-                    Failed to load users. Please try again.
-                </div>
-            ) : users.length === 0 ? (
-                <div className="text-center py-8 text-primary-50">
-                    No users found
-                </div>
-            ) : (
-                <>
-                    <div className="overflow-x-auto">
-                        <table className="w-full border-collapse">
-                            <thead>
-                                <tr className="border-b border-primary-10">
-                                    <th className="text-left py-3 px-4 text-sm font-semibold text-primary">
-                                        Name
-                                    </th>
-                                    <th className="text-left py-3 px-4 text-sm font-semibold text-primary">
-                                        Email
-                                    </th>
-                                    <th className="text-left py-3 px-4 text-sm font-semibold text-primary">
-                                        Role
-                                    </th>
-                                    <th className="text-left py-3 px-4 text-sm font-semibold text-primary">
-                                        Status
-                                    </th>
-                                    <th className="text-right py-3 px-4 text-sm font-semibold text-primary">
-                                        Actions
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {users.map((user: UserType) => (
-                                    <tr
-                                        key={user.id}
-                                        className="border-b border-primary-10 hover:bg-primary-5 transition-colors"
-                                    >
-                                        <td className="py-3 px-4 text-sm text-primary">
-                                            {user.name}
-                                        </td>
+            <DataTable
+                data={users}
+                columns={columns}
+                isLoading={isLoading}
+                keyField="id"
+                pagination={
+                    pagination
+                        ? {
+                              page: pagination.page,
+                              totalPages: pagination.totalPages,
+                              totalItems: pagination.total,
+                              onPageChange: handlePageChange,
+                              hasPreviousPage: pagination.hasPreviousPage,
+                              hasNextPage: pagination.hasNextPage,
+                          }
+                        : undefined
+                }
+                sorting={{
+                    sort: filters.sort || 'createdAt',
+                    order: filters.order || 'asc',
+                    onSortChange: handleSortChange,
+                }}
+                emptyMessage="No users found"
+            />
 
-                                        <td className="py-3 px-4 text-sm text-primary-75">
-                                            {user.email}
-                                        </td>
-
-                                        <td className="py-3 px-4 text-sm text-primary-75">
-                                            {user.role?.displayName ||
-                                                user.role?.name ||
-                                                user.roles?.[0]?.displayName ||
-                                                user.roles?.[0]?.name ||
-                                                'N/A'}
-                                        </td>
-                                        <td className="py-3 px-4 text-sm">
-                                            <Chips
-                                                label={
-                                                    user.isVerified
-                                                        ? 'Verified'
-                                                        : 'Unverified'
-                                                }
-                                                variant={
-                                                    user.isVerified
-                                                        ? 'success'
-                                                        : 'danger'
-                                                }
-                                            />
-                                        </td>
-                                        <td className="py-3 px-4 text-sm text-right">
-                                            <div className="flex items-center justify-end gap-2">
-                                                {!user.isVerified && (
-                                                    <Button
-                                                        variant="outline"
-                                                        size="sm"
-                                                        onClick={() =>
-                                                            handleResendInvitation(
-                                                                user.id
-                                                            )
-                                                        }
-                                                        loading={
-                                                            isResendingInvitation
-                                                        }
-                                                        disabled={
-                                                            isResendingInvitation
-                                                        }
-                                                        title="Resend invitation email"
-                                                    >
-                                                        <FaPaperPlane className="mr-1" />
-                                                        Resend
-                                                    </Button>
-                                                )}
-                                                <Button
-                                                    variant="outline"
-                                                    size="sm"
-                                                    onClick={() =>
-                                                        handleEditUser(user)
-                                                    }
-                                                >
-                                                    <FaEdit className="mr-1" />
-                                                    Edit
-                                                </Button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-
-                    {/* Pagination */}
-                    {pagination && pagination.totalPages > 1 && (
-                        <div className="flex items-center justify-between pt-4 border-t border-primary-10">
-                            <div className="text-sm text-primary-50">
-                                Showing page {pagination.page} of{' '}
-                                {pagination.totalPages} ({pagination.total}{' '}
-                                total users)
-                            </div>
-                            <div className="flex gap-2">
-                                <Button
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={() =>
-                                        handlePageChange(pagination.page - 1)
-                                    }
-                                    disabled={!pagination.hasPreviousPage}
-                                >
-                                    Previous
-                                </Button>
-                                <Button
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={() =>
-                                        handlePageChange(pagination.page + 1)
-                                    }
-                                    disabled={!pagination.hasNextPage}
-                                >
-                                    Next
-                                </Button>
-                            </div>
-                        </div>
-                    )}
-                </>
-            )}
-
+            {/* Modals */}
             <InviteUserModal
                 isOpen={isInviteModalOpen}
                 onClose={() => setIsInviteModalOpen(false)}

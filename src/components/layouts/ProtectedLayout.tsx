@@ -2,14 +2,15 @@ import { useEffect, useState, type ReactNode } from 'react';
 import { FaPlus } from 'react-icons/fa';
 import { useLocation } from 'react-router';
 import { useTenant } from '../../stores/tenant/tenantSelectore';
+import { PAGE_HEADERS } from '../homepage/constants';
 import AddNewModal from '../shared/AddNewModal';
-import Bottombar from '../shared/Bottombar';
 import CommandPalette from '../shared/CommandPalette';
 import Loading from '../shared/Loading';
+import MobileOffcanvas from '../shared/MobileOffcanvas';
 import Navbar from '../shared/Navbar';
+import PageHeader from '../shared/PageHeader';
 import Sidebar from '../shared/Sidebar';
 import Topbar from '../shared/Topbar';
-import Button from '../typography/Button';
 
 const ProtectedLayout = ({
     children,
@@ -47,9 +48,9 @@ const ProtectedLayout = ({
     }, []);
 
     const shouldShowLoading = showLoading || routeLoading;
-    // const currentHeader = PAGE_HEADERS.find(
-    //     (header) => header.path === location.pathname
-    // );
+    const currentHeader = PAGE_HEADERS.find(
+        (header) => header.path === location.pathname
+    );
 
     return (
         <main className="protected-route">
@@ -60,7 +61,7 @@ const ProtectedLayout = ({
                 <Sidebar collapsed={isSidebarCollapsed} />
 
                 {/* Main Content Area */}
-                <div className="flex-1 flex flex-col h-full overflow-hidden relative">
+                <div className="flex-1 flex max-lg:py-16 flex-col h-full overflow-hidden relative">
                     {/* Mobile Topbar */}
                     <Topbar onMenuClick={() => setShowMobileMenu(true)} />
 
@@ -78,7 +79,7 @@ const ProtectedLayout = ({
                         onClose={() => setShowCommandPalette(false)}
                     />
 
-                    <div
+                    {/* <div
                         className="protected-route-content relative flex flex-col"
                         data-tenant-id={selectedTenant?.id || 'default'}
                     >
@@ -86,28 +87,38 @@ const ProtectedLayout = ({
                             key={selectedTenant?.id || 'default-tenant'}
                             className="flex-1"
                         >
-                            {/* {currentHeader && (
+                           {currentHeader && (
                                 <PageHeader
                                     title={currentHeader.title}
                                     subtitle={currentHeader.subtitle}
                                 />
-                            )} */}
-                            <div className="p-2 sm:p-4 overflow-auto">
-                                {children}
-                            </div>
+                            )}
+                            <div className="p-4 overflow-auto">{children}</div>
                         </div>
+                    </div> */}
+                    {currentHeader && (
+                        <PageHeader
+                            title={currentHeader.title}
+                            subtitle={currentHeader.subtitle}
+                        />
+                    )}
+                    <div
+                        className="protected-route-content relative flex flex-col"
+                        data-tenant-id={selectedTenant?.id || 'default'}
+                    >
+                        {children}
                     </div>
 
-                    <div className="absolute bottom-8 right-8 z-30">
-                        <Button
-                            size="md"
-                            isRounded={true}
+                    <div className="absolute bottom-4 right-4 z-30">
+                        <button
                             onClick={() => setShowAddNewModal(true)}
-                            className="shadow-lg hover:shadow-xl transition-shadow"
+                            className="cursor-pointer group flex items-center justify-center bg-primary text-white rounded-full p-2 shadow-lg hover:shadow-xl transition-all duration-300 ease-in-out hover:pr-5"
                         >
-                            <FaPlus className="mr-2" />
-                            Add New
-                        </Button>
+                            <FaPlus className="w-3 h-3" />
+                            <span className="max-w-0 overflow-hidden whitespace-nowrap opacity-0 group-hover:max-w-[100px] group-hover:ml-2 group-hover:opacity-100 transition-all duration-300 ease-in-out font-medium text-xs">
+                                Add New
+                            </span>
+                        </button>
                     </div>
                 </div>
 
@@ -116,9 +127,9 @@ const ProtectedLayout = ({
                     onClose={() => setShowAddNewModal(false)}
                 />
 
-                {/* Mobile Bottom Bar (Sheet) */}
+                {/* Mobile Offcanvas (Right Side) */}
                 <div className="md:hidden">
-                    <Bottombar
+                    <MobileOffcanvas
                         isOpen={showMobileMenu}
                         onClose={() => setShowMobileMenu(false)}
                     />
