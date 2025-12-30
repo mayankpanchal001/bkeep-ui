@@ -26,9 +26,9 @@
     /* --color-primary-25: rgba(var(--r), var(--g), var(--b), 0.25);
     --color-primary-50: rgba(var(--r), var(--g), var(--b), 0.5);
     --color-primary-75: rgba(var(--r), var(--g), var(--b), 0.75); */
-    --color-primary-25: rgba(0, 0, 0, 0.25);
-    --color-primary-50: rgba(0, 0, 0, 0.75);
-    --color-primary-75: rgba(0, 0, 0, 0.95);
+    --color-primary-25: rgba(var(--r), var(--g), var(--b), 0.25);
+    --color-primary-50: rgba(var(--r), var(--g), var(--b), 0.5);
+    --color-primary-75: rgba(var(--r), var(--g), var(--b), 0.75);
 
     --radius-2: 2px;
 
@@ -36,4 +36,77 @@
     --color-secondary-10: rgba(var(--sr), var(--sg), var(--sb), 0.1);
     --color-secondary-50: rgba(var(--sr), var(--sg), var(--sb), 0.5);
     --color-secondary-75: rgba(var(--sr), var(--sg), var(--sb), 0.75);
+
+    /* Dark Mode Color Palette */
+    --color-dark-surface: #020817;
+    --color-dark-card: #111827; /* Deep card color */
+    --color-dark-600: #ffffff;
+    --color-dark-border: rgba(255, 255, 255, 0.1);
+    --color-dark-text-primary: #ffffff;
+    --color-dark-text-secondary: rgba(255, 255, 255, 0.7);
+}
+
+.dark {
+    color-scheme: dark;
+    --color-lightBg: var(--color-dark-surface);
+    --color-white: var(
+        --color-dark-surface
+    ); /* Cards now match page background */
+    --color-primary: var(--color-dark-text-primary);
+
+    /* Primary Variants Overrides for Dark Mode - Enhanced Contrast for Buttons */
+    --color-primary-10: rgba(255, 255, 255, 0.15);
+    --color-primary-25: rgba(255, 255, 255, 0.25);
+    --color-primary-50: var(--color-dark-text-secondary);
+    --color-primary-75: var(--color-dark-text-secondary);
+
+    /* Global Text Overrides (Gray scales) */
+    --color-gray-900: var(--color-dark-text-primary);
+    --color-gray-800: #f8fafc;
+    --color-gray-700: #f1f5f9;
+    --color-gray-600: #e2e8f0;
+    --color-gray-500: var(--color-dark-text-secondary);
+    --color-gray-400: #94a3b8;
+    --color-gray-300: #64748b;
+    --color-gray-200: var(--color-dark-border);
+    --color-gray-100: #1e293a;
+    --color-gray-50: #0f172a;
+
+    /* Ensure text is white by default */
+    color: var(--color-dark-text-primary);
+}
+
+/* Hard-override for Sidebar visibility regardless of Tailwind resolution */
+.dark .sidebar-item-label,
+.dark .sidebar-item-icon,
+.dark .sidebar-header-title-text {
+    color: #ffffff !important;
+}
+
+/* Custom Scrollbar Styling - Dark Mode Only */
+/* Dark mode scrollbar */
+.dark ::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+}
+
+.dark ::-webkit-scrollbar-track {
+    background: #1e293b;
+    border-radius: 10px;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+    background: #475569;
+    border-radius: 10px;
+    border: 2px solid #1e293b;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+    background: #64748b;
+}
+
+/* Firefox scrollbar - Dark mode only */
+.dark * {
+    scrollbar-width: thin;
+    scrollbar-color: #475569 #1e293b;
 }

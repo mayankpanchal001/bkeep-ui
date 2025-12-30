@@ -1,5 +1,6 @@
 import { Icons } from './Icons';
 import TenantSwitcher from './TenantSwitcher';
+import { ThemeOnOffToggle } from './ThemeSwitcher';
 
 interface NavbarProps {
     onSearchClick?: () => void;
@@ -33,6 +34,7 @@ const Navbar = ({ onSearchClick, onToggleSidebar }: NavbarProps) => {
 
             {/* Right Actions */}
             <div className="flex items-center gap-3 min-w-fit">
+                <ThemeOnOffToggle />
                 <TenantSwitcher />
             </div>
         </nav>

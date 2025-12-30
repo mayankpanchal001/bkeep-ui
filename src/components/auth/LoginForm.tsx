@@ -118,11 +118,11 @@ export function LoginForm() {
                     <input
                         id="remember-me"
                         type="checkbox"
-                        className="h-3.5 w-3.5 text-black border-gray-300 rounded focus:ring-black cursor-pointer accent-black"
+                        className="h-3.5 w-3.5 text-black dark:text-white border-gray-300 dark:border-gray-600 rounded focus:ring-black dark:focus:ring-white cursor-pointer accent-black dark:accent-white"
                     />
                     <label
                         htmlFor="remember-me"
-                        className="text-[12.5px] font-medium text-gray-500 cursor-pointer hover:text-gray-800 transition-colors"
+                        className="text-[12.5px] font-medium text-gray-500 dark:text-gray-400 cursor-pointer hover:text-gray-800 dark:hover:text-gray-200 transition-colors"
                     >
                         Remember me for 30 days
                     </label>
