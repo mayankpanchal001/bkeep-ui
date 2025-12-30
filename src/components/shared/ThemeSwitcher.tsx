@@ -175,7 +175,7 @@ export const ThemeOnOffToggle = () => {
         <button
             onClick={toggleTheme}
             className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 cursor-pointer ${
-                isDark ? 'bg-primary' : 'bg-gray-200'
+                isDark ? 'bg-dark-600' : 'bg-gray-200'
             }`}
             aria-label="Toggle theme"
         >

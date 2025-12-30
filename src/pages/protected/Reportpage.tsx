@@ -441,7 +441,7 @@ const Reportpage = () => {
                                 onClick={() =>
                                     setIsFilterMenuOpen(!isFilterMenuOpen)
                                 }
-                                className="flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-primary bg-white border-2 border-primary-10 rounded-2 hover:border-primary hover:bg-primary-10 hover:shadow-sm transition-all duration-200"
+                                className="flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-primary dark:text-white bg-white dark:bg-white/5 border-2 border-primary-10 rounded-2 hover:border-primary hover:bg-primary-10 hover:shadow-sm transition-all duration-200"
                                 type="button"
                             >
                                 <FaFilter className="text-primary" />

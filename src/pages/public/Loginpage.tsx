@@ -4,11 +4,7 @@ import { logo } from '../../utills/image';
 
 const Loginpage = () => {
     return (
-        <div className="grid h-dvh justify-center p-2 lg:grid-cols-2 overflow-hidden relative bg-[#fafafa]">
-            {/* Background Glow Effects */}
-            <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-blue-500/10 blur-[120px] rounded-full -translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
-            <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-indigo-500/10 blur-[120px] rounded-full translate-x-1/2 translate-y-1/2 pointer-events-none"></div>
-
+        <div className="grid h-dvh justify-center p-2 lg:grid-cols-2 overflow-hidden relative bg-lightBg dark:bg-dark-surface">
             {/* Left Side - Login Form Section */}
             <div className="flex items-center justify-center h-full relative z-10 bg-transparent">
                 <div className="w-full max-w-md">
@@ -23,10 +19,10 @@ const Loginpage = () => {
                     {/* Login Form Card */}
                     <div className="p-8 lg:p-12">
                         <div className="mb-8 text-center">
-                            <h2 className="text-[24px] font-semibold leading-tight text-gray-900 mb-1.5 tracking-tight">
+                            <h2 className="text-[24px] font-semibold leading-tight text-[#ffffff] white:text-white mb-1.5 tracking-tight">
                                 Login to your account
                             </h2>
-                            <p className="text-[14px] text-gray-500 font-medium">
+                            <p className="text-[14px] text-[#ffffff] white:text-gray-400 font-medium">
                                 Please enter your details to login.
                             </p>
                         </div>
@@ -35,19 +31,19 @@ const Loginpage = () => {
                 </div>
 
                 <div className="absolute bottom-8 left-8 right-8 flex items-center justify-between">
-                    <p className="text-[12px] text-gray-500 font-medium tracking-tight">
+                    <p className="text-[12px] text-[#ffffff] dark:text-gray-400 font-medium tracking-tight">
                         © 2025, Bkeep Accounting.
                     </p>
                     <div className="flex items-center gap-4">
                         <Link
                             to="/privacy"
-                            className="text-[12px] text-gray-500 font-medium hover:text-gray-900 transition-colors"
+                            className="text-[12px] text-[#ffffff] dark:text-gray-400 font-medium hover:text-gray-900 dark:hover:text-white transition-colors"
                         >
                             Privacy Policy
                         </Link>
                         <Link
                             to="/terms"
-                            className="text-[12px] text-gray-500 font-medium hover:text-gray-900 transition-colors"
+                            className="text-[12px] text-gray-500 dark:text-gray-400 font-medium hover:text-gray-900 dark:hover:text-white transition-colors"
                         >
                             Terms of Service
                         </Link>

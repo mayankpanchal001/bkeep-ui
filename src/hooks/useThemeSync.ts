@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { useTheme } from '../stores/theme/themeSelectors';
 
-
 export const useThemeSync = () => {
     const theme = useTheme();
 
