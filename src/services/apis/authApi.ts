@@ -596,7 +596,8 @@ export const useAcceptInvitation = () => {
                 );
                 // Persist tenants and select tenant in store
                 const selectTenantId =
-                    data.data.user.selectedTenantId || userData.selectedTenantId;
+                    data.data.user.selectedTenantId ||
+                    userData.selectedTenantId;
                 setTenants(userData.tenants || [], {
                     selectTenantId,
                 });

@@ -106,7 +106,10 @@ const UsersTab = () => {
         }));
     };
 
-    const handleInvitationSortChange = (sort: string, order: 'asc' | 'desc') => {
+    const handleInvitationSortChange = (
+        sort: string,
+        order: 'asc' | 'desc'
+    ) => {
         setInvitationFilters((prev) => ({
             ...prev,
             sort,
@@ -386,7 +389,8 @@ const UsersTab = () => {
                             invitationsPagination
                                 ? {
                                       page: invitationsPagination.page,
-                                      totalPages: invitationsPagination.totalPages,
+                                      totalPages:
+                                          invitationsPagination.totalPages,
                                       totalItems: invitationsPagination.total,
                                       onPageChange: handleInvitationPageChange,
                                       hasPreviousPage:
