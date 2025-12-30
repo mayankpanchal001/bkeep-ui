@@ -36,4 +36,15 @@
     --color-secondary-10: rgba(var(--sr), var(--sg), var(--sb), 0.1);
     --color-secondary-50: rgba(var(--sr), var(--sg), var(--sb), 0.5);
     --color-secondary-75: rgba(var(--sr), var(--sg), var(--sb), 0.75);
+
+    /* Dark Mode Overrides */
+    --color-dark-surface: #121212;
+}
+
+.dark {
+    --color-lightBg: var(--color-dark-surface);
+    /* --color-primary: #ffffff;
+    --color-white: var(--color-dark-card); */
+
+
 }

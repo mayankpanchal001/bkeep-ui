@@ -6,30 +6,19 @@ import {
     FaMoon,
     FaSun,
 } from 'react-icons/fa';
-
-type Theme = 'light' | 'dark' | 'system';
+import { useTheme, useThemeActions } from '../../stores/theme/themeSelectors';
+import { Theme } from '../../stores/theme/themeStore';
 
 type ThemeSwitcherProps = {
     compact?: boolean;
 };
 
 const ThemeSwitcher = ({ compact = false }: ThemeSwitcherProps) => {
-    const [currentTheme, setCurrentTheme] = useState<Theme>('system');
+    const currentTheme = useTheme();
+    const { setTheme } = useThemeActions();
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
-    // Load theme from localStorage on mount
-    useEffect(() => {
-        const savedTheme = localStorage.getItem('theme') as Theme | null;
-        if (savedTheme) {
-            setCurrentTheme(savedTheme);
-            applyTheme(savedTheme);
-        } else {
-            applyTheme('system');
-        }
-    }, []);
-
-    // Close dropdown when clicking outside
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (
@@ -49,29 +38,8 @@ const ThemeSwitcher = ({ compact = false }: ThemeSwitcherProps) => {
         };
     }, [isOpen]);
 
-    const applyTheme = (theme: Theme) => {
-        const root = document.documentElement;
-
-        if (theme === 'system') {
-            const systemPrefersDark = window.matchMedia(
-                '(prefers-color-scheme: dark)'
-            ).matches;
-            if (systemPrefersDark) {
-                root.classList.add('dark');
-            } else {
-                root.classList.remove('dark');
-            }
-        } else if (theme === 'dark') {
-            root.classList.add('dark');
-        } else {
-            root.classList.remove('dark');
-        }
-    };
-
     const handleThemeChange = (theme: Theme) => {
-        setCurrentTheme(theme);
-        localStorage.setItem('theme', theme);
-        applyTheme(theme);
+        setTheme(theme);
         setIsOpen(false);
     };
 
@@ -190,6 +158,39 @@ const ThemeSwitcher = ({ compact = false }: ThemeSwitcherProps) => {
                 </div>
             )}
         </div>
+    );
+};
+
+export const ThemeOnOffToggle = () => {
+    const theme = useTheme();
+    const { setTheme } = useThemeActions();
+
+    const isDark = theme === 'dark';
+
+    const toggleTheme = () => {
+        setTheme(isDark ? 'light' : 'dark');
+    };
+
+    return (
+        <button
+            onClick={toggleTheme}
+            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 cursor-pointer ${
+                isDark ? 'bg-primary' : 'bg-gray-200'
+            }`}
+            aria-label="Toggle theme"
+        >
+            <span
+                className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-200 ease-in-out ${
+                    isDark ? 'translate-x-6' : 'translate-x-1'
+                } flex items-center justify-center shadow-sm`}
+            >
+                {isDark ? (
+                    <FaMoon className="w-2.5 h-2.5 text-primary" />
+                ) : (
+                    <FaSun className="w-2.5 h-2.5 text-yellow-500" />
+                )}
+            </span>
+        </button>
     );
 };
 
