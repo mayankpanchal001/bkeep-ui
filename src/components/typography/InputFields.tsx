@@ -128,75 +128,96 @@ export const SelectField = forwardRef<
     HTMLSelectElement,
     Omit<React.SelectHTMLAttributes<HTMLSelectElement>, 'className'> & {
         label?: string;
+        labelShow?: boolean;
         options?:
             | { value: string; label: string }[]
             | { label: string; options: { value: string; label: string }[] }[];
+        placeholder?: string;
     }
->(({ id, label, required, options = [], ...rest }, ref) => {
-    return (
-        <div className="w-full">
-            {label && (
-                <label className="input-label" htmlFor={id}>
-                    {label}
-                    {required && <span className="text-red-500 ml-0">*</span>}
-                </label>
-            )}
-            <div className="relative input-wrap w-full !px-4">
-                <select
-                    ref={ref}
-                    id={id}
-                    className="input appearance-none"
-                    required={required}
-                    {...rest}
-                >
-                    <option value="" disabled>
-                        Select {label}
-                    </option>
-                    {options.map((option, index) => {
-                        if ('options' in option) {
-                            return (
-                                <optgroup
-                                    key={option.label || index}
-                                    label={option.label}
-                                >
-                                    {option.options.map((subOption) => (
-                                        <option
-                                            key={subOption.value}
-                                            value={subOption.value}
-                                        >
-                                            {subOption.label}
-                                        </option>
-                                    ))}
-                                </optgroup>
-                            );
-                        }
-                        return (
-                            <option key={option.value} value={option.value}>
-                                {option.label}
-                            </option>
-                        );
-                    })}
-                </select>
-                <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2">
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-4 w-4 text-gray-400"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
+>(
+    (
+        {
+            id,
+            label,
+            labelShow = false,
+            required,
+            options = [],
+            placeholder,
+            ...rest
+        },
+        ref
+    ) => {
+        return (
+            <div className="w-full">
+                {label && labelShow && (
+                    <label className="input-label" htmlFor={id}>
+                        {label}
+                        {required && (
+                            <span className="text-red-500 ml-0">*</span>
+                        )}
+                    </label>
+                )}
+                <div className="relative input-wrap">
+                    <select
+                        ref={ref}
+                        id={id}
+                        className="input appearance-none"
+                        required={required}
+                        {...rest}
                     >
-                        <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M19 9l-7 7-7-7"
-                        />
-                    </svg>
+                        {placeholder !== undefined && (
+                            <option value="" disabled>
+                                {placeholder ||
+                                    (label ? `Select ${label}` : 'Select')}
+                            </option>
+                        )}
+
+                        {options.map((option, index) => {
+                            if ('options' in option) {
+                                return (
+                                    <optgroup
+                                        key={option.label || index}
+                                        label={option.label}
+                                    >
+                                        {option.options.map((subOption) => (
+                                            <option
+                                                key={subOption.value}
+                                                value={subOption.value}
+                                            >
+                                                {subOption.label}
+                                            </option>
+                                        ))}
+                                    </optgroup>
+                                );
+                            }
+                            return (
+                                <option key={option.value} value={option.value}>
+                                    {option.label}
+                                </option>
+                            );
+                        })}
+                    </select>
+                    <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-4 w-4 text-gray-400"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                        >
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M19 9l-7 7-7-7"
+                            />
+                        </svg>
+                    </div>
                 </div>
             </div>
-        </div>
-    );
-});
+        );
+    }
+);
 
 export const TextareaField = forwardRef<
     HTMLTextAreaElement,

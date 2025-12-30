@@ -5,7 +5,7 @@ import {
     type CreateTenantRequest,
 } from '../../services/apis/tenantApi';
 import Button from '../typography/Button';
-import { InputField } from '../typography/InputFields';
+import { InputField, TextareaField } from '../typography/InputFields';
 
 interface CreateTenantModalProps {
     isOpen: boolean;
@@ -16,6 +16,11 @@ const CreateTenantModal = ({ isOpen, onClose }: CreateTenantModalProps) => {
     const [formData, setFormData] = useState<CreateTenantRequest>({
         name: '',
         schemaName: '',
+        email: '',
+        phone: '',
+        address: '',
+        fiscalYear: '',
+        dateOfIncorporation: '',
     });
     const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -104,9 +109,22 @@ const CreateTenantModal = ({ isOpen, onClose }: CreateTenantModalProps) => {
             await createTenant({
                 name: formData.name.trim(),
                 schemaName: formData.schemaName.trim(),
+                email: formData.email?.trim() || '',
+                phone: formData.phone?.trim() || '',
+                address: formData.address?.trim() || '',
+                fiscalYear: formData.fiscalYear || '',
+                dateOfIncorporation: formData.dateOfIncorporation || '',
             });
             // Reset form on success
-            setFormData({ name: '', schemaName: '' });
+            setFormData({
+                name: '',
+                schemaName: '',
+                email: '',
+                phone: '',
+                address: '',
+                fiscalYear: '',
+                dateOfIncorporation: '',
+            });
             setErrors({});
             onClose();
         } catch (error) {
@@ -177,6 +195,85 @@ const CreateTenantModal = ({ isOpen, onClose }: CreateTenantModalProps) => {
                             Lowercase letters, numbers, and underscores only.
                             Auto-generated from tenant name.
                         </p>
+                    </div>
+
+                    <div>
+                        <InputField
+                            id="tenant-email"
+                            label="Email"
+                            placeholder="e.g., contact@acmecorp.com"
+                            value={formData.email || ''}
+                            onChange={(e) =>
+                                setFormData({
+                                    ...formData,
+                                    email: e.target.value,
+                                })
+                            }
+                            type="email"
+                        />
+                    </div>
+
+                    <div>
+                        <InputField
+                            id="tenant-phone"
+                            label="Phone"
+                            placeholder="e.g., +1-555-123-4567"
+                            value={formData.phone || ''}
+                            onChange={(e) =>
+                                setFormData({
+                                    ...formData,
+                                    phone: e.target.value,
+                                })
+                            }
+                        />
+                    </div>
+
+                    <div>
+                        <TextareaField
+                            id="tenant-address"
+                            label="Address"
+                            placeholder="e.g., 123 Main St, City, State 12345"
+                            value={formData.address || ''}
+                            onChange={(e) =>
+                                setFormData({
+                                    ...formData,
+                                    address: e.target.value,
+                                })
+                            }
+                        />
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <InputField
+                                id="tenant-fiscal-year"
+                                label="Fiscal Year Start"
+                                placeholder="YYYY-MM-DD"
+                                value={formData.fiscalYear || ''}
+                                onChange={(e) =>
+                                    setFormData({
+                                        ...formData,
+                                        fiscalYear: e.target.value,
+                                    })
+                                }
+                                type="date"
+                            />
+                        </div>
+                        <div>
+                            <InputField
+                                id="tenant-incorporation-date"
+                                label="Date of Incorporation"
+                                placeholder="YYYY-MM-DD"
+                                value={formData.dateOfIncorporation || ''}
+                                onChange={(e) =>
+                                    setFormData({
+                                        ...formData,
+                                        dateOfIncorporation: e.target.value,
+                                    })
+                                }
+                                type="date"
+                            />
+                        </div>
                     </div>
 
                     <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-end">

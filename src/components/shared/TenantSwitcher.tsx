@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { FaBuilding, FaCheck, FaChevronDown, FaSpinner } from 'react-icons/fa';
 import { useSwitchTenant, useUserTenants } from '../../services/apis/tenantApi';
 import { useAuth } from '../../stores/auth/authSelectore';
+import { useTenant } from '../../stores/tenant/tenantSelectore';
 import { showErrorToast } from '../../utills/toast';
 
 type TenantSwitcherProps = {
@@ -13,6 +14,7 @@ const TenantSwitcher = ({ compact = false }: TenantSwitcherProps) => {
     const [isSwitching, setIsSwitching] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
     const { mutateAsync: switchTenant } = useSwitchTenant();
+    const { selectTenant } = useTenant();
     const dropdownRef = useRef<HTMLDivElement>(null);
 
     // Fetch user-accessible tenants from API (works for all users)
@@ -56,7 +58,6 @@ const TenantSwitcher = ({ compact = false }: TenantSwitcherProps) => {
 
         setIsSwitching(true);
         setIsOpen(false);
-
         try {
             console.log('Initiating tenant switch to:', tenantId);
 
@@ -86,6 +87,9 @@ const TenantSwitcher = ({ compact = false }: TenantSwitcherProps) => {
 
                 console.log('Auth tokens and user updated successfully');
             }
+
+            // Update tenant store selection immediately
+            selectTenant(tenantId);
 
             // Reload the page to ensure all data is refreshed with new tenant context
             window.location.reload();
