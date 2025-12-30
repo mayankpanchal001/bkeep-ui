@@ -54,8 +54,10 @@ export default function TabNav({
                             <span className="text-sm">{item.icon}</span>
                         )}
                         <span
-                            className={`text-sm ${cn(
-                                active ? 'font-medium' : 'font-normal'
+                            className={`text-sm  ${cn(
+                                active
+                                    ? 'font-medium'
+                                    : 'max-sm:hidden font-normal'
                             )}`}
                         >
                             {item.label}

@@ -10,6 +10,7 @@ import {
     FaRegEye,
 } from 'react-icons/fa';
 import TabNav from '../shared/TabNav';
+import Button from '../typography/Button';
 import SummaryCard from './SummaryCard';
 import SalesActivityAreaChart from './charts/SalesActivityAreaChart';
 import SubscriptionsBarMini from './charts/SubscriptionsBarMini';
@@ -94,7 +95,7 @@ export default function AdminDashboardKit() {
 
     return (
         <div className="space-y-4">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
                 <TabNav
                     items={[
                         {
@@ -122,16 +123,14 @@ export default function AdminDashboardKit() {
                     onChange={setTab}
                 />
                 <div className="flex items-center gap-2">
-                    <button className="px-3 py-1.5 text-xs rounded border border-primary-10 text-primary flex items-center gap-2">
-                        <FaDownload /> Download
-                    </button>
-                    <button className="px-3 py-1.5 text-xs rounded border border-primary-10 text-primary">
-                        Pick a date
-                    </button>
+                    <Button variant="primary" icon={<FaDownload />}>
+                        Download
+                    </Button>
+                    <Button variant="outline">Pick a date</Button>
                 </div>
             </div>
 
-            <div className="flex gap-4">
+            <div className="flex flex-col sm:flex-row gap-4">
                 <div className="flex-1">
                     <div className="flex flex-col gap-4">
                         <div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-4">

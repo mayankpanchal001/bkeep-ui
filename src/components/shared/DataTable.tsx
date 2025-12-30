@@ -117,18 +117,18 @@ export function DataTable<T extends { [key: string]: any }>({
         <div className="w-full space-y-4">
             <div
                 className={cn(
-                    'rounded-md border border-primary/20 bg-white overflow-hidden',
+                    'rounded-2 border border-primary-10 bg-white overflow-hidden',
                     containerClassName
                 )}
             >
-                <Table className={tableClassName}>
+                <Table className={cn('text-sm', tableClassName)}>
                     <TableHeader>
                         <TableRow>
                             {onSelectionChange && (
-                                <TableHead className="w-[50px]">
+                                <TableHead className="w-[48px] text-primary-50">
                                     <input
                                         type="checkbox"
-                                        className="rounded border-gray-300 text-primary focus:ring-primary h-4 w-4"
+                                        className="rounded border-primary-10 text-primary focus:ring-primary h-4 w-4"
                                         checked={
                                             data.length > 0 &&
                                             selectedItems?.length ===
@@ -142,6 +142,7 @@ export function DataTable<T extends { [key: string]: any }>({
                                 <TableHead
                                     key={index}
                                     className={cn(
+                                        'text-primary-50',
                                         column.sortable &&
                                             'cursor-pointer select-none group',
                                         column.className
@@ -157,7 +158,7 @@ export function DataTable<T extends { [key: string]: any }>({
                                         {column.sortable &&
                                             sorting &&
                                             column.accessorKey && (
-                                                <span className="text-gray-400 group-hover:text-gray-600">
+                                                <span className="text-primary-25 group-hover:text-primary-50">
                                                     {sorting.sort ===
                                                     String(
                                                         column.accessorKey
@@ -186,7 +187,7 @@ export function DataTable<T extends { [key: string]: any }>({
                                         columns.length +
                                         (onSelectionChange ? 1 : 0)
                                     }
-                                    className="h-24 text-center text-gray-500"
+                                    className="h-24 text-center text-primary-50"
                                 >
                                     {emptyMessage}
                                 </TableCell>
@@ -204,7 +205,7 @@ export function DataTable<T extends { [key: string]: any }>({
                                         }
                                         className={cn(
                                             onRowClick &&
-                                                'cursor-pointer hover:bg-gray-50',
+                                                'cursor-pointer hover:bg-gray-50/50',
                                             rowClassName?.(item)
                                         )}
                                         onClick={(e) => {
@@ -225,7 +226,7 @@ export function DataTable<T extends { [key: string]: any }>({
                                             <TableCell>
                                                 <input
                                                     type="checkbox"
-                                                    className="rounded border-gray-300 text-primary focus:ring-primary h-4 w-4"
+                                                    className="rounded border-primary-10 text-primary focus:ring-primary h-4 w-4"
                                                     checked={isSelected}
                                                     onChange={() =>
                                                         handleSelectOne(id)
@@ -239,6 +240,7 @@ export function DataTable<T extends { [key: string]: any }>({
                                                     column.accessorKey || index
                                                 )}
                                                 className={cn(
+                                                    'py-3',
                                                     column.className,
                                                     column.cellClassName?.(item)
                                                 )}
@@ -258,7 +260,7 @@ export function DataTable<T extends { [key: string]: any }>({
                         )}
                     </TableBody>
                     {footerContent && (
-                        <tfoot className="bg-gray-50 border-t">
+                        <tfoot className="bg-gray-50/50 border-t border-primary-10">
                             {footerContent}
                         </tfoot>
                     )}
@@ -268,7 +270,7 @@ export function DataTable<T extends { [key: string]: any }>({
             {/* Pagination */}
             {pagination && pagination.totalPages > 1 && (
                 <div className="flex items-center justify-between px-2">
-                    <div className="text-sm text-gray-500">
+                    <div className="text-sm text-primary-50">
                         {selectedItems && selectedItems.length > 0 ? (
                             <span>
                                 {selectedItems.length} of{' '}
