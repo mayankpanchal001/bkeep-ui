@@ -18,14 +18,14 @@ export function SettingsSidebar({
     // Mobile: Tabs style (border-b container, horizontal scroll)
     // Desktop: Sidebar style (vertical, no border)
     const navClasses = `
-        flex overflow-x-auto scrollbar-hide -mx-4 px-4 border-b border-gray-200
+         flex overflow-x-auto scrollbar-hide -mx-4 px-4 border-b border-gray-200
         lg:flex-col lg:space-x-0 lg:space-y-1 lg:border-0 lg:mx-0 lg:px-0 lg:overflow-visible
         ${className || ''}
     `;
 
     return (
         <nav className={navClasses} {...props}>
-            <div className="flex space-x-6 min-w-max lg:flex-col lg:space-x-0 lg:space-y-1 lg:min-w-0 lg:w-full">
+            <div className="flex gap-1 sm:flex-col">
                 {items.map((item) => {
                     const isActive =
                         location.pathname === item.href ||

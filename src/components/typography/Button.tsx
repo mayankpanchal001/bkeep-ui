@@ -30,8 +30,8 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     ) => {
         // Define base classes for all buttons
         const baseClasses =
-            'inline-flex gap-2 uppercase items-center justify-center font-bold tracking-wider transition-all duration-300 focus:outline-none disabled:pointer-events-none disabled:opacity-50 cursor-pointer ' +
-            (isRounded ? 'rounded-full' : 'rounded-xl');
+            'inline-flex gap-2 uppercase items-center justify-center font-normal tracking-wider transition-all duration-300 focus:outline-none disabled:pointer-events-none disabled:opacity-50 cursor-pointer ' +
+            (isRounded ? 'rounded-full' : 'rounded-sm');
 
         // Define size-specific classes
         const sizeClasses = {
@@ -42,11 +42,10 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
         // Define variant-specific classes
         const variantClasses = {
-            primary:
-                'bg-black dark:bg-[#ffffff] hover:bg-black/90 dark:hover:bg-[#f0f0f0] text-white dark:text-black border border-transparent dark:border-white shadow-sm',
+            primary: 'bg-black hover:bg-black/90 text-white',
 
             outline:
-                'bg-white dark:bg-white/10 text-primary white:text-white border border-primary white:border-white/30 hover:bg-primary white:hover:bg-white/20 hover:text-white dark:hover:text-white active:bg-primary',
+                'bg-white text-primary shadow-sm shadow-primary/20 hover:bg-primary hover:text-white  active:bg-primary',
         };
 
         // Combine all classes

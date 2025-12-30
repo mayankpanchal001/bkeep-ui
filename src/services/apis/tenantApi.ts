@@ -1,7 +1,13 @@
+import type { QueryClient } from '@tanstack/react-query';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { PaginationInfo, Tenant } from '../../types';
 import { showErrorToast, showSuccessToast } from '../../utills/toast';
 import axiosInstance from '../axiosClient';
+
+export const invalidateTenantQueries = (queryClient: QueryClient) => {
+    queryClient.invalidateQueries({ queryKey: ['tenants'] });
+    queryClient.invalidateQueries({ queryKey: ['user-tenants'] });
+};
 
 export type TenantsQueryParams = {
     page?: number;
@@ -137,6 +143,11 @@ export const useTenants = (
 export type CreateTenantRequest = {
     name: string;
     schemaName: string;
+    email?: string;
+    phone?: string;
+    address?: string;
+    fiscalYear?: string;
+    dateOfIncorporation?: string;
 };
 
 export type CreateTenantResponse = {
@@ -174,8 +185,7 @@ export const useCreateTenant = () => {
         },
         onSuccess: (data) => {
             showSuccessToast(data.message || 'Tenant created successfully');
-            // Invalidate tenants query to refetch the list
-            queryClient.invalidateQueries({ queryKey: ['tenants'] });
+            invalidateTenantQueries(queryClient);
         },
     });
 };

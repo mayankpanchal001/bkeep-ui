@@ -32,7 +32,7 @@
 
 .protected-route-sidebar {
     --sidebar-width: 20ch;
-    @apply hidden lg:flex flex-col gap-4 h-full p-2 bg-white border-r border-primary-10;
+    @apply hidden lg:flex flex-col h-full p-2 bg-white border-r border-primary-10;
     width: var(--sidebar-width);
     min-width: var(--sidebar-width);
     transition:
@@ -74,7 +74,7 @@
 }
 
 .sidebar-item-label {
-    @apply text-xs font-medium whitespace-nowrap;
+    @apply text-[11px] font-medium whitespace-nowrap;
     transition:
         opacity 0.15s ease-in-out 0.05s,
         max-width 0.3s cubic-bezier(0.4, 0, 0.2, 1),

@@ -63,11 +63,15 @@ const Settingspage = () => {
 
     return (
         <div className="flex flex-col h-full gap-4 lg:flex-row lg:space-x-12  lg:space-y-0">
-            <aside className="lg:w-1/5 sm:h-full ">
-                <SettingsSidebar items={sidebarNavItems} />
+            <aside className="lg:w-1/5 sm:h-full">
+                <div className="card !h-max">
+                    <SettingsSidebar items={sidebarNavItems} />
+                </div>
             </aside>
             <div className="flex-1 lg:max-w-2xl">
-                <Outlet />
+                <div className="card">
+                    <Outlet />
+                </div>
             </div>
         </div>
     );

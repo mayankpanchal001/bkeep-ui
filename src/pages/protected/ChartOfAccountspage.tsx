@@ -465,7 +465,6 @@ const ChartOfAccountspage = () => {
         },
         {
             header: 'Current Balance',
-            className: 'text-right',
             cell: (account) => (
                 <span className="font-semibold text-primary">
                     {currencyFormatter.format(
@@ -510,46 +509,7 @@ const ChartOfAccountspage = () => {
         );
 
     return (
-        <div className="h-full flex flex-col gap-6 p-6">
-            {/* Header */}
-            <div className="flex items-center justify-between">
-                <div>
-                    <h1 className="text-2xl font-bold text-primary">
-                        Chart of Accounts
-                    </h1>
-                    <p className="text-sm text-primary-50 mt-1">
-                        Manage your business accounts and their balances
-                    </p>
-                </div>
-                <div className="flex items-center gap-3">
-                    <Button
-                        onClick={handleOpenAddModal}
-                        variant="primary"
-                        icon={<FaPlus />}
-                    >
-                        New Account
-                    </Button>
-                    <div className="h-6 w-px bg-gray-300 mx-2"></div>
-                    <Button
-                        onClick={handleDownloadSample}
-                        variant="outline"
-                        icon={<FaFileDownload />}
-                        title="Download Sample Excel Template"
-                    >
-                        Sample Data
-                    </Button>
-                    <Button
-                        onClick={handleImportClick}
-                        variant="outline"
-                        icon={<FaFileImport />}
-                        loading={importMutation.isPending}
-                        disabled={importMutation.isPending}
-                    >
-                        Import
-                    </Button>
-                </div>
-            </div>
-
+        <div className="h-full flex flex-col gap-4">
             {/* Filters and Search */}
             <div className="bg-white rounded-2 shadow-sm border border-primary-10 p-4">
                 <div className="flex flex-col sm:flex-row gap-4">
@@ -564,11 +524,12 @@ const ChartOfAccountspage = () => {
                             />
                         </div>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center min-w-[150px] gap-2">
                         <FaFilter className="text-primary-50" />
                         <SelectField
                             id="filter-account-type"
                             value={selectedType}
+                            label="Filter accounts by type"
                             onChange={(e) =>
                                 setSelectedType(
                                     e.target.value as AccountType | 'all'
@@ -579,6 +540,34 @@ const ChartOfAccountspage = () => {
                                 ...ACCOUNT_TYPE_OPTIONS,
                             ]}
                         />
+                    </div>
+                    <div className="flex items-center gap-3">
+                        <Button
+                            onClick={handleDownloadSample}
+                            variant="outline"
+                            icon={<FaFileDownload />}
+                            title="Download Sample Excel Template"
+                        >
+                            Sample Data
+                        </Button>
+                        <Button
+                            onClick={handleImportClick}
+                            variant="outline"
+                            icon={<FaFileImport />}
+                            loading={importMutation.isPending}
+                            disabled={importMutation.isPending}
+                        >
+                            Import
+                        </Button>
+
+                        <div className="h-6 w-px bg-gray-300 mx-2"></div>
+                        <Button
+                            onClick={handleOpenAddModal}
+                            variant="primary"
+                            icon={<FaPlus />}
+                        >
+                            New Account
+                        </Button>
                     </div>
                 </div>
             </div>
