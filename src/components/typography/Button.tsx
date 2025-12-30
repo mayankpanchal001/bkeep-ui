@@ -31,7 +31,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         // Define base classes for all buttons
         const baseClasses =
             'inline-flex gap-2 uppercase items-center justify-center font-bold tracking-wider transition-all duration-300 focus:outline-none disabled:pointer-events-none disabled:opacity-50 cursor-pointer ' +
-            (isRounded ? 'rounded-full' : 'rounded-xl');
+            (isRounded ? 'rounded-full' : 'rounded-sm');
 
         // Define size-specific classes
         const sizeClasses = {
