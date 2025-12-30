@@ -25,16 +25,35 @@ export default function SalesActivityAreaChart({
             >
                 <defs>
                     <linearGradient id="colorSales" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#ef4444" stopOpacity={0.4} />
-                        <stop offset="95%" stopColor="#ef4444" stopOpacity={0.05} />
+                        <stop
+                            offset="5%"
+                            stopColor="#ef4444"
+                            stopOpacity={0.4}
+                        />
+                        <stop
+                            offset="95%"
+                            stopColor="#ef4444"
+                            stopOpacity={0.05}
+                        />
                     </linearGradient>
                     <linearGradient id="colorSubs" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#10b981" stopOpacity={0.4} />
-                        <stop offset="95%" stopColor="#10b981" stopOpacity={0.05} />
+                        <stop
+                            offset="5%"
+                            stopColor="#10b981"
+                            stopOpacity={0.4}
+                        />
+                        <stop
+                            offset="95%"
+                            stopColor="#10b981"
+                            stopOpacity={0.05}
+                        />
                     </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="#eee" />
-                <XAxis dataKey="month" tick={{ fontSize: 12, fill: '#374151' }} />
+                <XAxis
+                    dataKey="month"
+                    tick={{ fontSize: 12, fill: '#374151' }}
+                />
                 <YAxis tick={{ fontSize: 12, fill: '#374151' }} />
                 <Tooltip
                     contentStyle={{
