@@ -113,7 +113,7 @@ const InviteUserModal = ({
                     <h3 className="text-lg font-semibold text-primary mb-4">
                         User Information
                     </h3>
-                    <div className="space-y-4">
+                    <div className="flex flex-col gap-4">
                         {/* Name Field */}
                         <div>
                             <InputField
@@ -181,6 +181,8 @@ const InviteUserModal = ({
                     <SelectField
                         id="user-role"
                         label="Select a role"
+                        labelShow={true}
+                        placeholder="Select a role"
                         value={formData.roleId}
                         onChange={(e) => {
                             setFormData({

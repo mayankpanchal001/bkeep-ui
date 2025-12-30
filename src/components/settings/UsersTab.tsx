@@ -1,8 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useGetRoles } from '../../services/apis/roleApi';
 import {
+    useInvitations,
     useResendInvitation,
+    useRevokeInvitation,
     useUsers,
+    type PendingInvitation,
+    type InvitationsQueryParams,
     type UsersQueryParams,
 } from '../../services/apis/usersApi';
 
@@ -34,6 +38,22 @@ const UsersTab = () => {
 
     const { mutateAsync: resendInvitation, isPending: isResendingInvitation } =
         useResendInvitation();
+    const { mutateAsync: revokeInvitation, isPending: isRevokingInvitation } =
+        useRevokeInvitation();
+
+    const [invitationFilters, setInvitationFilters] =
+        useState<InvitationsQueryParams>({
+            page: 1,
+            limit: 10,
+            sort: 'createdAt',
+            order: 'asc',
+        });
+
+    const {
+        data: invitationsData,
+        isLoading: isLoadingInvitations,
+        isError: isInvitationsError,
+    } = useInvitations(invitationFilters);
 
     // Sync search input with filters.search
     useEffect(() => {
@@ -79,6 +99,22 @@ const UsersTab = () => {
         }
     };
 
+    const handleInvitationPageChange = (newPage: number) => {
+        setInvitationFilters((prev) => ({
+            ...prev,
+            page: newPage,
+        }));
+    };
+
+    const handleInvitationSortChange = (sort: string, order: 'asc' | 'desc') => {
+        setInvitationFilters((prev) => ({
+            ...prev,
+            sort,
+            order,
+            page: 1,
+        }));
+    };
+
     const handlePageChange = (newPage: number) => {
         setFilters((prev) => ({
             ...prev,
@@ -108,6 +144,8 @@ const UsersTab = () => {
 
     const users = data?.data?.items || [];
     const pagination = data?.data?.pagination;
+    const pendingInvitations = invitationsData?.data?.items || [];
+    const invitationsPagination = invitationsData?.data?.pagination;
 
     const columns: Column<UserType>[] = [
         {
@@ -147,19 +185,6 @@ const UsersTab = () => {
             className: 'text-right',
             cell: (user) => (
                 <div className="flex items-center justify-end gap-2">
-                    {!user.isVerified && (
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleResendInvitation(user.id)}
-                            loading={isResendingInvitation}
-                            disabled={isResendingInvitation}
-                            title="Resend invitation email"
-                        >
-                            <Icons.Send className="mr-1 w-3 h-3" />
-                            Resend
-                        </Button>
-                    )}
                     <Button
                         variant="outline"
                         size="sm"
@@ -167,6 +192,62 @@ const UsersTab = () => {
                     >
                         <Icons.Edit className="mr-1 w-3 h-3" />
                         Edit
+                    </Button>
+                </div>
+            ),
+        },
+    ];
+
+    const invitationColumns: Column<PendingInvitation>[] = [
+        {
+            header: 'Name',
+            accessorKey: 'userName',
+            className: 'text-primary font-medium',
+        },
+        {
+            header: 'Email',
+            accessorKey: 'email',
+            className: 'text-primary-75',
+        },
+        {
+            header: 'Tenant',
+            accessorKey: 'tenant',
+            cell: (invitation) => invitation.tenant?.name || '—',
+            className: 'text-primary-75',
+        },
+        {
+            header: 'Invited At',
+            accessorKey: 'createdAt',
+            cell: (invitation) =>
+                new Date(invitation.createdAt).toLocaleDateString(),
+            className: 'text-primary-75',
+        },
+        {
+            header: 'Actions',
+            className: 'text-right',
+            cell: (invitation) => (
+                <div className="flex items-center justify-end gap-2">
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleResendInvitation(invitation.id)}
+                        loading={isResendingInvitation}
+                        disabled={isResendingInvitation}
+                        title="Resend invitation email"
+                    >
+                        <Icons.Send className="mr-1 w-3 h-3" />
+                        Resend
+                    </Button>
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => revokeInvitation(invitation.id)}
+                        loading={isRevokingInvitation}
+                        disabled={isRevokingInvitation}
+                        title="Revoke invitation"
+                    >
+                        <Icons.Close className="mr-1 w-3 h-3" />
+                        Revoke
                     </Button>
                 </div>
             ),
@@ -268,6 +349,61 @@ const UsersTab = () => {
                         </span>
                     </label>
                 </div>
+            </div>
+
+            <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                    <h4 className="text-base font-semibold text-primary">
+                        Pending Invitations
+                    </h4>
+                    <div className="flex items-center gap-2 text-sm text-primary-50">
+                        <Icons.Send className="w-4 h-4" />
+                        <span>
+                            {invitationsPagination?.total ||
+                                pendingInvitations.length ||
+                                0}{' '}
+                            invitation
+                            {(invitationsPagination?.total ||
+                                pendingInvitations.length ||
+                                0) !== 1
+                                ? 's'
+                                : ''}
+                        </span>
+                    </div>
+                </div>
+
+                {isInvitationsError ? (
+                    <div className="text-center py-6 text-red-500">
+                        Failed to load invitations. Please try again.
+                    </div>
+                ) : (
+                    <DataTable
+                        data={pendingInvitations}
+                        columns={invitationColumns}
+                        isLoading={isLoadingInvitations}
+                        keyField="id"
+                        pagination={
+                            invitationsPagination
+                                ? {
+                                      page: invitationsPagination.page,
+                                      totalPages: invitationsPagination.totalPages,
+                                      totalItems: invitationsPagination.total,
+                                      onPageChange: handleInvitationPageChange,
+                                      hasPreviousPage:
+                                          invitationsPagination.hasPreviousPage,
+                                      hasNextPage:
+                                          invitationsPagination.hasNextPage,
+                                  }
+                                : undefined
+                        }
+                        sorting={{
+                            sort: invitationFilters.sort || 'createdAt',
+                            order: invitationFilters.order || 'asc',
+                            onSortChange: handleInvitationSortChange,
+                        }}
+                        emptyMessage="No pending invitations"
+                    />
+                )}
             </div>
 
             <DataTable

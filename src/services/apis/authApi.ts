@@ -8,6 +8,7 @@ import { LoginResponse, Tenant } from '../../types';
 import { storePasskeyUser } from '../../utills/passkey';
 import { showErrorToast, showSuccessToast } from '../../utills/toast';
 import axiosInstance from '../axiosClient';
+import { invalidateTenantQueries } from './tenantApi';
 
 type LoginPayload = {
     email: string;
@@ -550,6 +551,8 @@ export async function acceptInvitationRequest(
 export const useAcceptInvitation = () => {
     const navigate = useNavigate();
     const { setAuth } = useAuth();
+    const { setTenants } = useTenant();
+    const queryClient = useQueryClient();
 
     return useMutation({
         mutationFn: (payload: AcceptInvitationPayload) =>
@@ -591,6 +594,13 @@ export const useAcceptInvitation = () => {
                     data.data.accessToken,
                     data.data.refreshToken
                 );
+                // Persist tenants and select tenant in store
+                const selectTenantId =
+                    data.data.user.selectedTenantId || userData.selectedTenantId;
+                setTenants(userData.tenants || [], {
+                    selectTenantId,
+                });
+                invalidateTenantQueries(queryClient);
 
                 // Navigate to dashboard
                 navigate('/dashboard');
