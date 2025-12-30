@@ -1,6 +1,4 @@
 import React, { useState } from 'react';
-import { FaFingerprint, FaLock, FaUser } from 'react-icons/fa';
-import { Link } from 'react-router';
 import { useLogin } from '../../services/apis/authApi';
 
 import { showErrorToast } from '../../utills/toast';
@@ -11,15 +9,43 @@ export function LoginForm() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const [fieldErrors, setFieldErrors] = useState<{
+        email?: string;
+        password?: string;
+    }>({});
     const {
         mutateAsync: login,
         isPending: isLoading,
         error: loginError,
     } = useLogin();
 
+    const validateForm = () => {
+        const errors: { email?: string; password?: string } = {};
+
+        // Email validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!email) {
+            errors.email = 'Email address is required';
+        } else if (!emailRegex.test(email)) {
+            errors.email = 'Please enter a valid email address.';
+        }
+
+        // Password validation
+        if (!password) {
+            errors.password = 'Password is required';
+        } else if (password.length < 6) {
+            errors.password = 'Password must be at least 6 characters.';
+        }
+
+        setFieldErrors(errors);
+        return Object.keys(errors).length === 0;
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError('');
+
+        if (!validateForm()) return;
 
         try {
             await login({ email, password });
@@ -44,43 +70,67 @@ export function LoginForm() {
 
     return (
         <div className="space-y-6">
+            {/* Simple Spacing */}
+            <div className="pt-2"></div>
+
             {/* Email/Password Form */}
             <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="space-y-4">
+                <div className="space-y-5">
                     <InputField
                         id="login-email"
-                        label="Email ID"
+                        label="Email Address"
                         type="email"
-                        placeholder="abc@gmail.com"
+                        placeholder="you@example.com"
                         value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        onChange={(e) => {
+                            setEmail(e.target.value);
+                            if (fieldErrors.email)
+                                setFieldErrors({
+                                    ...fieldErrors,
+                                    email: undefined,
+                                });
+                        }}
+                        error={fieldErrors.email}
                         required
-                        icon={<FaUser className="w-4 h-4" />}
+                        icon={undefined}
                     />
-                    <div>
-                        <div className="flex items-center justify-between mb-2">
-                            <label
-                                htmlFor="login-password"
-                                className="text-sm font-medium text-primary"
-                            >
-                                Password
-                            </label>
-                        </div>
-                        <InputField
-                            id="login-password"
-                            type="password"
-                            placeholder="Enter your password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                            icon={<FaLock className="w-4 h-4" />}
-                        />
-                    </div>
+                    <InputField
+                        id="login-password"
+                        label="Password"
+                        type="password"
+                        placeholder="••••••••"
+                        value={password}
+                        onChange={(e) => {
+                            setPassword(e.target.value);
+                            if (fieldErrors.password)
+                                setFieldErrors({
+                                    ...fieldErrors,
+                                    password: undefined,
+                                });
+                        }}
+                        error={fieldErrors.password}
+                        required
+                        icon={undefined}
+                    />
+                </div>
+
+                <div className="flex items-center gap-2">
+                    <input
+                        id="remember-me"
+                        type="checkbox"
+                        className="h-3.5 w-3.5 text-black border-gray-300 rounded focus:ring-black cursor-pointer accent-black"
+                    />
+                    <label
+                        htmlFor="remember-me"
+                        className="text-[12.5px] font-medium text-gray-500 cursor-pointer hover:text-gray-800 transition-colors"
+                    >
+                        Remember me for 30 days
+                    </label>
                 </div>
 
                 {error && (
-                    <div className="border border-red-300 bg-red-50 p-3 rounded-lg shadow-sm">
-                        <p className="text-sm text-center text-red-700 font-medium">
+                    <div className="border border-red-100 bg-red-50/50 p-2.5 rounded-lg">
+                        <p className="text-[12px] text-center text-red-600 font-semibold tracking-tight">
                             {error}
                         </p>
                     </div>
@@ -89,45 +139,13 @@ export function LoginForm() {
                 <Button
                     type="submit"
                     variant="primary"
-                    className="w-full"
+                    className="w-full !rounded-md !normal-case h-9 text-sm font-semibold"
                     loading={isLoading}
                     disabled={isLoading}
                 >
-                    Sign In
+                    Login
                 </Button>
             </form>
-            <div className="relative">
-                <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-primary-25"></div>
-                </div>
-                <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-white px-2 text-primary-50">
-                        Or if you forgot your password
-                    </span>
-                </div>
-            </div>
-            <div className="flex justify-center gap-4">
-                <Link
-                    to="/forgot-password"
-                    className="text-sm  text-primary hover:text-primary-75 transition-colors cursor-pointer"
-                >
-                    Forgot Password?
-                </Link>
-                <span className="text-primary-25">•</span>
-                <Link
-                    to="/passkey-login"
-                    className="text-sm text-primary hover:text-primary-75 transition-colors cursor-pointer flex items-center gap-1"
-                >
-                    <FaFingerprint className="w-4 h-4" />
-                    Sign in with Passkey
-                </Link>
-            </div>
-
-            <div className="text-center pt-2">
-                <p className="text-xs text-primary-50">
-                    Secure login powered by our system
-                </p>
-            </div>
         </div>
     );
 }

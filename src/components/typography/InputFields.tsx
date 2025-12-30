@@ -6,11 +6,21 @@ type InputFieldProps = Omit<
 > & {
     label?: string;
     icon?: React.ReactNode;
+    error?: string;
 };
 
 export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
     (
-        { id, label, type = 'text', icon, required, placeholder, ...rest },
+        {
+            id,
+            label,
+            type = 'text',
+            icon,
+            required,
+            placeholder,
+            error,
+            ...rest
+        },
         ref
     ) => {
         const [showPassword, setShowPassword] = useState(false);
@@ -22,16 +32,23 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
         };
 
         return (
-            <div className="w-full">
+            <div className={`w-full ${error ? 'space-y-1.5' : 'space-y-0'}`}>
                 {label && (
                     <label className="input-label" htmlFor={id}>
                         {label}
                         {required && (
-                            <span className="text-red-500 ml-0">*</span>
+                            <span
+                                className="text-red-500 ml-1 opacity-80"
+                                aria-hidden="true"
+                            >
+                                *
+                            </span>
                         )}
                     </label>
                 )}
-                <div className={`relative input-wrap`}>
+                <div
+                    className={`relative input-wrap ${error ? '!border-red-500 shadow-[0_0_0_1px_rgba(239,68,68,0.1)]' : ''}`}
+                >
                     {icon && (
                         <div className="absolute left-2 top-2 text-gray-400">
                             {icon}
@@ -52,19 +69,20 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
                         <button
                             type="button"
                             onClick={togglePasswordVisibility}
-                            className="absolute right-2 top-2 text-gray-400 hover:text-gray-600 focus:outline-none transition-colors"
+                            className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-gray-900 hover:bg-gray-100 rounded-md focus:outline-none transition-all duration-200"
                             aria-label={
                                 showPassword ? 'Hide password' : 'Show password'
                             }
                         >
+                            {/* SVG icons remain the same */}
                             {showPassword ? (
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     className="h-5 w-5"
-                                    fill="none"
                                     viewBox="0 0 24 24"
+                                    fill="none"
                                     stroke="currentColor"
-                                    strokeWidth={2}
+                                    strokeWidth={2.5}
                                 >
                                     <path
                                         strokeLinecap="round"
@@ -76,10 +94,10 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     className="h-5 w-5"
-                                    fill="none"
                                     viewBox="0 0 24 24"
+                                    fill="none"
                                     stroke="currentColor"
-                                    strokeWidth={2}
+                                    strokeWidth={2.5}
                                 >
                                     <path
                                         strokeLinecap="round"
@@ -96,6 +114,11 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
                         </button>
                     )}
                 </div>
+                {error && (
+                    <p className="text-[12px] font-medium text-red-500 mt-1.5 animate-in fade-in slide-in-from-top-1 duration-200">
+                        {error}
+                    </p>
+                )}
             </div>
         );
     }

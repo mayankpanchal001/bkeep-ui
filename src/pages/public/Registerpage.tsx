@@ -4,122 +4,116 @@ import { logo } from '../../utills/image';
 
 const Registerpage = () => {
     return (
-        <div className="h-full  flex w-full">
-            {/* Left Side - Branding Section */}
-            <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-primary to-primary-75 items-center justify-center p-12 relative overflow-hidden">
-                {/* Background Pattern Layer 1 - Grid */}
-                <div className="absolute inset-0 opacity-20">
-                    <div
-                        className="absolute inset-0 animate-pattern-grid"
-                        style={{
-                            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-                            backgroundSize: '60px 60px',
-                        }}
-                    ></div>
+        <div className="grid h-dvh justify-center p-2 lg:grid-cols-2 overflow-hidden relative bg-[#fafafa]">
+            {/* Background Glow Effects */}
+            <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-blue-500/10 blur-[120px] rounded-full -translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
+            <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-indigo-500/10 blur-[120px] rounded-full translate-x-1/2 translate-y-1/2 pointer-events-none"></div>
+
+            {/* Left Side - Register Form Section */}
+            <div className="flex items-center justify-center h-full relative z-10 bg-transparent">
+                {/* Top Right Login Link */}
+                <div className="absolute top-8 right-8 hidden lg:block">
+                    <p className="text-[13px] font-medium text-gray-500">
+                        Already have an account?{' '}
+                        <Link
+                            to="/login"
+                            className="text-gray-900 font-semibold hover:underline transition-all"
+                        >
+                            Login
+                        </Link>
+                    </p>
                 </div>
-                {/* Background Pattern Layer 2 - Dots */}
-                <div className="absolute inset-0 opacity-15">
-                    <div
-                        className="absolute inset-0 animate-pattern-dots"
-                        style={{
-                            backgroundImage:
-                                'radial-gradient(circle at 2px 2px, rgba(255,255,255,0.5) 1px, transparent 0)',
-                            backgroundSize: '40px 40px',
-                            backgroundPosition: '20px 20px',
-                        }}
-                    ></div>
-                </div>
-                {/* Background Pattern Layer 3 - Diagonal Lines */}
-                <div className="absolute inset-0 opacity-10">
-                    <div
-                        className="absolute inset-0 animate-pattern-diagonal"
-                        style={{
-                            backgroundImage: `repeating-linear-gradient(
-                                45deg,
-                                transparent,
-                                transparent 10px,
-                                rgba(255, 255, 255, 0.1) 10px,
-                                rgba(255, 255, 255, 0.1) 20px
-                            )`,
-                            backgroundSize: '28px 28px',
-                        }}
-                    ></div>
-                </div>
-                <div className="relative z-10 w-full text-center">
-                    <div className="flex items-center justify-center">
+                <div className="w-full max-w-md">
+                    <div className="lg:hidden flex flex-col items-center mb-10">
                         <img
                             src={logo}
                             alt="BKeep Accounting Logo"
-                            className="h-20 aspect-[3/4] bg-lightBg p-4 rounded-sm  mb-8 drop-shadow-lg object-contain"
+                            className="h-12 w-auto mb-4"
                         />
                     </div>
-                    <h1 className="text-5xl font-bold text-white mb-4">
-                        Get Started
-                    </h1>
-                    <p className="text-lg text-white/90 mb-8">
-                        Create your account and start managing your accounting
-                        with our powerful platform.
+
+                    {/* Register Form Card */}
+                    <div className="p-8 lg:p-12">
+                        <div className="mb-6 text-center">
+                            <h2 className="text-[24px] font-semibold leading-tight text-gray-900 mb-1.5 tracking-tight">
+                                Create Account
+                            </h2>
+                            <p className="text-[14px] text-gray-500 font-medium">
+                                Fill in your details to create your account.
+                            </p>
+                        </div>
+                        <RegisterForm />
+                    </div>
+                </div>
+
+                {/* Left Side Footer */}
+                <div className="absolute bottom-8 left-8 right-8 flex items-center justify-between">
+                    <p className="text-[12px] text-gray-500 font-medium tracking-tight">
+                        © 2025, Bkeep Accounting.
                     </p>
-                    <div className="flex flex-col gap-4 text-white/80 text-sm">
-                        <div className="flex items-center justify-center gap-3">
-                            <div className="w-2 h-2 rounded-full bg-white/60"></div>
-                            <span>Secure & Encrypted</span>
-                        </div>
-                        <div className="flex items-center justify-center gap-3">
-                            <div className="w-2 h-2 rounded-full bg-white/60"></div>
-                            <span>24/7 Support Available</span>
-                        </div>
-                        <div className="flex items-center justify-center gap-3">
-                            <div className="w-2 h-2 rounded-full bg-white/60"></div>
-                            <span>Cloud-Based Platform</span>
-                        </div>
+                    <div className="flex items-center gap-4">
+                        <Link
+                            to="/privacy"
+                            className="text-[12px] text-gray-500 font-medium hover:text-gray-900 transition-colors"
+                        >
+                            Privacy Policy
+                        </Link>
+                        <Link
+                            to="/terms"
+                            className="text-[12px] text-gray-500 font-medium hover:text-gray-900 transition-colors"
+                        >
+                            Terms of Service
+                        </Link>
                     </div>
                 </div>
             </div>
-
-            <div className="w-full lg:w-1/2 flex items-start lg:items-center justify-center bg-lightBg p-4 lg:p-12 overflow-auto h-full">
-                <div className="w-full max-w-md py-4 h-full">
-                    <div className="lg:hidden flex flex-col items-center mb-8">
-                        <img
-                            src={logo}
-                            alt="BKeep Accounting Logo"
-                            className="h-16 w-auto mb-4"
-                        />
-                        <h1 className="text-2xl font-bold text-primary mb-2">
-                            Get Started
+            {/* Right Side - Branding Section */}
+            <div className="hidden lg:flex p-1 h-full">
+                <div className="w-full bg-black rounded-[24px] p-10 relative overflow-hidden h-full shadow-[0_0_50px_-12px_rgba(59,130,246,0.3)]">
+                    <div className="relative z-10 w-full flex flex-col items-start">
+                        <div className="mb-4">
+                            <img
+                                src={logo}
+                                alt="Bkeep Logo"
+                                className="h-24 w-24 object-contain brightness-0 invert"
+                            />
+                        </div>
+                        <h1 className="text-[30px] font-semibold leading-[36px] text-[#FAFAFA] mb-2 tracking-tight">
+                            Bkeep Accounting
                         </h1>
-                        <p className="text-sm text-primary-75 text-center">
-                            Create your account to continue
+                        <p className="text-[16px] text-[#FAFAFA] font-medium tracking-tight">
+                            Manage. Track. Grow. Succeed.
                         </p>
                     </div>
 
-                    <div className="flex flex-col gap-4">
-                        <div className="bg-white rounded-2 shadow-xl p-4 lg:p-8 border border-primary-10">
-                            <div className="mb-6">
-                                <h2 className="text-2xl font-bold text-primary mb-2">
-                                    Create Account
-                                </h2>
-                                <p className="text-sm text-primary-50">
-                                    Fill in your details to create your account
+                    {/* Branding Footer Info */}
+                    <div className="absolute bottom-0 left-10 right-10">
+                        <div className="relative grid grid-cols-2 border-t border-neutral-800 pt-6 pb-8">
+                            {/* Vertical Divider */}
+                            <div className="absolute left-1/2 top-6 h-[72px] w-px bg-neutral-800"></div>
+
+                            {/* Left Section */}
+                            <div className="pr-9">
+                                <h3 className="text-[#FAFAFA] text-[16px] font-semibold">
+                                    Ready to launch?
+                                </h3>
+                                <p className="text-neutral-400 text-[14px] leading-relaxed">
+                                    Clone the repo, install dependencies, and
+                                    your dashboard is live in minutes.
                                 </p>
                             </div>
-                            <RegisterForm />
-                        </div>
 
-                        {/* Footer */}
-                        <div className="my-6 text-center">
-                            <p className="text-xs text-primary-50">
-                                Already have an account?{' '}
-                                <Link
-                                    to="/login"
-                                    className="text-primary hover:text-primary-75 font-medium underline"
-                                >
-                                    Sign In
-                                </Link>
-                            </p>
-                            <p className="text-xs text-primary-50 mt-2">
-                                © 2024 BKeep Accounting. All rights reserved.
-                            </p>
+                            {/* Right Section */}
+                            <div className="pl-8">
+                                <h3 className="text-[#FAFAFA] text-[16px] font-semibold">
+                                    Need help?
+                                </h3>
+                                <p className="text-neutral-400 text-[14px] leading-relaxed">
+                                    Check out the docs or open an issue on
+                                    GitHub, community support is just a click
+                                    away.
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>
