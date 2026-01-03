@@ -29,10 +29,7 @@ import ImportMappingModal from '@/components/shared/ImportMappingModal';
 import Loading from '@/components/shared/Loading';
 import Offcanvas from '@/components/shared/Offcanvas';
 import Button from '@/components/typography/Button';
-import {
-    InputField,
-    SelectField,
-} from '@/components/typography/InputFields';
+import { InputField, SelectField } from '@/components/typography/InputFields';
 
 const currencyFormatter = new Intl.NumberFormat('en-US', {
     style: 'currency',

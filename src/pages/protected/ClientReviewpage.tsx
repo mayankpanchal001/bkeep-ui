@@ -10,10 +10,7 @@ import {
     FaTimes,
 } from 'react-icons/fa';
 import Button from '@/components/typography/Button';
-import {
-    InputField,
-    TextareaField,
-} from '@/components/typography/InputFields';
+import { InputField, TextareaField } from '@/components/typography/InputFields';
 
 type Transaction = {
     id: string;

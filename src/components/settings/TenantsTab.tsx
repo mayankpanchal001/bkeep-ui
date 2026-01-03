@@ -268,9 +268,7 @@ export default function TenantsTab() {
                         Manage your organization's clients.
                     </p>
                 </div>
-                <Button
-                    onClick={handleCreateClick}
-                >
+                <Button onClick={handleCreateClick}>
                     <Plus className="h-4 w-4" />
                     Create Client
                 </Button>
