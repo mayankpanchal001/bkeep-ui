@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Check, ChevronRight, ChevronsUpDown } from 'lucide-react';
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router';
@@ -45,14 +44,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     const { mutateAsync: switchTenant } = useSwitchTenant();
 
     // Tenant Switcher Logic
-    const [isSwitching, setIsSwitching] = useState(false);
-    const { data: tenantsResponse, isLoading: isLoadingTenants } =
-        useUserTenants({
-            page: 1,
-            limit: 100,
-            sort: 'createdAt',
-            order: 'asc',
-        });
+    const [, setIsSwitching] = useState(false);
+    const { data: tenantsResponse } = useUserTenants({
+        page: 1,
+        limit: 100,
+        sort: 'createdAt',
+        order: 'asc',
+    });
 
     const tenants = tenantsResponse?.data?.items || [];
 

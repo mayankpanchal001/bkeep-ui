@@ -4,9 +4,9 @@ import {
     useUpdateJournalEntry,
 } from '../../services/apis/journalApi';
 import type { CreateJournalEntryPayload } from '../../types/journal';
-import { JournalEntryForm } from '/src/components/journal/JournalEntryForm';
-import Loading from '/src/components/shared/Loading';
-import PageHeader from '/src/components/shared/PageHeader';
+import { JournalEntryForm } from '@/components/journal/JournalEntryForm';
+import Loading from '@/components/shared/Loading';
+import PageHeader from '@/components/shared/PageHeader';
 
 export default function EditJournalEntrypage() {
     const { id } = useParams<{ id: string }>();

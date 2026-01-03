@@ -1,7 +1,7 @@
 import { Link } from 'react-router';
 import { logo } from '../../utills/image';
-import { LoginForm } from '/src/components/auth/LoginForm';
-import ThemeSwitcher from '/src/components/shared/ThemeSwitcher';
+import { LoginForm } from '@/components/auth/LoginForm';
+import ThemeSwitcher from '@/components/shared/ThemeSwitcher';
 
 const Loginpage = () => {
     return (

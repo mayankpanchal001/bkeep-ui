@@ -12,10 +12,10 @@ import {
     FaTimesCircle,
     FaTrash,
 } from 'react-icons/fa';
-import CreateInvoiceModal from '/src/components/invoice/CreateInvoiceModal';
-import { Column, DataTable } from '/src/components/shared/DataTable';
-import Button from '/src/components/typography/Button';
-import { InputField } from '/src/components/typography/InputFields';
+import CreateInvoiceModal from '@/components/invoice/CreateInvoiceModal';
+import { Column, DataTable } from '@/components/shared/DataTable';
+import Button from '@/components/typography/Button';
+import { InputField } from '@/components/typography/InputFields';
 
 type Invoice = {
     id: string;

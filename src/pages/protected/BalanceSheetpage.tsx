@@ -5,7 +5,7 @@ import {
     FaFileInvoiceDollar,
     FaPiggyBank,
 } from 'react-icons/fa';
-import SummaryCard from '/src/components/dashboard/SummaryCard';
+import SummaryCard from '@/components/dashboard/SummaryCard';
 
 const BalanceSheetpage = () => {
     const [dateRange, setDateRange] = useState('monthly');

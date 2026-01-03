@@ -1,7 +1,7 @@
 import { Link } from 'react-router';
 import { APP_TITLE } from '../../constants';
 import { logo } from '../../utills/image';
-import { ResetPasswordForm } from '/src/components/auth/ResetPasswordForm';
+import { ResetPasswordForm } from '@/components/auth/ResetPasswordForm';
 
 const ResetPasswordpage = () => {
     return (

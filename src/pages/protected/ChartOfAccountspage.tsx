@@ -22,17 +22,17 @@ import {
     type ChartOfAccount,
     type CreateChartOfAccountPayload,
 } from '../../services/apis/chartsAccountApi';
-import ConfirmationDialog from '/src/components/shared/ConfirmationDialog';
-import { Column, DataTable } from '/src/components/shared/DataTable';
-import ImportFileModal from '/src/components/shared/ImportFileModal';
-import ImportMappingModal from '/src/components/shared/ImportMappingModal';
-import Loading from '/src/components/shared/Loading';
-import Offcanvas from '/src/components/shared/Offcanvas';
-import Button from '/src/components/typography/Button';
+import ConfirmationDialog from '@/components/shared/ConfirmationDialog';
+import { Column, DataTable } from '@/components/shared/DataTable';
+import ImportFileModal from '@/components/shared/ImportFileModal';
+import ImportMappingModal from '@/components/shared/ImportMappingModal';
+import Loading from '@/components/shared/Loading';
+import Offcanvas from '@/components/shared/Offcanvas';
+import Button from '@/components/typography/Button';
 import {
     InputField,
     SelectField,
-} from '/src/components/typography/InputFields';
+} from '@/components/typography/InputFields';
 
 const currencyFormatter = new Intl.NumberFormat('en-US', {
     style: 'currency',

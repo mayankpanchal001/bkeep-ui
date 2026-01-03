@@ -1,9 +1,9 @@
 import { useParams } from 'react-router';
 import { useJournalEntry } from '../../services/apis/journalApi';
 import { JournalEntryLine } from '../../types/journal';
-import { Column, DataTable } from '/src/components/shared/DataTable';
-import Loading from '/src/components/shared/Loading';
-import PageHeader from '/src/components/shared/PageHeader';
+import { Column, DataTable } from '@/components/shared/DataTable';
+import Loading from '@/components/shared/Loading';
+import PageHeader from '@/components/shared/PageHeader';
 
 export default function ViewJournalEntrypage() {
     const { id } = useParams<{ id: string }>();

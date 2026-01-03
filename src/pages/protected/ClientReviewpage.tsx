@@ -9,11 +9,11 @@ import {
     FaSearch,
     FaTimes,
 } from 'react-icons/fa';
-import Button from '/src/components/typography/Button';
+import Button from '@/components/typography/Button';
 import {
     InputField,
     TextareaField,
-} from '/src/components/typography/InputFields';
+} from '@/components/typography/InputFields';
 
 type Transaction = {
     id: string;

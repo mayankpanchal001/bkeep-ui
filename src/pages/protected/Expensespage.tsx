@@ -7,9 +7,9 @@ import {
     FaTag,
     FaTrash,
 } from 'react-icons/fa';
-import { Column, DataTable } from '/src/components/shared/DataTable';
-import Button from '/src/components/typography/Button';
-import { InputField } from '/src/components/typography/InputFields';
+import { Column, DataTable } from '@/components/shared/DataTable';
+import Button from '@/components/typography/Button';
+import { InputField } from '@/components/typography/InputFields';
 
 type Expense = {
     id: string;

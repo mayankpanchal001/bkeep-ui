@@ -10,12 +10,12 @@ import {
     useVoidJournalEntry,
 } from '../../services/apis/journalApi';
 import type { JournalEntry, JournalEntryFilters } from '../../types/journal';
-import ConfirmationDialog from '/src/components/shared/ConfirmationDialog';
-import { Column, DataTable } from '/src/components/shared/DataTable';
-import { Icons } from '/src/components/shared/Icons';
-import Loading from '/src/components/shared/Loading';
-import PageHeader from '/src/components/shared/PageHeader';
-import Button from '/src/components/typography/Button';
+import ConfirmationDialog from '@/components/shared/ConfirmationDialog';
+import { Column, DataTable } from '@/components/shared/DataTable';
+import { Icons } from '@/components/shared/Icons';
+import Loading from '@/components/shared/Loading';
+import PageHeader from '@/components/shared/PageHeader';
+import Button from '@/components/typography/Button';
 
 export default function JournalEntriespage() {
     const navigate = useNavigate();

@@ -1,6 +1,6 @@
 import { Link } from 'react-router';
 import { logo } from '../../utills/image';
-import { RegisterForm } from '/src/components/auth/RegisterForm';
+import { RegisterForm } from '@/components/auth/RegisterForm';
 
 const Registerpage = () => {
     return (

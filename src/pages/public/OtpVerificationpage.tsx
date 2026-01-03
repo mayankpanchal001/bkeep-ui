@@ -7,8 +7,8 @@ import { useTenant } from '../../stores/tenant/tenantSelectore';
 import { Tenant } from '../../types';
 import { storePasskeyUser } from '../../utills/passkey';
 import { showSuccessToast } from '../../utills/toast';
-import Button from '/src/components/typography/Button';
-import { InputField } from '/src/components/typography/InputFields';
+import Button from '@/components/typography/Button';
+import { InputField } from '@/components/typography/InputFields';
 
 const OtpVerificationpage = () => {
     const location = useLocation();
@@ -188,7 +188,7 @@ const OtpVerificationpage = () => {
                                 : 'Verification Code'
                         }
                         value={code}
-                        onChange={(e) => {
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                             const value = isBackupCode
                                 ? e.target.value.replace(/[^a-zA-Z0-9]/g, '')
                                 : e.target.value.replace(/\D/g, '');

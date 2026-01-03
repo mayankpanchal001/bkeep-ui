@@ -1,5 +1,5 @@
 import { FaFileInvoiceDollar } from 'react-icons/fa';
-import TransactionsTable from '/src/components/transactions/TransactionsTable';
+import TransactionsTable from '@/components/transactions/TransactionsTable';
 
 const Transactionpage = () => {
     return (

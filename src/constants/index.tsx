@@ -1,5 +1,5 @@
 import { SidebarItemProps } from '../types';
-import { Icons } from '/src/components/shared/Icons';
+import { Icons } from '@/components/shared/Icons';
 
 export const SIDEBAR_ITEMS: SidebarItemProps[] = [
     {

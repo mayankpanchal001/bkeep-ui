@@ -11,7 +11,7 @@ import {
     StatsSection,
     TestimonialsSection,
     TrustedSection,
-} from '/src/components/homepage';
+} from '@/components/homepage';
 import '/src/components/homepage/styles.css';
 
 export default function Homepage() {

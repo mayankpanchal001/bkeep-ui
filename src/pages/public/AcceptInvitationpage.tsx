@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router';
 import { APP_TITLE } from '../../constants';
 import { logo } from '../../utills/image';
-import AcceptInvitationForm from '/src/components/auth/AcceptInvitationForm';
+import AcceptInvitationForm from '@/components/auth/AcceptInvitationForm';
 
 const AcceptInvitationpage = () => {
     const [searchParams] = useSearchParams();

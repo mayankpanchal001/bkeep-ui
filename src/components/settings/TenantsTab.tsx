@@ -270,8 +270,8 @@ export default function TenantsTab() {
                 </div>
                 <Button
                     onClick={handleCreateClick}
-                    icon={<Plus className="h-4 w-4" />}
                 >
+                    <Plus className="h-4 w-4" />
                     Create Client
                 </Button>
             </div>

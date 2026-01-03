@@ -1,8 +1,8 @@
 import { useNavigate } from 'react-router';
 import { useCreateJournalEntry } from '../../services/apis/journalApi';
 import type { CreateJournalEntryPayload } from '../../types/journal';
-import { JournalEntryForm } from '/src/components/journal/JournalEntryForm';
-import PageHeader from '/src/components/shared/PageHeader';
+import { JournalEntryForm } from '@/components/journal/JournalEntryForm';
+import PageHeader from '@/components/shared/PageHeader';
 
 export default function CreateJournalEntrypage() {
     const navigate = useNavigate();

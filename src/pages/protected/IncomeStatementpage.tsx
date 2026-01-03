@@ -5,12 +5,12 @@ import {
     FaMoneyBillWave,
     FaPercent,
 } from 'react-icons/fa';
-import ExpensePieChart from '/src/components/dashboard/charts/ExpensePieChart';
-import ProfitabilityLineChart from '/src/components/dashboard/charts/ProfitabilityLineChart';
-import RevenueBarChart from '/src/components/dashboard/charts/RevenueBarChart';
-import ChartWidget from '/src/components/dashboard/ChartWidget';
-import SummaryCard from '/src/components/dashboard/SummaryCard';
-import IncomeStatementTable from '/src/components/reports/IncomeStatementTable';
+import ExpensePieChart from '@/components/dashboard/charts/ExpensePieChart';
+import ProfitabilityLineChart from '@/components/dashboard/charts/ProfitabilityLineChart';
+import RevenueBarChart from '@/components/dashboard/charts/RevenueBarChart';
+import ChartWidget from '@/components/dashboard/ChartWidget';
+import SummaryCard from '@/components/dashboard/SummaryCard';
+import IncomeStatementTable from '@/components/reports/IncomeStatementTable';
 
 const IncomeStatementpage = () => {
     const [dateRange, setDateRange] = useState('monthly');

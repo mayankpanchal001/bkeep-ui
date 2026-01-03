@@ -13,8 +13,8 @@ import {
     FaTrash,
     FaUpload,
 } from 'react-icons/fa';
-import ConfirmationDialog from '/src/components/shared/ConfirmationDialog';
-import { InputField } from '/src/components/typography/InputFields';
+import ConfirmationDialog from '@/components/shared/ConfirmationDialog';
+import { InputField } from '@/components/typography/InputFields';
 
 type Document = {
     id: string;
