@@ -56,7 +56,7 @@ const SecurityTab = () => {
           : 'Disabled';
 
     const statusClass = isStatusLoading
-        ? 'text-primary-50'
+        ? 'text-primary/50'
         : mfaEnabled
           ? 'text-green-600'
           : 'text-red-500';
@@ -68,7 +68,7 @@ const SecurityTab = () => {
           : 'Disabled';
 
     const totpStatusClass = isTotpStatusLoading
-        ? 'text-primary-50'
+        ? 'text-primary/50'
         : totpEnabled
           ? 'text-green-600'
           : 'text-red-500';
@@ -129,13 +129,13 @@ const SecurityTab = () => {
                 Security Settings
             </h3>
             <div className="space-y-4">
-                <div className="p-4 border border-primary-10 rounded-2">
+                <div className="p-4 border border-primary/10 rounded-2">
                     <div className="flex items-center justify-between mb-4">
                         <div>
                             <div className="font-medium text-primary">
                                 Change Password
                             </div>
-                            <div className="text-sm text-primary-50">
+                            <div className="text-sm text-primary/50">
                                 Update your password to keep your account secure
                             </div>
                         </div>
@@ -147,16 +147,16 @@ const SecurityTab = () => {
                         </Button>
                     </div>
                 </div>
-                <div className="p-4 border border-primary-10 rounded-2">
+                <div className="p-4 border border-primary/10 rounded-2">
                     <div className="flex items-center justify-between mb-4">
                         <div>
                             <div className="font-medium text-primary">
                                 Two-Factor Authentication (Email)
                             </div>
-                            <div className="text-sm text-primary-50">
+                            <div className="text-sm text-primary/50">
                                 Receive verification codes via email
                             </div>
-                            <div className="text-xs text-primary-40 mt-2">
+                            <div className="text-xs text-primary/40 mt-2">
                                 Status:{' '}
                                 <span className={statusClass}>
                                     {statusLabel}
@@ -175,17 +175,17 @@ const SecurityTab = () => {
                         </Button>
                     </div>
                 </div>
-                <div className="p-4 border border-primary-10 rounded-2">
+                <div className="p-4 border border-primary/10 rounded-2">
                     <div className="flex items-center justify-between mb-4">
                         <div>
                             <div className="font-medium text-primary">
                                 Authenticator App
                             </div>
-                            <div className="text-sm text-primary-50">
+                            <div className="text-sm text-primary/50">
                                 Use an authenticator app like Google/Microsoft
                                 Authenticator
                             </div>
-                            <div className="text-xs text-primary-40 mt-2">
+                            <div className="text-xs text-primary/40 mt-2">
                                 Status:{' '}
                                 <span className={totpStatusClass}>
                                     {totpStatusLabel}
@@ -210,17 +210,17 @@ const SecurityTab = () => {
                         </Button>
                     </div>
                 </div>
-                <div className="p-4 border border-primary-10 rounded-2">
+                <div className="p-4 border border-primary/10 rounded-2">
                     <div className="flex items-center justify-between mb-4">
                         <div>
                             <div className="font-medium text-primary">
                                 Passkeys
                             </div>
-                            <div className="text-sm text-primary-50">
+                            <div className="text-sm text-primary/50">
                                 Use biometrics or security keys for passwordless
                                 sign-in
                             </div>
-                            <div className="text-xs text-primary-40 mt-2">
+                            <div className="text-xs text-primary/40 mt-2">
                                 {isLoadingPasskeyStats ? (
                                     'Loading...'
                                 ) : passkeyStats?.total ? (

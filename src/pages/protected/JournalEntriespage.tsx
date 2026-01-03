@@ -1,12 +1,6 @@
 import { useState } from 'react';
 import { FaFileAlt, FaRedo, FaUndo } from 'react-icons/fa';
 import { useNavigate } from 'react-router';
-import ConfirmationDialog from '../../components/shared/ConfirmationDialog';
-import { DataTable, Column } from '../../components/shared/DataTable';
-import { Icons } from '../../components/shared/Icons';
-import Loading from '../../components/shared/Loading';
-import PageHeader from '../../components/shared/PageHeader';
-import Button from '../../components/typography/Button';
 import {
     useDeleteJournalEntry,
     useJournalEntries,
@@ -16,6 +10,12 @@ import {
     useVoidJournalEntry,
 } from '../../services/apis/journalApi';
 import type { JournalEntry, JournalEntryFilters } from '../../types/journal';
+import ConfirmationDialog from '/src/components/shared/ConfirmationDialog';
+import { Column, DataTable } from '/src/components/shared/DataTable';
+import { Icons } from '/src/components/shared/Icons';
+import Loading from '/src/components/shared/Loading';
+import PageHeader from '/src/components/shared/PageHeader';
+import Button from '/src/components/typography/Button';
 
 export default function JournalEntriespage() {
     const navigate = useNavigate();
@@ -111,7 +111,11 @@ export default function JournalEntriespage() {
 
     const getStatusBadge = (status: string) => {
         const statusConfig = {
-            draft: { bg: 'bg-gray-100', text: 'text-gray-700', label: 'Draft' },
+            draft: {
+                bg: 'bg-gray-100',
+                text: 'text-primary/70',
+                label: 'Draft',
+            },
             posted: {
                 bg: 'bg-green-100',
                 text: 'text-green-700',
@@ -161,7 +165,7 @@ export default function JournalEntriespage() {
             header: 'Description',
             accessorKey: 'memo',
             cell: (entry) => (
-                <span className="text-primary-75">
+                <span className="text-primary/75">
                     {entry.memo || entry.lines[0]?.description || '—'}
                 </span>
             ),
@@ -265,11 +269,11 @@ export default function JournalEntriespage() {
 
     const emptyState = (
         <div className="flex flex-col items-center justify-center py-8">
-            <FaFileAlt className="w-12 h-12 text-primary-20 mb-3" />
+            <FaFileAlt className="w-12 h-12 text-primary/20 mb-3" />
             <p className="text-sm font-medium text-primary mb-1">
                 No journal entries found
             </p>
-            <p className="text-xs text-primary-50 mb-4">
+            <p className="text-xs text-primary/50 mb-4">
                 Create your first journal entry to get started
             </p>
             <Button variant="primary" size="sm" onClick={handleCreateNew}>
@@ -291,7 +295,7 @@ export default function JournalEntriespage() {
             />
 
             {/* Filters */}
-            <div className="bg-white rounded-lg border border-primary-10 p-3">
+            <div className="bg-white rounded-lg border border-primary/10 p-3">
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-2">
                     <input
                         type="text"
@@ -300,7 +304,7 @@ export default function JournalEntriespage() {
                         onChange={(e) =>
                             setFilters({ ...filters, search: e.target.value })
                         }
-                        className="px-2 py-1.5 text-sm border border-primary-10 rounded focus:ring-1 focus:ring-primary focus:border-transparent"
+                        className="px-2 py-1.5 text-sm border border-primary/10 rounded focus:ring-1 focus:ring-primary focus:border-transparent"
                     />
 
                     <select
@@ -315,7 +319,7 @@ export default function JournalEntriespage() {
                                     | undefined,
                             })
                         }
-                        className="px-2 py-1.5 text-sm border border-primary-10 rounded focus:ring-1 focus:ring-primary focus:border-transparent"
+                        className="px-2 py-1.5 text-sm border border-primary/10 rounded focus:ring-1 focus:ring-primary focus:border-transparent"
                     >
                         <option value="">All Statuses</option>
                         <option value="draft">Draft</option>
@@ -332,7 +336,7 @@ export default function JournalEntriespage() {
                                 startDate: e.target.value,
                             })
                         }
-                        className="px-2 py-1.5 text-sm border border-primary-10 rounded focus:ring-1 focus:ring-primary focus:border-transparent"
+                        className="px-2 py-1.5 text-sm border border-primary/10 rounded focus:ring-1 focus:ring-primary focus:border-transparent"
                         placeholder="Start Date"
                     />
 
@@ -342,7 +346,7 @@ export default function JournalEntriespage() {
                         onChange={(e) =>
                             setFilters({ ...filters, endDate: e.target.value })
                         }
-                        className="px-2 py-1.5 text-sm border border-primary-10 rounded focus:ring-1 focus:ring-primary focus:border-transparent"
+                        className="px-2 py-1.5 text-sm border border-primary/10 rounded focus:ring-1 focus:ring-primary focus:border-transparent"
                         placeholder="End Date"
                     />
                 </div>

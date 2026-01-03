@@ -104,10 +104,10 @@ export function DataTable<T extends { [key: string]: any }>({
 
     if (isLoading) {
         return (
-            <div className="w-full h-64 flex items-center justify-center border rounded-md bg-white">
+            <div className="w-full h-64 flex items-center justify-center border border-primary/10 rounded-xl bg-white">
                 <div className="flex flex-col items-center gap-2">
                     <div className="animate-spin w-8 h-8 border-2 border-primary/50 border-t-transparent rounded-full"></div>
-                    <span className="text-gray-500 text-sm">Loading...</span>
+                    <span className="text-primary/50 text-sm">Loading...</span>
                 </div>
             </div>
         );
@@ -117,18 +117,18 @@ export function DataTable<T extends { [key: string]: any }>({
         <div className="w-full space-y-4">
             <div
                 className={cn(
-                    'rounded-md border border-primary/20 bg-white overflow-hidden',
+                    'rounded-xl border border-primary/10 bg-white overflow-hidden',
                     containerClassName
                 )}
             >
-                <Table className={tableClassName}>
+                <Table className={cn('text-sm', tableClassName)}>
                     <TableHeader>
                         <TableRow>
                             {onSelectionChange && (
-                                <TableHead className="w-[50px]">
+                                <TableHead className="w-[52px] pr-0 text-primary/50">
                                     <input
                                         type="checkbox"
-                                        className="rounded border-gray-300 text-primary focus:ring-primary h-4 w-4"
+                                        className="h-4 w-4 rounded-md border-primary/20 text-primary focus:ring-primary"
                                         checked={
                                             data.length > 0 &&
                                             selectedItems?.length ===
@@ -142,6 +142,7 @@ export function DataTable<T extends { [key: string]: any }>({
                                 <TableHead
                                     key={index}
                                     className={cn(
+                                        'text-primary/50',
                                         column.sortable &&
                                             'cursor-pointer select-none group',
                                         column.className
@@ -157,7 +158,7 @@ export function DataTable<T extends { [key: string]: any }>({
                                         {column.sortable &&
                                             sorting &&
                                             column.accessorKey && (
-                                                <span className="text-gray-400 group-hover:text-gray-600">
+                                                <span className="text-primary/25 group-hover:text-primary/50 ml-1">
                                                     {sorting.sort ===
                                                     String(
                                                         column.accessorKey
@@ -186,7 +187,7 @@ export function DataTable<T extends { [key: string]: any }>({
                                         columns.length +
                                         (onSelectionChange ? 1 : 0)
                                     }
-                                    className="h-24 text-center text-gray-500"
+                                    className="h-24 text-center text-primary/50"
                                 >
                                     {emptyMessage}
                                 </TableCell>
@@ -203,8 +204,7 @@ export function DataTable<T extends { [key: string]: any }>({
                                             isSelected ? 'selected' : undefined
                                         }
                                         className={cn(
-                                            onRowClick &&
-                                                'cursor-pointer hover:bg-gray-50',
+                                            onRowClick && 'cursor-pointer',
                                             rowClassName?.(item)
                                         )}
                                         onClick={(e) => {
@@ -222,10 +222,10 @@ export function DataTable<T extends { [key: string]: any }>({
                                         }}
                                     >
                                         {onSelectionChange && (
-                                            <TableCell>
+                                            <TableCell className="w-[52px] pr-0">
                                                 <input
                                                     type="checkbox"
-                                                    className="rounded border-gray-300 text-primary focus:ring-primary h-4 w-4"
+                                                    className="h-4 w-4 rounded-md border-primary/20 text-primary focus:ring-primary"
                                                     checked={isSelected}
                                                     onChange={() =>
                                                         handleSelectOne(id)
@@ -239,6 +239,7 @@ export function DataTable<T extends { [key: string]: any }>({
                                                     column.accessorKey || index
                                                 )}
                                                 className={cn(
+                                                    'py-4',
                                                     column.className,
                                                     column.cellClassName?.(item)
                                                 )}
@@ -258,7 +259,7 @@ export function DataTable<T extends { [key: string]: any }>({
                         )}
                     </TableBody>
                     {footerContent && (
-                        <tfoot className="bg-gray-50 border-t">
+                        <tfoot className="bg-white/50 border-t border-primary/10">
                             {footerContent}
                         </tfoot>
                     )}
@@ -268,7 +269,7 @@ export function DataTable<T extends { [key: string]: any }>({
             {/* Pagination */}
             {pagination && pagination.totalPages > 1 && (
                 <div className="flex items-center justify-between px-2">
-                    <div className="text-sm text-gray-500">
+                    <div className="text-sm text-primary/50">
                         {selectedItems && selectedItems.length > 0 ? (
                             <span>
                                 {selectedItems.length} of{' '}

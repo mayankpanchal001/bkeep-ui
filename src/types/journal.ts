@@ -12,6 +12,8 @@ export type JournalEntryLine = {
     credit: number;
     description: string;
     memo?: string;
+    contactId?: string;
+    taxId?: string;
 };
 
 export type CreateJournalEntryLine = Omit<
@@ -21,6 +23,8 @@ export type CreateJournalEntryLine = Omit<
     id?: number; // Optional for new lines or updates
     accountName?: string; // Optional for display
     name?: string; // Optional for display
+    contactId?: string;
+    taxId?: string;
 };
 
 export type JournalEntry = {
@@ -43,21 +47,21 @@ export type JournalEntry = {
 };
 
 export type CreateJournalEntryPayload = {
-    journalNo?: string;
-    journalDate: string;
+    entryNumber?: string;
+    entryDate: string;
     entryType?: 'standard' | 'adjusting' | 'closing' | 'reversing';
     isAdjusting: boolean;
     isClosing?: boolean;
     isReversing?: boolean;
     reversalDate?: string | null;
-    memo?: string;
+    description?: string;
     reference?: string;
+    memo?: string;
+    currency?: string;
+    exchangeRate?: number;
     sourceModule?: string;
     sourceId?: string;
     lines: CreateJournalEntryLine[];
-    attachments?: File[];
-    isRecurring?: boolean;
-    recurringFrequency?: 'daily' | 'weekly' | 'monthly' | 'yearly';
 };
 
 export type UpdateJournalEntryPayload = Partial<CreateJournalEntryPayload>;

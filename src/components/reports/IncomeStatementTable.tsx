@@ -79,8 +79,8 @@ const IncomeStatementTable = () => {
 
     const getRowBackground = (row: IncomeStatementRow) => {
         if (row.type === 'section') {
-            if (row.sectionType === 'calculated') return 'bg-gray-50';
-            if (row.sectionType === 'final') return 'bg-primary-10';
+            if (row.sectionType === 'calculated') return 'bg-white';
+            if (row.sectionType === 'final') return 'bg-primary/10';
             return 'bg-white';
         }
         return 'bg-white';
@@ -104,7 +104,7 @@ const IncomeStatementTable = () => {
                         ) : row.type === 'item' ? (
                             <div className="pl-4 flex items-center">
                                 {row.code && (
-                                    <span className="text-xs text-gray-400 mr-2">
+                                    <span className="text-xs text-primary/40 mr-2">
                                         {row.code}
                                     </span>
                                 )}
@@ -122,7 +122,7 @@ const IncomeStatementTable = () => {
                         row.type === 'item' ||
                         (row.type === 'section' && !row.sectionType)
                     ) {
-                        classes += ' hover:bg-gray-50';
+                        classes += ' hover:bg-white';
                     }
                     return classes;
                 },
@@ -147,16 +147,17 @@ const IncomeStatementTable = () => {
     const getRowClassName = (row: IncomeStatementRow) => {
         if (row.type === 'section') {
             if (row.sectionType === 'calculated') {
-                return 'border-b border-gray-300 bg-gray-50 font-bold text-primary';
+                return 'border-b border-primary/25 bg-white font-bold text-primary';
             }
             if (row.sectionType === 'final') {
-                return 'border-t-2 border-primary bg-primary-10 font-bold text-primary text-base';
+                return 'border-t-2 border-primary bg-primary/10 font-bold text-primary text-base';
             }
-            let classes = 'border-b border-gray-200 font-semibold text-primary';
-            if (row.collapsible) classes += ' cursor-pointer hover:bg-gray-50';
+            let classes =
+                'border-b border-primary/10 font-semibold text-primary';
+            if (row.collapsible) classes += ' cursor-pointer hover:bg-white';
             return classes;
         }
-        return 'border-b border-gray-100 hover:bg-gray-50 text-black';
+        return 'border-b border-primary/10 hover:bg-white text-primary';
     };
 
     return (
@@ -169,7 +170,7 @@ const IncomeStatementTable = () => {
                     toggleSection(row.id);
                 }
             }}
-            containerClassName="border-primary-10"
+            containerClassName="border-primary/10"
             tableClassName="w-full text-sm"
         />
     );

@@ -1,39 +1,100 @@
 @import 'tailwindcss';
 
 :root {
-    /* Primary color */
-    /* --r: 197;
-    --g: 90;
-    --b: 17; */
-    /* --r: 13;
-    --g: 148;
-    --b: 136; */
-    --r: 61;
-    --g: 19;
-    --b: 8;
-    /* Secondary color */
-    --sr: 94;
-    --sg: 23;
-    --sb: 235;
+    --primary-r: 36;
+    --primary-g: 36;
+    --primary-b: 36;
+
+    --secondary-r: 94;
+    --secondary-g: 23;
+    --secondary-b: 235;
+
+    --accent-r: 255;
+    --accent-g: 122;
+    --accent-b: 66;
+
+    --surface: #fff;
+    --surface-muted: #fff;
 }
 
 @theme {
-    /* --color-lightBg: rgb(252 247 239); */
-    --color-lightBg: #f7f7f7;
-    /* --color-primary: rgba(var(--r), var(--g), var(--b), 1); */
-    --color-primary: #242424;
-    --color-primary-10: #f7f7f7;
-    /* --color-primary-25: rgba(var(--r), var(--g), var(--b), 0.25);
-    --color-primary-50: rgba(var(--r), var(--g), var(--b), 0.5);
-    --color-primary-75: rgba(var(--r), var(--g), var(--b), 0.75); */
-    --color-primary-25: rgba(0, 0, 0, 0.25);
-    --color-primary-50: rgba(0, 0, 0, 0.75);
-    --color-primary-75: rgba(0, 0, 0, 0.95);
+    --color-surface: var(--surface);
+    --color-surface-muted: var(--surface-muted);
+    --color-lightBg: var(--color-surface-muted);
+    --color-white: var(--color-surface);
+    --color-background: var(--surface);
+    --color-foreground: var(--color-primary);
+    --color-card: var(--surface);
+    --color-card-foreground: var(--color-primary);
+    --color-popover: var(--surface);
+    --color-popover-foreground: var(--color-primary);
 
     --radius-2: 2px;
+    --radius: var(--radius-2);
 
-    --color-secondary: rgba(var(--sr), var(--sg), var(--sb), 1);
-    --color-secondary-10: rgba(var(--sr), var(--sg), var(--sb), 0.1);
-    --color-secondary-50: rgba(var(--sr), var(--sg), var(--sb), 0.5);
-    --color-secondary-75: rgba(var(--sr), var(--sg), var(--sb), 0.75);
+    --color-primary: rgb(var(--primary-r) var(--primary-g) var(--primary-b));
+
+    --color-secondary: rgb(
+        var(--secondary-r) var(--secondary-g) var(--secondary-b)
+    );
+
+    --color-accent: rgb(var(--accent-r) var(--accent-g) var(--accent-b));
+
+    --color-muted: rgb(
+        var(--primary-r) var(--primary-g) var(--primary-b) / 0.6
+    );
+    --color-muted-foreground: rgb(
+        var(--primary-r) var(--primary-g) var(--primary-b) / 0.6
+    );
+    --color-border: rgb(
+        var(--primary-r) var(--primary-g) var(--primary-b) / 0.1
+    );
+    --color-input: var(--color-border);
+    --color-ring: var(--color-primary);
+    --color-destructive: var(--color-accent);
+    --color-destructive-foreground: var(--color-white);
+}
+
+.dark {
+    color-scheme: dark;
+    --surface: #0d1117;
+    --surface-muted: #161b22;
+    --primary-r: 255;
+    --primary-g: 255;
+    --primary-b: 255;
+}
+
+/* Hard-override for Sidebar visibility regardless of Tailwind resolution */
+.dark .sidebar-item-label,
+.dark .sidebar-item-icon,
+.dark .sidebar-header-title-text {
+    color: #ffffff !important;
+}
+
+/* Custom Scrollbar Styling - Dark Mode Only */
+/* Dark mode scrollbar */
+.dark ::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+}
+
+.dark ::-webkit-scrollbar-track {
+    background: #1e293b;
+    border-radius: 10px;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+    background: #475569;
+    border-radius: 10px;
+    border: 2px solid #1e293b;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+    background: #64748b;
+}
+
+/* Firefox scrollbar - Dark mode only */
+.dark * {
+    scrollbar-width: thin;
+    scrollbar-color: #475569 #1e293b;
 }

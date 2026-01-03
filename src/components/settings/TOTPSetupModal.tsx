@@ -155,7 +155,7 @@ const TOTPSetupModal = ({
                     <button
                         onClick={onClose}
                         disabled={isSettingUp || isVerifying}
-                        className="text-primary-50 hover:text-primary transition-colors disabled:opacity-50"
+                        className="text-primary/50 hover:text-primary transition-colors disabled:opacity-50"
                     >
                         <FaTimes className="w-5 h-5" />
                     </button>
@@ -177,7 +177,7 @@ const TOTPSetupModal = ({
                         </div>
 
                         {/* QR Code */}
-                        <div className="flex justify-center p-4 bg-white border-2 border-primary-10 rounded-2">
+                        <div className="flex justify-center p-4 bg-white border-2 border-primary/10 rounded-2">
                             <img
                                 src={totpData.qrCode}
                                 alt="TOTP QR Code"
@@ -186,17 +186,17 @@ const TOTPSetupModal = ({
                         </div>
 
                         {/* Manual Setup */}
-                        <div className="bg-gray-50 border border-primary-10 rounded-2 p-4">
+                        <div className="bg-white border border-primary/10 rounded-2 p-4">
                             <h4 className="font-semibold text-primary mb-3 flex items-center gap-2">
                                 <FaKey className="w-4 h-4" />
                                 Can't scan? Enter manually
                             </h4>
                             <div className="space-y-2">
-                                <p className="text-xs text-primary-50 mb-2">
+                                <p className="text-xs text-primary/50 mb-2">
                                     Secret Key:
                                 </p>
                                 <div className="flex gap-2">
-                                    <div className="flex-1 bg-white border border-primary-10 rounded-lg p-3 font-mono text-sm break-all">
+                                    <div className="flex-1 bg-white border border-primary/10 rounded-lg p-3 font-mono text-sm break-all">
                                         {totpData.secret}
                                     </div>
                                     <Button
@@ -232,7 +232,7 @@ const TOTPSetupModal = ({
                                     {totpData.backupCodes.map((code, index) => (
                                         <div
                                             key={index}
-                                            className="text-primary-75"
+                                            className="text-primary/75"
                                         >
                                             {code}
                                         </div>
@@ -273,7 +273,7 @@ const TOTPSetupModal = ({
                         </div>
 
                         {/* Action Buttons */}
-                        <div className="flex justify-end gap-3 pt-4 border-t border-primary-10">
+                        <div className="flex justify-end gap-3 pt-4 border-t border-primary/10">
                             <Button
                                 type="button"
                                 variant="outline"
@@ -323,7 +323,7 @@ const TOTPSetupModal = ({
                         />
 
                         {/* Action Buttons */}
-                        <div className="flex justify-end gap-3 pt-4 border-t border-primary-10">
+                        <div className="flex justify-end gap-3 pt-4 border-t border-primary/10">
                             <Button
                                 type="button"
                                 variant="outline"

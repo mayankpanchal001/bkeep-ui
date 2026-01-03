@@ -118,7 +118,7 @@ const ImportFileModal = ({
             }
         >
             <div className="space-y-4">
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-primary/50">
                     Upload your chart of accounts to quickly populate your
                     system. We support .xlsx, .xls, and .csv files.
                 </p>
@@ -127,10 +127,10 @@ const ImportFileModal = ({
                     className={`relative flex flex-col items-center justify-center w-full h-48 border-2 border-dashed rounded-lg transition-colors cursor-pointer
                         ${
                             dragActive
-                                ? 'border-primary bg-primary-50/10'
-                                : 'border-gray-300 hover:border-primary/50 hover:bg-gray-50'
+                                ? 'border-primary bg-primary/50/10'
+                                : 'border-primary/25 hover:border-primary/50 hover:bg-white'
                         }
-                        ${selectedFile ? 'bg-primary-50/20 border-primary' : ''}
+                        ${selectedFile ? 'bg-primary/50/20 border-primary' : ''}
                     `}
                     onDragEnter={handleDrag}
                     onDragLeave={handleDrag}
@@ -149,10 +149,10 @@ const ImportFileModal = ({
                     {selectedFile ? (
                         <div className="text-center">
                             <FaFileExcel className="w-10 h-10 text-green-600 mx-auto mb-2" />
-                            <p className="text-sm font-medium text-gray-900">
+                            <p className="text-sm font-medium text-primary">
                                 {selectedFile.name}
                             </p>
-                            <p className="text-xs text-gray-500 mt-1">
+                            <p className="text-xs text-primary/50 mt-1">
                                 {(selectedFile.size / 1024).toFixed(2)} KB
                             </p>
                             <Button
@@ -170,14 +170,14 @@ const ImportFileModal = ({
                         </div>
                     ) : (
                         <div className="text-center">
-                            <FaCloudUploadAlt className="w-10 h-10 text-gray-400 mx-auto mb-2" />
-                            <p className="text-sm font-medium text-gray-700">
+                            <FaCloudUploadAlt className="w-10 h-10 text-primary/40 mx-auto mb-2" />
+                            <p className="text-sm font-medium text-primary/70">
                                 <span className="text-primary hover:underline">
                                     Click to upload
                                 </span>{' '}
                                 or drag and drop
                             </p>
-                            <p className="text-xs text-gray-500 mt-1">
+                            <p className="text-xs text-primary/50 mt-1">
                                 Excel or CSV files
                             </p>
                         </div>

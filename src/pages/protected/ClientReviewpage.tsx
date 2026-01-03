@@ -9,11 +9,11 @@ import {
     FaSearch,
     FaTimes,
 } from 'react-icons/fa';
-import Button from '../../components/typography/Button';
+import Button from '/src/components/typography/Button';
 import {
     InputField,
     TextareaField,
-} from '../../components/typography/InputFields';
+} from '/src/components/typography/InputFields';
 
 type Transaction = {
     id: string;
@@ -166,7 +166,7 @@ const ClientReviewpage = () => {
                     <h2 className="text-2xl font-bold text-primary">
                         Client Review
                     </h2>
-                    <p className="text-sm text-primary-50 mt-1">
+                    <p className="text-sm text-primary/50 mt-1">
                         Review and categorize transactions that need your input
                     </p>
                 </div>
@@ -174,11 +174,11 @@ const ClientReviewpage = () => {
 
             {/* Summary Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="bg-white rounded-2 shadow-sm border border-primary-10 p-4">
+                <div className="bg-white rounded-2 shadow-sm border border-primary/10 p-4">
                     <div className="flex items-center gap-3">
                         <FaExclamationTriangle className="w-8 h-8 text-orange-600" />
                         <div>
-                            <div className="text-sm text-primary-50">
+                            <div className="text-sm text-primary/50">
                                 Pending Review
                             </div>
                             <div className="text-2xl font-bold text-primary">
@@ -187,11 +187,11 @@ const ClientReviewpage = () => {
                         </div>
                     </div>
                 </div>
-                <div className="bg-white rounded-2 shadow-sm border border-primary-10 p-4">
+                <div className="bg-white rounded-2 shadow-sm border border-primary/10 p-4">
                     <div className="flex items-center gap-3">
                         <FaClock className="w-8 h-8 text-blue-600" />
                         <div>
-                            <div className="text-sm text-primary-50">
+                            <div className="text-sm text-primary/50">
                                 Reviewed
                             </div>
                             <div className="text-2xl font-bold text-primary">
@@ -200,11 +200,11 @@ const ClientReviewpage = () => {
                         </div>
                     </div>
                 </div>
-                <div className="bg-white rounded-2 shadow-sm border border-primary-10 p-4">
+                <div className="bg-white rounded-2 shadow-sm border border-primary/10 p-4">
                     <div className="flex items-center gap-3">
                         <FaCheckCircle className="w-8 h-8 text-green-600" />
                         <div>
-                            <div className="text-sm text-primary-50">
+                            <div className="text-sm text-primary/50">
                                 Total Transactions
                             </div>
                             <div className="text-2xl font-bold text-primary">
@@ -216,7 +216,7 @@ const ClientReviewpage = () => {
             </div>
 
             {/* Filters */}
-            <div className="bg-white rounded-2 shadow-sm border border-primary-10 p-4">
+            <div className="bg-white rounded-2 shadow-sm border border-primary/10 p-4">
                 <div className="flex flex-col sm:flex-row gap-4">
                     <div className="flex-1">
                         <div className="relative">
@@ -230,11 +230,11 @@ const ClientReviewpage = () => {
                         </div>
                     </div>
                     <div className="flex items-center gap-2">
-                        <FaFilter className="text-primary-50" />
+                        <FaFilter className="text-primary/50" />
                         <select
                             value={statusFilter}
                             onChange={(e) => setStatusFilter(e.target.value)}
-                            className="px-4 py-2 border border-primary-10 rounded-2 text-sm text-primary focus:outline-none focus:border-primary"
+                            className="px-4 py-2 border border-primary/10 rounded-2 text-sm text-primary focus:outline-none focus:border-primary"
                         >
                             <option value="all">All Status</option>
                             <option value="pending">Pending</option>
@@ -246,17 +246,17 @@ const ClientReviewpage = () => {
             </div>
 
             {/* Transactions List */}
-            <div className="bg-white rounded-2 shadow-sm border border-primary-10 overflow-hidden">
-                <div className="divide-y divide-primary-10">
+            <div className="bg-white rounded-2 shadow-sm border border-primary/10 overflow-hidden">
+                <div className="divide-y divide-primary/10">
                     {filteredTransactions.length === 0 ? (
-                        <div className="px-4 py-8 text-center text-primary-50">
+                        <div className="px-4 py-8 text-center text-primary/50">
                             No transactions found
                         </div>
                     ) : (
                         filteredTransactions.map((transaction) => (
                             <div
                                 key={transaction.id}
-                                className="p-4 hover:bg-primary-5 transition-colors"
+                                className="p-4 hover:bg-primary/5 transition-colors"
                             >
                                 <div className="flex items-start justify-between gap-4">
                                     <div className="flex-1 min-w-0">
@@ -266,7 +266,7 @@ const ClientReviewpage = () => {
                                                 <div className="font-medium text-primary">
                                                     {transaction.description}
                                                 </div>
-                                                <div className="text-sm text-primary-50 mt-1">
+                                                <div className="text-sm text-primary/50 mt-1">
                                                     {new Date(
                                                         transaction.date
                                                     ).toLocaleDateString()}
@@ -285,7 +285,7 @@ const ClientReviewpage = () => {
                                                     )}
                                                 </div>
                                                 {transaction.aiConfidence && (
-                                                    <div className="text-xs text-primary-50">
+                                                    <div className="text-xs text-primary/50">
                                                         AI Confidence:{' '}
                                                         {
                                                             transaction.aiConfidence
@@ -297,7 +297,7 @@ const ClientReviewpage = () => {
                                         </div>
                                         {transaction.suggestedCategory && (
                                             <div className="mt-2">
-                                                <span className="inline-flex items-center gap-1 px-2 py-1 bg-primary-10 text-primary rounded-full text-xs font-medium">
+                                                <span className="inline-flex items-center gap-1 px-2 py-1 bg-primary/10 text-primary rounded-full text-xs font-medium">
                                                     Suggested:{' '}
                                                     {
                                                         transaction.suggestedCategory
@@ -376,26 +376,26 @@ const ClientReviewpage = () => {
                                     setComment('');
                                     setSelectedCategory('');
                                 }}
-                                className="text-primary-50 hover:text-primary"
+                                className="text-primary/50 hover:text-primary"
                             >
                                 <FaTimes className="w-5 h-5" />
                             </button>
                         </div>
                         <div className="space-y-4">
-                            <div className="p-4 bg-primary-10 rounded-2">
-                                <div className="text-sm text-primary-50 mb-1">
+                            <div className="p-4 bg-primary/10 rounded-2">
+                                <div className="text-sm text-primary/50 mb-1">
                                     Transaction Details
                                 </div>
                                 <div className="font-medium text-primary">
                                     {selectedTransaction.description}
                                 </div>
-                                <div className="text-sm text-primary-75 mt-2">
+                                <div className="text-sm text-primary/75 mt-2">
                                     Date:{' '}
                                     {new Date(
                                         selectedTransaction.date
                                     ).toLocaleDateString()}
                                 </div>
-                                <div className="text-sm text-primary-75">
+                                <div className="text-sm text-primary/75">
                                     Amount:{' '}
                                     {currencyFormatter.format(
                                         selectedTransaction.amount
@@ -415,7 +415,7 @@ const ClientReviewpage = () => {
                                     }
                                 />
                                 {selectedTransaction.suggestedCategory && (
-                                    <p className="text-xs text-primary-50 mt-1">
+                                    <p className="text-xs text-primary/50 mt-1">
                                         AI Suggested:{' '}
                                         {selectedTransaction.suggestedCategory}
                                     </p>

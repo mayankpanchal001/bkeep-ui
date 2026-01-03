@@ -24,14 +24,14 @@ const ExpensePieChart = ({ data }: ExpensePieChartProps) => {
     const CustomTooltip = ({ active, payload }: any) => {
         if (active && payload && payload.length) {
             return (
-                <div className="bg-white p-3 border border-primary-25 rounded-lg shadow-md">
+                <div className="bg-white p-3 border border-primary/25 rounded-lg shadow-md">
                     <p className="font-semibold text-primary">
                         {payload[0].name}
                     </p>
-                    <p className="text-sm text-primary-75">
+                    <p className="text-sm text-primary/75">
                         ${payload[0].value.toLocaleString()}
                     </p>
-                    <p className="text-xs text-primary-50">
+                    <p className="text-xs text-primary/50">
                         {payload[0].payload.percentage}% of total
                     </p>
                 </div>

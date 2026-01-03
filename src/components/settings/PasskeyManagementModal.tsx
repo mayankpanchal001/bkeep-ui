@@ -327,7 +327,7 @@ const PasskeyManagementModal = ({
                         <button
                             onClick={handleClose}
                             disabled={isRegistering || isDeleting || isRenaming}
-                            className="text-primary-50 hover:text-primary transition-colors disabled:opacity-50"
+                            className="text-primary/50 hover:text-primary transition-colors disabled:opacity-50"
                         >
                             <FaTimes className="w-5 h-5" />
                         </button>
@@ -374,17 +374,17 @@ const PasskeyManagementModal = ({
                                 {isLoadingPasskeys ? (
                                     <div className="text-center py-12">
                                         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-                                        <p className="text-sm text-primary-50 mt-3">
+                                        <p className="text-sm text-primary/50 mt-3">
                                             Loading passkeys...
                                         </p>
                                     </div>
                                 ) : passkeys.length === 0 ? (
-                                    <div className="bg-gray-50 border border-primary-10 rounded-2 p-8 text-center">
-                                        <FaFingerprint className="w-12 h-12 text-primary-20 mx-auto mb-3" />
+                                    <div className="bg-white border border-primary/10 rounded-2 p-8 text-center">
+                                        <FaFingerprint className="w-12 h-12 text-primary/20 mx-auto mb-3" />
                                         <p className="text-sm font-medium text-primary mb-1">
                                             No passkeys registered yet
                                         </p>
-                                        <p className="text-xs text-primary-50">
+                                        <p className="text-xs text-primary/50">
                                             Add a passkey to enable passwordless
                                             authentication
                                         </p>
@@ -396,8 +396,8 @@ const PasskeyManagementModal = ({
                                                 key={passkey.id}
                                                 className={`border rounded-2 p-4 transition-colors ${
                                                     passkey.isActive
-                                                        ? 'border-primary-10 bg-white'
-                                                        : 'border-gray-200 bg-gray-50'
+                                                        ? 'border-primary/10 bg-white'
+                                                        : 'border-primary/10 bg-white'
                                                 }`}
                                             >
                                                 <div className="flex items-start justify-between">
@@ -405,7 +405,7 @@ const PasskeyManagementModal = ({
                                                         <div
                                                             className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${
                                                                 passkey.isActive
-                                                                    ? 'bg-primary-10'
+                                                                    ? 'bg-primary/10'
                                                                     : 'bg-gray-200'
                                                             }`}
                                                         >
@@ -413,7 +413,7 @@ const PasskeyManagementModal = ({
                                                                 className={`w-5 h-5 ${
                                                                     passkey.isActive
                                                                         ? 'text-primary'
-                                                                        : 'text-gray-400'
+                                                                        : 'text-primary/40'
                                                                 }`}
                                                             />
                                                         </div>
@@ -431,24 +431,24 @@ const PasskeyManagementModal = ({
                                                                     </span>
                                                                 )}
                                                                 {!passkey.isActive && (
-                                                                    <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-gray-200 text-gray-600 text-xs font-medium">
+                                                                    <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-gray-200 text-primary/60 text-xs font-medium">
                                                                         Disabled
                                                                     </span>
                                                                 )}
                                                             </div>
-                                                            <p className="text-xs text-primary-50 mt-1">
+                                                            <p className="text-xs text-primary/50 mt-1">
                                                                 Created:{' '}
                                                                 {formatDate(
                                                                     passkey.createdAt
                                                                 )}
                                                             </p>
-                                                            <p className="text-xs text-primary-50">
+                                                            <p className="text-xs text-primary/50">
                                                                 Last used:{' '}
                                                                 {formatDate(
                                                                     passkey.lastUsedAt
                                                                 )}
                                                             </p>
-                                                            <p className="text-xs text-primary-40">
+                                                            <p className="text-xs text-primary/40">
                                                                 Type:{' '}
                                                                 {passkey.credentialType ===
                                                                 'platform'
@@ -466,7 +466,7 @@ const PasskeyManagementModal = ({
                                                                     passkey
                                                                 )
                                                             }
-                                                            className="p-2 text-primary-50 hover:text-primary hover:bg-primary-5 rounded-lg transition-colors"
+                                                            className="p-2 text-primary/50 hover:text-primary hover:bg-primary/5 rounded-lg transition-colors"
                                                             title="Rename"
                                                         >
                                                             <FaEdit className="w-4 h-4" />
@@ -537,13 +537,13 @@ const PasskeyManagementModal = ({
                                         disabled={isRegistering}
                                         required
                                     />
-                                    <p className="text-xs text-primary-50 mt-2">
+                                    <p className="text-xs text-primary/50 mt-2">
                                         Give this passkey a name to help you
                                         identify it later
                                     </p>
                                 </div>
 
-                                <div className="flex justify-end gap-3 pt-4 border-t border-primary-10">
+                                <div className="flex justify-end gap-3 pt-4 border-t border-primary/10">
                                     <Button
                                         type="button"
                                         variant="outline"
@@ -568,8 +568,8 @@ const PasskeyManagementModal = ({
                         {/* Rename View */}
                         {currentStep === 'rename' && selectedPasskey && (
                             <div className="space-y-6">
-                                <div className="bg-gray-50 border border-primary-10 rounded-2 p-4">
-                                    <p className="text-sm text-primary-75">
+                                <div className="bg-white border border-primary/10 rounded-2 p-4">
+                                    <p className="text-sm text-primary/75">
                                         Update the name of this passkey to help
                                         you identify it more easily.
                                     </p>
@@ -586,7 +586,7 @@ const PasskeyManagementModal = ({
                                     required
                                 />
 
-                                <div className="flex justify-end gap-3 pt-4 border-t border-primary-10">
+                                <div className="flex justify-end gap-3 pt-4 border-t border-primary/10">
                                     <Button
                                         type="button"
                                         variant="outline"

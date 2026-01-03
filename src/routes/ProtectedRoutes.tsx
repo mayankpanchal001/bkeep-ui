@@ -1,10 +1,12 @@
 import { Navigate, Outlet } from 'react-router';
-import ProtectedLayout from '../components/layouts/ProtectedLayout';
-import Loading from '../components/shared/Loading';
-import SEOUpdater from '../components/shared/SEOUpdater';
+import { useThemeSync } from '../hooks/useThemeSync';
 import { useAuth } from '../stores/auth/authSelectore';
+import ProtectedLayout from '/src/components/layouts/ProtectedLayout';
+import Loading from '/src/components/shared/Loading';
+import SEOUpdater from '/src/components/shared/SEOUpdater';
 
 const ProtectedRoutes = () => {
+    useThemeSync();
     const { accessToken, loading } = useAuth();
 
     // Show loading only if we're actively loading and have no token

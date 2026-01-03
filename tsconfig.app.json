@@ -27,5 +27,18 @@
             "@/*": ["./src/*"]
         }
     },
-    "include": ["src"]
+    "include": [
+        "src",
+        "ui/alert-dialog.tsx",
+        "ui/button-variants.ts",
+        "ui/button.tsx",
+        "ui/checkbox.tsx",
+        "ui/combobox.tsx",
+        "ui/command.tsx",
+        "ui/dialog.tsx",
+        "ui/dropdown-menu.tsx",
+        "ui/input.tsx",
+        "ui/popover.tsx",
+        "ui/table.tsx"
+    ]
 }

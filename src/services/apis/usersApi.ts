@@ -13,6 +13,13 @@ export type UsersQueryParams = {
     isActive?: boolean;
 };
 
+export type InvitationsQueryParams = {
+    page?: number;
+    limit?: number;
+    sort?: string;
+    order?: 'asc' | 'desc';
+};
+
 export async function getUsersRequest(
     params: UsersQueryParams = {}
 ): Promise<UsersListResponse> {
@@ -82,19 +89,16 @@ export const useUserStatistics = () => {
 };
 
 // Get Pending Invitations
-type Invitation = {
+export type PendingInvitation = {
     id: string;
     email: string;
-    name: string;
-    roleId: string;
-    role?: {
+    userName: string;
+    tenant: {
         id: string;
         name: string;
-        displayName: string;
     };
-    invitedBy: string;
-    expiresAt: string;
     createdAt: string;
+    updatedAt: string;
 };
 
 type InvitationsListResponse = {
@@ -102,7 +106,7 @@ type InvitationsListResponse = {
     statusCode: number;
     message: string;
     data?: {
-        items: Invitation[];
+        items: PendingInvitation[];
         pagination?: {
             page: number;
             limit: number;
@@ -114,15 +118,35 @@ type InvitationsListResponse = {
     };
 };
 
-export async function getInvitationsRequest(): Promise<InvitationsListResponse> {
-    const response = await axiosInstance.get('/users/invitations');
+export async function getInvitationsRequest(
+    params: InvitationsQueryParams = {}
+): Promise<InvitationsListResponse> {
+    const queryParams = new URLSearchParams();
+
+    if (params.page !== undefined) {
+        queryParams.append('page', params.page.toString());
+    }
+    if (params.limit !== undefined) {
+        queryParams.append('limit', params.limit.toString());
+    }
+    if (params.sort) {
+        queryParams.append('sort', params.sort);
+    }
+    if (params.order) {
+        queryParams.append('order', params.order);
+    }
+
+    const queryString = queryParams.toString();
+    const url = `/users/invitations${queryString ? `?${queryString}` : ''}`;
+
+    const response = await axiosInstance.get(url);
     return response.data;
 }
 
-export const useInvitations = () => {
+export const useInvitations = (params: InvitationsQueryParams = {}) => {
     return useQuery<InvitationsListResponse, Error>({
-        queryKey: ['users', 'invitations'],
-        queryFn: getInvitationsRequest,
+        queryKey: ['users', 'invitations', params],
+        queryFn: () => getInvitationsRequest(params),
     });
 };
 
@@ -445,6 +469,7 @@ export const useRevokeInvitation = () => {
                 queryKey: ['users', 'invitations'],
             });
             queryClient.invalidateQueries({ queryKey: ['users'] });
+            queryClient.invalidateQueries({ queryKey: ['user-tenants'] });
         },
         onError: (error) => {
             console.error('Revoke Invitation Failed:', error);
@@ -493,6 +518,7 @@ export const useInviteUser = () => {
             );
             // Invalidate users query to refresh the list
             queryClient.invalidateQueries({ queryKey: ['users'] });
+            queryClient.invalidateQueries({ queryKey: ['user-tenants'] });
         },
         onError: (error) => {
             console.error('Invite User Failed:', error);
@@ -588,6 +614,7 @@ export const useResendInvitation = () => {
             showSuccessToast(data?.message || 'Invitation resent successfully');
             // Invalidate users query to refresh the list
             queryClient.invalidateQueries({ queryKey: ['users'] });
+            queryClient.invalidateQueries({ queryKey: ['user-tenants'] });
         },
         onError: (error) => {
             console.error('Resend Invitation Failed:', error);

@@ -5,7 +5,7 @@ import {
     FaFileInvoiceDollar,
     FaPiggyBank,
 } from 'react-icons/fa';
-import SummaryCard from '../../components/dashboard/SummaryCard';
+import SummaryCard from '/src/components/dashboard/SummaryCard';
 
 const BalanceSheetpage = () => {
     const [dateRange, setDateRange] = useState('monthly');
@@ -66,13 +66,13 @@ const BalanceSheetpage = () => {
                     <h2 className="text-2xl font-bold text-primary">
                         Balance Sheet
                     </h2>
-                    <p className="text-sm text-primary-50 mt-1">
+                    <p className="text-sm text-primary/50 mt-1">
                         View your assets, liabilities, and equity
                     </p>
                 </div>
                 <div className="flex items-center gap-3">
                     <div className="relative">
-                        <button className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-primary bg-white border-2 border-primary-10 rounded-2 hover:border-primary hover:bg-primary-10 transition-all">
+                        <button className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-primary bg-white border-2 border-primary/10 rounded-2 hover:border-primary hover:bg-primary/10 transition-all">
                             <FaDownload />
                             Export
                         </button>
@@ -81,7 +81,7 @@ const BalanceSheetpage = () => {
             </div>
 
             {/* Date Selector */}
-            <div className="bg-white rounded-2 shadow-sm border border-primary-10 p-4">
+            <div className="bg-white rounded-2 shadow-sm border border-primary/10 p-4">
                 <div className="flex flex-col sm:flex-row gap-4 items-end">
                     <div className="flex-1">
                         <label className="block text-sm font-medium text-primary mb-2">
@@ -91,7 +91,7 @@ const BalanceSheetpage = () => {
                             type="date"
                             value={asOfDate}
                             onChange={(e) => setAsOfDate(e.target.value)}
-                            className="w-full px-4 py-2 border border-primary-10 rounded-2 text-sm text-primary focus:outline-none focus:border-primary"
+                            className="w-full px-4 py-2 border border-primary/10 rounded-2 text-sm text-primary focus:outline-none focus:border-primary"
                         />
                     </div>
                     <div className="flex gap-2">
@@ -104,7 +104,7 @@ const BalanceSheetpage = () => {
                                 className={`px-4 py-2 text-sm font-medium rounded-2 transition-all ${
                                     dateRange === range.toLowerCase()
                                         ? 'bg-primary text-white'
-                                        : 'bg-primary-10 text-primary hover:bg-primary-25'
+                                        : 'bg-primary/10 text-primary hover:bg-primary/25'
                                 }`}
                             >
                                 {range}
@@ -136,7 +136,7 @@ const BalanceSheetpage = () => {
             {/* Balance Sheet Sections */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 {/* Assets */}
-                <div className="bg-white rounded-2 shadow-sm border border-primary-10 p-4">
+                <div className="bg-white rounded-2 shadow-sm border border-primary/10 p-4">
                     <h3 className="text-lg font-semibold text-primary mb-4">
                         Assets
                     </h3>
@@ -149,9 +149,9 @@ const BalanceSheetpage = () => {
                                 {assets.current.map((item, index) => (
                                     <div
                                         key={index}
-                                        className="flex justify-between items-center py-2 border-b border-primary-10"
+                                        className="flex justify-between items-center py-2 border-b border-primary/10"
                                     >
-                                        <span className="text-primary-75">
+                                        <span className="text-primary/75">
                                             {item.name}
                                         </span>
                                         <span className="font-medium text-primary">
@@ -183,9 +183,9 @@ const BalanceSheetpage = () => {
                                 {assets.fixed.map((item, index) => (
                                     <div
                                         key={index}
-                                        className="flex justify-between items-center py-2 border-b border-primary-10"
+                                        className="flex justify-between items-center py-2 border-b border-primary/10"
                                     >
-                                        <span className="text-primary-75">
+                                        <span className="text-primary/75">
                                             {item.name}
                                         </span>
                                         <span className="font-medium text-primary">
@@ -217,7 +217,7 @@ const BalanceSheetpage = () => {
                 </div>
 
                 {/* Liabilities & Equity */}
-                <div className="bg-white rounded-2 shadow-sm border border-primary-10 p-4">
+                <div className="bg-white rounded-2 shadow-sm border border-primary/10 p-4">
                     <h3 className="text-lg font-semibold text-primary mb-4">
                         Liabilities & Equity
                     </h3>
@@ -230,9 +230,9 @@ const BalanceSheetpage = () => {
                                 {liabilities.current.map((item, index) => (
                                     <div
                                         key={index}
-                                        className="flex justify-between items-center py-2 border-b border-primary-10"
+                                        className="flex justify-between items-center py-2 border-b border-primary/10"
                                     >
-                                        <span className="text-primary-75">
+                                        <span className="text-primary/75">
                                             {item.name}
                                         </span>
                                         <span className="font-medium text-primary">
@@ -264,9 +264,9 @@ const BalanceSheetpage = () => {
                                 {liabilities.longTerm.map((item, index) => (
                                     <div
                                         key={index}
-                                        className="flex justify-between items-center py-2 border-b border-primary-10"
+                                        className="flex justify-between items-center py-2 border-b border-primary/10"
                                     >
-                                        <span className="text-primary-75">
+                                        <span className="text-primary/75">
                                             {item.name}
                                         </span>
                                         <span className="font-medium text-primary">
@@ -298,9 +298,9 @@ const BalanceSheetpage = () => {
                                 {equity.map((item, index) => (
                                     <div
                                         key={index}
-                                        className="flex justify-between items-center py-2 border-b border-primary-10"
+                                        className="flex justify-between items-center py-2 border-b border-primary/10"
                                     >
-                                        <span className="text-primary-75">
+                                        <span className="text-primary/75">
                                             {item.name}
                                         </span>
                                         <span className="font-medium text-primary">

@@ -1,7 +1,7 @@
 import { Link } from 'react-router';
-import { PasskeyLoginForm } from '../../components/auth/PasskeyLoginForm';
 import { APP_TITLE } from '../../constants';
 import { logo } from '../../utills/image';
+import { PasskeyLoginForm } from '/src/components/auth/PasskeyLoginForm';
 
 const PasskeyLoginpage = () => {
     return (

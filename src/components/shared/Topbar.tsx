@@ -32,12 +32,12 @@ const Topbar = ({ onMenuClick }: TopbarProps) => {
                     <div className="flex items-center gap-1">
                         <button
                             onClick={onMenuClick}
-                            className="p-2 pl-4 text-primary-50 hover:text-primary transition-colors lg:hidden"
+                            className="p-2 pl-4 text-primary/50 hover:text-primary transition-colors lg:hidden"
                             aria-label="Toggle Menu"
                         >
                             <FaTh className="w-4 h-4" />
                         </button>
-                        <div className="h-6 w-px bg-primary-10 ml-2"></div>
+                        <div className="h-6 w-px bg-primary/10 ml-2"></div>
                         <div className="inline-block lg:hidden">
                             <PageHeaderMenu />
                         </div>

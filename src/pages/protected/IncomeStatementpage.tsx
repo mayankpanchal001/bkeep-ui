@@ -5,12 +5,12 @@ import {
     FaMoneyBillWave,
     FaPercent,
 } from 'react-icons/fa';
-import ExpensePieChart from '../../components/dashboard/charts/ExpensePieChart';
-import ProfitabilityLineChart from '../../components/dashboard/charts/ProfitabilityLineChart';
-import RevenueBarChart from '../../components/dashboard/charts/RevenueBarChart';
-import ChartWidget from '../../components/dashboard/ChartWidget';
-import SummaryCard from '../../components/dashboard/SummaryCard';
-import IncomeStatementTable from '../../components/reports/IncomeStatementTable';
+import ExpensePieChart from '/src/components/dashboard/charts/ExpensePieChart';
+import ProfitabilityLineChart from '/src/components/dashboard/charts/ProfitabilityLineChart';
+import RevenueBarChart from '/src/components/dashboard/charts/RevenueBarChart';
+import ChartWidget from '/src/components/dashboard/ChartWidget';
+import SummaryCard from '/src/components/dashboard/SummaryCard';
+import IncomeStatementTable from '/src/components/reports/IncomeStatementTable';
 
 const IncomeStatementpage = () => {
     const [dateRange, setDateRange] = useState('monthly');
@@ -48,13 +48,13 @@ const IncomeStatementpage = () => {
                     <h2 className="text-2xl font-bold text-primary">
                         Income Statement
                     </h2>
-                    <p className="text-sm text-primary-50 mt-1">
+                    <p className="text-sm text-primary/50 mt-1">
                         View your revenue, expenses, and net income
                     </p>
                 </div>
                 <div className="flex items-center gap-3">
                     <div className="relative">
-                        <button className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-primary bg-white border-2 border-primary-10 rounded-2 hover:border-primary hover:bg-primary-10 transition-all">
+                        <button className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-primary bg-white border-2 border-primary/10 rounded-2 hover:border-primary hover:bg-primary/10 transition-all">
                             <FaDownload />
                             Export
                         </button>
@@ -63,7 +63,7 @@ const IncomeStatementpage = () => {
             </div>
 
             {/* Date Range Selector */}
-            <div className="bg-white rounded-2 shadow-sm border border-primary-10 p-4">
+            <div className="bg-white rounded-2 shadow-sm border border-primary/10 p-4">
                 <div className="flex flex-col sm:flex-row gap-4 items-end">
                     <div className="flex-1 grid grid-cols-2 gap-4">
                         <div>
@@ -74,7 +74,7 @@ const IncomeStatementpage = () => {
                                 type="date"
                                 value={startDate}
                                 onChange={(e) => setStartDate(e.target.value)}
-                                className="w-full px-4 py-2 border border-primary-10 rounded-2 text-sm text-primary focus:outline-none focus:border-primary"
+                                className="w-full px-4 py-2 border border-primary/10 rounded-2 text-sm text-primary focus:outline-none focus:border-primary"
                             />
                         </div>
                         <div>
@@ -85,7 +85,7 @@ const IncomeStatementpage = () => {
                                 type="date"
                                 value={endDate}
                                 onChange={(e) => setEndDate(e.target.value)}
-                                className="w-full px-4 py-2 border border-primary-10 rounded-2 text-sm text-primary focus:outline-none focus:border-primary"
+                                className="w-full px-4 py-2 border border-primary/10 rounded-2 text-sm text-primary focus:outline-none focus:border-primary"
                             />
                         </div>
                     </div>
@@ -99,7 +99,7 @@ const IncomeStatementpage = () => {
                                 className={`px-4 py-2 text-sm font-medium rounded-2 transition-all ${
                                     dateRange === range.toLowerCase()
                                         ? 'bg-primary text-white'
-                                        : 'bg-primary-10 text-primary hover:bg-primary-25'
+                                        : 'bg-primary/10 text-primary hover:bg-primary/25'
                                 }`}
                             >
                                 {range}
@@ -155,7 +155,7 @@ const IncomeStatementpage = () => {
             </ChartWidget>
 
             {/* Income Statement Table */}
-            <div className="bg-white rounded-2 shadow-sm border border-primary-10 p-4">
+            <div className="bg-white rounded-2 shadow-sm border border-primary/10 p-4">
                 <h3 className="text-lg font-semibold text-primary mb-4">
                     Detailed Income Statement
                 </h3>

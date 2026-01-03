@@ -1,13 +1,30 @@
 import { useMemo, useState } from 'react';
-import { FaPlus, FaTrash } from 'react-icons/fa';
+import {
+    FaCog,
+    FaGripVertical,
+    FaPlus,
+    FaQuestionCircle,
+    FaRegCommentAlt,
+    FaRegCopy,
+    FaTimes,
+    FaTrash,
+} from 'react-icons/fa';
 import { useChartOfAccounts } from '../../services/apis/chartsAccountApi';
+import { useTaxes } from '../../services/apis/taxApi';
 import type {
     CreateJournalEntryLine,
     CreateJournalEntryPayload,
 } from '../../types/journal';
-import Button from '../typography/Button';
-import { InputField, SelectField } from '../typography/InputFields';
-import { DataTable, Column } from '../shared/DataTable';
+import { cn } from '../../utils/cn';
+import { InputField } from '../typography/InputFields';
+
+// Mock Contacts for the "Name" dropdown
+const MOCK_CONTACTS = [
+    { id: '1', name: 'Testing', type: 'Customer' },
+    { id: '2', name: 'RBC', type: 'Supplier' },
+    { id: '3', name: 'Vaibhav Inc.', type: 'Supplier' },
+    { id: '4', name: 'WagePoint', type: 'Supplier' },
+];
 
 type JournalEntryFormProps = {
     initialData?: Partial<CreateJournalEntryPayload>;
@@ -28,6 +45,18 @@ export function JournalEntryForm({
         return accountsData?.data?.items || [];
     }, [accountsData]);
 
+    // Fetch taxes
+    const { data: taxesData } = useTaxes({
+        page: 1,
+        limit: 100,
+        isActive: true,
+        sort: 'name',
+        order: 'asc',
+    });
+    const taxes = useMemo(() => {
+        return taxesData?.data?.items || [];
+    }, [taxesData]);
+
     // Account options for dropdown
     const accountOptions = useMemo(() => {
         return accounts.map((account) => ({
@@ -37,41 +66,52 @@ export function JournalEntryForm({
     }, [accounts]);
 
     const [entryNumber, setEntryNumber] = useState(
-        initialData?.journalNo || ''
+        initialData?.entryNumber || ''
     );
     const [entryDate, setEntryDate] = useState(
-        initialData?.journalDate || new Date().toISOString().split('T')[0]
+        initialData?.entryDate || new Date().toISOString().split('T')[0]
     );
-    const [entryType, setEntryType] = useState<
-        'standard' | 'adjusting' | 'closing' | 'reversing'
-    >(initialData?.entryType || 'standard');
     const [isAdjusting, setIsAdjusting] = useState(
         initialData?.isAdjusting || false
     );
-    const [isClosing, setIsClosing] = useState(initialData?.isClosing || false);
-    const [isReversing, setIsReversing] = useState(
-        initialData?.isReversing || false
-    );
-    const [description, setDescription] = useState(initialData?.memo || '');
-    const [reference, setReference] = useState(initialData?.reference || '');
+    const [memo, setMemo] = useState(initialData?.memo || '');
     const [lines, setLines] = useState<CreateJournalEntryLine[]>(
-        initialData?.lines || [
-            {
-                accountId: '',
-                lineNumber: 1,
-                debit: 0,
-                credit: 0,
-                description: '',
-            },
-            {
-                accountId: '',
-                lineNumber: 2,
-                debit: 0,
-                credit: 0,
-                description: '',
-            },
-        ]
+        initialData?.lines ||
+            Array(8)
+                .fill(null)
+                .map((_, i) => ({
+                    accountId: '',
+                    lineNumber: i + 1,
+                    debit: 0,
+                    credit: 0,
+                    description: '',
+                    memo: '',
+                    contactId: '',
+                    taxId: '',
+                    id: 0,
+                    accountName: '',
+                    name: '',
+                }))
     );
+
+    // Drag and Drop State
+    const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+
+    // Row selection state for showing input boxes
+    const [focusedLineIndex, setFocusedLineIndex] = useState<number | null>(
+        null
+    );
+
+    const getInputClassName = (index: number, additionalClasses?: string) => {
+        const isSelected = focusedLineIndex === index;
+        return cn(
+            'w-full px-3 py-2 rounded transition-colors h-10 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary',
+            isSelected
+                ? 'bg-card border border-border hover:border-primary/50'
+                : 'bg-transparent border border-transparent',
+            additionalClasses
+        );
+    };
 
     const calculateTotals = () => {
         const totalDebit = lines.reduce(
@@ -86,7 +126,7 @@ export function JournalEntryForm({
     };
 
     const { totalDebit, totalCredit } = calculateTotals();
-    const isBalanced = totalDebit === totalCredit;
+    const isBalanced = Math.abs(totalDebit - totalCredit) < 0.01;
 
     const handleAddLine = () => {
         setLines([
@@ -97,6 +137,9 @@ export function JournalEntryForm({
                 debit: 0,
                 credit: 0,
                 description: '',
+                memo: '',
+                contactId: '',
+                taxId: '',
                 id: 0,
                 accountName: '',
                 name: '',
@@ -105,15 +148,50 @@ export function JournalEntryForm({
     };
 
     const handleRemoveLine = (index: number) => {
-        if (lines.length > 2) {
-            const updatedLines = lines
-                .filter((_, i) => i !== index)
-                .map((line, idx) => ({
-                    ...line,
-                    lineNumber: idx + 1,
-                }));
-            setLines(updatedLines);
+        const updatedLines = lines.filter((_, i) => i !== index);
+        // Ensure at least 2 lines or empty lines to match UI preference
+        // But for flexible UI, maybe we don't force it, but let's keep at least 2 for journal entry logic
+        if (updatedLines.length < 2) {
+            updatedLines.push({
+                accountId: '',
+                lineNumber: updatedLines.length + 1,
+                debit: 0,
+                credit: 0,
+                description: '',
+                memo: '',
+                contactId: '',
+                taxId: '',
+                id: 0,
+                accountName: '',
+                name: '',
+            });
         }
+        // Re-index
+        const reindexed = updatedLines.map((line, idx) => ({
+            ...line,
+            lineNumber: idx + 1,
+        }));
+        setLines(reindexed);
+    };
+
+    const handleClearAll = () => {
+        setLines(
+            Array(8)
+                .fill(null)
+                .map((_, i) => ({
+                    accountId: '',
+                    lineNumber: i + 1,
+                    debit: 0,
+                    credit: 0,
+                    description: '',
+                    memo: '',
+                    contactId: '',
+                    taxId: '',
+                    id: 0,
+                    accountName: '',
+                    name: '',
+                }))
+        );
     };
 
     const handleLineChange = (
@@ -129,381 +207,499 @@ export function JournalEntryForm({
         setLines(updatedLines);
     };
 
+    // Drag and Drop Handlers
+    const handleDragStart = (e: React.DragEvent, index: number) => {
+        setDraggedIndex(index);
+        e.dataTransfer.effectAllowed = 'move';
+        // Optional: Set drag image
+    };
+
+    const handleDragOver = (e: React.DragEvent) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+    };
+
+    const handleDrop = (e: React.DragEvent, dropIndex: number) => {
+        e.preventDefault();
+        if (draggedIndex === null || draggedIndex === dropIndex) return;
+
+        const updatedLines = [...lines];
+        const [movedItem] = updatedLines.splice(draggedIndex, 1);
+        updatedLines.splice(dropIndex, 0, movedItem);
+
+        // Re-index line numbers
+        const reindexed = updatedLines.map((line, idx) => ({
+            ...line,
+            lineNumber: idx + 1,
+        }));
+
+        setLines(reindexed);
+        setDraggedIndex(null);
+    };
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+
+        // Filter out empty lines (no account selected)
+        const validLines = lines.filter((line) => line.accountId);
+
+        if (validLines.length < 2) {
+            alert('Please add at least two lines with accounts.');
+            return;
+        }
 
         if (!isBalanced) {
             alert('Debits and Credits must balance!');
             return;
         }
 
-        // Validate all lines have account IDs
-        const hasEmptyAccounts = lines.some((line) => !line.accountId);
-        if (hasEmptyAccounts) {
-            alert('Please select an account for all lines');
-            return;
-        }
-
         const payload: CreateJournalEntryPayload = {
-            journalNo: entryNumber || undefined,
-            journalDate: entryDate,
-            entryType,
+            entryNumber: entryNumber || undefined,
+            entryDate,
+            entryType: isAdjusting ? 'adjusting' : 'standard',
             isAdjusting,
-            isClosing,
-            isReversing,
-            memo: description || undefined,
-            reference: reference || undefined,
-            lines: lines.map((line, index) => ({
+            description: memo || undefined,
+            memo: memo || undefined,
+            currency: 'USD',
+            exchangeRate: 1.0,
+            lines: validLines.map((line, index) => ({
                 accountId: line.accountId,
-                lineNumber: line.lineNumber || index + 1,
+                lineNumber: index + 1,
                 debit: Number(line.debit),
                 credit: Number(line.credit),
                 description: line.description,
                 memo: line.memo || '',
+                contactId: line.contactId,
+                taxId: line.taxId,
             })),
         };
 
         onSubmit(payload);
     };
 
-    const handleClearAll = () => {
-        setLines([
-            {
-                accountId: '',
-                lineNumber: 1,
-                debit: 0,
-                credit: 0,
-                description: '',
-                id: 0,
-                accountName: '',
-                name: '',
-            },
-            {
-                accountId: '',
-                lineNumber: 2,
-                debit: 0,
-                credit: 0,
-                description: '',
-                id: 0,
-                accountName: '',
-                name: '',
-            },
-        ]);
-    };
-
-    const columns: Column<CreateJournalEntryLine>[] = [
-        {
-            header: '#',
-            cell: (line) => (
-                <span className="text-sm text-primary">{line.lineNumber}</span>
-            ),
-            className: 'w-12',
-        },
-        {
-            header: 'ACCOUNT',
-            cell: (line) => {
-                const index = (line.lineNumber || 1) - 1;
-                return (
-                    <SelectField
-                        value={line.accountId}
-                        onChange={(e) =>
-                            handleLineChange(index, 'accountId', e.target.value)
-                        }
-                        required
-                        options={[
-                            {
-                                value: '',
-                                label: 'Select Account',
-                            },
-                            ...accountOptions,
-                        ]}
-                    />
-                );
-            },
-            className: 'min-w-[200px]',
-        },
-        {
-            header: 'DEBITS',
-            cell: (line) => {
-                const index = (line.lineNumber || 1) - 1;
-                return (
-                    <input
-                        type="number"
-                        step="0.01"
-                        value={line.debit}
-                        onChange={(e) =>
-                            handleLineChange(
-                                index,
-                                'debit',
-                                parseFloat(e.target.value) || 0
-                            )
-                        }
-                        className="w-full px-2 py-1 text-sm border border-primary-10 rounded focus:ring-1 focus:ring-primary focus:border-transparent"
-                        placeholder="0.00"
-                    />
-                );
-            },
-            className: 'w-32',
-        },
-        {
-            header: 'CREDITS',
-            cell: (line) => {
-                const index = (line.lineNumber || 1) - 1;
-                return (
-                    <input
-                        type="number"
-                        step="0.01"
-                        value={line.credit}
-                        onChange={(e) =>
-                            handleLineChange(
-                                index,
-                                'credit',
-                                parseFloat(e.target.value) || 0
-                            )
-                        }
-                        className="w-full px-2 py-1 text-sm border border-primary-10 rounded focus:ring-1 focus:ring-primary focus:border-transparent"
-                        placeholder="0.00"
-                    />
-                );
-            },
-            className: 'w-32',
-        },
-        {
-            header: 'DESCRIPTION',
-            cell: (line) => {
-                const index = (line.lineNumber || 1) - 1;
-                return (
-                    <input
-                        type="text"
-                        value={line.description}
-                        onChange={(e) =>
-                            handleLineChange(
-                                index,
-                                'description',
-                                e.target.value
-                            )
-                        }
-                        className="w-full px-2 py-1 text-sm border border-primary-10 rounded focus:ring-1 focus:ring-primary focus:border-transparent"
-                        placeholder="Description"
-                    />
-                );
-            },
-        },
-        {
-            header: 'MEMO',
-            cell: (line) => {
-                const index = (line.lineNumber || 1) - 1;
-                return (
-                    <input
-                        type="text"
-                        value={line.memo || ''}
-                        onChange={(e) =>
-                            handleLineChange(index, 'memo', e.target.value)
-                        }
-                        className="w-full px-2 py-1 text-sm border border-primary-10 rounded focus:ring-1 focus:ring-primary focus:border-transparent"
-                        placeholder="Memo"
-                    />
-                );
-            },
-        },
-        {
-            header: '',
-            cell: (line) => {
-                const index = (line.lineNumber || 1) - 1;
-                return lines.length > 2 ? (
+    return (
+        <form
+            onSubmit={handleSubmit}
+            className="flex flex-col h-full bg-background min-h-screen"
+        >
+            {/* Top Bar - mimicking the image header */}
+            <div className="flex items-center justify-between px-6 py-4 bg-card border-b border-border">
+                <div className="flex items-center gap-3">
+                    <div className="flex items-center justify-center w-10 h-10 bg-muted rounded-full">
+                        <span className="text-xl font-bold text-muted-foreground">
+                            ↺
+                        </span>
+                    </div>
+                    <h1 className="text-2xl font-bold text-primary">
+                        {entryNumber
+                            ? `Journal Entry no.${entryNumber}`
+                            : 'Journal Entry'}
+                    </h1>
+                </div>
+                <div className="flex items-center gap-4 text-muted-foreground">
                     <button
                         type="button"
-                        onClick={() => handleRemoveLine(index)}
-                        className="text-red-600 hover:text-red-800"
+                        className="flex items-center gap-2 hover:text-primary font-medium"
                     >
-                        <FaTrash />
+                        <FaRegCopy className="text-lg" /> <span>Copy</span>
                     </button>
-                ) : null;
-            },
-            className: 'w-10 text-center',
-        },
-    ];
-
-    return (
-        <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Header Section */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                <InputField
-                    label="Entry Date"
-                    type="date"
-                    value={entryDate}
-                    onChange={(e) => setEntryDate(e.target.value)}
-                    required
-                />
-
-                <InputField
-                    label="Entry Number"
-                    type="text"
-                    value={entryNumber}
-                    onChange={(e) => setEntryNumber(e.target.value)}
-                    placeholder="Auto-generated if empty"
-                />
-
-                <SelectField
-                    label="Entry Type"
-                    value={entryType}
-                    onChange={(e) =>
-                        setEntryType(
-                            e.target.value as
-                                | 'standard'
-                                | 'adjusting'
-                                | 'closing'
-                                | 'reversing'
-                        )
-                    }
-                    options={[
-                        { value: 'standard', label: 'Standard' },
-                        { value: 'adjusting', label: 'Adjusting' },
-                        { value: 'closing', label: 'Closing' },
-                        { value: 'reversing', label: 'Reversing' },
-                    ]}
-                />
-            </div>
-
-            {/* Additional Fields */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <InputField
-                    label="Description"
-                    type="text"
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    placeholder="e.g., Office supply purchase"
-                />
-
-                <InputField
-                    label="Reference"
-                    type="text"
-                    value={reference}
-                    onChange={(e) => setReference(e.target.value)}
-                    placeholder="e.g., INV-88922"
-                />
-            </div>
-
-            {/* Checkboxes */}
-            <div className="flex flex-wrap gap-4">
-                <div className="flex items-center gap-2">
-                    <input
-                        type="checkbox"
-                        id="isAdjusting"
-                        checked={isAdjusting}
-                        onChange={(e) => setIsAdjusting(e.target.checked)}
-                        className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
-                    />
-                    <label
-                        htmlFor="isAdjusting"
-                        className="text-sm font-medium text-primary"
+                    <button
+                        type="button"
+                        className="flex items-center gap-2 hover:text-primary font-medium"
                     >
-                        Is Adjusting Entry
-                    </label>
-                </div>
-                <div className="flex items-center gap-2">
-                    <input
-                        type="checkbox"
-                        id="isClosing"
-                        checked={isClosing}
-                        onChange={(e) => setIsClosing(e.target.checked)}
-                        className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
-                    />
-                    <label
-                        htmlFor="isClosing"
-                        className="text-sm font-medium text-primary"
+                        <FaRegCommentAlt className="text-lg" />{' '}
+                        <span>Feedback</span>
+                    </button>
+                    <button type="button" className="hover:text-primary">
+                        <FaCog className="text-2xl" />
+                    </button>
+                    <button type="button" className="hover:text-primary">
+                        <FaQuestionCircle className="text-2xl" />
+                    </button>
+                    <button
+                        type="button"
+                        onClick={onCancel}
+                        className="hover:text-primary"
                     >
-                        Is Closing Entry
-                    </label>
+                        <FaTimes className="text-2xl" />
+                    </button>
                 </div>
-                <div className="flex items-center gap-2">
-                    <input
-                        type="checkbox"
-                        id="isReversing"
-                        checked={isReversing}
-                        onChange={(e) => setIsReversing(e.target.checked)}
-                        className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
-                    />
-                    <label
-                        htmlFor="isReversing"
-                        className="text-sm font-medium text-primary"
+            </div>
+
+            <div className="flex-1 overflow-y-auto p-8 space-y-8">
+                {/* Header Fields */}
+                <div className="flex flex-wrap items-start gap-12">
+                    <div className="w-48">
+                        <InputField
+                            label="Journal date"
+                            type="date"
+                            value={entryDate}
+                            onChange={(e) => setEntryDate(e.target.value)}
+                            required
+                        />
+                    </div>
+                    <div className="w-80">
+                        <InputField
+                            label="Journal no."
+                            type="text"
+                            value={entryNumber}
+                            onChange={(e) => setEntryNumber(e.target.value)}
+                            placeholder={initialData?.entryNumber || '2'}
+                        />
+                    </div>
+                    <div className="flex items-center gap-3 pt-9">
+                        <input
+                            type="checkbox"
+                            id="isAdjusting"
+                            checked={isAdjusting}
+                            onChange={(e) => setIsAdjusting(e.target.checked)}
+                            className="w-5 h-5 text-primary border-border rounded focus:ring-primary"
+                        />
+                        <label
+                            htmlFor="isAdjusting"
+                            className="text-muted-foreground font-medium"
+                        >
+                            Is Adjusting Journal Entry?
+                        </label>
+                    </div>
+                </div>
+
+                {/* Grid Table */}
+                <div className="bg-card rounded shadow-sm border border-border overflow-hidden">
+                    <table className="w-full text-sm text-left">
+                        <thead className="text-xs font-bold text-muted-foreground uppercase bg-card border-b border-border">
+                            <tr>
+                                <th className="w-10 px-2 py-3"></th>
+                                <th className="px-2 py-3 w-10">#</th>
+                                <th className="px-2 py-3 min-w-[200px]">
+                                    ACCOUNT
+                                </th>
+                                <th className="px-2 py-3 w-32">DEBITS</th>
+                                <th className="px-2 py-3 w-32">CREDITS</th>
+                                <th className="px-2 py-3">DESCRIPTION</th>
+                                <th className="px-2 py-3 w-48">NAME</th>
+                                <th className="px-2 py-3 w-32">SALES TAX</th>
+                                <th className="w-16 px-2 py-3"></th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-100">
+                            {lines.map((line, index) => (
+                                <tr
+                                    key={index}
+                                    draggable
+                                    onDragStart={(e) =>
+                                        handleDragStart(e, index)
+                                    }
+                                    onDragOver={handleDragOver}
+                                    onDrop={(e) => handleDrop(e, index)}
+                                    onClick={() => setFocusedLineIndex(index)}
+                                    className={cn(
+                                        'group hover:bg-muted/50 transition-colors',
+                                        draggedIndex === index &&
+                                            'opacity-50 bg-muted',
+                                        focusedLineIndex === index &&
+                                            'bg-muted/30'
+                                    )}
+                                >
+                                    <td className="px-2 py-2 cursor-grab text-muted/50 hover:text-muted-foreground text-center align-top pt-4">
+                                        <FaGripVertical className="mx-auto" />
+                                    </td>
+                                    <td className="px-2 py-2 text-muted-foreground align-top pt-4 font-medium">
+                                        {index + 1}
+                                    </td>
+                                    <td className="px-2 py-2 align-top">
+                                        <select
+                                            value={line.accountId}
+                                            onChange={(e) =>
+                                                handleLineChange(
+                                                    index,
+                                                    'accountId',
+                                                    e.target.value
+                                                )
+                                            }
+                                            onFocus={() =>
+                                                setFocusedLineIndex(index)
+                                            }
+                                            className={getInputClassName(index)}
+                                        >
+                                            <option value="">
+                                                Select Account
+                                            </option>
+                                            {accountOptions.map((opt) => (
+                                                <option
+                                                    key={opt.value}
+                                                    value={opt.value}
+                                                >
+                                                    {opt.label}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </td>
+                                    <td className="px-2 py-2 align-top">
+                                        <input
+                                            type="number"
+                                            value={line.debit || ''}
+                                            onChange={(e) =>
+                                                handleLineChange(
+                                                    index,
+                                                    'debit',
+                                                    parseFloat(
+                                                        e.target.value
+                                                    ) || 0
+                                                )
+                                            }
+                                            onFocus={() =>
+                                                setFocusedLineIndex(index)
+                                            }
+                                            className={getInputClassName(
+                                                index,
+                                                'text-right'
+                                            )}
+                                            placeholder=""
+                                        />
+                                    </td>
+                                    <td className="px-2 py-2 align-top">
+                                        <input
+                                            type="number"
+                                            value={line.credit || ''}
+                                            onChange={(e) =>
+                                                handleLineChange(
+                                                    index,
+                                                    'credit',
+                                                    parseFloat(
+                                                        e.target.value
+                                                    ) || 0
+                                                )
+                                            }
+                                            onFocus={() =>
+                                                setFocusedLineIndex(index)
+                                            }
+                                            className={getInputClassName(
+                                                index,
+                                                'text-right'
+                                            )}
+                                            placeholder=""
+                                        />
+                                    </td>
+                                    <td className="px-2 py-2 align-top">
+                                        <input
+                                            type="text"
+                                            value={line.description}
+                                            onChange={(e) =>
+                                                handleLineChange(
+                                                    index,
+                                                    'description',
+                                                    e.target.value
+                                                )
+                                            }
+                                            onFocus={() =>
+                                                setFocusedLineIndex(index)
+                                            }
+                                            className={getInputClassName(index)}
+                                        />
+                                    </td>
+                                    <td className="px-2 py-2 align-top">
+                                        <select
+                                            value={line.contactId || ''}
+                                            onChange={(e) =>
+                                                handleLineChange(
+                                                    index,
+                                                    'contactId',
+                                                    e.target.value
+                                                )
+                                            }
+                                            onFocus={() =>
+                                                setFocusedLineIndex(index)
+                                            }
+                                            className={getInputClassName(index)}
+                                        >
+                                            <option value="">
+                                                Select Name
+                                            </option>
+                                            <option
+                                                value="new"
+                                                className="text-accent font-semibold"
+                                            >
+                                                + Add new
+                                            </option>
+                                            {MOCK_CONTACTS.map((contact) => (
+                                                <option
+                                                    key={contact.id}
+                                                    value={contact.id}
+                                                >
+                                                    {contact.name} (
+                                                    {contact.type})
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </td>
+                                    <td className="px-2 py-2 align-top">
+                                        <select
+                                            value={line.taxId || ''}
+                                            onChange={(e) =>
+                                                handleLineChange(
+                                                    index,
+                                                    'taxId',
+                                                    e.target.value
+                                                )
+                                            }
+                                            className="w-full px-3 py-2 bg-card border border-border rounded hover:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-colors h-10"
+                                        >
+                                            <option value="">Select Tax</option>
+                                            {taxes.map((tax) => (
+                                                <option
+                                                    key={tax.id}
+                                                    value={tax.id}
+                                                >
+                                                    {tax.name}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </td>
+                                    <td className="px-2 py-2 text-center align-top pt-3">
+                                        <div className="flex items-center justify-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <button
+                                                type="button"
+                                                className="text-muted-foreground/70 hover:text-primary"
+                                            >
+                                                <FaRegCopy size={16} />
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() =>
+                                                    handleRemoveLine(index)
+                                                }
+                                                className="text-muted-foreground/70 hover:text-primary"
+                                            >
+                                                <FaTrash size={16} />
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                        <tfoot className="bg-muted font-bold text-primary">
+                            <tr>
+                                <td
+                                    colSpan={3}
+                                    className="px-4 py-4 text-right"
+                                >
+                                    Total
+                                </td>
+                                <td className="px-4 py-4 text-right">
+                                    ${totalDebit.toFixed(2)}
+                                </td>
+                                <td className="px-4 py-4 text-right">
+                                    ${totalCredit.toFixed(2)}
+                                </td>
+                                <td colSpan={4}></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+
+                <div className="flex gap-4">
+                    <button
+                        type="button"
+                        onClick={handleAddLine}
+                        className="px-4 py-2 text-sm font-bold text-primary bg-card border border-border rounded shadow-sm hover:bg-muted transition-colors"
                     >
-                        Is Reversing Entry
-                    </label>
+                        Add lines
+                    </button>
+                    <button
+                        type="button"
+                        onClick={handleClearAll}
+                        className="px-4 py-2 text-sm font-bold text-primary bg-card border border-border rounded shadow-sm hover:bg-muted transition-colors"
+                    >
+                        Clear all lines
+                    </button>
+                </div>
+
+                {/* Bottom Section */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mt-8">
+                    <div className="space-y-3">
+                        <label className="text-sm font-medium text-muted-foreground">
+                            Memo
+                        </label>
+                        <textarea
+                            value={memo}
+                            onChange={(e) => setMemo(e.target.value)}
+                            className="w-full h-32 px-4 py-3 text-sm border border-border rounded hover:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary resize-none transition-colors"
+                            placeholder="Enter a note about this journal entry"
+                        />
+                    </div>
+                    <div className="space-y-3">
+                        <label className="text-sm font-medium text-muted-foreground">
+                            Attachments
+                        </label>
+                        <div className="flex flex-col items-center justify-center w-full h-32 border border-dashed border-border rounded bg-card hover:bg-muted transition-colors cursor-pointer">
+                            <div className="text-center">
+                                <p className="text-sm font-bold text-primary mb-1">
+                                    Add attachment
+                                </p>
+                                <p className="text-xs text-muted-foreground">
+                                    Max file size: 20 MB
+                                </p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            {/* Journal Lines Table */}
-            <div className="rounded-lg">
-                <DataTable
-                    data={lines}
-                    columns={columns}
-                    keyField="lineNumber"
-                    emptyMessage="No lines added"
-                    footerContent={
-                        <tr>
-                            <td
-                                colSpan={2}
-                                className="px-2 py-2 text-right font-semibold text-sm text-primary"
-                            >
-                                Total
-                            </td>
-                            <td className="px-2 py-2 font-semibold text-sm text-primary">
-                                ${totalDebit.toFixed(2)}
-                            </td>
-                            <td className="px-2 py-2 font-semibold text-sm text-primary">
-                                ${totalCredit.toFixed(2)}
-                            </td>
-                            <td colSpan={3}></td>
-                        </tr>
-                    }
-                />
-            </div>
-
-            {!isBalanced && (
-                <div className="bg-red-50 border border-red-200 rounded-lg p-2">
-                    <p className="text-xs text-red-800 font-medium">
-                        ⚠️ Debits and Credits must balance! Difference: $
-                        {Math.abs(totalDebit - totalCredit).toFixed(2)}
-                    </p>
+            {/* Footer Action Bar */}
+            <div className="px-6 py-4 bg-card border-t border-border flex items-center justify-between sticky bottom-0 z-10 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+                <div className="flex gap-4">
+                    <button
+                        type="button"
+                        onClick={onCancel}
+                        className="px-6 py-2 text-sm font-bold text-primary border border-border rounded hover:bg-muted transition-colors"
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        type="button"
+                        onClick={handleClearAll}
+                        className="px-6 py-2 text-sm font-bold text-primary border border-border rounded hover:bg-muted transition-colors"
+                    >
+                        Clear
+                    </button>
                 </div>
-            )}
 
-            {/* Action Buttons for Lines */}
-            <div className="flex gap-2">
-                <Button type="button" variant="outline" onClick={handleAddLine}>
-                    <FaPlus className="w-4 h-4" />
-                    Add lines
-                </Button>
-                <Button
-                    type="button"
-                    variant="outline"
-                    onClick={handleClearAll}
-                >
-                    Clear all lines
-                </Button>
-            </div>
+                <div className="text-sm font-bold text-primary hover:text-accent cursor-pointer">
+                    Make recurring
+                </div>
 
-            {/* Form Actions */}
-            <div className="flex justify-between items-center pt-3 border-t border-primary-10">
-                <Button
-                    type="button"
-                    variant="outline"
-                    onClick={onCancel}
-                    disabled={isLoading}
-                >
-                    Cancel
-                </Button>
-
-                <div className="flex gap-2">
-                    <Button
+                <div className="flex gap-0 relative group">
+                    <button
                         type="submit"
-                        variant="primary"
-                        disabled={isLoading || !isBalanced}
-                        loading={isLoading}
+                        disabled={isLoading}
+                        className="px-8 py-2 text-sm font-bold text-white bg-primary border border-primary rounded-l hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors"
                     >
                         Save
-                    </Button>
+                    </button>
+                    <button
+                        type="button"
+                        disabled={isLoading}
+                        className="px-3 py-2 text-white bg-primary border-l border-primary/80 border-y border-r border-primary rounded-r hover:bg-primary/90 focus:outline-none transition-colors"
+                    >
+                        <FaPlus className="w-3 h-3 text-white" />
+                    </button>
+                    <div className="absolute right-0 bottom-full mb-1 w-48 bg-card border border-border rounded shadow-lg hidden group-hover:block z-20">
+                        <div className="py-1">
+                            <button
+                                type="button"
+                                className="block w-full text-left px-4 py-2 text-sm text-primary hover:bg-muted font-medium"
+                            >
+                                Save and new
+                            </button>
+                            <button
+                                type="button"
+                                className="block w-full text-left px-4 py-2 text-sm text-primary hover:bg-muted font-medium"
+                            >
+                                Save and close
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </form>

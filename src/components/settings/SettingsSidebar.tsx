@@ -18,14 +18,14 @@ export function SettingsSidebar({
     // Mobile: Tabs style (border-b container, horizontal scroll)
     // Desktop: Sidebar style (vertical, no border)
     const navClasses = `
-        flex overflow-x-auto scrollbar-hide -mx-4 px-4 border-b border-gray-200
+         flex overflow-x-auto scrollbar-hide -mx-4 px-4 border-b border-primary/10
         lg:flex-col lg:space-x-0 lg:space-y-1 lg:border-0 lg:mx-0 lg:px-0 lg:overflow-visible
         ${className || ''}
     `;
 
     return (
         <nav className={navClasses} {...props}>
-            <div className="flex space-x-6 min-w-max lg:flex-col lg:space-x-0 lg:space-y-1 lg:min-w-0 lg:w-full">
+            <div className="flex gap-4 sm:gap-2 sm:flex-col">
                 {items.map((item) => {
                     const isActive =
                         location.pathname === item.href ||
@@ -39,8 +39,8 @@ export function SettingsSidebar({
                                 lg:px-3 lg:py-2 lg:rounded-md lg:border-0 lg:gap-3
                                 ${
                                     isActive
-                                        ? 'border-primary text-primary lg:bg-primary-5 lg:text-primary'
-                                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 lg:text-gray-600 lg:hover:bg-gray-50 lg:hover:text-gray-900'
+                                        ? 'border-primary text-primary lg:bg-primary/5 lg:text-primary'
+                                        : 'border-transparent text-primary/50 hover:text-primary/70 hover:border-primary/25 lg:text-primary/60 lg:hover:bg-white lg:hover:text-primary'
                                 }
                             `}
                         >

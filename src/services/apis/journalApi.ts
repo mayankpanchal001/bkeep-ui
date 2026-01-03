@@ -49,31 +49,7 @@ export async function getJournalEntryById(
 export async function createJournalEntry(
     payload: CreateJournalEntryPayload
 ): Promise<JournalEntryResponse> {
-    const formData = new FormData();
-
-    // Add basic fields
-    if (payload.journalNo) formData.append('journalNo', payload.journalNo);
-    formData.append('journalDate', payload.journalDate);
-    formData.append('isAdjusting', payload.isAdjusting.toString());
-    formData.append('lines', JSON.stringify(payload.lines));
-    if (payload.memo) formData.append('memo', payload.memo);
-    if (payload.isRecurring)
-        formData.append('isRecurring', payload.isRecurring.toString());
-    if (payload.recurringFrequency)
-        formData.append('recurringFrequency', payload.recurringFrequency);
-
-    // Add attachments
-    if (payload.attachments && payload.attachments.length > 0) {
-        payload.attachments.forEach((file) => {
-            formData.append('attachments', file);
-        });
-    }
-
-    const response = await axiosInstance.post('/journal-entries', formData, {
-        headers: {
-            'Content-Type': 'multipart/form-data',
-        },
-    });
+    const response = await axiosInstance.post('/journal-entries', payload);
     return response.data;
 }
 
@@ -84,53 +60,7 @@ export async function updateJournalEntry(
     id: string,
     payload: UpdateJournalEntryPayload
 ): Promise<JournalEntryResponse> {
-    // Prepare JSON payload
-    const jsonPayload: Partial<CreateJournalEntryPayload> = {};
-
-    if (payload.journalNo !== undefined)
-        jsonPayload.journalNo = payload.journalNo;
-    if (payload.journalDate !== undefined)
-        jsonPayload.journalDate = payload.journalDate;
-    if (payload.entryType !== undefined)
-        jsonPayload.entryType = payload.entryType;
-    if (payload.isAdjusting !== undefined)
-        jsonPayload.isAdjusting = payload.isAdjusting;
-    if (payload.isClosing !== undefined)
-        jsonPayload.isClosing = payload.isClosing;
-    if (payload.isReversing !== undefined)
-        jsonPayload.isReversing = payload.isReversing;
-    if (payload.reversalDate !== undefined)
-        jsonPayload.reversalDate = payload.reversalDate;
-    if (payload.memo !== undefined) jsonPayload.memo = payload.memo;
-    if (payload.reference !== undefined)
-        jsonPayload.reference = payload.reference;
-    if (payload.sourceModule !== undefined)
-        jsonPayload.sourceModule = payload.sourceModule;
-    if (payload.sourceId !== undefined) jsonPayload.sourceId = payload.sourceId;
-    if (payload.isRecurring !== undefined)
-        jsonPayload.isRecurring = payload.isRecurring;
-    if (payload.recurringFrequency !== undefined)
-        jsonPayload.recurringFrequency = payload.recurringFrequency;
-    if (payload.lines !== undefined) {
-        jsonPayload.lines = payload.lines.map((line, index) => ({
-            accountId: line.accountId,
-            lineNumber: line.lineNumber || index + 1,
-            debit: line.debit,
-            credit: line.credit,
-            description: line.description,
-            memo: line.memo || '',
-        }));
-    }
-
-    const response = await axiosInstance.put(
-        `/journal-entries/${id}`,
-        jsonPayload,
-        {
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        }
-    );
+    const response = await axiosInstance.put(`/journal-entries/${id}`, payload);
     return response.data;
 }
 

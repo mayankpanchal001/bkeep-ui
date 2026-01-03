@@ -23,7 +23,7 @@ const ChartWidget = ({
                         {title}
                     </h3>
                     {subtitle && (
-                        <p className="text-xs text-primary-50">{subtitle}</p>
+                        <p className="text-xs text-primary/50">{subtitle}</p>
                     )}
                 </div>
                 {actions && <div>{actions}</div>}
@@ -32,8 +32,8 @@ const ChartWidget = ({
             <div className="mb-4">{children}</div>
 
             {aiInsight && (
-                <div className="pt-4 border-t border-primary-10">
-                    <p className="text-xs text-primary-50 italic">
+                <div className="pt-4 border-t border-primary/10">
+                    <p className="text-xs text-primary/50 italic">
                         💡 {aiInsight}
                     </p>
                 </div>

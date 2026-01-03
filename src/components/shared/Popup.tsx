@@ -114,12 +114,12 @@ const Popup = ({
             aria-labelledby={title ? 'popup-title' : undefined}
         >
             <div
-                className={`w-full ${sizeClass} rounded-2 bg-white shadow-2xl ${className}`}
+                className={`w-full ${sizeClass} rounded-2 bg-white shadow-2xl border border-primary/10 ${className}`}
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* Header */}
                 {(title || header || showCloseButton) && (
-                    <div className="flex items-center justify-between border-b border-primary-10 px-6 py-4">
+                    <div className="flex items-center justify-between border-b border-primary/10 px-6 py-4">
                         {header ? (
                             <div className="flex-1">{header}</div>
                         ) : title ? (
@@ -136,7 +136,7 @@ const Popup = ({
                             <button
                                 onClick={onClose}
                                 disabled={loading}
-                                className="ml-4 text-primary-50 hover:text-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed shrink-0"
+                                className="ml-4 text-primary/50 hover:text-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed shrink-0"
                                 aria-label="Close popup"
                             >
                                 <FaTimes className="w-5 h-5" />
@@ -155,7 +155,7 @@ const Popup = ({
 
                 {/* Footer */}
                 {footer && (
-                    <div className="border-t border-primary-10 px-6 py-4">
+                    <div className="border-t border-primary/10 px-6 py-4">
                         {footer}
                     </div>
                 )}
