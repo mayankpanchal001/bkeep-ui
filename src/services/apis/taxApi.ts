@@ -12,7 +12,8 @@ export async function getTaxes(filters?: TaxFilters): Promise<TaxListResponse> {
     if (filters?.search) params.append('search', filters.search);
     if (filters?.sort) params.append('sort', filters.sort);
     if (filters?.order) params.append('order', filters.order);
-    if (filters?.isActive !== undefined) params.append('isActive', filters.isActive.toString());
+    if (filters?.isActive !== undefined)
+        params.append('isActive', filters.isActive.toString());
 
     const response = await axiosInstance.get(`/taxes?${params.toString()}`);
     return response.data;

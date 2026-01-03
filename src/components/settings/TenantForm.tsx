@@ -70,7 +70,9 @@ const TenantForm = ({ onClose, initialData }: TenantFormProps) => {
         setFormData((prev) => ({
             ...prev,
             name: value,
-            schemaName: isEditMode ? prev.schemaName : generateSchemaName(value),
+            schemaName: isEditMode
+                ? prev.schemaName
+                : generateSchemaName(value),
         }));
     };
 

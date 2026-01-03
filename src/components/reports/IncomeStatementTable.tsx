@@ -152,7 +152,8 @@ const IncomeStatementTable = () => {
             if (row.sectionType === 'final') {
                 return 'border-t-2 border-primary bg-primary/10 font-bold text-primary text-base';
             }
-            let classes = 'border-b border-primary/10 font-semibold text-primary';
+            let classes =
+                'border-b border-primary/10 font-semibold text-primary';
             if (row.collapsible) classes += ' cursor-pointer hover:bg-white';
             return classes;
         }
