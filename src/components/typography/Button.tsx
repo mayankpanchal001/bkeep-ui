@@ -42,7 +42,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
         // Define variant-specific classes
         const variantClasses = {
-            primary: 'bg-black hover:bg-black/90 text-white',
+            primary: 'bg-primary hover:bg-primary/90 text-white',
 
             outline:
                 'bg-white text-primary shadow-sm shadow-primary/20 hover:bg-primary hover:text-white  active:bg-primary',

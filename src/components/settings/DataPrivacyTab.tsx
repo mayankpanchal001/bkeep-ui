@@ -7,13 +7,13 @@ const DataPrivacyTab = () => {
                 Data & Privacy
             </h3>
             <div className="space-y-4">
-                <div className="p-4 border border-primary-10 rounded-2">
+                <div className="p-4 border border-primary/10 rounded-2">
                     <div className="flex items-center justify-between mb-2">
                         <div>
                             <div className="font-medium text-primary">
                                 Export Data
                             </div>
-                            <div className="text-sm text-primary-50">
+                            <div className="text-sm text-primary/50">
                                 Download a copy of your data
                             </div>
                         </div>

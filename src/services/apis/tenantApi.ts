@@ -190,6 +190,46 @@ export const useCreateTenant = () => {
     });
 };
 
+export type UpdateTenantRequest = Partial<CreateTenantRequest>;
+
+export async function updateTenantRequest(
+    id: string,
+    data: UpdateTenantRequest
+): Promise<CreateTenantResponse> {
+    const response = await axiosInstance.patch(`/tenants/${id}`, data);
+    return response.data;
+}
+
+export const useUpdateTenant = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation<
+        CreateTenantResponse,
+        Error,
+        { id: string; data: UpdateTenantRequest }
+    >({
+        mutationFn: async ({ id, data }) => {
+            try {
+                return await updateTenantRequest(id, data);
+            } catch (error) {
+                console.error('Update Tenant Failed:', error);
+                const maybeAxiosError = error as {
+                    response?: { data?: { message?: string } };
+                };
+                const message =
+                    maybeAxiosError.response?.data?.message ||
+                    'Failed to update tenant';
+                showErrorToast(message);
+                throw error;
+            }
+        },
+        onSuccess: (data) => {
+            showSuccessToast(data.message || 'Tenant updated successfully');
+            invalidateTenantQueries(queryClient);
+        },
+    });
+};
+
 export type SwitchTenantResponse = {
     success: boolean;
     statusCode: number;

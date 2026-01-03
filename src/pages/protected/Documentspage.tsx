@@ -13,8 +13,8 @@ import {
     FaTrash,
     FaUpload,
 } from 'react-icons/fa';
-import ConfirmationDialog from '../../components/shared/ConfirmationDialog';
-import { InputField } from '../../components/typography/InputFields';
+import ConfirmationDialog from '/src/components/shared/ConfirmationDialog';
+import { InputField } from '/src/components/typography/InputFields';
 
 type Document = {
     id: string;
@@ -92,7 +92,7 @@ const getFileIcon = (type: string) => {
         case 'word':
             return <FaFileWord className="w-6 h-6 text-blue-600" />;
         default:
-            return <FaFile className="w-6 h-6 text-primary-50" />;
+            return <FaFile className="w-6 h-6 text-primary/50" />;
     }
 };
 
@@ -250,28 +250,28 @@ const Documentspage = () => {
                 onClick={handleUploadAreaClick}
                 className={`w-full max-w-3xl mx-auto border-2 border-dashed rounded-2 p-10 sm:p-12 text-center transition-all cursor-pointer shadow-sm ${
                     dragActive
-                        ? 'border-primary bg-primary-10 shadow-md scale-[1.01]'
-                        : 'border-primary-25 bg-primary-5 hover:border-primary hover:bg-primary-10'
+                        ? 'border-primary bg-primary/10 shadow-md scale-[1.01]'
+                        : 'border-primary/25 bg-primary/5 hover:border-primary hover:bg-primary/10'
                 }`}
             >
-                <FaUpload className="w-12 h-12 text-primary-50 mx-auto mb-4" />
+                <FaUpload className="w-12 h-12 text-primary/50 mx-auto mb-4" />
                 <p className="text-lg font-semibold text-primary mb-2">
                     Drag and drop files here
                 </p>
-                <p className="text-sm text-primary-50 mb-4">
+                <p className="text-sm text-primary/50 mb-4">
                     or click here to browse files
                 </p>
-                <p className="text-xs text-primary-50">
+                <p className="text-xs text-primary/50">
                     Supported formats: PDF, Images, Excel, Word
                 </p>
             </div>
 
             {/* Filters */}
-            <div className="bg-white rounded-2 shadow-sm border border-primary-10 p-4">
+            <div className="bg-white rounded-2 shadow-sm border border-primary/10 p-4">
                 <div className="flex flex-col sm:flex-row gap-4">
                     <div className="flex-1">
                         <div className="relative">
-                            <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-primary-50 w-4 h-4" />
+                            <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-primary/50 w-4 h-4" />
                             <InputField
                                 id="search-documents"
                                 placeholder="Search documents..."
@@ -281,11 +281,11 @@ const Documentspage = () => {
                         </div>
                     </div>
                     <div className="flex items-center gap-2">
-                        <FaFilter className="text-primary-50" />
+                        <FaFilter className="text-primary/50" />
                         <select
                             value={categoryFilter}
                             onChange={(e) => setCategoryFilter(e.target.value)}
-                            className="px-4 py-2 border border-primary-10 rounded-2 text-sm text-primary focus:outline-none focus:border-primary"
+                            className="px-4 py-2 border border-primary/10 rounded-2 text-sm text-primary focus:outline-none focus:border-primary"
                         >
                             {CATEGORIES.map((category) => (
                                 <option key={category} value={category}>
@@ -308,14 +308,14 @@ const Documentspage = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                 {filteredDocuments.length === 0 ? (
-                    <div className="col-span-full text-center py-12 text-primary-50">
+                    <div className="col-span-full text-center py-12 text-primary/50">
                         No documents found
                     </div>
                 ) : (
                     filteredDocuments.map((doc) => (
                         <div
                             key={doc.id}
-                            className="bg-white rounded-2 shadow-sm border border-primary-10 p-4 hover:shadow-md transition-shadow"
+                            className="bg-white rounded-2 shadow-sm border border-primary/10 p-4 hover:shadow-md transition-shadow"
                         >
                             <div className="flex items-start justify-between mb-3">
                                 <div className="flex items-center gap-3 flex-1 min-w-0">
@@ -324,36 +324,36 @@ const Documentspage = () => {
                                         <div className="font-medium text-primary truncate">
                                             {doc.name}
                                         </div>
-                                        <div className="text-xs text-primary-50">
+                                        <div className="text-xs text-primary/50">
                                             {formatFileSize(doc.size)}
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div className="space-y-2 mb-3">
-                                <div className="flex items-center gap-2 text-xs text-primary-50">
+                                <div className="flex items-center gap-2 text-xs text-primary/50">
                                     <FaFolder className="w-3 h-3" />
                                     <span>{doc.category}</span>
                                 </div>
-                                <div className="text-xs text-primary-50">
+                                <div className="text-xs text-primary/50">
                                     Uploaded:{' '}
                                     {new Date(
                                         doc.uploadedDate
                                     ).toLocaleDateString()}
                                 </div>
-                                <div className="text-xs text-primary-50">
+                                <div className="text-xs text-primary/50">
                                     By: {doc.uploadedBy}
                                 </div>
                             </div>
-                            <div className="flex items-center gap-2 pt-3 border-t border-primary-10">
+                            <div className="flex items-center gap-2 pt-3 border-t border-primary/10">
                                 <button
-                                    className="flex-1 px-3 py-2 text-xs font-medium text-primary bg-primary-10 rounded-lg hover:bg-primary-25 transition-colors"
+                                    className="flex-1 px-3 py-2 text-xs font-medium text-primary bg-primary/10 rounded-lg hover:bg-primary/25 transition-colors"
                                     title="View"
                                 >
                                     <FaEye className="w-3 h-3 mx-auto" />
                                 </button>
                                 <button
-                                    className="flex-1 px-3 py-2 text-xs font-medium text-primary bg-primary-10 rounded-lg hover:bg-primary-25 transition-colors"
+                                    className="flex-1 px-3 py-2 text-xs font-medium text-primary bg-primary/10 rounded-lg hover:bg-primary/25 transition-colors"
                                     title="Download"
                                 >
                                     <FaDownload className="w-3 h-3 mx-auto" />

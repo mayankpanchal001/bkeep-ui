@@ -9,13 +9,18 @@ export type Permission = {
 };
 
 export type Tenant = {
+    id: string;
     name: string;
-    schemaName: string;
-    email: string;
-    phone: string;
-    address: string;
-    fiscalYear: string;
-    dateOfIncorporation: string;
+    schemaName?: string;
+    email?: string;
+    phone?: string;
+    address?: string;
+    fiscalYear?: string;
+    dateOfIncorporation?: string;
+    isPrimary?: boolean;
+    isActive?: boolean;
+    createdAt?: string;
+    updatedAt?: string;
 };
 
 export type UserType = {

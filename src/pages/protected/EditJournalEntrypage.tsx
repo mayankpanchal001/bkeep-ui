@@ -1,12 +1,12 @@
 import { useNavigate, useParams } from 'react-router';
-import { JournalEntryForm } from '../../components/journal/JournalEntryForm';
-import Loading from '../../components/shared/Loading';
-import PageHeader from '../../components/shared/PageHeader';
 import {
     useJournalEntry,
     useUpdateJournalEntry,
 } from '../../services/apis/journalApi';
 import type { CreateJournalEntryPayload } from '../../types/journal';
+import { JournalEntryForm } from '/src/components/journal/JournalEntryForm';
+import Loading from '/src/components/shared/Loading';
+import PageHeader from '/src/components/shared/PageHeader';
 
 export default function EditJournalEntrypage() {
     const { id } = useParams<{ id: string }>();
@@ -52,11 +52,11 @@ export default function EditJournalEntrypage() {
                 subtitle="Update journal entry details"
             />
 
-            <div className="bg-white rounded-lg border border-primary-10 p-4">
+            <div className="bg-white rounded-lg border border-primary/10 p-4">
                 <JournalEntryForm
                     initialData={{
-                        journalNo: journalEntry.journalNo,
-                        journalDate: journalEntry.journalDate,
+                        entryNumber: journalEntry.journalNo,
+                        entryDate: journalEntry.journalDate,
                         entryType: journalEntry.isAdjusting
                             ? 'adjusting'
                             : 'standard',
@@ -68,8 +68,11 @@ export default function EditJournalEntrypage() {
                             credit: line.credit,
                             description: line.description,
                             memo: line.memo || line.description,
+                            contactId: line.contactId || '',
+                            taxId: line.taxId || '',
                         })),
-                        memo: journalEntry.memo,
+                        description: journalEntry.memo,
+                        memo: journalEntry.memo || '',
                     }}
                     onSubmit={handleSubmit}
                     onCancel={handleCancel}

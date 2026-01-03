@@ -53,7 +53,7 @@ export function ForgotPasswordForm() {
                 <h2 className="text-2xl font-bold text-primary mb-2">
                     Forgot Password?
                 </h2>
-                <p className="text-sm text-primary-50">
+                <p className="text-sm text-primary/50">
                     Enter your email address and we'll send you a link to reset
                     your password.
                 </p>

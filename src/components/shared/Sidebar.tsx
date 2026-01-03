@@ -7,11 +7,20 @@ import {
 } from 'react';
 import { createPortal } from 'react-dom';
 import { Link, useLocation } from 'react-router';
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from '../../components/ui/alert-dialog';
 import { APP_TITLE, SIDEBAR_ITEMS } from '../../constants';
 import { LOGO_IMAGE } from '../../constants/images';
 import { useLogout } from '../../services/apis/authApi';
 import { useAuth } from '../../stores/auth/authSelectore';
-import ConfirmationDialog from '../shared/ConfirmationDialog';
 import { Icons } from '../shared/Icons';
 
 const Sidebar = ({ collapsed }: { collapsed: boolean }) => {
@@ -172,7 +181,7 @@ const Sidebar = ({ collapsed }: { collapsed: boolean }) => {
                                             </span>
                                         </div>
                                         {!collapsed && (
-                                            <span className="text-gray-400 text-xs">
+                                            <span className="text-primary/40 text-xs">
                                                 {isExpanded ? (
                                                     <Icons.ChevronDown />
                                                 ) : (
@@ -193,7 +202,7 @@ const Sidebar = ({ collapsed }: { collapsed: boolean }) => {
                                                 : 'max-h-0 opacity-0'
                                         }`}
                                     >
-                                        <div className="flex flex-col gap-1 mt-1 ml-4 border-l border-primary-10 pl-2">
+                                        <div className="flex flex-col gap-1 mt-1 ml-4 border-l border-primary/10 pl-2">
                                             {item.children?.map((child) => (
                                                 <Link
                                                     key={child.label}
@@ -246,44 +255,44 @@ const Sidebar = ({ collapsed }: { collapsed: boolean }) => {
                             <div
                                 ref={menuContentRef}
                                 style={menuStyle}
-                                className="bg-white rounded-lg shadow-xl border border-primary-10 py-1"
+                                className="bg-white rounded-lg shadow-xl border border-primary/10 py-1"
                             >
                                 {/* User Info Header in Menu */}
-                                <div className="px-4 py-3 border-b border-primary-10 mb-1 flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-lg bg-primary-10 flex items-center justify-center text-primary font-bold shrink-0">
+                                <div className="px-4 py-3 border-b border-primary/10 mb-1 flex items-center gap-3">
+                                    <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary font-bold shrink-0">
                                         {user?.name?.charAt(0) || 'U'}
                                     </div>
                                     <div className="flex-1 min-w-0">
-                                        <p className="text-sm font-semibold text-gray-900 truncate">
+                                        <p className="text-sm font-semibold text-primary truncate">
                                             {user?.name || 'User'}
                                         </p>
-                                        <p className="text-xs text-gray-500 truncate">
+                                        <p className="text-xs text-primary/50 truncate">
                                             {user?.email || 'user@example.com'}
                                         </p>
                                     </div>
                                 </div>
 
                                 <div className="px-1">
-                                    <button className="w-full flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md transition-colors">
+                                    <button className="w-full flex items-center gap-3 px-3 py-2 text-sm text-primary/70 hover:bg-primary/10 rounded-md transition-colors">
                                         <Icons.Profile className="w-4 h-4" />{' '}
                                         Profile
                                     </button>
-                                    <button className="w-full flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md transition-colors">
+                                    <button className="w-full flex items-center gap-3 px-3 py-2 text-sm text-primary/70 hover:bg-primary/10 rounded-md transition-colors">
                                         <Icons.Billing className="w-4 h-4" />{' '}
                                         Billing
                                     </button>
-                                    <button className="w-full flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md transition-colors">
+                                    <button className="w-full flex items-center gap-3 px-3 py-2 text-sm text-primary/70 hover:bg-primary/10 rounded-md transition-colors">
                                         <Icons.Notifications className="w-4 h-4" />{' '}
                                         Notifications
                                     </button>
                                 </div>
 
-                                <div className="h-px bg-primary-10 my-1 mx-1" />
+                                <div className="h-px bg-primary/10 my-1 mx-1" />
 
                                 <div className="px-1">
                                     <button
                                         onClick={handleLogoutClick}
-                                        className="w-full flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
+                                        className="w-full flex items-center gap-3 px-3 py-2 text-sm text-primary/70 hover:bg-primary/10 rounded-md transition-colors"
                                     >
                                         <Icons.Logout className="w-4 h-4" /> Log
                                         out
@@ -296,40 +305,53 @@ const Sidebar = ({ collapsed }: { collapsed: boolean }) => {
                     {/* Trigger Area */}
                     <div
                         onClick={() => setIsMenuOpen(!isMenuOpen)}
-                        className={`flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer group ${collapsed ? 'justify-center' : ''}`}
+                        className={`flex items-center gap-3 p-2 rounded-lg hover:bg-primary/10 transition-colors cursor-pointer group ${collapsed ? 'justify-center' : ''}`}
                     >
-                        <div className="w-8 h-8 rounded-lg bg-primary-10 flex items-center justify-center text-primary font-bold shrink-0">
+                        <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary font-bold shrink-0">
                             {user?.name?.charAt(0) || 'U'}
                         </div>
 
                         {!collapsed && (
                             <div className="flex-1 min-w-0 text-left">
-                                <p className="text-sm font-medium text-gray-900 truncate">
+                                <p className="text-sm font-medium text-primary truncate">
                                     {user?.name || 'User'}
                                 </p>
-                                <p className="text-xs text-gray-500 truncate">
+                                <p className="text-xs text-primary/50 truncate">
                                     {user?.email || 'user@example.com'}
                                 </p>
                             </div>
                         )}
 
                         {!collapsed && (
-                            <Icons.ChevronsUpDown className="w-4 h-4 text-gray-400" />
+                            <Icons.ChevronsUpDown className="w-4 h-4 text-primary/40" />
                         )}
                     </div>
                 </div>
             </div>
 
-            <ConfirmationDialog
-                isOpen={showLogoutConfirm}
-                onClose={() => setShowLogoutConfirm(false)}
-                onConfirm={handleConfirmLogout}
-                title="Sign out?"
-                message="You will need to sign in again to access your workspace."
-                confirmText="Sign out"
-                confirmVariant="danger"
-                loading={isLoggingOut}
-            />
+            <AlertDialog
+                open={showLogoutConfirm}
+                onOpenChange={setShowLogoutConfirm}
+            >
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Sign out?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            You will need to sign in again to access your
+                            workspace.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                            onClick={handleConfirmLogout}
+                            className="bg-red-600 hover:bg-red-700 text-white"
+                        >
+                            {isLoggingOut ? 'Signing out...' : 'Sign out'}
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </div>
     );
 };

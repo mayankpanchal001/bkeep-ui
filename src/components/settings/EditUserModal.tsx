@@ -131,7 +131,7 @@ const EditUserModal = ({ isOpen, onClose, user }: EditUserModalProps) => {
                     <button
                         onClick={onClose}
                         disabled={isPending}
-                        className="text-primary-50 hover:text-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="text-primary/50 hover:text-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                         aria-label="Close"
                     >
                         <FaTimes className="w-5 h-5" />
@@ -252,7 +252,7 @@ const EditUserModal = ({ isOpen, onClose, user }: EditUserModalProps) => {
                     </div>
 
                     {/* Account Status */}
-                    <div className="border-t border-primary-10 pt-4">
+                    <div className="border-t border-primary/10 pt-4">
                         <label className="flex items-center gap-3 cursor-pointer">
                             <input
                                 type="checkbox"
@@ -263,13 +263,13 @@ const EditUserModal = ({ isOpen, onClose, user }: EditUserModalProps) => {
                                         isActive: e.target.checked,
                                     })
                                 }
-                                className="w-4 h-4 text-primary border-primary-10 rounded focus:ring-primary"
+                                className="w-4 h-4 text-primary border-primary/10 rounded focus:ring-primary"
                             />
                             <div>
                                 <span className="text-sm font-medium text-primary">
                                     Active account
                                 </span>
-                                <p className="text-xs text-primary-50">
+                                <p className="text-xs text-primary/50">
                                     User can access the system when active
                                 </p>
                             </div>
@@ -277,7 +277,7 @@ const EditUserModal = ({ isOpen, onClose, user }: EditUserModalProps) => {
                     </div>
 
                     {/* Actions */}
-                    <div className="flex justify-end gap-3 pt-4 border-t border-primary-10">
+                    <div className="flex justify-end gap-3 pt-4 border-t border-primary/10">
                         <Button
                             type="button"
                             variant="outline"

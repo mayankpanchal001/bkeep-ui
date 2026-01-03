@@ -7,9 +7,9 @@ import {
     FaTag,
     FaTrash,
 } from 'react-icons/fa';
-import { Column, DataTable } from '../../components/shared/DataTable';
-import Button from '../../components/typography/Button';
-import { InputField } from '../../components/typography/InputFields';
+import { Column, DataTable } from '/src/components/shared/DataTable';
+import Button from '/src/components/typography/Button';
+import { InputField } from '/src/components/typography/InputFields';
 
 type Expense = {
     id: string;
@@ -115,7 +115,7 @@ const Expensespage = () => {
             header: 'Date',
             accessorKey: 'date',
             cell: (expense) => (
-                <span className="text-primary-75">
+                <span className="text-primary/75">
                     {new Date(expense.date).toLocaleDateString()}
                 </span>
             ),
@@ -131,7 +131,7 @@ const Expensespage = () => {
             header: 'Category',
             accessorKey: 'category',
             cell: (expense) => (
-                <span className="inline-flex items-center gap-1 px-2 py-1 bg-primary-10 text-primary rounded-full text-xs font-medium">
+                <span className="inline-flex items-center gap-1 px-2 py-1 bg-primary/10 text-primary rounded-full text-xs font-medium">
                     <FaTag className="w-3 h-3" />
                     {expense.category}
                 </span>
@@ -141,7 +141,7 @@ const Expensespage = () => {
             header: 'Description',
             accessorKey: 'description',
             cell: (expense) => (
-                <span className="text-primary-75">{expense.description}</span>
+                <span className="text-primary/75">{expense.description}</span>
             ),
         },
         {
@@ -158,7 +158,7 @@ const Expensespage = () => {
             header: 'Payment Method',
             accessorKey: 'paymentMethod',
             cell: (expense) => (
-                <span className="text-primary-75">{expense.paymentMethod}</span>
+                <span className="text-primary/75">{expense.paymentMethod}</span>
             ),
         },
         {
@@ -168,14 +168,14 @@ const Expensespage = () => {
                 <div className="flex items-center justify-center gap-2">
                     {expense.receipt && (
                         <button
-                            className="p-2 text-primary-50 hover:text-primary hover:bg-primary-10 rounded transition-colors"
+                            className="p-2 text-primary/50 hover:text-primary hover:bg-primary/10 rounded transition-colors"
                             title="View Receipt"
                         >
                             <FaReceipt className="w-4 h-4" />
                         </button>
                     )}
                     <button
-                        className="p-2 text-primary-50 hover:text-primary hover:bg-primary-10 rounded transition-colors"
+                        className="p-2 text-primary/50 hover:text-primary hover:bg-primary/10 rounded transition-colors"
                         title="Edit"
                     >
                         <FaEdit className="w-4 h-4" />
@@ -195,14 +195,14 @@ const Expensespage = () => {
         <div className="flex flex-col gap-4">
             {/* Summary Cards */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div className="bg-white rounded-2 shadow-sm border border-primary-10 p-4">
-                    <div className="text-sm text-primary-50 mb-1">
+                <div className="bg-white rounded-2 shadow-sm border border-primary/10 p-4">
+                    <div className="text-sm text-primary/50 mb-1">
                         Total Expenses
                     </div>
                     <div className="text-2xl font-bold text-primary">
                         {currencyFormatter.format(totalAmount)}
                     </div>
-                    <div className="text-xs text-primary-50 mt-1">
+                    <div className="text-xs text-primary/50 mt-1">
                         {filteredExpenses.length} expenses
                     </div>
                 </div>
@@ -211,9 +211,9 @@ const Expensespage = () => {
                     .map(([category, amount]) => (
                         <div
                             key={category}
-                            className="bg-white rounded-2 shadow-sm border border-primary-10 p-4"
+                            className="bg-white rounded-2 shadow-sm border border-primary/10 p-4"
                         >
-                            <div className="text-sm text-primary-50 mb-1">
+                            <div className="text-sm text-primary/50 mb-1">
                                 {category}
                             </div>
                             <div className="text-xl font-bold text-primary">
@@ -224,11 +224,11 @@ const Expensespage = () => {
             </div>
 
             {/* Filters */}
-            <div className="bg-white rounded-2 shadow-sm border border-primary-10 p-4">
+            <div className="bg-white rounded-2 shadow-sm border border-primary/10 p-4">
                 <div className="flex flex-col sm:flex-row gap-4">
                     <div className="flex-1">
                         <div className="relative">
-                            <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-primary-50 w-4 h-4" />
+                            <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-primary/50 w-4 h-4" />
                             <InputField
                                 id="search-expenses"
                                 placeholder="Search expenses..."
@@ -238,11 +238,11 @@ const Expensespage = () => {
                         </div>
                     </div>
                     <div className="flex items-center gap-2">
-                        <FaFilter className="text-primary-50" />
+                        <FaFilter className="text-primary/50" />
                         <select
                             value={categoryFilter}
                             onChange={(e) => setCategoryFilter(e.target.value)}
-                            className="px-4 py-2 border border-primary-10 rounded-2 text-sm text-primary focus:outline-none focus:border-primary"
+                            className="px-4 py-2 border border-primary/10 rounded-2 text-sm text-primary focus:outline-none focus:border-primary"
                         >
                             <option value="all">All Categories</option>
                             {CATEGORIES.map((category) => (
@@ -256,7 +256,7 @@ const Expensespage = () => {
             </div>
 
             {/* Expenses Table */}
-            <div className="bg-white rounded-2 shadow-sm border border-primary-10 overflow-hidden">
+            <div className="bg-white rounded-2 shadow-sm border border-primary/10 overflow-hidden">
                 <DataTable
                     data={filteredExpenses}
                     columns={columns}
@@ -274,7 +274,7 @@ const Expensespage = () => {
                             </h3>
                             <button
                                 onClick={() => setShowCreateModal(false)}
-                                className="text-primary-50 hover:text-primary"
+                                className="text-primary/50 hover:text-primary"
                             >
                                 ×
                             </button>
@@ -299,7 +299,7 @@ const Expensespage = () => {
                                     <label className="block text-sm font-medium text-primary mb-2">
                                         Category
                                     </label>
-                                    <select className="w-full px-4 py-2 border border-primary-10 rounded-2 text-sm text-primary focus:outline-none focus:border-primary">
+                                    <select className="w-full px-4 py-2 border border-primary/10 rounded-2 text-sm text-primary focus:outline-none focus:border-primary">
                                         {CATEGORIES.map((category) => (
                                             <option
                                                 key={category}
@@ -329,7 +329,7 @@ const Expensespage = () => {
                                 <label className="block text-sm font-medium text-primary mb-2">
                                     Payment Method
                                 </label>
-                                <select className="w-full px-4 py-2 border border-primary-10 rounded-2 text-sm text-primary focus:outline-none focus:border-primary">
+                                <select className="w-full px-4 py-2 border border-primary/10 rounded-2 text-sm text-primary focus:outline-none focus:border-primary">
                                     <option>Credit Card</option>
                                     <option>Bank Transfer</option>
                                     <option>Check</option>

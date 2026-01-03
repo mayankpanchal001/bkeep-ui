@@ -1,9 +1,9 @@
 import { Navigate, Outlet } from 'react-router';
-import PublicLayout from '../components/layouts/PublicLayout';
-import Loading from '../components/shared/Loading';
-import SEOUpdater from '../components/shared/SEOUpdater';
 import { useThemeSync } from '../hooks/useThemeSync';
 import { useAuth } from '../stores/auth/authSelectore';
+import PublicLayout from '/src/components/layouts/PublicLayout';
+import Loading from '/src/components/shared/Loading';
+import SEOUpdater from '/src/components/shared/SEOUpdater';
 
 const PublicRoutes = () => {
     useThemeSync();

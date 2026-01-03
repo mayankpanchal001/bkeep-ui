@@ -110,10 +110,10 @@ export function ResetPasswordForm() {
                 <h2 className="text-2xl font-bold text-primary mb-2">
                     Reset Your Password
                 </h2>
-                <p className="text-sm text-primary-50">
+                <p className="text-sm text-primary/50">
                     Enter your new password below
                 </p>
-                <p className="text-xs text-primary-50 mt-2">Email: {email}</p>
+                <p className="text-xs text-primary/50 mt-2">Email: {email}</p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -171,10 +171,10 @@ export function ResetPasswordForm() {
                 </div>
             </form>
 
-            <div className="bg-primary-10 rounded-lg p-4">
+            <div className="bg-primary/10 rounded-lg p-4">
                 <div className="flex items-start gap-3">
                     <FaCheckCircle className="text-primary shrink-0 mt-0.5" />
-                    <div className="text-sm text-primary-75">
+                    <div className="text-sm text-primary/75">
                         <p className="font-medium mb-1">
                             Password Requirements:
                         </p>

@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router';
-import AcceptInvitationForm from '../../components/auth/AcceptInvitationForm';
 import { APP_TITLE } from '../../constants';
 import { logo } from '../../utills/image';
+import AcceptInvitationForm from '/src/components/auth/AcceptInvitationForm';
 
 const AcceptInvitationpage = () => {
     const [searchParams] = useSearchParams();
@@ -32,18 +32,18 @@ const AcceptInvitationpage = () => {
                         <h1 className="text-2xl font-bold text-primary mb-2">
                             Welcome to {APP_TITLE}
                         </h1>
-                        <p className="text-sm text-primary-75 text-center">
+                        <p className="text-sm text-primary/75 text-center">
                             Complete your account setup to get started
                         </p>
                     </div>
 
                     {/* Accept Invitation Form Card */}
-                    <div className="bg-white rounded-2 shadow-xl p-4 lg:p-8 border border-primary-10">
+                    <div className="bg-white rounded-2 shadow-xl p-4 lg:p-8 border border-primary/10">
                         <AcceptInvitationForm />
                     </div>
 
                     <div className="mt-6 text-center">
-                        <p className="text-xs text-primary-50 mt-2">
+                        <p className="text-xs text-primary/50 mt-2">
                             © {new Date().getFullYear()} {APP_TITLE}. All
                             rights reserved.
                         </p>

@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router';
-import { SettingsSidebar } from '../../components/settings/SettingsSidebar';
-import { Icons } from '../../components/shared/Icons';
 import { useAuth } from '../../stores/auth/authSelectore';
+import { SettingsSidebar } from '/src/components/settings/SettingsSidebar';
+import { Icons } from '/src/components/shared/Icons';
 
 const Settingspage = () => {
     const { user } = useAuth();
@@ -63,15 +63,11 @@ const Settingspage = () => {
 
     return (
         <div className="flex flex-col h-full gap-4 lg:flex-row lg:space-x-12  lg:space-y-0">
-            <aside className="lg:w-1/5 sm:h-full">
-                <div className="card !h-max">
-                    <SettingsSidebar items={sidebarNavItems} />
-                </div>
+            <aside className="lg:w-1/5 m-0 sm:h-full">
+                <SettingsSidebar items={sidebarNavItems} />
             </aside>
-            <div className="flex-1 lg:max-w-2xl">
-                <div className="card">
-                    <Outlet />
-                </div>
+            <div className="flex-1 ">
+                <Outlet />
             </div>
         </div>
     );

@@ -299,11 +299,11 @@ const CreateInvoiceModal = ({
     return (
         <div className="absolute inset-0 z-40 bg-lightBg flex flex-col rounded-2 overflow-hidden">
             {/* Header */}
-            <header className="flex items-center justify-between px-6 py-4 border-b border-primary-10 bg-white">
+            <header className="flex items-center justify-between px-6 py-4 border-b border-primary/10 bg-white">
                 <div className="flex items-center gap-4">
                     <button
                         onClick={onClose}
-                        className="p-2 hover:bg-primary-10 rounded-full transition-colors"
+                        className="p-2 hover:bg-primary/10 rounded-full transition-colors"
                         aria-label="Close"
                     >
                         <FaTimes className="w-4 h-4 text-primary" />
@@ -315,7 +315,7 @@ const CreateInvoiceModal = ({
                 <div className="flex items-center gap-3">
                     <button
                         onClick={() => onSaveDraft?.(formData)}
-                        className="px-4 py-2 text-sm font-medium text-primary hover:text-primary-75 transition-colors"
+                        className="px-4 py-2 text-sm font-medium text-primary hover:text-primary/75 transition-colors"
                     >
                         Save as draft
                     </button>
@@ -325,7 +325,7 @@ const CreateInvoiceModal = ({
                             !formData.customer ||
                             formData.lineItems.length === 0
                         }
-                        className="px-4 py-2 text-sm font-medium bg-primary-10 text-primary-50 rounded-2 cursor-not-allowed disabled:opacity-50 enabled:bg-primary enabled:text-white enabled:cursor-pointer enabled:hover:bg-primary-75 transition-colors"
+                        className="px-4 py-2 text-sm font-medium bg-primary/10 text-primary/50 rounded-2 cursor-not-allowed disabled:opacity-50 enabled:bg-primary enabled:text-white enabled:cursor-pointer enabled:hover:bg-primary/75 transition-colors"
                     >
                         Send invoice
                     </button>
@@ -335,15 +335,15 @@ const CreateInvoiceModal = ({
             {/* Content */}
             <div className="flex-1 flex overflow-hidden">
                 {/* Left Side - Form */}
-                <div className="w-full md:w-[480px] border-r border-primary-10 overflow-y-auto bg-white flex flex-col">
+                <div className="w-full md:w-[480px] border-r border-primary/10 overflow-y-auto bg-white flex flex-col">
                     {/* Tabs */}
-                    <div className="flex border-b border-primary-10">
+                    <div className="flex border-b border-primary/10">
                         <button
                             onClick={() => setActiveTab('details')}
                             className={`flex-1 px-4 py-3 text-sm font-medium transition-colors ${
                                 activeTab === 'details'
                                     ? 'text-primary border-b-2 border-primary'
-                                    : 'text-primary-50 hover:text-primary'
+                                    : 'text-primary/50 hover:text-primary'
                             }`}
                         >
                             Details
@@ -353,7 +353,7 @@ const CreateInvoiceModal = ({
                             className={`flex-1 px-4 py-3 text-sm font-medium transition-colors ${
                                 activeTab === 'items'
                                     ? 'text-primary border-b-2 border-primary'
-                                    : 'text-primary-50 hover:text-primary'
+                                    : 'text-primary/50 hover:text-primary'
                             }`}
                         >
                             Items
@@ -363,7 +363,7 @@ const CreateInvoiceModal = ({
                             className={`flex-1 px-4 py-3 text-sm font-medium transition-colors ${
                                 activeTab === 'settings'
                                     ? 'text-primary border-b-2 border-primary'
-                                    : 'text-primary-50 hover:text-primary'
+                                    : 'text-primary/50 hover:text-primary'
                             }`}
                         >
                             Settings
@@ -454,23 +454,23 @@ const CreateInvoiceModal = ({
                                                 className={
                                                     formData.customer
                                                         ? 'text-primary text-sm'
-                                                        : 'text-primary-50 text-sm'
+                                                        : 'text-primary/50 text-sm'
                                                 }
                                             >
                                                 {formData.customer?.name ||
                                                     'Find or add a customer...'}
                                             </span>
                                             <FaChevronDown
-                                                className={`w-3 h-3 text-primary-50 transition-transform ${showCustomerDropdown ? 'rotate-180' : ''}`}
+                                                className={`w-3 h-3 text-primary/50 transition-transform ${showCustomerDropdown ? 'rotate-180' : ''}`}
                                             />
                                         </div>
 
                                         {/* Dropdown */}
                                         {showCustomerDropdown && (
-                                            <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-primary-10 rounded-2 shadow-lg z-10 max-h-80 overflow-hidden">
-                                                <div className="p-3 border-b border-primary-10">
+                                            <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-primary/10 rounded-2 shadow-lg z-10 max-h-80 overflow-hidden">
+                                                <div className="p-3 border-b border-primary/10">
                                                     <div className="input-wrap flex items-center gap-2 px-3">
-                                                        <FaSearch className="w-3 h-3 text-primary-50" />
+                                                        <FaSearch className="w-3 h-3 text-primary/50" />
                                                         <input
                                                             type="text"
                                                             value={
@@ -490,7 +490,7 @@ const CreateInvoiceModal = ({
                                                 </div>
                                                 <button
                                                     onClick={handleAddCustomer}
-                                                    className="w-full flex items-center gap-2 px-4 py-3 text-left hover:bg-primary-10 transition-colors border-b border-primary-10"
+                                                    className="w-full flex items-center gap-2 px-4 py-3 text-left hover:bg-primary/10 transition-colors border-b border-primary/10"
                                                 >
                                                     <FaPlus className="w-3 h-3 text-primary" />
                                                     <span className="text-sm font-medium text-primary">
@@ -509,13 +509,13 @@ const CreateInvoiceModal = ({
                                                                         customer
                                                                     )
                                                                 }
-                                                                className={`w-full px-4 py-3 text-left text-sm hover:bg-primary-10 transition-colors ${
+                                                                className={`w-full px-4 py-3 text-left text-sm hover:bg-primary/10 transition-colors ${
                                                                     formData
                                                                         .customer
                                                                         ?.id ===
                                                                     customer.id
-                                                                        ? 'bg-primary-10 text-primary font-medium'
-                                                                        : 'text-primary-75'
+                                                                        ? 'bg-primary/10 text-primary font-medium'
+                                                                        : 'text-primary/75'
                                                                 }`}
                                                             >
                                                                 <div>
@@ -524,7 +524,7 @@ const CreateInvoiceModal = ({
                                                                     }
                                                                 </div>
                                                                 {customer.email && (
-                                                                    <div className="text-xs text-primary-50 mt-1">
+                                                                    <div className="text-xs text-primary/50 mt-1">
                                                                         {
                                                                             customer.email
                                                                         }
@@ -535,7 +535,7 @@ const CreateInvoiceModal = ({
                                                     )}
                                                     {filteredCustomers.length ===
                                                         0 && (
-                                                        <div className="px-4 py-3 text-sm text-primary-50">
+                                                        <div className="px-4 py-3 text-sm text-primary/50">
                                                             No customers found
                                                         </div>
                                                     )}
@@ -569,9 +569,9 @@ const CreateInvoiceModal = ({
                                                         },
                                                     })
                                                 }
-                                                className="w-4 h-4 rounded border-primary-25 text-primary focus:ring-primary accent-primary"
+                                                className="w-4 h-4 rounded border-primary/25 text-primary focus:ring-primary accent-primary"
                                             />
-                                            <span className="text-sm text-primary-75">
+                                            <span className="text-sm text-primary/75">
                                                 Interac e-transfer
                                             </span>
                                         </label>
@@ -593,9 +593,9 @@ const CreateInvoiceModal = ({
                                                         },
                                                     })
                                                 }
-                                                className="w-4 h-4 rounded border-primary-25 text-primary focus:ring-primary accent-primary"
+                                                className="w-4 h-4 rounded border-primary/25 text-primary focus:ring-primary accent-primary"
                                             />
-                                            <span className="text-sm text-primary-75">
+                                            <span className="text-sm text-primary/75">
                                                 EFT transfer
                                             </span>
                                         </label>
@@ -619,7 +619,7 @@ const CreateInvoiceModal = ({
                                             className={`relative w-10 h-5 rounded-full transition-colors ${
                                                 formData.isRecurring
                                                     ? 'bg-primary'
-                                                    : 'bg-primary-25'
+                                                    : 'bg-primary/25'
                                             }`}
                                         >
                                             <span
@@ -707,7 +707,7 @@ const CreateInvoiceModal = ({
                                     </h3>
                                     <button
                                         onClick={handleAddLineItem}
-                                        className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-primary hover:bg-primary-10 rounded-lg transition-colors"
+                                        className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-primary hover:bg-primary/10 rounded-lg transition-colors"
                                     >
                                         <FaPlus className="w-3 h-3" />
                                         Add Item
@@ -715,7 +715,7 @@ const CreateInvoiceModal = ({
                                 </div>
 
                                 {formData.lineItems.length === 0 ? (
-                                    <div className="text-center py-8 text-primary-50 text-sm">
+                                    <div className="text-center py-8 text-primary/50 text-sm">
                                         No items added yet. Click "Add Item" to
                                         get started.
                                     </div>
@@ -725,7 +725,7 @@ const CreateInvoiceModal = ({
                                             (item, index) => (
                                                 <div
                                                     key={item.id}
-                                                    className="border border-primary-10 rounded-lg p-4 space-y-3"
+                                                    className="border border-primary/10 rounded-lg p-4 space-y-3"
                                                 >
                                                     <div className="flex justify-between items-center">
                                                         <span className="text-sm font-medium text-primary">
@@ -845,7 +845,7 @@ const CreateInvoiceModal = ({
                                 )}
 
                                 {/* Tax and Discount */}
-                                <div className="pt-4 border-t border-primary-10 space-y-4">
+                                <div className="pt-4 border-t border-primary/10 space-y-4">
                                     <div className="grid grid-cols-2 gap-4">
                                         <div>
                                             <label className="input-label">
@@ -911,7 +911,7 @@ const CreateInvoiceModal = ({
                                                                 | 'fixed',
                                                         })
                                                     }
-                                                    className="px-3 py-2 border border-primary-10 rounded-lg text-sm text-primary focus:outline-none focus:border-primary"
+                                                    className="px-3 py-2 border border-primary/10 rounded-lg text-sm text-primary focus:outline-none focus:border-primary"
                                                 >
                                                     <option value="percentage">
                                                         %
@@ -946,10 +946,10 @@ const CreateInvoiceModal = ({
                                                     <img
                                                         src={companyInfo.logo}
                                                         alt="Company Logo"
-                                                        className="w-16 h-16 object-contain border border-primary-10 rounded-lg"
+                                                        className="w-16 h-16 object-contain border border-primary/10 rounded-lg"
                                                     />
                                                 )}
-                                                <label className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-primary hover:bg-primary-10 rounded-lg transition-colors cursor-pointer border border-primary-10">
+                                                <label className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-primary hover:bg-primary/10 rounded-lg transition-colors cursor-pointer border border-primary/10">
                                                     <FaUpload className="w-3 h-3" />
                                                     Upload Logo
                                                     <input
@@ -1092,7 +1092,7 @@ const CreateInvoiceModal = ({
 
                 {/* Right Side - Invoice Preview */}
                 <div className="hidden md:flex flex-1 bg-lightBg items-center justify-center p-8 overflow-y-auto">
-                    <div className="w-full max-w-xl bg-white rounded-2 shadow-sm border border-primary-10 p-8">
+                    <div className="w-full max-w-xl bg-white rounded-2 shadow-sm border border-primary/10 p-8">
                         {/* Logo and Invoice Header */}
                         <div className="flex justify-between items-start mb-6">
                             {companyInfo.logo ? (
@@ -1113,13 +1113,13 @@ const CreateInvoiceModal = ({
                         <div className="mb-6 text-sm">
                             <div className="flex gap-8">
                                 <div>
-                                    <div className="text-primary-75 font-medium">
+                                    <div className="text-primary/75 font-medium">
                                         Invoice number
                                     </div>
-                                    <div className="text-primary-75 mt-1">
+                                    <div className="text-primary/75 mt-1">
                                         Issue date
                                     </div>
-                                    <div className="text-primary-75">
+                                    <div className="text-primary/75">
                                         Due date
                                     </div>
                                 </div>
@@ -1143,24 +1143,24 @@ const CreateInvoiceModal = ({
                                 <div className="font-medium text-primary">
                                     {companyInfo.name}
                                 </div>
-                                <div className="text-primary-75 mt-1">
+                                <div className="text-primary/75 mt-1">
                                     {companyInfo.address}
                                 </div>
-                                <div className="text-primary-75">
+                                <div className="text-primary/75">
                                     {companyInfo.city}
                                 </div>
-                                <div className="text-primary-75">
+                                <div className="text-primary/75">
                                     {companyInfo.country}
                                 </div>
-                                <div className="text-primary-75">
+                                <div className="text-primary/75">
                                     {companyInfo.postalCode}
                                 </div>
-                                <div className="text-primary-75">
+                                <div className="text-primary/75">
                                     {companyInfo.email}
                                 </div>
                             </div>
                             <div className="text-right">
-                                <div className="text-primary-75 font-medium">
+                                <div className="text-primary/75 font-medium">
                                     Bill to
                                 </div>
                                 {formData.customer && (
@@ -1169,12 +1169,12 @@ const CreateInvoiceModal = ({
                                             {formData.customer.name}
                                         </div>
                                         {formData.customer.email && (
-                                            <div className="text-primary-75 text-xs mt-1">
+                                            <div className="text-primary/75 text-xs mt-1">
                                                 {formData.customer.email}
                                             </div>
                                         )}
                                         {formData.customer.address && (
-                                            <div className="text-primary-75 text-xs mt-1">
+                                            <div className="text-primary/75 text-xs mt-1">
                                                 {formData.customer.address}
                                             </div>
                                         )}
@@ -1192,14 +1192,14 @@ const CreateInvoiceModal = ({
                         </div>
 
                         {/* Line Items Table */}
-                        <div className="border-t border-primary-10 pt-4">
+                        <div className="border-t border-primary/10 pt-4">
                             <DataTable
                                 data={formData.lineItems}
                                 columns={previewColumns}
                                 containerClassName="border-none rounded-none"
                                 tableClassName="w-full text-sm"
                                 emptyMessage={
-                                    <div className="py-8 text-center text-primary-50">
+                                    <div className="py-8 text-center text-primary/50">
                                         No items added
                                     </div>
                                 }
@@ -1207,9 +1207,9 @@ const CreateInvoiceModal = ({
                         </div>
 
                         {/* Totals */}
-                        <div className="border-t border-primary-10 pt-4 mt-4 space-y-2">
+                        <div className="border-t border-primary/10 pt-4 mt-4 space-y-2">
                             <div className="flex justify-between text-sm">
-                                <span className="text-primary-75">
+                                <span className="text-primary/75">
                                     Subtotal
                                 </span>
                                 <span className="text-primary">
@@ -1218,7 +1218,7 @@ const CreateInvoiceModal = ({
                             </div>
                             {formData.discount > 0 && (
                                 <div className="flex justify-between text-sm">
-                                    <span className="text-primary-75">
+                                    <span className="text-primary/75">
                                         Discount (
                                         {formData.discountType === 'percentage'
                                             ? `${formData.discount}%`
@@ -1231,14 +1231,14 @@ const CreateInvoiceModal = ({
                                 </div>
                             )}
                             <div className="flex justify-between text-sm">
-                                <span className="text-primary-75">
+                                <span className="text-primary/75">
                                     Tax ({formData.taxRate}%)
                                 </span>
                                 <span className="text-primary">
                                     {formatCurrency(totalTax)}
                                 </span>
                             </div>
-                            <div className="flex justify-between text-sm py-1 border-t border-primary-10 pt-3">
+                            <div className="flex justify-between text-sm py-1 border-t border-primary/10 pt-3">
                                 <span className="font-medium text-primary">
                                     Amount due
                                 </span>
@@ -1250,18 +1250,18 @@ const CreateInvoiceModal = ({
 
                         {/* Notes */}
                         {formData.notes && (
-                            <div className="mt-6 pt-6 border-t border-primary-10">
-                                <div className="text-xs font-medium text-primary-75 mb-2">
+                            <div className="mt-6 pt-6 border-t border-primary/10">
+                                <div className="text-xs font-medium text-primary/75 mb-2">
                                     Notes:
                                 </div>
-                                <div className="text-xs text-primary-75 whitespace-pre-wrap">
+                                <div className="text-xs text-primary/75 whitespace-pre-wrap">
                                     {formData.notes}
                                 </div>
                             </div>
                         )}
 
                         {/* Footer */}
-                        <div className="mt-auto pt-16 text-xs text-primary-50 flex justify-between">
+                        <div className="mt-auto pt-16 text-xs text-primary/50 flex justify-between">
                             <span>
                                 Invoice {formData.invoiceNumber} •{' '}
                                 {formatCurrency(total)} due{' '}

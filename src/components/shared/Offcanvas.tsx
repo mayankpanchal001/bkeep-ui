@@ -33,10 +33,10 @@ export interface OffcanvasProps {
 }
 
 const POSITION_CLASSES: Record<OffcanvasPosition, string> = {
-    left: 'left-0 top-0 bottom-0 border-r border-primary-10',
-    right: 'right-0 top-0 bottom-0 border-l border-primary-10',
-    top: 'top-0 left-0 right-0 border-b border-primary-10',
-    bottom: 'bottom-0 left-0 right-0 border-t border-primary-10',
+    left: 'left-0 top-0 bottom-0 border-r border-primary/10',
+    right: 'right-0 top-0 bottom-0 border-l border-primary/10',
+    top: 'top-0 left-0 right-0 border-b border-primary/10',
+    bottom: 'bottom-0 left-0 right-0 border-t border-primary/10',
 };
 
 const TRANSITION_CLASSES: Record<
@@ -153,14 +153,14 @@ const Offcanvas = ({
             >
                 {/* Header */}
                 {(title || showCloseButton) && (
-                    <div className="flex items-center justify-between px-6 py-4 border-b border-primary-10">
+                    <div className="flex items-center justify-between px-6 py-4 border-b border-primary/10">
                         <div className="text-xl font-semibold text-primary">
                             {title}
                         </div>
                         {showCloseButton && (
                             <button
                                 onClick={onClose}
-                                className="p-2 -mr-2 text-primary-50 hover:text-primary rounded-full hover:bg-primary-10 transition-colors"
+                                className="p-2 -mr-2 text-primary/50 hover:text-primary rounded-full hover:bg-primary/10 transition-colors"
                                 aria-label="Close"
                             >
                                 <FaTimes size={20} />

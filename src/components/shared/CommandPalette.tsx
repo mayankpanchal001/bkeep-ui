@@ -109,10 +109,10 @@ const CommandPalette = ({ isOpen, onClose }: CommandPaletteProps) => {
             />
 
             {/* Modal */}
-            <div className="relative w-full max-w-lg bg-white rounded-xl shadow-2xl overflow-hidden flex flex-col animate-in fade-in zoom-in-95 duration-200 border border-primary-10">
+            <div className="relative w-full max-w-lg bg-white rounded-xl shadow-2xl overflow-hidden flex flex-col animate-in fade-in zoom-in-95 duration-200 border border-primary/10">
                 {/* Search Input */}
-                <div className="flex items-center px-4 py-3 border-b border-primary-10">
-                    <FaSearch className="text-gray-400 w-5 h-5 mr-3" />
+                <div className="flex items-center px-4 py-3 border-b border-primary/10">
+                    <FaSearch className="text-primary/40 w-5 h-5 mr-3" />
                     <input
                         ref={inputRef}
                         type="text"
@@ -122,7 +122,7 @@ const CommandPalette = ({ isOpen, onClose }: CommandPaletteProps) => {
                         onChange={(e) => setQuery(e.target.value)}
                     />
                     <div className="hidden sm:flex items-center gap-1">
-                        <kbd className="px-2 py-1 text-xs font-semibold text-gray-500 bg-gray-50 rounded border border-gray-200">
+                        <kbd className="px-2 py-1 text-xs font-semibold text-primary/50 bg-white rounded border border-primary/10">
                             ESC
                         </kbd>
                     </div>
@@ -131,7 +131,7 @@ const CommandPalette = ({ isOpen, onClose }: CommandPaletteProps) => {
                 {/* Results */}
                 <div className="max-h-[60vh] overflow-y-auto py-2">
                     {filteredCommands.length === 0 ? (
-                        <div className="px-4 py-8 text-center text-gray-500">
+                        <div className="px-4 py-8 text-center text-primary/50">
                             No results found for "{query}"
                         </div>
                     ) : (
@@ -141,14 +141,14 @@ const CommandPalette = ({ isOpen, onClose }: CommandPaletteProps) => {
                                     key={`${cmd.category}-${cmd.label}`}
                                     className={`
                                         flex items-center justify-between px-4 py-3 mx-2 rounded-lg text-left transition-colors
-                                        ${index === selectedIndex ? 'bg-primary-10 text-primary' : 'text-gray-700 hover:bg-gray-50'}
+                                        ${index === selectedIndex ? 'bg-primary/10 text-primary' : 'text-primary/70 hover:bg-white'}
                                     `}
                                     onClick={() => handleSelect(cmd)}
                                     onMouseEnter={() => setSelectedIndex(index)}
                                 >
                                     <div className="flex items-center gap-3">
                                         <span
-                                            className={`text-lg ${index === selectedIndex ? 'text-primary' : 'text-gray-400'}`}
+                                            className={`text-lg ${index === selectedIndex ? 'text-primary' : 'text-primary/40'}`}
                                         >
                                             {cmd.icon}
                                         </span>
@@ -156,7 +156,7 @@ const CommandPalette = ({ isOpen, onClose }: CommandPaletteProps) => {
                                             <span className="font-medium block">
                                                 {cmd.label}
                                             </span>
-                                            <span className="text-xs text-gray-400 font-medium uppercase tracking-wider">
+                                            <span className="text-xs text-primary/40 font-medium uppercase tracking-wider">
                                                 {cmd.category}
                                             </span>
                                         </div>
@@ -171,7 +171,7 @@ const CommandPalette = ({ isOpen, onClose }: CommandPaletteProps) => {
                 </div>
 
                 {/* Footer */}
-                <div className="px-4 py-2 bg-gray-50 border-t border-primary-10 flex items-center justify-between text-xs text-gray-400">
+                <div className="px-4 py-2 bg-white border-t border-primary/10 flex items-center justify-between text-xs text-primary/40">
                     <div className="flex gap-4">
                         <span>
                             <kbd className="font-sans">↑↓</kbd> to navigate

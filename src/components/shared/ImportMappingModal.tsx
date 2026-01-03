@@ -65,12 +65,12 @@ const ImportMappingModal = ({
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
             <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl flex flex-col max-h-[90vh]">
                 {/* Header */}
-                <div className="flex items-center justify-between p-4 border-b border-gray-200">
+                <div className="flex items-center justify-between p-4 border-b border-primary/10">
                     <div>
-                        <h2 className="text-xl font-semibold text-gray-800">
+                        <h2 className="text-xl font-semibold text-primary/90">
                             Map Import Fields
                         </h2>
-                        <p className="text-sm text-gray-500 mt-1">
+                        <p className="text-sm text-primary/50 mt-1">
                             Map columns from{' '}
                             <span className="font-medium">{filename}</span> to
                             system fields
@@ -78,7 +78,7 @@ const ImportMappingModal = ({
                     </div>
                     <button
                         onClick={onClose}
-                        className="text-gray-400 hover:text-gray-600 transition-colors"
+                        className="text-primary/40 hover:text-primary/60 transition-colors"
                     >
                         <FaTimes size={20} />
                     </button>
@@ -87,7 +87,7 @@ const ImportMappingModal = ({
                 {/* Body */}
                 <div className="p-4 overflow-y-auto flex-1">
                     <div className="space-y-4">
-                        <div className="grid grid-cols-12 gap-4 text-sm font-medium text-gray-500 border-b border-gray-100 pb-2 mb-2">
+                        <div className="grid grid-cols-12 gap-4 text-sm font-medium text-primary/50 border-b border-primary/10 pb-2 mb-2">
                             <div className="col-span-5">System Field</div>
                             <div className="col-span-2 flex justify-center"></div>
                             <div className="col-span-5">File Column</div>
@@ -100,7 +100,7 @@ const ImportMappingModal = ({
                             >
                                 <div className="col-span-5">
                                     <div className="flex items-center">
-                                        <span className="font-medium text-gray-700">
+                                        <span className="font-medium text-primary/70">
                                             {field.label}
                                         </span>
                                         {field.required && (
@@ -109,11 +109,11 @@ const ImportMappingModal = ({
                                             </span>
                                         )}
                                     </div>
-                                    <div className="text-xs text-gray-400 mt-0.5">
+                                    <div className="text-xs text-primary/40 mt-0.5">
                                         {field.key}
                                     </div>
                                 </div>
-                                <div className="col-span-2 flex justify-center text-gray-300">
+                                <div className="col-span-2 flex justify-center text-primary/30">
                                     <FaArrowRight />
                                 </div>
                                 <div className="col-span-5">
@@ -143,7 +143,7 @@ const ImportMappingModal = ({
                 </div>
 
                 {/* Footer */}
-                <div className="p-4 border-t border-gray-200 flex justify-end gap-3 bg-gray-50">
+                <div className="p-4 border-t border-primary/10 flex justify-end gap-3 bg-white">
                     <Button
                         variant="outline"
                         onClick={onClose}

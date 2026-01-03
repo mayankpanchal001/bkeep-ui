@@ -95,7 +95,7 @@ const TransactionsTable = () => {
                             {description}
                         </span>
                         {displayLabel && (
-                            <span className="text-xs text-primary-50">
+                            <span className="text-xs text-primary/50">
                                 {displayLabel}
                             </span>
                         )}
@@ -107,7 +107,7 @@ const TransactionsTable = () => {
             header: 'Type',
             accessorKey: 'itemType',
             cell: (transaction) => (
-                <span className="text-xs text-primary-50 bg-primary-10 px-2 py-1 rounded">
+                <span className="text-xs text-primary/50 bg-primary/10 px-2 py-1 rounded">
                     {transaction.itemType || 'N/A'}
                 </span>
             ),
@@ -144,7 +144,7 @@ const TransactionsTable = () => {
         {
             header: 'Balance',
             cell: (transaction) => (
-                <span className="text-sm text-primary-75">
+                <span className="text-sm text-primary/75">
                     {new Intl.NumberFormat('en-US', {
                         style: 'currency',
                         currency: transaction.currency?.toUpperCase() || 'USD',
@@ -159,18 +159,18 @@ const TransactionsTable = () => {
                 return (
                     <div className="flex items-center gap-2">
                         {transaction.pending && (
-                            <span className="text-xs text-primary-50 bg-primary-10 px-2 py-1 rounded">
+                            <span className="text-xs text-primary/50 bg-primary/10 px-2 py-1 rounded">
                                 Pending
                             </span>
                         )}
                         {firstSplit?.pendingTransfer && (
-                            <span className="text-xs text-primary-50 bg-primary-10 px-2 py-1 rounded">
+                            <span className="text-xs text-primary/50 bg-primary/10 px-2 py-1 rounded">
                                 Transfer
                             </span>
                         )}
                         {transaction.matchedReceiptDocs &&
                             transaction.matchedReceiptDocs.length > 0 && (
-                                <span className="text-xs text-primary-50 bg-primary-10 px-2 py-1 rounded">
+                                <span className="text-xs text-primary/50 bg-primary/10 px-2 py-1 rounded">
                                     Receipt
                                 </span>
                             )}
@@ -181,7 +181,7 @@ const TransactionsTable = () => {
         {
             header: 'Action',
             cell: () => (
-                <button className="text-primary hover:text-primary-75 text-sm font-medium">
+                <button className="text-primary hover:text-primary/75 text-sm font-medium">
                     View
                 </button>
             ),
@@ -190,10 +190,10 @@ const TransactionsTable = () => {
 
     if (isLoading) {
         return (
-            <div className="bg-white rounded-2 shadow-sm border border-primary-10 p-12">
+            <div className="bg-white rounded-2 shadow-sm border border-primary/10 p-12">
                 <div className="flex flex-col items-center justify-center gap-4">
-                    <div className="w-12 h-12 border-4 border-primary-25 border-t-primary rounded-full animate-spin"></div>
-                    <p className="text-sm text-primary-50">
+                    <div className="w-12 h-12 border-4 border-primary/25 border-t-primary rounded-full animate-spin"></div>
+                    <p className="text-sm text-primary/50">
                         Loading transactions...
                     </p>
                 </div>
@@ -212,12 +212,12 @@ const TransactionsTable = () => {
     }
 
     return (
-        <div className="bg-white max-h-[calc(100vh-100px)] rounded-2 shadow-sm border border-primary-10 overflow-y-auto">
+        <div className="bg-white max-h-[calc(100vh-100px)] rounded-2 shadow-sm border border-primary/10 overflow-y-auto">
             {/* Table Header with Search */}
-            <div className="p-4 border-b border-primary-10 sticky top-0 bg-white z-10">
+            <div className="p-4 border-b border-primary/10 sticky top-0 bg-white z-10">
                 <div className="flex items-center justify-between gap-4">
                     <div className="flex-1 relative">
-                        <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-primary-50 w-4 h-4" />
+                        <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-primary/50 w-4 h-4" />
                         <input
                             type="text"
                             placeholder="Search transactions..."
@@ -226,10 +226,10 @@ const TransactionsTable = () => {
                                 setSearchTerm(e.target.value);
                                 setCurrentPage(1);
                             }}
-                            className="w-full pl-10 pr-4 py-2 border border-primary-10 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-25 focus:border-primary text-sm"
+                            className="w-full pl-10 pr-4 py-2 border border-primary/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/25 focus:border-primary text-sm"
                         />
                     </div>
-                    <button className="flex items-center gap-2 px-4 py-2 border border-primary-10 rounded-lg hover:bg-primary-10 transition-colors text-sm font-medium text-primary">
+                    <button className="flex items-center gap-2 px-4 py-2 border border-primary/10 rounded-lg hover:bg-primary/10 transition-colors text-sm font-medium text-primary">
                         <FaFilter className="w-4 h-4" />
                         Filter
                     </button>

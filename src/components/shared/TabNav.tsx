@@ -46,8 +46,8 @@ export default function TabNav({
                         className={cn(
                             'flex items-center gap-2 px-3 py-1.5 text-xs rounded-sm transition-colors cursor-pointer',
                             active
-                                ? 'bg-white text-primary shadow-sm border border-primary-10'
-                                : 'text-primary-50 hover:bg-primary-10'
+                                ? 'bg-white text-primary shadow-sm border border-primary/10'
+                                : 'text-primary/50 hover:bg-primary/10'
                         )}
                     >
                         {item.icon && (

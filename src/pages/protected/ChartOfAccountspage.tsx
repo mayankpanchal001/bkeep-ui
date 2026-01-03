@@ -9,17 +9,6 @@ import {
     FaTrash,
 } from 'react-icons/fa';
 import * as XLSX from 'xlsx';
-import ConfirmationDialog from '../../components/shared/ConfirmationDialog';
-import { Column, DataTable } from '../../components/shared/DataTable';
-import ImportFileModal from '../../components/shared/ImportFileModal';
-import ImportMappingModal from '../../components/shared/ImportMappingModal';
-import Loading from '../../components/shared/Loading';
-import Offcanvas from '../../components/shared/Offcanvas';
-import Button from '../../components/typography/Button';
-import {
-    InputField,
-    SelectField,
-} from '../../components/typography/InputFields';
 import {
     downloadSampleData,
     useChartOfAccounts,
@@ -33,6 +22,17 @@ import {
     type ChartOfAccount,
     type CreateChartOfAccountPayload,
 } from '../../services/apis/chartsAccountApi';
+import ConfirmationDialog from '/src/components/shared/ConfirmationDialog';
+import { Column, DataTable } from '/src/components/shared/DataTable';
+import ImportFileModal from '/src/components/shared/ImportFileModal';
+import ImportMappingModal from '/src/components/shared/ImportMappingModal';
+import Loading from '/src/components/shared/Loading';
+import Offcanvas from '/src/components/shared/Offcanvas';
+import Button from '/src/components/typography/Button';
+import {
+    InputField,
+    SelectField,
+} from '/src/components/typography/InputFields';
 
 const currencyFormatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
@@ -436,11 +436,11 @@ const ChartOfAccountspage = () => {
                     <div className="font-medium text-primary">
                         {account.accountName}
                     </div>
-                    <div className="text-xs text-primary-50 mt-1">
+                    <div className="text-xs text-primary/50 mt-1">
                         {account.accountNumber}
                     </div>
                     {account.description && (
-                        <div className="text-xs text-primary-50 mt-1">
+                        <div className="text-xs text-primary/50 mt-1">
                             {account.description}
                         </div>
                     )}
@@ -458,7 +458,7 @@ const ChartOfAccountspage = () => {
         {
             header: 'Detail Type',
             cell: (account) => (
-                <span className="text-sm text-primary-75 capitalize">
+                <span className="text-sm text-primary/75 capitalize">
                     {account.accountDetailType.replace(/-/g, ' ')}
                 </span>
             ),
@@ -483,7 +483,7 @@ const ChartOfAccountspage = () => {
                 <div className="flex items-center justify-center gap-2">
                     <button
                         onClick={() => handleOpenEditModal(account)}
-                        className="p-2 text-primary-50 hover:text-primary hover:bg-primary-10 rounded transition-colors"
+                        className="p-2 text-primary/50 hover:text-primary hover:bg-primary/10 rounded transition-colors"
                         title="Edit"
                     >
                         <FaEdit className="w-4 h-4" />
@@ -511,7 +511,7 @@ const ChartOfAccountspage = () => {
     return (
         <div className="h-full flex flex-col gap-4">
             {/* Filters and Search */}
-            <div className="bg-white rounded-2 shadow-sm border border-primary-10 p-4">
+            <div className="bg-white rounded-2 shadow-sm border border-primary/10 p-4">
                 <div className="flex flex-col sm:flex-row gap-4">
                     <div className="flex-1">
                         <div className="relative">
@@ -525,7 +525,7 @@ const ChartOfAccountspage = () => {
                         </div>
                     </div>
                     <div className="flex items-center min-w-[150px] gap-2">
-                        <FaFilter className="text-primary-50" />
+                        <FaFilter className="text-primary/50" />
                         <SelectField
                             id="filter-account-type"
                             value={selectedType}
@@ -573,7 +573,7 @@ const ChartOfAccountspage = () => {
             </div>
 
             {/* Accounts Table */}
-            <div className="bg-white rounded-2 shadow-sm border border-primary-10 overflow-hidden">
+            <div className="bg-white rounded-2 shadow-sm border border-primary/10 overflow-hidden">
                 <DataTable
                     data={accounts}
                     columns={columns}
@@ -741,7 +741,7 @@ const ChartOfAccountspage = () => {
                         </div>
                     </form>
 
-                    <div className="flex justify-end gap-3 mt-8 pt-4 border-t border-primary-10">
+                    <div className="flex justify-end gap-3 mt-8 pt-4 border-t border-primary/10">
                         <Button
                             type="button"
                             variant="outline"

@@ -1,7 +1,5 @@
 import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router';
-import Button from '../../components/typography/Button';
-import { InputField } from '../../components/typography/InputFields';
 import { useVerifyMfa } from '../../services/apis/authApi';
 import { useTOTPLogin } from '../../services/apis/mfaApi';
 import { useAuth } from '../../stores/auth/authSelectore';
@@ -9,6 +7,8 @@ import { useTenant } from '../../stores/tenant/tenantSelectore';
 import { Tenant } from '../../types';
 import { storePasskeyUser } from '../../utills/passkey';
 import { showSuccessToast } from '../../utills/toast';
+import Button from '/src/components/typography/Button';
+import { InputField } from '/src/components/typography/InputFields';
 
 const OtpVerificationpage = () => {
     const location = useLocation();
@@ -169,11 +169,11 @@ const OtpVerificationpage = () => {
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-lightBg px-4">
-            <div className="w-full max-w-md bg-white rounded-2 shadow-xl p-4 lg:p-8 border border-primary-10">
+            <div className="w-full max-w-md bg-white rounded-2 shadow-xl p-4 lg:p-8 border border-primary/10">
                 <h1 className="text-2xl font-bold text-primary mb-2">
                     {getTitle()}
                 </h1>
-                <p className="text-sm text-primary-50 mb-6">
+                <p className="text-sm text-primary/50 mb-6">
                     {getDescription()}
                 </p>
 

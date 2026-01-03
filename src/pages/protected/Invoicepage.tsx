@@ -12,10 +12,10 @@ import {
     FaTimesCircle,
     FaTrash,
 } from 'react-icons/fa';
-import CreateInvoiceModal from '../../components/invoice/CreateInvoiceModal';
-import { Column, DataTable } from '../../components/shared/DataTable';
-import Button from '../../components/typography/Button';
-import { InputField } from '../../components/typography/InputFields';
+import CreateInvoiceModal from '/src/components/invoice/CreateInvoiceModal';
+import { Column, DataTable } from '/src/components/shared/DataTable';
+import Button from '/src/components/typography/Button';
+import { InputField } from '/src/components/typography/InputFields';
 
 type Invoice = {
     id: string;
@@ -80,7 +80,7 @@ const currencyFormatter = new Intl.NumberFormat('en-US', {
 const statusConfig = {
     draft: {
         label: 'Draft',
-        color: 'bg-gray-100 text-gray-700',
+        color: 'bg-gray-100 text-primary/70',
         icon: FaFileInvoiceDollar,
     },
     sent: { label: 'Sent', color: 'bg-blue-100 text-blue-700', icon: FaClock },
@@ -151,7 +151,7 @@ const Invoicepage = () => {
                 header: 'Date',
                 accessorKey: 'date',
                 cell: (invoice) => (
-                    <span className="text-primary-75">
+                    <span className="text-primary/75">
                         {new Date(invoice.date).toLocaleDateString()}
                     </span>
                 ),
@@ -161,7 +161,7 @@ const Invoicepage = () => {
                 header: 'Due Date',
                 accessorKey: 'dueDate',
                 cell: (invoice) => (
-                    <span className="text-primary-75">
+                    <span className="text-primary/75">
                         {new Date(invoice.dueDate).toLocaleDateString()}
                     </span>
                 ),
@@ -198,13 +198,13 @@ const Invoicepage = () => {
                 cell: () => (
                     <div className="flex items-center justify-center gap-2">
                         <button
-                            className="p-2 text-primary-50 hover:text-primary hover:bg-primary-10 rounded transition-colors"
+                            className="p-2 text-primary/50 hover:text-primary hover:bg-primary/10 rounded transition-colors"
                             title="View"
                         >
                             <FaEye className="w-4 h-4" />
                         </button>
                         <button
-                            className="p-2 text-primary-50 hover:text-primary hover:bg-primary-10 rounded transition-colors"
+                            className="p-2 text-primary/50 hover:text-primary hover:bg-primary/10 rounded transition-colors"
                             title="Edit"
                         >
                             <FaEdit className="w-4 h-4" />
@@ -231,7 +231,7 @@ const Invoicepage = () => {
                     <h1 className="text-2xl font-semibold text-primary">
                         Invoices
                     </h1>
-                    <p className="text-primary-75 text-sm mt-1">
+                    <p className="text-primary/75 text-sm mt-1">
                         Manage your client invoices and payments
                     </p>
                 </div>
@@ -245,11 +245,11 @@ const Invoicepage = () => {
             </div>
 
             {/* Filters */}
-            <div className="bg-white p-4 rounded-2 shadow-sm border border-primary-10 mb-6">
+            <div className="bg-white p-4 rounded-2 shadow-sm border border-primary/10 mb-6">
                 <div className="flex flex-col sm:flex-row gap-4">
                     <div className="flex-1">
                         <div className="relative">
-                            <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-primary-50 w-4 h-4" />
+                            <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-primary/50 w-4 h-4" />
                             <InputField
                                 id="search-invoices"
                                 placeholder="Search invoices..."
@@ -259,11 +259,11 @@ const Invoicepage = () => {
                         </div>
                     </div>
                     <div className="flex items-center gap-2">
-                        <FaFilter className="text-primary-50" />
+                        <FaFilter className="text-primary/50" />
                         <select
                             value={statusFilter}
                             onChange={(e) => setStatusFilter(e.target.value)}
-                            className="px-4 py-2 border border-primary-10 rounded-2 text-sm text-primary focus:outline-none focus:border-primary"
+                            className="px-4 py-2 border border-primary/10 rounded-2 text-sm text-primary focus:outline-none focus:border-primary"
                         >
                             <option value="all">All Status</option>
                             <option value="draft">Draft</option>
@@ -276,12 +276,12 @@ const Invoicepage = () => {
             </div>
 
             {/* Invoices Table */}
-            <div className="bg-white rounded-2 shadow-sm border border-primary-10 overflow-hidden">
+            <div className="bg-white rounded-2 shadow-sm border border-primary/10 overflow-hidden">
                 <DataTable
                     data={filteredInvoices}
                     columns={columns}
                     emptyMessage={
-                        <div className="px-4 py-8 text-center text-primary-50">
+                        <div className="px-4 py-8 text-center text-primary/50">
                             No invoices found
                         </div>
                     }

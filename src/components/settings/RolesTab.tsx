@@ -1,8 +1,8 @@
 import { useGetRoles } from '../../services/apis/roleApi';
-import Button from '../typography/Button';
-import Chips from '../typography/Chips';
 import { DataTable, type Column } from '../shared/DataTable';
 import { Icons } from '../shared/Icons';
+import Button from '../typography/Button';
+import Chips from '../typography/Chips';
 
 type RoleType = {
     id: string;
@@ -27,7 +27,7 @@ const RolesTab = () => {
         {
             header: 'Display Name',
             accessorKey: 'displayName',
-            className: 'text-primary-75',
+            className: 'text-primary/75',
         },
         {
             header: 'Description',
@@ -40,7 +40,7 @@ const RolesTab = () => {
                     {role.description || '—'}
                 </span>
             ),
-            className: 'text-primary-75',
+            className: 'text-primary/75',
         },
         {
             header: 'Status',
@@ -69,7 +69,7 @@ const RolesTab = () => {
                     <Icons.Lock className="w-4 h-4" />
                     <span>Roles</span>
                 </h3>
-                <div className="flex items-center gap-2 text-sm text-primary-50">
+                <div className="flex items-center gap-2 text-sm text-primary/50">
                     <span>
                         {pagination?.total || roles.length} role
                         {(pagination?.total || roles.length) !== 1 ? 's' : ''}
@@ -85,6 +85,9 @@ const RolesTab = () => {
                 data={roles}
                 columns={columns}
                 isLoading={isLoading}
+                onSelectionChange={(selectedRows) => {
+                    console.log(selectedRows);
+                }}
                 keyField="id"
                 pagination={
                     pagination && pagination.totalPages > 1

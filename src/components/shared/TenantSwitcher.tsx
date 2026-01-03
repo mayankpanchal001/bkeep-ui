@@ -1,9 +1,20 @@
-import { useEffect, useRef, useState } from 'react';
-import { FaBuilding, FaCheck, FaChevronDown, FaSpinner } from 'react-icons/fa';
+import { Building, Check, ChevronsUpDown } from 'lucide-react';
+import { useState } from 'react';
 import { useSwitchTenant, useUserTenants } from '../../services/apis/tenantApi';
 import { useAuth } from '../../stores/auth/authSelectore';
 import { useTenant } from '../../stores/tenant/tenantSelectore';
 import { showErrorToast } from '../../utills/toast';
+import { cn } from '../../utils/cn';
+
+import {
+    Command,
+    CommandEmpty,
+    CommandGroup,
+    CommandInput,
+    CommandItem,
+    CommandList,
+} from '../ui/command';
+import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 
 type TenantSwitcherProps = {
     compact?: boolean;
@@ -15,7 +26,6 @@ const TenantSwitcher = ({ compact = false }: TenantSwitcherProps) => {
     const [isOpen, setIsOpen] = useState(false);
     const { mutateAsync: switchTenant } = useSwitchTenant();
     const { selectTenant } = useTenant();
-    const dropdownRef = useRef<HTMLDivElement>(null);
 
     // Fetch user-accessible tenants from API (works for all users)
     const { data: tenantsResponse, isLoading: isLoadingTenants } =
@@ -29,26 +39,6 @@ const TenantSwitcher = ({ compact = false }: TenantSwitcherProps) => {
     const tenants = tenantsResponse?.data?.items || [];
     const selectedTenantId = user?.selectedTenantId;
     const selectedTenant = tenants.find((t) => t.id === selectedTenantId);
-
-    // Close dropdown when clicking outside
-    useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
-            if (
-                dropdownRef.current &&
-                !dropdownRef.current.contains(event.target as Node)
-            ) {
-                setIsOpen(false);
-            }
-        };
-
-        if (isOpen) {
-            document.addEventListener('mousedown', handleClickOutside);
-        }
-
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
-    }, [isOpen]);
 
     const handleTenantChange = async (tenantId: string) => {
         if (!tenantId || tenantId === selectedTenantId) {
@@ -101,111 +91,90 @@ const TenantSwitcher = ({ compact = false }: TenantSwitcherProps) => {
         }
     };
 
-    // Don't render if still loading or no tenants
-    if (isLoadingTenants || !tenants.length) {
-        return null;
-    }
-
-    const buttonClasses = compact ? 'text-xs px-2 py-1' : 'text-sm px-3 py-2';
+    const buttonClasses = compact ? 'h-7 px-2 text-[10px]' : 'h-8 px-1 text-xs';
 
     return (
-        <div className="relative" ref={dropdownRef}>
-            {/* Trigger Button */}
-            <button
-                onClick={() =>
-                    !isSwitching && !isLoadingTenants && setIsOpen(!isOpen)
-                }
-                disabled={isSwitching || isLoadingTenants}
-                className={`flex items-center px-4 py-2 gap-2 bg-white border border-primary/25 rounded-2 transition-all duration-200 ${buttonClasses} ${isSwitching || isLoadingTenants ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:border-primary-20'}`}
-            >
-                {isSwitching || isLoadingTenants ? (
-                    <FaSpinner className="text-primary-50 w-4 h-4 animate-spin" />
-                ) : (
-                    <FaBuilding className="text-primary-50 w-4 h-4" />
-                )}
-                <span className="text-primary font-medium truncate max-w-[150px]">
-                    {isLoadingTenants
-                        ? 'Loading...'
-                        : selectedTenant?.name || 'Select Tenant'}
-                </span>
-                <FaChevronDown
-                    className={`text-primary-50 w-3 h-3 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
-                />
-            </button>
-
-            {/* Dropdown Popup */}
-            {isOpen && (
-                <div className="absolute top-full mt-2 right-0 w-64 bg-white border border-gray-200 rounded-2 z-50 max-h-96 overflow-hidden">
-                    {/* Header */}
-                    <div className="px-4 py-3 border-b border-gray-200 bg-gray-50">
-                        <h3 className="text-sm font-semibold text-gray-700">
-                            Switch Tenant
-                        </h3>
-                        <p className="text-xs text-gray-500 mt-1">
-                            Select a tenant to switch to
-                        </p>
-                    </div>
-
-                    {/* Tenant List */}
-                    <div className="overflow-y-auto max-h-80">
-                        {tenants.map((tenant) => {
-                            const isSelected = tenant.id === selectedTenantId;
-                            return (
-                                <button
+        <Popover open={isOpen} onOpenChange={setIsOpen}>
+            <PopoverTrigger asChild>
+                <button
+                    disabled={isSwitching || isLoadingTenants}
+                    aria-label="Tenant switcher"
+                    aria-expanded={isOpen}
+                    className={cn(
+                        'group pl-1 inline-flex items-center gap-2 rounded-full bg-white border border-primary/25 shadow-sm transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white cursor-pointer',
+                        buttonClasses,
+                        (isSwitching || isLoadingTenants) &&
+                            'opacity-60 cursor-not-allowed',
+                        !isSwitching &&
+                            !isLoadingTenants &&
+                            'hover:border-primary/20',
+                        isOpen && 'ring-1 ring-primary/25'
+                    )}
+                >
+                    <span
+                        className={cn(
+                            'shrink-0 flex items-center justify-center rounded-full border border-primary/10 bg-primary/10 text-primary',
+                            compact ? 'w-5 h-5' : 'w-6 h-6'
+                        )}
+                    >
+                        <Building className="w-3.5 h-3.5" />
+                    </span>
+                    <span
+                        className={cn(
+                            'text-primary font-medium truncate',
+                            compact ? 'max-w-[120px]' : 'max-w-[160px]'
+                        )}
+                    >
+                        {isLoadingTenants
+                            ? 'Loading...'
+                            : selectedTenant?.name || 'Select tenant'}
+                    </span>
+                    <ChevronsUpDown
+                        className={cn(
+                            'text-primary/50 w-3 h-3 transition-transform duration-200',
+                            isOpen && 'rotate-180'
+                        )}
+                    />
+                </button>
+            </PopoverTrigger>
+            <PopoverContent className="w-72 p-0" align="end">
+                <Command>
+                    <CommandInput placeholder="Search tenant..." />
+                    <CommandList>
+                        <CommandEmpty>No tenant found.</CommandEmpty>
+                        <CommandGroup heading="Switch Tenant">
+                            {tenants.map((tenant) => (
+                                <CommandItem
                                     key={tenant.id}
-                                    onClick={() =>
+                                    value={tenant.name}
+                                    onSelect={() =>
                                         handleTenantChange(tenant.id)
                                     }
-                                    disabled={isSwitching || isSelected}
-                                    className={`w-full px-4 py-3 flex items-center justify-between  hover:bg-gray-50 transition-colors duration-150 border-b border-gray-100 last:border-b-0 ${
-                                        isSelected
-                                            ? 'bg-primary-5 hover:bg-primary-5'
-                                            : ''
-                                    } ${isSwitching ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+                                    className="cursor-pointer"
                                 >
-                                    <div className="flex items-center gap-3 flex-1 min-w-0">
-                                        <div
-                                            className={`shrink-0 w-10 h-10 rounded-2 flex items-center justify-center ${
-                                                isSelected
-                                                    ? 'bg-primary text-white'
-                                                    : 'bg-gray-100 text-gray-600'
-                                            }`}
-                                        >
-                                            <FaBuilding className="w-4 h-4" />
+                                    <div className="flex items-center gap-2 flex-1 min-w-0">
+                                        <div className="shrink-0 flex items-center justify-center w-6 h-6 rounded bg-primary/10 text-primary">
+                                            <Building className="h-3 w-3" />
                                         </div>
-                                        <div className="flex-1 text-left min-w-0">
-                                            <div className="flex items-center gap-2">
-                                                <p
-                                                    className={`text-sm font-medium truncate ${
-                                                        isSelected
-                                                            ? 'text-primary'
-                                                            : 'text-gray-900'
-                                                    }`}
-                                                >
-                                                    {tenant.name}
-                                                </p>
-                                            </div>
-                                        </div>
+                                        <span className="truncate">
+                                            {tenant.name}
+                                        </span>
                                     </div>
-                                    {isSelected && (
-                                        <FaCheck className="text-primary w-4 h-4 shrink-0" />
-                                    )}
-                                </button>
-                            );
-                        })}
-                    </div>
-
-                    {/* Footer */}
-                    {tenants.length === 0 && (
-                        <div className="px-4 py-6 text-center">
-                            <p className="text-sm text-gray-500">
-                                No tenants available
-                            </p>
-                        </div>
-                    )}
-                </div>
-            )}
-        </div>
+                                    <Check
+                                        className={cn(
+                                            'ml-auto h-4 w-4',
+                                            tenant.id === selectedTenantId
+                                                ? 'opacity-100'
+                                                : 'opacity-0'
+                                        )}
+                                    />
+                                </CommandItem>
+                            ))}
+                        </CommandGroup>
+                    </CommandList>
+                </Command>
+            </PopoverContent>
+        </Popover>
     );
 };
 

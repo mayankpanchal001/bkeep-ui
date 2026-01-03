@@ -1,13 +1,13 @@
 import { Link } from 'react-router';
-import { ResetPasswordForm } from '../../components/auth/ResetPasswordForm';
 import { APP_TITLE } from '../../constants';
 import { logo } from '../../utills/image';
+import { ResetPasswordForm } from '/src/components/auth/ResetPasswordForm';
 
 const ResetPasswordpage = () => {
     return (
         <div className="min-h-screen flex w-full">
             {/* Left Side - Branding Section */}
-            <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-primary to-primary-75 items-center justify-center p-12 relative overflow-hidden">
+            <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-primary to-primary/75 items-center justify-center p-12 relative overflow-hidden">
                 {/* Background Pattern Layer 1 - Grid */}
                 <div className="absolute inset-0 opacity-20">
                     <div
@@ -77,18 +77,18 @@ const ResetPasswordpage = () => {
                         <h1 className="text-2xl font-bold text-primary mb-2">
                             Reset Password
                         </h1>
-                        <p className="text-sm text-primary-75 text-center">
+                        <p className="text-sm text-primary/75 text-center">
                             Create a new secure password
                         </p>
                     </div>
 
                     {/* Reset Password Form Card */}
-                    <div className="bg-white rounded-2 shadow-xl p-4 lg:p-8 border border-primary-10">
+                    <div className="bg-white rounded-2 shadow-xl p-4 lg:p-8 border border-primary/10">
                         <ResetPasswordForm />
                     </div>
 
                     <div className="mt-6 text-center">
-                        <p className="text-xs text-primary-50 mt-2">
+                        <p className="text-xs text-primary/50 mt-2">
                             © {new Date().getFullYear()} {APP_TITLE}. All
                             rights reserved.
                         </p>

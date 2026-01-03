@@ -133,7 +133,7 @@ export default function AdminDashboardKit() {
             <div className="flex flex-col sm:flex-row gap-4">
                 <div className="flex-1">
                     <div className="flex flex-col gap-4">
-                        <div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-4">
                             <SummaryCard
                                 title="TOTAL COLLECTIONS"
                                 value={totals.totalCollections.value}
@@ -171,7 +171,7 @@ export default function AdminDashboardKit() {
                                     <div className="text-sm font-semibold text-primary">
                                         Sale Activity - Monthly
                                     </div>
-                                    <div className="text-xs text-primary-50">
+                                    <div className="text-xs text-primary/50">
                                         Showing total sales for the last 6
                                         months
                                     </div>
@@ -216,33 +216,33 @@ export default function AdminDashboardKit() {
                     <div className="text-sm font-semibold text-primary mb-2">
                         Payments
                     </div>
-                    <div className="text-xs text-primary-50 mb-4">
+                    <div className="text-xs text-primary/50 mb-4">
                         Manage your payments.
                     </div>
                     <div className="space-y-3">
-                        <div className="flex items-center justify-between p-3 rounded border border-primary-10">
+                        <div className="flex items-center justify-between p-3 rounded border border-primary/10">
                             <div>
                                 <div className="text-sm font-medium text-primary">
                                     Stripe
                                 </div>
-                                <div className="text-xs text-primary-50">
+                                <div className="text-xs text-primary/50">
                                     Connected
                                 </div>
                             </div>
-                            <button className="text-xs text-primary-50 hover:text-primary">
+                            <button className="text-xs text-primary/50 hover:text-primary">
                                 Manage
                             </button>
                         </div>
-                        <div className="flex items-center justify-between p-3 rounded border border-primary-10">
+                        <div className="flex items-center justify-between p-3 rounded border border-primary/10">
                             <div>
                                 <div className="text-sm font-medium text-primary">
                                     PayPal
                                 </div>
-                                <div className="text-xs text-primary-50">
+                                <div className="text-xs text-primary/50">
                                     Not connected
                                 </div>
                             </div>
-                            <button className="text-xs text-primary-50 hover:text-primary">
+                            <button className="text-xs text-primary/50 hover:text-primary">
                                 Connect
                             </button>
                         </div>
@@ -252,33 +252,33 @@ export default function AdminDashboardKit() {
                     <div className="text-sm font-semibold text-primary mb-2">
                         Team Members
                     </div>
-                    <div className="text-xs text-primary-50 mb-4">
+                    <div className="text-xs text-primary/50 mb-4">
                         Invite your team members to collaborate.
                     </div>
                     <div className="space-y-3">
-                        <div className="flex items-center justify-between p-3 rounded border border-primary-10">
+                        <div className="flex items-center justify-between p-3 rounded border border-primary/10">
                             <div>
                                 <div className="text-sm font-medium text-primary">
                                     Alex Johnson
                                 </div>
-                                <div className="text-xs text-primary-50">
+                                <div className="text-xs text-primary/50">
                                     Admin
                                 </div>
                             </div>
-                            <button className="text-xs text-primary-50 hover:text-primary">
+                            <button className="text-xs text-primary/50 hover:text-primary">
                                 Invite
                             </button>
                         </div>
-                        <div className="flex items-center justify-between p-3 rounded border border-primary-10">
+                        <div className="flex items-center justify-between p-3 rounded border border-primary/10">
                             <div>
                                 <div className="text-sm font-medium text-primary">
                                     Maria Lopez
                                 </div>
-                                <div className="text-xs text-primary-50">
+                                <div className="text-xs text-primary/50">
                                     Editor
                                 </div>
                             </div>
-                            <button className="text-xs text-primary-50 hover:text-primary">
+                            <button className="text-xs text-primary/50 hover:text-primary">
                                 Invite
                             </button>
                         </div>

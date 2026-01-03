@@ -169,7 +169,7 @@ const AcceptInvitationForm = () => {
                 <h2 className="text-2xl font-bold text-primary mb-3">
                     Verifying Invitation
                 </h2>
-                <p className="text-sm text-primary-50 text-center max-w-sm">
+                <p className="text-sm text-primary/50 text-center max-w-sm">
                     Please wait while we verify your invitation token...
                 </p>
             </div>
@@ -186,7 +186,7 @@ const AcceptInvitationForm = () => {
                 <h2 className="text-2xl font-bold text-primary mb-3">
                     Invalid or Expired Invitation
                 </h2>
-                <p className="text-sm text-primary-50 text-center mb-8 max-w-md">
+                <p className="text-sm text-primary/50 text-center mb-8 max-w-md">
                     {verificationData?.message ||
                         'This invitation link is invalid or has expired. Please contact your administrator for a new invitation.'}
                 </p>
@@ -214,7 +214,7 @@ const AcceptInvitationForm = () => {
                 <h2 className="text-2xl font-bold text-primary mb-3">
                     Accepting Invitation
                 </h2>
-                <p className="text-sm text-primary-50 text-center max-w-sm">
+                <p className="text-sm text-primary/50 text-center max-w-sm">
                     Please wait while we set up your account...
                 </p>
             </div>
@@ -228,7 +228,7 @@ const AcceptInvitationForm = () => {
                 <h2 className="text-3xl font-bold text-primary mb-2">
                     Accept Invitation
                 </h2>
-                <p className="text-sm text-primary-50">
+                <p className="text-sm text-primary/50">
                     {requiresPassword
                         ? 'Complete your account setup to get started'
                         : 'Review your invitation details'}
@@ -237,7 +237,7 @@ const AcceptInvitationForm = () => {
 
             {/* Invitation Details Card */}
             {invitationData && (
-                <div className="bg-gradient-to-br from-primary-5 to-primary-10 rounded-2 p-4 mb-8 border border-primary-20 shadow-sm">
+                <div className="bg-gradient-to-br from-primary/5 to-primary/10 rounded-2 p-4 mb-8 border border-primary/20 shadow-sm">
                     <div className="flex items-center gap-2 mb-4">
                         <FaCheckCircle className="w-5 h-5 text-primary" />
                         <h3 className="text-sm font-semibold text-primary uppercase tracking-wide">
@@ -250,7 +250,7 @@ const AcceptInvitationForm = () => {
                                 <FaUser className="w-5 h-5 text-primary" />
                             </div>
                             <div className="flex-1 min-w-0">
-                                <p className="text-xs font-medium text-primary-50 uppercase tracking-wide mb-1">
+                                <p className="text-xs font-medium text-primary/50 uppercase tracking-wide mb-1">
                                     Full Name
                                 </p>
                                 <p className="text-base font-semibold text-primary truncate">
@@ -263,7 +263,7 @@ const AcceptInvitationForm = () => {
                                 <FaEnvelope className="w-5 h-5 text-primary" />
                             </div>
                             <div className="flex-1 min-w-0">
-                                <p className="text-xs font-medium text-primary-50 uppercase tracking-wide mb-1">
+                                <p className="text-xs font-medium text-primary/50 uppercase tracking-wide mb-1">
                                     Email Address
                                 </p>
                                 <p className="text-base font-semibold text-primary truncate">
@@ -277,7 +277,7 @@ const AcceptInvitationForm = () => {
                                     <FaCheckCircle className="w-5 h-5 text-primary" />
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                    <p className="text-xs font-medium text-primary-50 uppercase tracking-wide mb-1">
+                                    <p className="text-xs font-medium text-primary/50 uppercase tracking-wide mb-1">
                                         Role
                                     </p>
                                     <p className="text-base font-semibold text-primary truncate">
@@ -293,7 +293,7 @@ const AcceptInvitationForm = () => {
                                     <FaBuilding className="w-5 h-5 text-primary" />
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                    <p className="text-xs font-medium text-primary-50 uppercase tracking-wide mb-1">
+                                    <p className="text-xs font-medium text-primary/50 uppercase tracking-wide mb-1">
                                         Organization
                                     </p>
                                     <p className="text-base font-semibold text-primary truncate">
@@ -458,12 +458,12 @@ const AcceptInvitationForm = () => {
             )}
 
             {/* Footer Link */}
-            <div className="pt-4 border-t border-primary-10">
-                <p className="text-xs text-center text-primary-50">
+            <div className="pt-4 border-t border-primary/10">
+                <p className="text-xs text-center text-primary/50">
                     Already have an account?{' '}
                     <button
                         onClick={() => navigate('/login')}
-                        className="text-primary hover:text-primary-75 font-semibold underline transition-colors"
+                        className="text-primary hover:text-primary/75 font-semibold underline transition-colors"
                     >
                         Sign In
                     </button>

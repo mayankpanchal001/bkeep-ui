@@ -13,6 +13,7 @@ import {
     LuEye,
     LuFileText,
     LuFileUp,
+    LuGripVertical,
     LuLayoutDashboard,
     LuLock,
     LuLogOut,
@@ -33,6 +34,7 @@ import {
     LuTrash2,
     LuUser,
     LuUsers,
+    LuUserCog,
     LuX,
 } from 'react-icons/lu';
 
@@ -59,6 +61,7 @@ export const Icons = {
     Search: LuSearch,
     Building: LuBuilding,
     Users: LuUsers,
+    Roles: LuUserCog,
     Shield: LuShield,
     Lock: LuLock,
     Database: LuDatabase,
@@ -73,5 +76,6 @@ export const Icons = {
     Close: LuX,
     Download: LuDownload,
     Eye: LuEye,
+    GripVertical: LuGripVertical,
     Send: LuSend,
 };

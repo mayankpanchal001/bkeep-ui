@@ -38,7 +38,7 @@ const SummaryCard = ({
             <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-3">
                     {icon && <div className="text-primary text-xl">{icon}</div>}
-                    <h3 className="text-sm font-semibold text-primary-75 uppercase">
+                    <h3 className="text-sm font-semibold text-primary/75 uppercase">
                         {title}
                     </h3>
                 </div>
@@ -78,7 +78,7 @@ const SummaryCard = ({
                             key={index}
                             className="flex items-center justify-between text-sm"
                         >
-                            <span className="text-primary-50">
+                            <span className="text-primary/50">
                                 {item.label}
                             </span>
                             <span className="font-medium text-primary">
@@ -90,12 +90,12 @@ const SummaryCard = ({
             )}
 
             {aiNotes && aiNotes.length > 0 && (
-                <div className="pt-4 border-t border-primary-10">
+                <div className="pt-4 border-t border-primary/10">
                     <div className="space-y-2">
                         {aiNotes.map((note, index) => (
                             <p
                                 key={index}
-                                className="text-xs text-primary-50 italic"
+                                className="text-xs text-primary/50 italic"
                             >
                                 💡 {note}
                             </p>

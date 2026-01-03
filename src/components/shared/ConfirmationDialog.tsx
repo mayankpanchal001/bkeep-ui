@@ -57,14 +57,14 @@ const ConfirmationDialog = ({
     const confirmButtonClasses =
         confirmVariant === 'danger'
             ? 'rounded-2 bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-70'
-            : 'rounded-2 bg-primary px-4 py-2 text-sm font-semibold text-white transition hover:bg-primary-75 disabled:cursor-not-allowed disabled:opacity-70';
+            : 'rounded-2 bg-primary px-4 py-2 text-sm font-semibold text-white transition hover:bg-primary/75 disabled:cursor-not-allowed disabled:opacity-70';
 
     return (
         <div
             className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4"
             onClick={handleBackdropClick}
         >
-            <div className="w-full max-w-sm rounded-2 bg-white p-4 shadow-2xl border border-primary-10">
+            <div className="w-full max-w-sm rounded-2 bg-white p-4 shadow-2xl border border-primary/10">
                 <div className="flex items-start justify-between mb-4">
                     <h3 className="text-lg font-semibold text-primary">
                         {title}
@@ -73,17 +73,17 @@ const ConfirmationDialog = ({
                         <button
                             onClick={onClose}
                             disabled={loading}
-                            className="text-primary-50 hover:text-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="text-primary/50 hover:text-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                             aria-label="Close"
                         >
                             <FaTimes className="w-5 h-5" />
                         </button>
                     )}
                 </div>
-                <p className="mt-2 text-sm text-primary-75">{message}</p>
+                <p className="mt-2 text-sm text-primary/75">{message}</p>
                 <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-end">
                     <button
-                        className="rounded-2 border border-primary-10 px-4 py-2 text-sm font-semibold text-primary transition hover:bg-primary-10 disabled:cursor-not-allowed disabled:opacity-70"
+                        className="rounded-2 border border-primary/10 px-4 py-2 text-sm font-semibold text-primary transition hover:bg-primary/10 disabled:cursor-not-allowed disabled:opacity-70"
                         onClick={onClose}
                         disabled={loading}
                     >

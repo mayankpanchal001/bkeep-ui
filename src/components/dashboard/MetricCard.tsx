@@ -25,7 +25,7 @@ export default function MetricCard({
             ? 'text-green-600'
             : trend === 'down'
               ? 'text-red-600'
-              : 'text-primary-50';
+              : 'text-primary/50';
 
     return (
         <div className="card">
@@ -33,17 +33,17 @@ export default function MetricCard({
                 <div className="flex items-center gap-2">
                     {icon && <div className="text-primary">{icon}</div>}
                     <div>
-                        <div className="text-xs font-medium text-primary-50">
+                        <div className="text-xs font-medium text-primary/50">
                             {title}
                         </div>
                         {subtitle && (
-                            <div className="text-xs text-primary-50">
+                            <div className="text-xs text-primary/50">
                                 {subtitle}
                             </div>
                         )}
                     </div>
                 </div>
-                <button className="text-xs text-primary-50 hover:text-primary">
+                <button className="text-xs text-primary/50 hover:text-primary">
                     Details
                 </button>
             </div>

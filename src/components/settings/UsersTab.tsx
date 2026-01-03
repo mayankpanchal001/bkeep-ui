@@ -160,7 +160,7 @@ const UsersTab = () => {
         {
             header: 'Email',
             accessorKey: 'email',
-            className: 'text-primary-75',
+            className: 'text-primary/75',
         },
         {
             header: 'Role',
@@ -171,7 +171,7 @@ const UsersTab = () => {
                 user.roles?.[0]?.displayName ||
                 user.roles?.[0]?.name ||
                 'N/A',
-            className: 'text-primary-75',
+            className: 'text-primary/75',
         },
         {
             header: 'Status',
@@ -210,20 +210,20 @@ const UsersTab = () => {
         {
             header: 'Email',
             accessorKey: 'email',
-            className: 'text-primary-75',
+            className: 'text-primary/75',
         },
         {
             header: 'Tenant',
             accessorKey: 'tenant',
             cell: (invitation) => invitation.tenant?.name || '—',
-            className: 'text-primary-75',
+            className: 'text-primary/75',
         },
         {
             header: 'Invited At',
             accessorKey: 'createdAt',
             cell: (invitation) =>
                 new Date(invitation.createdAt).toLocaleDateString(),
-            className: 'text-primary-75',
+            className: 'text-primary/75',
         },
         {
             header: 'Actions',
@@ -272,7 +272,7 @@ const UsersTab = () => {
                     Users Management
                 </h3>
                 <div className="flex items-center gap-4">
-                    <div className="flex items-center gap-2 text-sm text-primary-50">
+                    <div className="flex items-center gap-2 text-sm text-primary/50">
                         <Icons.Users className="w-4 h-4" />
                         <span>
                             {pagination?.total || 0} user
@@ -305,7 +305,7 @@ const UsersTab = () => {
                             <button
                                 type="button"
                                 onClick={handleClearSearch}
-                                className="absolute right-12 top-1/2 transform -translate-y-1/2 text-primary-50 hover:text-primary transition-colors"
+                                className="absolute right-12 top-1/2 transform -translate-y-1/2 text-primary/50 hover:text-primary transition-colors"
                                 aria-label="Clear search"
                             >
                                 <Icons.Close className="w-4 h-4" />
@@ -329,7 +329,7 @@ const UsersTab = () => {
                                     e.target.checked ? true : undefined
                                 )
                             }
-                            className="w-4 h-4 text-primary border-primary-10 rounded focus:ring-primary"
+                            className="w-4 h-4 text-primary border-primary/10 rounded focus:ring-primary"
                         />
                         <span className="text-sm text-primary">
                             Verified Only
@@ -345,7 +345,7 @@ const UsersTab = () => {
                                     e.target.checked ? true : undefined
                                 )
                             }
-                            className="w-4 h-4 text-primary border-primary-10 rounded focus:ring-primary"
+                            className="w-4 h-4 text-primary border-primary/10 rounded focus:ring-primary"
                         />
                         <span className="text-sm text-primary">
                             Active Only
@@ -359,7 +359,7 @@ const UsersTab = () => {
                     <h4 className="text-base font-semibold text-primary">
                         Pending Invitations
                     </h4>
-                    <div className="flex items-center gap-2 text-sm text-primary-50">
+                    <div className="flex items-center gap-2 text-sm text-primary/50">
                         <Icons.Send className="w-4 h-4" />
                         <span>
                             {invitationsPagination?.total ||

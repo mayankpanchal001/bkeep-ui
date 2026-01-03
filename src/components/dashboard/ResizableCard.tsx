@@ -257,20 +257,20 @@ const ResizableCard: React.FC<ResizableCardProps> = ({
                 onMouseDown={(e) => handleMouseDown(e, 'se')}
             >
                 <div className="absolute bottom-0.5 right-0.5 w-4 h-4">
-                    <div className="absolute bottom-0 right-0 w-3 h-3 border-r-2 border-b-2 border-primary-30 group-hover:border-primary transition-colors"></div>
-                    <div className="absolute bottom-1 right-1 w-2 h-2 border-r border-b border-primary-20 group-hover:border-primary-50 transition-colors"></div>
+                    <div className="absolute bottom-0 right-0 w-3 h-3 border-r-2 border-b-2 border-primary/30 group-hover:border-primary transition-colors"></div>
+                    <div className="absolute bottom-1 right-1 w-2 h-2 border-r border-b border-primary/20 group-hover:border-primary/50 transition-colors"></div>
                 </div>
             </div>
             {/* Right edge handle (resize width) */}
             <div
                 data-resize-handle
-                className="absolute top-0 right-0 w-2 h-full cursor-e-resize hover:bg-primary-10 transition-colors opacity-0 hover:opacity-100 z-10"
+                className="absolute top-0 right-0 w-2 h-full cursor-e-resize hover:bg-primary/10 transition-colors opacity-0 hover:opacity-100 z-10"
                 onMouseDown={(e) => handleMouseDown(e, 'e')}
             ></div>
             {/* Bottom edge handle (resize height) */}
             <div
                 data-resize-handle
-                className="absolute bottom-0 left-0 w-full h-2 cursor-s-resize hover:bg-primary-10 transition-colors opacity-0 hover:opacity-100 z-10"
+                className="absolute bottom-0 left-0 w-full h-2 cursor-s-resize hover:bg-primary/10 transition-colors opacity-0 hover:opacity-100 z-10"
                 onMouseDown={(e) => handleMouseDown(e, 's')}
             ></div>
         </div>

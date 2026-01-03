@@ -16,17 +16,17 @@ import {
 import toast from 'react-hot-toast';
 import { FaArrowTrendUp } from 'react-icons/fa6';
 
-import ChartWidget from '../../components/dashboard/ChartWidget';
-import SummaryCard from '../../components/dashboard/SummaryCard';
-import ExpensePieChart from '../../components/dashboard/charts/ExpensePieChart';
-import ProfitabilityLineChart from '../../components/dashboard/charts/ProfitabilityLineChart';
-import RevenueBarChart from '../../components/dashboard/charts/RevenueBarChart';
-import IncomeStatementTable from '../../components/reports/IncomeStatementTable';
 import {
     exportToCSV,
     exportToExcel,
     prepareReportData,
 } from '../../utills/export';
+import ChartWidget from '/src/components/dashboard/ChartWidget';
+import SummaryCard from '/src/components/dashboard/SummaryCard';
+import ExpensePieChart from '/src/components/dashboard/charts/ExpensePieChart';
+import ProfitabilityLineChart from '/src/components/dashboard/charts/ProfitabilityLineChart';
+import RevenueBarChart from '/src/components/dashboard/charts/RevenueBarChart';
+import IncomeStatementTable from '/src/components/reports/IncomeStatementTable';
 
 type TimeRangeValue =
     | 'yearly'
@@ -398,7 +398,7 @@ const Reportpage = () => {
     return (
         <div className="space-y-6">
             {/* Filters and Controls Section */}
-            <div className="bg-white border border-primary-10 rounded-2 p-4 shadow-sm">
+            <div className="bg-white border border-primary/10 rounded-2 p-4 shadow-sm">
                 <div className="space-y-4">
                     {/* Time Range Selector */}
                     <div>
@@ -418,7 +418,7 @@ const Reportpage = () => {
                                         className={`px-4 py-2.5 text-sm font-semibold rounded-2 transition-all duration-200 ${
                                             isActive
                                                 ? 'bg-primary text-white shadow-md scale-105'
-                                                : 'bg-primary-10 text-primary hover:bg-primary-25 hover:scale-105'
+                                                : 'bg-primary/10 text-primary hover:bg-primary/25 hover:scale-105'
                                         }`}
                                         aria-pressed={isActive}
                                     >
@@ -427,21 +427,21 @@ const Reportpage = () => {
                                 );
                             })}
                         </div>
-                        <p className="text-xs text-primary-50 mt-3 ml-1">
+                        <p className="text-xs text-primary/50 mt-3 ml-1">
                             Showing insights for the last {data.rangeLabel}.
                             Trends are compared against the {data.trendPeriod}.
                         </p>
                     </div>
 
                     {/* Action Buttons */}
-                    <div className="flex flex-wrap items-center gap-3 pt-2 border-t border-primary-10">
+                    <div className="flex flex-wrap items-center gap-3 pt-2 border-t border-primary/10">
                         {/* Advanced Filters Dropdown */}
                         <div className="relative" ref={filterMenuRef}>
                             <button
                                 onClick={() =>
                                     setIsFilterMenuOpen(!isFilterMenuOpen)
                                 }
-                                className="flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-primary dark:text-white bg-white dark:bg-white/5 border-2 border-primary-10 rounded-2 hover:border-primary hover:bg-primary-10 hover:shadow-sm transition-all duration-200"
+                                className="flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-primary dark:text-white bg-white dark:bg-white/5 border-2 border-primary/10 rounded-2 hover:border-primary hover:bg-primary/10 hover:shadow-sm transition-all duration-200"
                                 type="button"
                             >
                                 <FaFilter className="text-primary" />
@@ -456,7 +456,7 @@ const Reportpage = () => {
                             </button>
 
                             {isFilterMenuOpen && (
-                                <div className="absolute left-0 mt-2 w-56 bg-white rounded-2 shadow-lg border border-primary-10 py-2 z-50 dropdown-animate">
+                                <div className="absolute left-0 mt-2 w-56 bg-white rounded-2 shadow-lg border border-primary/10 py-2 z-50 dropdown-animate">
                                     <button
                                         onClick={() => {
                                             setSelectedReportType('income');
@@ -464,8 +464,8 @@ const Reportpage = () => {
                                         }}
                                         className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm transition-colors ${
                                             selectedReportType === 'income'
-                                                ? 'bg-primary-10 text-primary font-semibold'
-                                                : 'text-primary-75 hover:bg-primary-10 hover:text-primary'
+                                                ? 'bg-primary/10 text-primary font-semibold'
+                                                : 'text-primary/75 hover:bg-primary/10 hover:text-primary'
                                         }`}
                                         type="button"
                                     >
@@ -479,8 +479,8 @@ const Reportpage = () => {
                                         }}
                                         className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm transition-colors ${
                                             selectedReportType === 'balance'
-                                                ? 'bg-primary-10 text-primary font-semibold'
-                                                : 'text-primary-75 hover:bg-primary-10 hover:text-primary'
+                                                ? 'bg-primary/10 text-primary font-semibold'
+                                                : 'text-primary/75 hover:bg-primary/10 hover:text-primary'
                                         }`}
                                         type="button"
                                     >
@@ -510,10 +510,10 @@ const Reportpage = () => {
                             </button>
 
                             {isExportMenuOpen && (
-                                <div className="absolute right-0 mt-2 w-48 bg-white rounded-2 shadow-lg border border-primary-10 py-2 z-50 dropdown-animate">
+                                <div className="absolute right-0 mt-2 w-48 bg-white rounded-2 shadow-lg border border-primary/10 py-2 z-50 dropdown-animate">
                                     <button
                                         onClick={handleExportExcel}
-                                        className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-primary-75 hover:bg-primary-10 hover:text-primary transition-colors"
+                                        className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-primary/75 hover:bg-primary/10 hover:text-primary transition-colors"
                                         type="button"
                                     >
                                         <FaFileExcel className="w-4 h-4 text-green-600" />
@@ -521,7 +521,7 @@ const Reportpage = () => {
                                     </button>
                                     <button
                                         onClick={handleExportCSV}
-                                        className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-primary-75 hover:bg-primary-10 hover:text-primary transition-colors"
+                                        className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-primary/75 hover:bg-primary/10 hover:text-primary transition-colors"
                                         type="button"
                                     >
                                         <FaFileAlt className="w-4 h-4 text-blue-600" />
@@ -685,9 +685,9 @@ const Reportpage = () => {
                             {data.collectionEfficiency.map((item) => (
                                 <div
                                     key={item.label}
-                                    className="bg-primary-10 rounded-2 px-4 py-3 border border-primary-10"
+                                    className="bg-primary/10 rounded-2 px-4 py-3 border border-primary/10"
                                 >
-                                    <p className="text-xs font-semibold uppercase text-primary-50">
+                                    <p className="text-xs font-semibold uppercase text-primary/50">
                                         {item.label}
                                     </p>
                                     <p className="mt-2 text-lg font-bold text-primary">
@@ -714,7 +714,7 @@ const Reportpage = () => {
                         title="Receivables Aging"
                         subtitle="Current outstanding A/R"
                         actions={
-                            <span className="px-3 py-1 text-xs font-semibold text-primary bg-primary-10 rounded-full">
+                            <span className="px-3 py-1 text-xs font-semibold text-primary bg-primary/10 rounded-full">
                                 Balance{' '}
                                 {currencyFormatter.format(
                                     data.metrics.arBalance
@@ -735,7 +735,7 @@ const Reportpage = () => {
                                             )}
                                         </span>
                                     </div>
-                                    <div className="mt-2 h-2 rounded-full bg-primary-10">
+                                    <div className="mt-2 h-2 rounded-full bg-primary/10">
                                         <div
                                             className="h-full rounded-full bg-primary"
                                             style={{
@@ -762,7 +762,7 @@ const Reportpage = () => {
                                         <p className="text-sm font-semibold text-primary">
                                             {payer.payer}
                                         </p>
-                                        <p className="text-xs text-primary-50">
+                                        <p className="text-xs text-primary/50">
                                             {payer.claims} claims · Avg{' '}
                                             {payer.avgDays} days
                                         </p>
@@ -775,7 +775,7 @@ const Reportpage = () => {
                         </div>
                     </ChartWidget>
 
-                    <div className="bg-white border border-primary-10 rounded-2 p-4 shadow-sm">
+                    <div className="bg-white border border-primary/10 rounded-2 p-4 shadow-sm">
                         <div className="flex items-center gap-2 mb-4">
                             <FaChartPie className="text-primary" />
                             <h3 className="text-lg font-semibold text-primary">
@@ -786,7 +786,7 @@ const Reportpage = () => {
                             {data.aiHighlights.map((highlight, index) => (
                                 <li
                                     key={index}
-                                    className="flex items-start gap-2 text-sm text-primary-75"
+                                    className="flex items-start gap-2 text-sm text-primary/75"
                                 >
                                     <FaArrowTrendUp className="text-primary mt-1 shrink-0" />
                                     <span>{highlight}</span>
@@ -796,7 +796,7 @@ const Reportpage = () => {
                         <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <button
                                 type="button"
-                                className="w-full px-4 py-2 text-sm font-semibold text-primary bg-primary-10 rounded-2 hover:bg-primary-25 transition"
+                                className="w-full px-4 py-2 text-sm font-semibold text-primary bg-primary/10 rounded-2 hover:bg-primary/25 transition"
                             >
                                 Schedule Report Email
                             </button>

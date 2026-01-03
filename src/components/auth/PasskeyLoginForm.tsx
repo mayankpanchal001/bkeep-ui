@@ -176,8 +176,8 @@ export function PasskeyLoginForm() {
         return (
             <div className="space-y-6 text-center py-8">
                 <div className="flex justify-center mb-4">
-                    <div className="w-16 h-16 rounded-full bg-primary-10 flex items-center justify-center">
-                        <FaFingerprint className="w-8 h-8 text-primary-50" />
+                    <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
+                        <FaFingerprint className="w-8 h-8 text-primary/50" />
                     </div>
                 </div>
 
@@ -185,7 +185,7 @@ export function PasskeyLoginForm() {
                     <h3 className="text-lg font-semibold text-primary mb-2">
                         No Passkey Account Found
                     </h3>
-                    <p className="text-sm text-primary-75 mb-4">
+                    <p className="text-sm text-primary/75 mb-4">
                         To use passkey login, you need to:
                     </p>
                 </div>
@@ -260,16 +260,16 @@ export function PasskeyLoginForm() {
             )}
 
             {/* User ID Section */}
-            <div className="border border-primary-10 bg-gray-50 rounded-lg p-4 mb-4">
+            <div className="border border-primary/10 bg-white rounded-lg p-4 mb-4">
                 <div className="flex items-center gap-3">
                     <div className="shrink-0 w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
-                        <FaUser className="w-5 h-5 text-gray-600" />
+                        <FaUser className="w-5 h-5 text-primary/60" />
                     </div>
                     <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium text-primary">
                             {storedUser.email}
                         </p>
-                        <p className="text-xs text-primary-50 mt-1">
+                        <p className="text-xs text-primary/50 mt-1">
                             Last accessed {storedUser.lastAccessed} on this
                             device with {APP_TITLE}
                         </p>
@@ -278,7 +278,7 @@ export function PasskeyLoginForm() {
             </div>
 
             {/* Terms and Conditions */}
-            <div className="text-xs text-primary-50 leading-relaxed">
+            <div className="text-xs text-primary/50 leading-relaxed">
                 By signing in to access your {APP_TITLE} Account, you agree to{' '}
                 <Link
                     to="/terms"
@@ -315,30 +315,30 @@ export function PasskeyLoginForm() {
             </Button>
 
             {/* Other Actions */}
-            <div className="pt-4 border-t border-primary-10">
+            <div className="pt-4 border-t border-primary/10">
                 <p className="text-sm font-medium text-primary mb-3">
                     Other actions
                 </p>
                 <div className="space-y-2">
                     <button
                         onClick={handleUseDifferentAccount}
-                        className="w-full flex items-center gap-3 px-4 py-3 rounded-lg border border-primary-10 bg-white hover:bg-primary-5 transition-colors text-left"
+                        className="w-full flex items-center gap-3 px-4 py-3 rounded-lg border border-primary/10 bg-white hover:bg-primary/5 transition-colors text-left"
                     >
-                        <div className="shrink-0 w-8 h-8 rounded-full bg-primary-10 flex items-center justify-center">
+                        <div className="shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
                             <FaUser className="w-4 h-4 text-primary" />
                         </div>
-                        <span className="text-sm text-primary-75">
+                        <span className="text-sm text-primary/75">
                             Use a different account
                         </span>
                     </button>
                     <button
                         onClick={handleRemoveUserID}
-                        className="w-full flex items-center gap-3 px-4 py-3 rounded-lg border border-primary-10 bg-white hover:bg-primary-5 transition-colors text-left"
+                        className="w-full flex items-center gap-3 px-4 py-3 rounded-lg border border-primary/10 bg-white hover:bg-primary/5 transition-colors text-left"
                     >
                         <div className="shrink-0 w-8 h-8 rounded-full bg-red-10 flex items-center justify-center">
                             <FaTimes className="w-4 h-4 text-red-600" />
                         </div>
-                        <span className="text-sm text-primary-75">
+                        <span className="text-sm text-primary/75">
                             Remove a user ID
                         </span>
                     </button>
@@ -347,7 +347,7 @@ export function PasskeyLoginForm() {
 
             {/* New to BKeep */}
             <div className="pt-4 text-center">
-                <p className="text-sm text-primary-50">
+                <p className="text-sm text-primary/50">
                     New to {APP_TITLE}?{' '}
                     <Link
                         to="/register"
@@ -360,7 +360,7 @@ export function PasskeyLoginForm() {
 
             {/* reCAPTCHA Notice */}
             <div className="pt-4 text-center">
-                <p className="text-xs text-primary-40">
+                <p className="text-xs text-primary/40">
                     Invisible reCAPTCHA by Google{' '}
                     <Link
                         to="https://policies.google.com/privacy"

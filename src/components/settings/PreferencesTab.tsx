@@ -31,7 +31,7 @@ const PreferencesTab = ({
                                 timezone: e.target.value,
                             })
                         }
-                        className="w-full px-4 py-2 border border-primary-10 rounded-2 text-sm text-primary focus:outline-none focus:border-primary"
+                        className="w-full px-4 py-2 border border-primary/10 rounded-2 text-sm text-primary focus:outline-none focus:border-primary"
                     >
                         <option value="America/New_York">
                             Eastern Time (ET)
@@ -59,7 +59,7 @@ const PreferencesTab = ({
                                 currency: e.target.value,
                             })
                         }
-                        className="w-full px-4 py-2 border border-primary-10 rounded-2 text-sm text-primary focus:outline-none focus:border-primary"
+                        className="w-full px-4 py-2 border border-primary/10 rounded-2 text-sm text-primary focus:outline-none focus:border-primary"
                     >
                         <option value="USD">USD ($)</option>
                         <option value="CAD">CAD (C$)</option>
@@ -79,7 +79,7 @@ const PreferencesTab = ({
                                 dateFormat: e.target.value,
                             })
                         }
-                        className="w-full px-4 py-2 border border-primary-10 rounded-2 text-sm text-primary focus:outline-none focus:border-primary"
+                        className="w-full px-4 py-2 border border-primary/10 rounded-2 text-sm text-primary focus:outline-none focus:border-primary"
                     >
                         <option value="MM/DD/YYYY">MM/DD/YYYY</option>
                         <option value="DD/MM/YYYY">DD/MM/YYYY</option>
@@ -87,7 +87,7 @@ const PreferencesTab = ({
                     </select>
                 </div>
             </div>
-            <div className="flex justify-end pt-4 border-t border-primary-10">
+            <div className="flex justify-end pt-4 border-t border-primary/10">
                 <Button type="submit" variant="primary">
                     <FaSave className="mr-2" />
                     Save Changes

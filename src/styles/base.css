@@ -12,5 +12,5 @@ input {
 
 /* .public-route, */
 .protected-route {
-    @apply bg-primary-25 text-black h-dvh;
+    @apply bg-primary/25 text-primary h-dvh;
 }

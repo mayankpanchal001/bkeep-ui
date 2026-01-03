@@ -97,7 +97,7 @@ const ChangePasswordModal = ({ isOpen, onClose }: changePasswordModalProps) => {
                     </h3>
                     <button
                         onClick={onClose}
-                        className="text-primary-50 hover:text-primary transition-colors"
+                        className="text-primary/50 hover:text-primary transition-colors"
                     >
                         <FaTimes className="w-5 h-5" />
                     </button>

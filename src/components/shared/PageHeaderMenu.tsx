@@ -102,7 +102,7 @@ const PageHeaderMenu = () => {
             <div className="relative" ref={menuRef}>
                 <button
                     onClick={handleToggleMenu}
-                    className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-primary-10 transition-colors focus:outline-none cursor-pointer"
+                    className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-primary/10 transition-colors focus:outline-none cursor-pointer"
                     aria-label="User menu"
                     aria-expanded={isMenuOpen}
                 >
@@ -113,11 +113,11 @@ const PageHeaderMenu = () => {
                 </button>
                 {/* Dropdown Menu */}
                 {isMenuOpen && (
-                    <div className="absolute right-0 mt-2 w-64 bg-white rounded-2 shadow-lg border border-primary-10 py-2 z-50 dropdown-animate">
+                    <div className="absolute right-0 mt-2 w-64 bg-white rounded-2 shadow-lg border border-primary/10 py-2 z-50 dropdown-animate">
                         {/* User Info Header */}
-                        <div className="px-4 py-3 border-b border-primary-10">
+                        <div className="px-4 py-3 border-b border-primary/10">
                             <div className="flex items-center gap-3">
-                                <div className="w-12 h-12 rounded-full bg-primary-10 flex items-center justify-center text-primary border-2 border-primary-20">
+                                <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary border-2 border-primary/20">
                                     {user?.name
                                         ?.charAt(0)
                                         ?.toUpperCase()
@@ -127,7 +127,7 @@ const PageHeaderMenu = () => {
                                     <p className="text-sm font-semibold text-primary truncate">
                                         {user?.name}
                                     </p>
-                                    <p className="text-xs text-primary-50 truncate">
+                                    <p className="text-xs text-primary/50 truncate">
                                         {user?.email}
                                     </p>
                                 </div>
@@ -144,7 +144,7 @@ const PageHeaderMenu = () => {
                                     className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm transition-colors ${
                                         item.isDanger
                                             ? 'text-red-600 hover:bg-red-50 hover:text-red-700'
-                                            : 'text-primary-75 hover:bg-primary-10 hover:text-primary'
+                                            : 'text-primary/75 hover:bg-primary/10 hover:text-primary'
                                     }`}
                                 >
                                     <span className="shrink-0">
@@ -166,20 +166,20 @@ const PageHeaderMenu = () => {
                         <h3 className="text-lg font-semibold text-primary">
                             Sign out?
                         </h3>
-                        <p className="mt-2 text-sm text-primary-75">
+                        <p className="mt-2 text-sm text-primary/75">
                             You will need to sign in again to access your
                             workspace.
                         </p>
                         <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-end">
                             <button
-                                className="rounded-2 border border-primary-10 px-4 py-2 text-sm font-semibold text-primary transition hover:bg-primary-10"
+                                className="rounded-2 border border-primary/10 px-4 py-2 text-sm font-semibold text-primary transition hover:bg-primary/10"
                                 onClick={handleCancelLogout}
                                 disabled={isLoggingOut}
                             >
                                 Cancel
                             </button>
                             <button
-                                className="rounded-2 bg-primary px-4 py-2 text-sm font-semibold text-white transition hover:bg-primary-75 disabled:cursor-not-allowed disabled:opacity-70"
+                                className="rounded-2 bg-primary px-4 py-2 text-sm font-semibold text-white transition hover:bg-primary/75 disabled:cursor-not-allowed disabled:opacity-70"
                                 onClick={handleConfirmLogout}
                                 disabled={isLoggingOut}
                             >

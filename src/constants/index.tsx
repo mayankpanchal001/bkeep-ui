@@ -1,5 +1,5 @@
-import { Icons } from '../components/shared/Icons';
 import { SidebarItemProps } from '../types';
+import { Icons } from '/src/components/shared/Icons';
 
 export const SIDEBAR_ITEMS: SidebarItemProps[] = [
     {
@@ -64,30 +64,37 @@ export const SIDEBAR_ITEMS: SidebarItemProps[] = [
         children: [
             {
                 label: 'Profile',
+                icon: <Icons.Profile />,
                 path: '/settings/profile',
             },
             {
                 label: 'Tenants',
+                icon: <Icons.Building />,
                 path: '/settings/tenants',
             },
             {
                 label: 'Users',
+                icon: <Icons.Users />,
                 path: '/settings/users',
             },
             {
                 label: 'Roles',
+                icon: <Icons.Roles />,
                 path: '/settings/roles',
             },
             {
                 label: 'Security',
+                icon: <Icons.Shield />,
                 path: '/settings/security',
             },
             {
                 label: 'Data Privacy',
+                icon: <Icons.Database />,
                 path: '/settings/data',
             },
             {
                 label: 'Notifications',
+                icon: <Icons.Notifications />,
                 path: '/settings/notifications',
             },
         ],

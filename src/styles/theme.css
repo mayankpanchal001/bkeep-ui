@@ -1,79 +1,67 @@
 @import 'tailwindcss';
 
 :root {
-    /* Primary color */
-    /* --r: 197;
-    --g: 90;
-    --b: 17; */
-    /* --r: 13;
-    --g: 148;
-    --b: 136; */
-    --r: 61;
-    --g: 19;
-    --b: 8;
-    /* Secondary color */
-    --sr: 94;
-    --sg: 23;
-    --sb: 235;
+    --primary-r: 36;
+    --primary-g: 36;
+    --primary-b: 36;
+
+    --secondary-r: 94;
+    --secondary-g: 23;
+    --secondary-b: 235;
+
+    --accent-r: 255;
+    --accent-g: 122;
+    --accent-b: 66;
+
+    --surface: #fff;
+    --surface-muted: #fff;
 }
 
 @theme {
-    /* --color-lightBg: rgb(252 247 239); */
-    --color-lightBg: #f7f7f7;
-    /* --color-primary: rgba(var(--r), var(--g), var(--b), 1); */
-    --color-primary: #242424;
-    --color-primary-10: #f7f7f7;
-    /* --color-primary-25: rgba(var(--r), var(--g), var(--b), 0.25);
-    --color-primary-50: rgba(var(--r), var(--g), var(--b), 0.5);
-    --color-primary-75: rgba(var(--r), var(--g), var(--b), 0.75); */
-    --color-primary-25: rgba(var(--r), var(--g), var(--b), 0.25);
-    --color-primary-50: rgba(var(--r), var(--g), var(--b), 0.5);
-    --color-primary-75: rgba(var(--r), var(--g), var(--b), 0.75);
+    --color-surface: var(--surface);
+    --color-surface-muted: var(--surface-muted);
+    --color-lightBg: var(--color-surface-muted);
+    --color-white: var(--color-surface);
+    --color-background: var(--surface);
+    --color-foreground: var(--color-primary);
+    --color-card: var(--surface);
+    --color-card-foreground: var(--color-primary);
+    --color-popover: var(--surface);
+    --color-popover-foreground: var(--color-primary);
 
     --radius-2: 2px;
+    --radius: var(--radius-2);
 
-    --color-secondary: rgba(var(--sr), var(--sg), var(--sb), 1);
-    --color-secondary-10: rgba(var(--sr), var(--sg), var(--sb), 0.1);
-    --color-secondary-50: rgba(var(--sr), var(--sg), var(--sb), 0.5);
-    --color-secondary-75: rgba(var(--sr), var(--sg), var(--sb), 0.75);
+    --color-primary: rgb(var(--primary-r) var(--primary-g) var(--primary-b));
 
-    /* Dark Mode Color Palette */
-    --color-dark-surface: #020817;
-    --color-dark-card: #111827; /* Deep card color */
-    --color-dark-600: #ffffff;
-    --color-dark-border: rgba(255, 255, 255, 0.1);
-    --color-dark-text-primary: #ffffff;
-    --color-dark-text-secondary: rgba(255, 255, 255, 0.7);
+    --color-secondary: rgb(
+        var(--secondary-r) var(--secondary-g) var(--secondary-b)
+    );
+
+    --color-accent: rgb(var(--accent-r) var(--accent-g) var(--accent-b));
+
+    --color-muted: rgb(
+        var(--primary-r) var(--primary-g) var(--primary-b) / 0.6
+    );
+    --color-muted-foreground: rgb(
+        var(--primary-r) var(--primary-g) var(--primary-b) / 0.6
+    );
+    --color-border: rgb(
+        var(--primary-r) var(--primary-g) var(--primary-b) / 0.1
+    );
+    --color-input: var(--color-border);
+    --color-ring: var(--color-primary);
+    --color-destructive: var(--color-accent);
+    --color-destructive-foreground: var(--color-white);
 }
 
 .dark {
     color-scheme: dark;
-    --color-lightBg: var(--color-dark-surface);
-    --color-white: var(
-        --color-dark-surface
-    ); /* Cards now match page background */
-    --color-primary: var(--color-dark-text-primary);
-
-    /* Primary Variants Overrides for Dark Mode - Enhanced Contrast for Buttons */
-    --color-primary-10: rgba(255, 255, 255, 0.15);
-    --color-primary-25: rgba(255, 255, 255, 0.25);
-    --color-primary-50: var(--color-dark-text-secondary);
-    --color-primary-75: var(--color-dark-text-secondary);
-
-    /* Global Text Overrides (Gray scales) */
-    --color-gray-900: var(--color-dark-text-primary);
-    --color-gray-800: #f8fafc;
-    --color-gray-700: #f1f5f9;
-    --color-gray-600: #e2e8f0;
-    --color-gray-500: var(--color-dark-text-secondary);
-    --color-gray-400: #94a3b8;
-    --color-gray-300: #64748b;
-    --color-gray-200: var(--color-dark-border);
-    --color-gray-100: #1e293a;
-    --color-gray-50: #0f172a;
-
-    /* Ensure text is white by default */
-    color: var(--color-dark-text-primary);
+    --surface: #0d1117;
+    --surface-muted: #161b22;
+    --primary-r: 255;
+    --primary-g: 255;
+    --primary-b: 255;
 }
 
 /* Hard-override for Sidebar visibility regardless of Tailwind resolution */

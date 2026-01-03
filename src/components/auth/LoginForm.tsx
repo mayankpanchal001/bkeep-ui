@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { useLogin } from '../../services/apis/authApi';
 
 import { showErrorToast } from '../../utills/toast';
-import Button from '../typography/Button';
+
 import { InputField } from '../typography/InputFields';
+import { Button } from '../ui/button';
 
 export function LoginForm() {
     const [email, setEmail] = useState('');
@@ -118,11 +119,11 @@ export function LoginForm() {
                     <input
                         id="remember-me"
                         type="checkbox"
-                        className="h-3.5 w-3.5 text-black dark:text-white border-gray-300 dark:border-gray-600 rounded focus:ring-black dark:focus:ring-white cursor-pointer accent-black dark:accent-white"
+                        className="h-3.5 w-3.5 text-primary  border-primary/25 dark:border-gray-600 rounded focus:ring-primary dark:focus:ring-primary cursor-pointer accent-primary dark:accent-white"
                     />
                     <label
                         htmlFor="remember-me"
-                        className="text-[12.5px] font-medium text-gray-500 dark:text-gray-400 cursor-pointer hover:text-gray-800 dark:hover:text-gray-200 transition-colors"
+                        className="text-[12.5px] font-medium text-primary/50 dark:text-primary/40 cursor-pointer hover:text-primary/90 dark:hover:text-primary/20 transition-colors"
                     >
                         Remember me for 30 days
                     </label>
@@ -136,13 +137,7 @@ export function LoginForm() {
                     </div>
                 )}
 
-                <Button
-                    type="submit"
-                    variant="primary"
-                    className="w-full !rounded-md !normal-case h-9 text-sm font-semibold"
-                    loading={isLoading}
-                    disabled={isLoading}
-                >
+                <Button type="submit" disabled={isLoading}>
                     Login
                 </Button>
             </form>
