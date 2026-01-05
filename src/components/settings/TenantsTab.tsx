@@ -10,7 +10,7 @@ import {
     type SortingState,
     type VisibilityState,
 } from '@tanstack/react-table';
-import { ArrowUpDown, ChevronDown, MoreHorizontal, Plus } from 'lucide-react';
+import { ArrowUp, ChevronDown, MoreHorizontal, Plus } from 'lucide-react';
 import * as React from 'react';
 
 import {
@@ -119,15 +119,21 @@ export default function TenantsTab() {
                                     column.getIsSorted() === 'asc'
                                 )
                             }
-                            className="pl-0 hover:bg-transparent"
+                            className="pl-0! hover:bg-transparent"
                         >
                             Name
-                            <ArrowUpDown className="ml-2 h-4 w-4" />
+                            {column.getIsSorted() ? (
+                                column.getIsSorted() === 'asc' ? (
+                                    <ArrowUp className="ml-1 h-4 w-4 transition-all duration-200" />
+                                ) : (
+                                    <ArrowUp className="ml-1 h-4 w-4 rotate-180 transform transition-all duration-200" />
+                                )
+                            ) : null}
                         </Button>
                     );
                 },
                 cell: ({ row }) => (
-                    <div className="font-medium text-primary">
+                    <div className="font-normal text-primary/85">
                         {row.getValue('name')}
                     </div>
                 ),
@@ -315,7 +321,7 @@ export default function TenantsTab() {
                     </DropdownMenuContent>
                 </DropdownMenu>
             </div>
-            <div className="rounded-md border border-primary/10">
+            <div className="rounded-md border overflow-hidden border-primary/10">
                 <Table>
                     <TableHeader>
                         {table.getHeaderGroups().map((headerGroup) => (

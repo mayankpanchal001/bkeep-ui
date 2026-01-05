@@ -8,6 +8,8 @@ export interface SettingsFormData {
     timezone: string;
     currency: string;
     dateFormat: string;
+    bio?: string;
+    urls?: string[];
     notifications: {
         email: boolean;
         push: boolean;

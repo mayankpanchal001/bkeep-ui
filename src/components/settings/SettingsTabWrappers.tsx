@@ -1,12 +1,14 @@
 import { useState } from 'react';
-import { NotificationsTab, ProfileTab, type SettingsFormData } from './index';
 import { useAuth } from '../../stores/auth/authSelectore';
+import { NotificationsTab, ProfileTab, type SettingsFormData } from './index';
 
 export const ProfileTabWrapper = () => {
     const { user } = useAuth();
     const [formData, setFormData] = useState<SettingsFormData>({
         name: user?.name || '',
         email: user?.email || '',
+        bio: '',
+        urls: [],
         phone: '',
         company: '',
         timezone: 'America/New_York',
@@ -29,7 +31,6 @@ export const ProfileTabWrapper = () => {
             formData={formData}
             onFormDataChange={setFormData}
             onSubmit={handleSubmit}
-            roleDisplayName={user?.role?.displayName || user?.role?.name}
         />
     );
 };
@@ -39,6 +40,8 @@ export const NotificationsTabWrapper = () => {
     const [formData, setFormData] = useState<SettingsFormData>({
         name: user?.name || '',
         email: user?.email || '',
+        bio: '',
+        urls: [],
         phone: '',
         company: '',
         timezone: 'America/New_York',

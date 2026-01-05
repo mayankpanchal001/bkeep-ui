@@ -13,8 +13,8 @@
     --accent-g: 122;
     --accent-b: 66;
 
-    --surface: #fff;
-    --surface-muted: #fff;
+    --surface: #fbfbfb;
+    --surface-muted: #fbfbfb;
 }
 
 @theme {
@@ -57,7 +57,7 @@
 
 .dark {
     color-scheme: dark;
-    --surface: #0d1117;
+    --surface: #080707;
     --surface-muted: #161b22;
     --primary-r: 255;
     --primary-g: 255;
