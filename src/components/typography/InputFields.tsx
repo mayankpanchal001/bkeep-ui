@@ -57,7 +57,9 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
                     <input
                         ref={ref}
                         id={id}
-                        className={`input`}
+                        className={`input pl-4 ${icon ? 'pl-10' : 'pl-4'} ${
+                            isPasswordField ? 'pr-10' : 'pr-4'
+                        }`}
                         type={inputType}
                         placeholder={placeholder}
                         required={required}
