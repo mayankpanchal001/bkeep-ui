@@ -39,12 +39,19 @@ export default function Footer() {
                     {/* Brand Section */}
                     <div className="space-y-6 xl:col-span-1 lg:col-span-4 md:col-span-2">
                         <Link to="/" className="flex items-center gap-2">
-                            <img src={logo} alt={APP_TITLE} className="h-8 w-auto" />
-                            <span className="text-lg font-bold tracking-tight text-foreground">{APP_TITLE}</span>
+                            <img
+                                src={logo}
+                                alt={APP_TITLE}
+                                className="h-8 w-auto"
+                            />
+                            <span className="text-lg font-bold tracking-tight text-foreground">
+                                {APP_TITLE}
+                            </span>
                         </Link>
                         <p className="text-sm leading-relaxed text-muted-foreground max-w-sm">
-                            The AI-first financial operating system for modern firms.
-                            Automate bookkeeping, reconciliations, and reporting with audit‑ready precision.
+                            The AI-first financial operating system for modern
+                            firms. Automate bookkeeping, reconciliations, and
+                            reporting with audit‑ready precision.
                         </p>
                         <div className="flex gap-4">
                             <a
@@ -74,7 +81,9 @@ export default function Footer() {
                     {/* Navigation Links */}
                     {footerLinks.map((column) => (
                         <div key={column.title} className="flex flex-col gap-4">
-                            <h3 className="text-sm font-semibold text-foreground">{column.title}</h3>
+                            <h3 className="text-sm font-semibold text-foreground">
+                                {column.title}
+                            </h3>
                             <ul className="space-y-3">
                                 {column.links.map((link) => (
                                     <li key={link.label}>
@@ -92,9 +101,12 @@ export default function Footer() {
 
                     {/* Newsletter Section */}
                     <div className="flex flex-col gap-4 xl:col-span-1 lg:col-span-4 md:col-span-2">
-                        <h3 className="text-sm font-semibold text-foreground">Stay updated</h3>
+                        <h3 className="text-sm font-semibold text-foreground">
+                            Stay updated
+                        </h3>
                         <p className="text-sm text-muted-foreground">
-                            Get the latest product updates, accounting guides, and industry news delivered to your inbox.
+                            Get the latest product updates, accounting guides,
+                            and industry news delivered to your inbox.
                         </p>
                         <form
                             className="mt-2"
@@ -112,13 +124,20 @@ export default function Footer() {
                                         required
                                     />
                                 </div>
-                                <Button variant="primary" className="shrink-0" size="md">
+                                <Button
+                                    variant="primary"
+                                    className="shrink-0"
+                                    size="md"
+                                >
                                     Subscribe
                                 </Button>
                             </div>
                             <p className="mt-2 text-[10px] text-muted-foreground">
                                 By subscribing, you agree to our{' '}
-                                <Link to="/" className="underline underline-offset-2 hover:text-foreground">
+                                <Link
+                                    to="/"
+                                    className="underline underline-offset-2 hover:text-foreground"
+                                >
                                     Privacy Policy
                                 </Link>
                                 .
@@ -131,7 +150,8 @@ export default function Footer() {
                 <div className="mt-16 border-t border-border pt-8 sm:mt-20 lg:mt-24">
                     <div className="flex flex-col items-center justify-between gap-4 text-xs text-muted-foreground sm:flex-row">
                         <p>
-                            &copy; {new Date().getFullYear()} {APP_TITLE}, Inc. All rights reserved.
+                            &copy; {new Date().getFullYear()} {APP_TITLE}, Inc.
+                            All rights reserved.
                         </p>
                         <div className="flex gap-6">
                             <Link to="/" className="hover:text-foreground">

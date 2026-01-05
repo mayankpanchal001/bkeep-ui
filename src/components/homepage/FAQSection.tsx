@@ -13,7 +13,10 @@ const FAQSection = () => {
             </div>
             <div className="mt-10 space-y-4">
                 {FAQ_ITEMS.map((item) => (
-                    <details key={item.question} className="group rounded-2 border border-border bg-background p-5">
+                    <details
+                        key={item.question}
+                        className="group rounded-2 border border-border bg-background p-5"
+                    >
                         <summary className="flex cursor-pointer items-center justify-between text-left text-base font-semibold text-foreground">
                             {item.question}
                             <span className="text-muted-foreground transition group-open:rotate-45">

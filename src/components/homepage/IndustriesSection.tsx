@@ -8,10 +8,12 @@ export default function IndustriesSection() {
                     Built for firms, finance teams, and startups
                 </p>
                 <h2 className="text-3xl font-semibold text-foreground sm:text-4xl">
-                    One workspace per tenant with roles, approvals, and audit trails.
+                    One workspace per tenant with roles, approvals, and audit
+                    trails.
                 </h2>
                 <p className="text-base text-muted-foreground">
-                    Collaborate securely across clients while maintaining clean separation of data.
+                    Collaborate securely across clients while maintaining clean
+                    separation of data.
                 </p>
             </div>
             <div className="mt-12 grid gap-4 md:grid-cols-2">

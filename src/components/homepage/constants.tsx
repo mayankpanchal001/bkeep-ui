@@ -193,7 +193,8 @@ export const PRICING_PLANS = [
         name: 'Starter',
         price: '$99',
         cadence: 'Billed monthly',
-        description: 'Perfect for small teams automating bookkeeping and reporting.',
+        description:
+            'Perfect for small teams automating bookkeeping and reporting.',
         features: [
             'AI categorization',
             'Bank feeds & reconciliations',
@@ -205,7 +206,8 @@ export const PRICING_PLANS = [
         name: 'Firm',
         price: '$2,099',
         cadence: 'Billed monthly',
-        description: 'Best for firms managing multiple tenants and complex workflows.',
+        description:
+            'Best for firms managing multiple tenants and complex workflows.',
         highlight: 'Best value',
         features: [
             'Advanced AI workflows',

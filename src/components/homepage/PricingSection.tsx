@@ -2,10 +2,7 @@ import { PRICING_PLANS } from './constants.tsx';
 
 const PricingSection = () => {
     return (
-        <section
-            id="pricing"
-            className="mx-auto max-w-6xl px-6 py-20"
-        >
+        <section id="pricing" className="mx-auto max-w-6xl px-6 py-20">
             <div className="space-y-4 text-center">
                 <p className="text-xs font-semibold uppercase tracking-[0.45em] text-muted-foreground">
                     Pricing options

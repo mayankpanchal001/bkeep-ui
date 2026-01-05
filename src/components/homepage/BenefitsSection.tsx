@@ -2,19 +2,18 @@ import { CAPABILITY_FEATURES } from './constants.tsx';
 
 export default function BenefitsSection() {
     return (
-        <section
-            id="benefits"
-            className="mx-auto max-w-6xl px-6 py-20"
-        >
+        <section id="benefits" className="mx-auto max-w-6xl px-6 py-20">
             <div className="space-y-4 text-center">
                 <p className="text-xs font-semibold uppercase tracking-[0.45em] text-muted-foreground">
                     Modern accounting starts here
                 </p>
                 <h2 className="text-3xl font-semibold text-foreground sm:text-4xl">
-                    Control every ledger—transactions, journals, invoices—in one platform.
+                    Control every ledger—transactions, journals, invoices—in one
+                    platform.
                 </h2>
                 <p className="text-base text-muted-foreground">
-                    Accurate books, automated workflows, and proactive insights for teams and clients.
+                    Accurate books, automated workflows, and proactive insights
+                    for teams and clients.
                 </p>
             </div>
             <div className="mt-12 grid gap-8 md:grid-cols-3">

@@ -38,8 +38,13 @@ footer a:focus {
 
 /* Animation Utilities */
 @keyframes pulse-slow {
-    0%, 100% { opacity: 0.4; }
-    50% { opacity: 0.7; }
+    0%,
+    100% {
+        opacity: 0.4;
+    }
+    50% {
+        opacity: 0.7;
+    }
 }
 
 .animate-pulse-slow {

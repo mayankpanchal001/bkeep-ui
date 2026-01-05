@@ -2,21 +2,20 @@ import { INVEST_FEATURES } from './constants.tsx';
 
 export default function FeaturesSection() {
     return (
-        <section
-            id="features"
-            className="mx-auto max-w-6xl px-6 py-20"
-        >
+        <section id="features" className="mx-auto max-w-6xl px-6 py-20">
             <div className="grid gap-10 lg:grid-cols-[1.1fr,0.9fr]">
                 <div className="space-y-5">
                     <p className="text-xs font-semibold uppercase tracking-[0.45em] text-muted-foreground">
                         Automate your accounting
                     </p>
                     <h2 className="text-3xl font-semibold leading-tight text-foreground sm:text-4xl">
-                        AI‑powered bookkeeping and reporting with enterprise controls.
+                        AI‑powered bookkeeping and reporting with enterprise
+                        controls.
                     </h2>
                     <p className="text-base text-muted-foreground">
-                        From bank feeds to financial statements, BKeep streamlines
-                        categorization, journal entries, reconciliations, and audits.
+                        From bank feeds to financial statements, BKeep
+                        streamlines categorization, journal entries,
+                        reconciliations, and audits.
                     </p>
                 </div>
                 <div className="grid gap-4 md:grid-cols-2">
