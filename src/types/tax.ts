@@ -25,6 +25,24 @@ export type TaxListResponse = {
     };
 };
 
+export type TaxResponse = {
+    success: boolean;
+    statusCode: number;
+    message: string;
+    data: Tax;
+};
+
+export type TaxStatsResponse = {
+    success: boolean;
+    statusCode: number;
+    message: string;
+    data: {
+        total: number;
+        active: number;
+        inactive: number;
+    };
+};
+
 export type TaxFilters = {
     page?: number;
     limit?: number;

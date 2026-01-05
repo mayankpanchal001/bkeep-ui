@@ -182,7 +182,7 @@ function Sidebar({
             <div
                 data-slot="sidebar"
                 className={cn(
-                    'bg-sidebar text-sidebar-foreground flex  h-full w-(--sidebar-width) flex-col',
+                    'bg-sidebar text-sidebar-foreground flex  h-full w-(--sidebar-width) ',
                     className
                 )}
                 {...props}
@@ -342,7 +342,10 @@ function SidebarInput({
         <Input
             data-slot="sidebar-input"
             data-sidebar="input"
-            className={cn('bg-background h-8 w-full shadow-none', className)}
+            className={cn(
+                'max-sm:hidden bg-background h-8 w-full shadow-none',
+                className
+            )}
             {...props}
         />
     );
@@ -404,7 +407,7 @@ function SidebarGroup({ className, ...props }: React.ComponentProps<'div'>) {
             data-slot="sidebar-group"
             data-sidebar="group"
             className={cn(
-                'relative flex w-full min-w-0 flex-col p-2',
+                'relative flex w-full min-w-0 flex-col p-0! sm:p-2',
                 className
             )}
             {...props}

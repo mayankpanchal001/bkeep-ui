@@ -51,6 +51,11 @@ const Settingspage = () => {
             icon: <Icons.Lock className="w-4 h-4" />,
         },
         {
+            title: 'Taxes',
+            href: '/settings/taxes',
+            icon: <Icons.Expenses className="w-4 h-4" />,
+        },
+        {
             title: 'Data & Privacy',
             href: '/settings/data',
             icon: <Icons.Database className="w-4 h-4" />,
@@ -74,6 +79,7 @@ const Settingspage = () => {
         '/settings/users': 'Manage workspace users',
         '/settings/roles': 'Manage roles and permissions',
         '/settings/security': 'Authentication and MFA preferences',
+        '/settings/taxes': 'Manage tax rates and status',
         '/settings/data': 'Personal data and privacy controls',
         '/settings/notifications': 'Notification preferences',
     };

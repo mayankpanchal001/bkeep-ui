@@ -31,6 +31,7 @@ import {
     LuSend,
     LuSettings,
     LuShield,
+    LuStar,
     LuTrash2,
     LuUser,
     LuUsers,
@@ -78,4 +79,5 @@ export const Icons = {
     Eye: LuEye,
     GripVertical: LuGripVertical,
     Send: LuSend,
+    Star: LuStar,
 };

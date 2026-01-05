@@ -18,6 +18,46 @@ const MobileOffcanvas = ({ isOpen, onClose }: MobileOffcanvasProps) => {
     const { mutateAsync: logout, isPending: isLoggingOut } = useLogout();
     const [expandedItems, setExpandedItems] = useState<string[]>([]);
     const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+    const LS_FAV_KEY = 'bkeep-report-favourites';
+    const LS_FAV_LABEL_KEY = 'bkeep-report-favourites-labels';
+    type FavLink = { label: string; path: string };
+    const [favLinks, setFavLinks] = useState<FavLink[]>([]);
+
+    useEffect(() => {
+        const read = (): FavLink[] => {
+            try {
+                const raw = localStorage.getItem(LS_FAV_KEY);
+                const favs: string[] = raw ? JSON.parse(raw) : [];
+                const rawLabels = localStorage.getItem(LS_FAV_LABEL_KEY);
+                const labels: Record<string, string> = rawLabels
+                    ? JSON.parse(rawLabels)
+                    : {};
+                if (!Array.isArray(favs)) return [];
+                const toTitle = (s: string) =>
+                    s
+                        .split('-')
+                        .map((p) => p.charAt(0).toUpperCase() + p.slice(1))
+                        .join(' ');
+                const links: FavLink[] = favs.map((id) => {
+                    const [category, report] = id.split(':');
+                    const label = labels[id] || toTitle(report || id);
+                    const path = `/reports/${category}/${report}`;
+                    return { label, path };
+                });
+                return links;
+            } catch {
+                return [];
+            }
+        };
+        setFavLinks(read());
+        const onStorage = (e: StorageEvent) => {
+            if (e.key === LS_FAV_KEY || e.key === LS_FAV_LABEL_KEY) {
+                setFavLinks(read());
+            }
+        };
+        window.addEventListener('storage', onStorage);
+        return () => window.removeEventListener('storage', onStorage);
+    }, []);
 
     // Prevent body scroll when open
     useEffect(() => {
@@ -68,6 +108,12 @@ const MobileOffcanvas = ({ isOpen, onClose }: MobileOffcanvasProps) => {
                 });
                 return hasChanges ? Array.from(newSet) : prev;
             });
+        }
+        // Ensure Reports expands when visiting a dynamic detail route
+        if (location.pathname.startsWith('/reports/')) {
+            setExpandedItems((prev) =>
+                prev.includes('Reports') ? prev : [...prev, 'Reports']
+            );
         }
     }, [location.pathname, isItemActive]);
 
@@ -127,8 +173,18 @@ const MobileOffcanvas = ({ isOpen, onClose }: MobileOffcanvasProps) => {
                             const isExpanded = expandedItems.includes(
                                 item.label
                             );
+                            const isReports = item.path === '/reports';
+                            const computedChildren = isReports
+                                ? [
+                                      ...favLinks.map((f) => ({
+                                          label: f.label,
+                                          path: f.path,
+                                      })),
+                                      ...(item.children || []),
+                                  ]
+                                : item.children || [];
                             const hasChildren =
-                                item.children && item.children.length > 0;
+                                computedChildren && computedChildren.length > 0;
 
                             if (hasChildren) {
                                 return (
@@ -138,28 +194,35 @@ const MobileOffcanvas = ({ isOpen, onClose }: MobileOffcanvasProps) => {
                                     >
                                         <div
                                             className={`
-                                                flex items-center justify-between px-3 py-2.5 rounded-lg cursor-pointer transition-colors
+                                                flex items-center justify-between px-3 py-2.5 rounded-lg transition-colors
                                                 ${isActive ? 'bg-primary/5 text-primary' : 'text-primary/60 hover:bg-white'}
                                             `}
-                                            onClick={() =>
-                                                toggleExpand(item.label)
-                                            }
                                         >
-                                            <div className="flex items-center gap-3">
+                                            <Link
+                                                to={item.path || '#'}
+                                                onClick={onClose}
+                                                className="flex items-center gap-3"
+                                            >
                                                 <span className="text-xl">
                                                     {item.icon}
                                                 </span>
                                                 <span className="font-medium text-sm">
                                                     {item.label}
                                                 </span>
-                                            </div>
-                                            <span className="text-primary/40">
+                                            </Link>
+                                            <button
+                                                className="text-primary/40"
+                                                onClick={() =>
+                                                    toggleExpand(item.label)
+                                                }
+                                                aria-label="Toggle group"
+                                            >
                                                 {isExpanded ? (
                                                     <Icons.ChevronDown className="w-4 h-4" />
                                                 ) : (
                                                     <Icons.ChevronRight className="w-4 h-4" />
                                                 )}
-                                            </span>
+                                            </button>
                                         </div>
 
                                         {/* Children */}
@@ -170,7 +233,7 @@ const MobileOffcanvas = ({ isOpen, onClose }: MobileOffcanvasProps) => {
                                             `}
                                         >
                                             <div className="flex flex-col gap-1 mt-1 ml-4 border-l border-primary/10 pl-2">
-                                                {item.children?.map((child) => (
+                                                {computedChildren.map((child) => (
                                                     <Link
                                                         key={child.label}
                                                         to={child.path || '#'}

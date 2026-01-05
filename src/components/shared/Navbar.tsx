@@ -12,7 +12,7 @@ import {
 } from '../ui/dropdown-menu';
 import { SidebarTrigger } from '../ui/sidebar';
 import { Icons } from './Icons';
-import { ThemeOnOffToggle } from './ThemeSwitcher';
+import ThemeSwitcher from './ThemeSwitcher';
 
 interface NavbarProps {
     onSearchClick?: () => void;
@@ -39,7 +39,7 @@ const Navbar = ({ onSearchClick }: NavbarProps) => {
 
                 <button
                     onClick={onSearchClick}
-                    className="w-[min(150px,30vw)] flex items-center gap-2 px-3 py-1.5 bg-white hover:bg-primary/10 rounded-md border border-primary/10 text-primary/50 transition-colors group"
+                    className="w-[min(150px,30vw)] hidden sm:flex items-center gap-2 px-3 py-1.5 bg-white hover:bg-primary/10 rounded-md border border-primary/10 text-primary/50 transition-colors group"
                 >
                     <Icons.Search className="w-3.5 h-3.5 group-hover:text-primary" />
                     <span className="text-xs font-medium">Search</span>
@@ -51,7 +51,7 @@ const Navbar = ({ onSearchClick }: NavbarProps) => {
 
             {/* Right Actions */}
             <div className="flex items-center gap-3 min-w-fit">
-                <ThemeOnOffToggle />
+                <ThemeSwitcher />
                 <Link
                     to="/settings/notifications"
                     className="relative p-2 rounded-md hover:bg-primary/10 text-primary/70"
@@ -62,13 +62,10 @@ const Navbar = ({ onSearchClick }: NavbarProps) => {
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <button
-                            className="flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-primary/10 border border-primary/10 text-primary/80"
+                            className="w-7 h-7 p-1 rounded-full bg-primary/10 flex items-center justify-center text-xs text-primary font-semibold"
                             aria-label="User menu"
                         >
-                            <div className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold">
-                                {initials}
-                            </div>
-                            <Icons.ChevronDown className="w-4 h-4 text-primary/50" />
+                            {initials}
                         </button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="w-72" align="end">

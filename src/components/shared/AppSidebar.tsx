@@ -1,5 +1,5 @@
 import { Check, ChevronRight, ChevronsUpDown } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router';
 import { SIDEBAR_ITEMS } from '../../constants';
 import { LOGO_IMAGE } from '../../constants/images';
@@ -26,14 +26,21 @@ import {
     Sidebar,
     SidebarContent,
     SidebarFooter,
+    SidebarGroup,
+    SidebarGroupContent,
+    SidebarGroupLabel,
     SidebarHeader,
+    SidebarInput,
     SidebarMenu,
+    SidebarMenuAction,
     SidebarMenuButton,
     SidebarMenuItem,
     SidebarMenuSub,
     SidebarMenuSubButton,
     SidebarMenuSubItem,
     SidebarRail,
+    SidebarSeparator,
+    useSidebar,
 } from '../ui/sidebar';
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -99,9 +106,53 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         return false;
     };
 
+    // Favourite reports in sidebar under Reports
+    const LS_FAV_KEY = 'bkeep-report-favourites';
+    const LS_FAV_LABEL_KEY = 'bkeep-report-favourites-labels';
+    type FavLink = { label: string; path: string };
+    const [favLinks, setFavLinks] = useState<FavLink[]>([]);
+    const [query, setQuery] = useState('');
+    const { isMobile, setOpenMobile } = useSidebar();
+
+    useEffect(() => {
+        const read = (): FavLink[] => {
+            try {
+                const raw = localStorage.getItem(LS_FAV_KEY);
+                const favs: string[] = raw ? JSON.parse(raw) : [];
+                const rawLabels = localStorage.getItem(LS_FAV_LABEL_KEY);
+                const labels: Record<string, string> = rawLabels
+                    ? JSON.parse(rawLabels)
+                    : {};
+                if (!Array.isArray(favs)) return [];
+                const toTitle = (s: string) =>
+                    s
+                        .split('-')
+                        .map((p) => p.charAt(0).toUpperCase() + p.slice(1))
+                        .join(' ');
+                const links: FavLink[] = favs.map((id) => {
+                    const [category, report] = id.split(':');
+                    const label = labels[id] || toTitle(report || id);
+                    const path = `/reports/${category}/${report}`;
+                    return { label, path };
+                });
+                return links;
+            } catch {
+                return [];
+            }
+        };
+        setFavLinks(read());
+        const onStorage = (e: StorageEvent) => {
+            if (e.key === LS_FAV_KEY || e.key === LS_FAV_LABEL_KEY) {
+                setFavLinks(read());
+            }
+        };
+        window.addEventListener('storage', onStorage);
+        return () => window.removeEventListener('storage', onStorage);
+    }, []);
+
     return (
         <Sidebar collapsible="icon" {...props}>
-            <SidebarHeader>
+            <SidebarHeader className="mb-4">
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <DropdownMenu>
@@ -168,85 +219,207 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                         </DropdownMenu>
                     </SidebarMenuItem>
                 </SidebarMenu>
+                <SidebarInput
+                    placeholder="Search"
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    className="mt-2 group-data-[collapsible=icon]:hidden"
+                />
             </SidebarHeader>
             <SidebarContent>
-                <SidebarMenu>
-                    {SIDEBAR_ITEMS.map((item) => {
-                        const isActive = isItemActive(item.path);
-                        const isGroupExpanded = isGroupActive(item);
-                        const hasChildren =
-                            item.children && item.children.length > 0;
+                {favLinks.length > 0 && (
+                    <SidebarGroup>
+                        <SidebarGroupLabel>Favourites</SidebarGroupLabel>
+                        <SidebarGroupContent>
+                            <SidebarMenu>
+                                {favLinks.map((fav) => (
+                                    <SidebarMenuItem key={fav.path}>
+                                        <SidebarMenuButton
+                                            asChild
+                                            tooltip={fav.label}
+                                        >
+                                            <Link
+                                                to={fav.path}
+                                                onClick={() => {
+                                                    if (isMobile)
+                                                        setOpenMobile(false);
+                                                }}
+                                            >
+                                                <Icons.Star className="size-4 text-yellow-500" />
+                                                <span>{fav.label}</span>
+                                            </Link>
+                                        </SidebarMenuButton>
+                                    </SidebarMenuItem>
+                                ))}
+                            </SidebarMenu>
+                        </SidebarGroupContent>
+                    </SidebarGroup>
+                )}
+                {favLinks.length > 0 && <SidebarSeparator />}
+                <SidebarGroup>
+                    <SidebarGroupLabel>Navigation</SidebarGroupLabel>
+                    <SidebarGroupContent>
+                        <SidebarMenu>
+                            {SIDEBAR_ITEMS.map((item) => {
+                                const isActive = isItemActive(item.path);
+                                const isReports = item.path === '/reports';
+                                const baseChildren = isReports
+                                    ? [
+                                          ...favLinks.map((f) => ({
+                                              label: f.label,
+                                              path: f.path,
+                                          })),
+                                          ...(item.children || []),
+                                      ]
+                                    : item.children || [];
+                                const q = query.trim().toLowerCase();
+                                const itemMatches =
+                                    q.length > 0
+                                        ? item.label.toLowerCase().includes(q)
+                                        : true;
+                                const computedChildren =
+                                    q.length > 0
+                                        ? (baseChildren || []).filter((c) =>
+                                              (c.label || '')
+                                                  .toLowerCase()
+                                                  .includes(q)
+                                          )
+                                        : baseChildren || [];
+                                const shouldRender =
+                                    itemMatches ||
+                                    (computedChildren &&
+                                        computedChildren.length > 0);
+                                const isGroupExpanded =
+                                    isGroupActive({
+                                        ...item,
+                                        children: computedChildren,
+                                    } as (typeof SIDEBAR_ITEMS)[0]) ||
+                                    (isReports &&
+                                        computedChildren.some((c) =>
+                                            isItemActive(c.path || '')
+                                        ));
+                                const hasChildren =
+                                    computedChildren &&
+                                    computedChildren.length > 0;
 
-                        if (hasChildren) {
-                            return (
-                                <Collapsible
-                                    key={item.label}
-                                    asChild
-                                    defaultOpen={isGroupExpanded}
-                                    className="group/collapsible"
-                                >
-                                    <SidebarMenuItem>
-                                        <CollapsibleTrigger asChild>
-                                            <SidebarMenuButton
-                                                tooltip={item.label}
-                                                isActive={isActive}
+                                if (!shouldRender) {
+                                    return null;
+                                }
+
+                                if (hasChildren) {
+                                    return (
+                                        <Collapsible
+                                            key={item.label}
+                                            asChild
+                                            defaultOpen={
+                                                q.length > 0
+                                                    ? true
+                                                    : isGroupExpanded
+                                            }
+                                            className="group/collapsible"
+                                        >
+                                            <SidebarMenuItem>
+                                                <div className="flex items-center">
+                                                    <SidebarMenuButton
+                                                        asChild
+                                                        tooltip={item.label}
+                                                        isActive={isActive}
+                                                    >
+                                                        <Link
+                                                            to={
+                                                                item.path || '#'
+                                                            }
+                                                            onClick={() => {
+                                                                if (isMobile)
+                                                                    setOpenMobile(
+                                                                        false
+                                                                    );
+                                                            }}
+                                                        >
+                                                            {item.icon}
+                                                            <span>
+                                                                {item.label}
+                                                            </span>
+                                                        </Link>
+                                                    </SidebarMenuButton>
+                                                    <CollapsibleTrigger asChild>
+                                                        <SidebarMenuAction
+                                                            showOnHover
+                                                        >
+                                                            <ChevronRight className="transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                                                        </SidebarMenuAction>
+                                                    </CollapsibleTrigger>
+                                                </div>
+                                                <CollapsibleContent>
+                                                    <SidebarMenuSub>
+                                                        {computedChildren.map(
+                                                            (child) => (
+                                                                <SidebarMenuSubItem
+                                                                    key={
+                                                                        child.label
+                                                                    }
+                                                                >
+                                                                    <SidebarMenuSubButton
+                                                                        asChild
+                                                                        isActive={isItemActive(
+                                                                            child.path
+                                                                        )}
+                                                                    >
+                                                                        <Link
+                                                                            to={
+                                                                                child.path ||
+                                                                                '#'
+                                                                            }
+                                                                            onClick={() => {
+                                                                                if (
+                                                                                    isMobile
+                                                                                )
+                                                                                    setOpenMobile(
+                                                                                        false
+                                                                                    );
+                                                                            }}
+                                                                        >
+                                                                            <span>
+                                                                                {
+                                                                                    child.label
+                                                                                }
+                                                                            </span>
+                                                                        </Link>
+                                                                    </SidebarMenuSubButton>
+                                                                </SidebarMenuSubItem>
+                                                            )
+                                                        )}
+                                                    </SidebarMenuSub>
+                                                </CollapsibleContent>
+                                            </SidebarMenuItem>
+                                        </Collapsible>
+                                    );
+                                }
+
+                                return (
+                                    <SidebarMenuItem key={item.label}>
+                                        <SidebarMenuButton
+                                            asChild
+                                            tooltip={item.label}
+                                            isActive={isActive}
+                                        >
+                                            <Link
+                                                to={item.path || '#'}
+                                                onClick={() => {
+                                                    if (isMobile)
+                                                        setOpenMobile(false);
+                                                }}
                                             >
                                                 {item.icon}
                                                 <span>{item.label}</span>
-                                                <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
-                                            </SidebarMenuButton>
-                                        </CollapsibleTrigger>
-                                        <CollapsibleContent>
-                                            <SidebarMenuSub>
-                                                {item.children?.map((child) => (
-                                                    <SidebarMenuSubItem
-                                                        key={child.label}
-                                                    >
-                                                        <SidebarMenuSubButton
-                                                            asChild
-                                                            isActive={isItemActive(
-                                                                child.path
-                                                            )}
-                                                        >
-                                                            <Link
-                                                                to={
-                                                                    child.path ||
-                                                                    '#'
-                                                                }
-                                                            >
-                                                                {child.icon}
-                                                                <span>
-                                                                    {
-                                                                        child.label
-                                                                    }
-                                                                </span>
-                                                            </Link>
-                                                        </SidebarMenuSubButton>
-                                                    </SidebarMenuSubItem>
-                                                ))}
-                                            </SidebarMenuSub>
-                                        </CollapsibleContent>
+                                            </Link>
+                                        </SidebarMenuButton>
                                     </SidebarMenuItem>
-                                </Collapsible>
-                            );
-                        }
-
-                        return (
-                            <SidebarMenuItem key={item.label}>
-                                <SidebarMenuButton
-                                    asChild
-                                    tooltip={item.label}
-                                    isActive={isActive}
-                                >
-                                    <Link to={item.path || '#'}>
-                                        {item.icon}
-                                        <span>{item.label}</span>
-                                    </Link>
-                                </SidebarMenuButton>
-                            </SidebarMenuItem>
-                        );
-                    })}
-                </SidebarMenu>
+                                );
+                            })}
+                        </SidebarMenu>
+                    </SidebarGroupContent>
+                </SidebarGroup>
             </SidebarContent>
 
             <SidebarFooter>
@@ -296,16 +469,23 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                                 </DropdownMenuLabel>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuItem>
-                                    <Icons.Profile className="mr-2 h-4 w-4" />
-                                    Profile
+                                    <Link
+                                        to="/settings/profile"
+                                        className="w-full flex gap-1"
+                                    >
+                                        <Icons.Profile className="mr-2 h-4 w-4" />
+                                        Profile
+                                    </Link>
                                 </DropdownMenuItem>
+
                                 <DropdownMenuItem>
-                                    <Icons.Billing className="mr-2 h-4 w-4" />
-                                    Billing
-                                </DropdownMenuItem>
-                                <DropdownMenuItem>
-                                    <Icons.Notifications className="mr-2 h-4 w-4" />
-                                    Notifications
+                                    <Link
+                                        to="/settings/notifications"
+                                        className="w-full flex gap-1"
+                                    >
+                                        <Icons.Notifications className="mr-2 h-4 w-4" />
+                                        Notifications
+                                    </Link>
                                 </DropdownMenuItem>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuItem onClick={() => logout()}>

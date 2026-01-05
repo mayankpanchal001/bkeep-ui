@@ -88,6 +88,11 @@ export const SIDEBAR_ITEMS: SidebarItemProps[] = [
                 path: '/settings/security',
             },
             {
+                label: 'Taxes',
+                icon: <Icons.Expenses />,
+                path: '/settings/taxes',
+            },
+            {
                 label: 'Data Privacy',
                 icon: <Icons.Database />,
                 path: '/settings/data',

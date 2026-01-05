@@ -1,3 +1,17 @@
+import ConfirmationDialog from '@/components/shared/ConfirmationDialog';
+import { Column, DataTable } from '@/components/shared/DataTable';
+import ImportFileModal from '@/components/shared/ImportFileModal';
+import ImportMappingModal from '@/components/shared/ImportMappingModal';
+import Loading from '@/components/shared/Loading';
+import Button from '@/components/typography/Button';
+import { InputField, SelectField } from '@/components/typography/InputFields';
+import {
+    Drawer,
+    DrawerClose,
+    DrawerContent,
+    DrawerHeader,
+    DrawerTitle,
+} from '@/components/ui/drawer';
 import { useMemo, useState } from 'react';
 import {
     FaEdit,
@@ -6,6 +20,7 @@ import {
     FaFilter,
     FaPlus,
     FaSearch,
+    FaTimes,
     FaTrash,
 } from 'react-icons/fa';
 import * as XLSX from 'xlsx';
@@ -22,14 +37,6 @@ import {
     type ChartOfAccount,
     type CreateChartOfAccountPayload,
 } from '../../services/apis/chartsAccountApi';
-import ConfirmationDialog from '@/components/shared/ConfirmationDialog';
-import { Column, DataTable } from '@/components/shared/DataTable';
-import ImportFileModal from '@/components/shared/ImportFileModal';
-import ImportMappingModal from '@/components/shared/ImportMappingModal';
-import Loading from '@/components/shared/Loading';
-import Offcanvas from '@/components/shared/Offcanvas';
-import Button from '@/components/typography/Button';
-import { InputField, SelectField } from '@/components/typography/InputFields';
 
 const currencyFormatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
@@ -578,196 +585,217 @@ const ChartOfAccountspage = () => {
                 />
             </div>
 
-            {/* Add/Edit Account Modal */}
-            <Offcanvas
-                isOpen={showAddModal || !!editingAccount}
-                onClose={handleCloseModal}
-                title={editingAccount ? 'Edit Account' : 'New Account'}
-                position="right"
-                width="w-[480px]"
-                closeOnBackdropClick={
-                    !(createMutation.isPending || updateMutation.isPending)
-                }
-                closeOnEscape={
-                    !(createMutation.isPending || updateMutation.isPending)
-                }
+            {/* Add/Edit Account Drawer */}
+            <Drawer
+                open={showAddModal || !!editingAccount}
+                onOpenChange={(open) => {
+                    if (!open) {
+                        if (
+                            createMutation.isPending ||
+                            updateMutation.isPending
+                        )
+                            return;
+                        handleCloseModal();
+                    }
+                }}
+                direction="right"
             >
-                <div className="flex flex-col h-full">
-                    <form
-                        id="chart-of-account-form"
-                        onSubmit={handleSubmit}
-                        className="space-y-4 flex-1"
-                    >
-                        <div>
-                            <InputField
-                                id="account-name"
-                                label="Account Name"
-                                placeholder="Enter account name"
-                                value={formData.accountName}
-                                onChange={(e) => {
-                                    setFormData({
-                                        ...formData,
-                                        accountName: e.target.value,
-                                    });
-                                    if (formErrors.accountName) {
-                                        setFormErrors((prev) => ({
-                                            ...prev,
-                                            accountName: '',
-                                        }));
-                                    }
-                                }}
-                                required
-                            />
-                            {formErrors.accountName && (
-                                <p className="text-red-500 text-xs mt-1">
-                                    {formErrors.accountName}
-                                </p>
-                            )}
-                        </div>
-
-                        <div>
-                            <SelectField
-                                id="account-type"
-                                label="Account Type"
-                                value={selectedAccountSubType}
-                                onChange={(e) => {
-                                    const newSubType = e.target.value;
-                                    setSelectedAccountSubType(newSubType);
-
-                                    const details =
-                                        getAccountDetailsBySubType(newSubType);
-                                    if (details) {
+                <DrawerContent className="data-[vaul-drawer-direction=right]:w-[480px] data-[vaul-drawer-direction=right]:sm:max-w-[480px] bg-white dark:bg-lightBg">
+                    <DrawerHeader className="flex flex-row items-center justify-between px-6 py-4 border-b border-primary/10">
+                        <DrawerTitle className="text-xl font-semibold text-primary">
+                            {editingAccount ? 'Edit Account' : 'New Account'}
+                        </DrawerTitle>
+                        <DrawerClose asChild>
+                            <button
+                                className="p-2 -mr-2 text-primary/50 hover:text-primary rounded-full hover:bg-primary/10 transition-colors"
+                                aria-label="Close"
+                                disabled={
+                                    createMutation.isPending ||
+                                    updateMutation.isPending
+                                }
+                            >
+                                <FaTimes size={20} />
+                            </button>
+                        </DrawerClose>
+                    </DrawerHeader>
+                    <div className="flex flex-col h-full p-4">
+                        <form
+                            id="chart-of-account-form"
+                            onSubmit={handleSubmit}
+                            className="space-y-4 flex-1"
+                        >
+                            <div>
+                                <InputField
+                                    id="account-name"
+                                    label="Account Name"
+                                    placeholder="Enter account name"
+                                    value={formData.accountName}
+                                    onChange={(e) => {
                                         setFormData({
                                             ...formData,
-                                            accountType: details.mainType,
-                                            accountDetailType:
-                                                details.detailTypes[0]?.value ||
-                                                'other',
+                                            accountName: e.target.value,
                                         });
-                                    }
+                                        if (formErrors.accountName) {
+                                            setFormErrors((prev) => ({
+                                                ...prev,
+                                                accountName: '',
+                                            }));
+                                        }
+                                    }}
+                                    required
+                                />
+                                {formErrors.accountName && (
+                                    <p className="text-red-500 text-xs mt-1">
+                                        {formErrors.accountName}
+                                    </p>
+                                )}
+                            </div>
 
-                                    if (formErrors.accountType) {
-                                        setFormErrors((prev) => ({
-                                            ...prev,
-                                            accountType: '',
-                                        }));
-                                    }
-                                }}
-                                required
-                                options={ACCOUNT_TYPE_DROPDOWN_OPTIONS}
-                            />
-                            {formErrors.accountType && (
-                                <p className="text-red-500 text-xs mt-1">
-                                    {formErrors.accountType}
-                                </p>
-                            )}
+                            <div>
+                                <SelectField
+                                    id="account-type"
+                                    label="Account Type"
+                                    value={selectedAccountSubType}
+                                    onChange={(e) => {
+                                        const newSubType = e.target.value;
+                                        setSelectedAccountSubType(newSubType);
+
+                                        const details =
+                                            getAccountDetailsBySubType(
+                                                newSubType
+                                            );
+                                        if (details) {
+                                            setFormData({
+                                                ...formData,
+                                                accountType: details.mainType,
+                                                accountDetailType:
+                                                    details.detailTypes[0]
+                                                        ?.value || 'other',
+                                            });
+                                        }
+
+                                        if (formErrors.accountType) {
+                                            setFormErrors((prev) => ({
+                                                ...prev,
+                                                accountType: '',
+                                            }));
+                                        }
+                                    }}
+                                    required
+                                    options={ACCOUNT_TYPE_DROPDOWN_OPTIONS}
+                                />
+                                {formErrors.accountType && (
+                                    <p className="text-red-500 text-xs mt-1">
+                                        {formErrors.accountType}
+                                    </p>
+                                )}
+                            </div>
+
+                            <div>
+                                <SelectField
+                                    id="account-detail-type"
+                                    label="Account Detail Type"
+                                    value={formData.accountDetailType}
+                                    onChange={(e) => {
+                                        setFormData({
+                                            ...formData,
+                                            accountDetailType: e.target
+                                                .value as AccountDetailType,
+                                        });
+                                        if (formErrors.accountDetailType) {
+                                            setFormErrors((prev) => ({
+                                                ...prev,
+                                                accountDetailType: '',
+                                            }));
+                                        }
+                                    }}
+                                    required
+                                    options={detailTypeOptions}
+                                />
+                                {formErrors.accountDetailType && (
+                                    <p className="text-red-500 text-xs mt-1">
+                                        {formErrors.accountDetailType}
+                                    </p>
+                                )}
+                            </div>
+
+                            <div>
+                                <InputField
+                                    id="opening-balance"
+                                    label="Opening Balance"
+                                    type="number"
+                                    step="0.01"
+                                    placeholder="0.00"
+                                    value={formData.openingBalance.toString()}
+                                    onChange={(e) => {
+                                        const value =
+                                            parseFloat(e.target.value) || 0;
+                                        setFormData({
+                                            ...formData,
+                                            openingBalance: value,
+                                        });
+                                        if (formErrors.openingBalance) {
+                                            setFormErrors((prev) => ({
+                                                ...prev,
+                                                openingBalance: '',
+                                            }));
+                                        }
+                                    }}
+                                    required
+                                />
+                                {formErrors.openingBalance && (
+                                    <p className="text-red-500 text-xs mt-1">
+                                        {formErrors.openingBalance}
+                                    </p>
+                                )}
+                            </div>
+
+                            <div>
+                                <InputField
+                                    id="description"
+                                    label="Description"
+                                    placeholder="Enter description (optional)"
+                                    value={formData.description || ''}
+                                    onChange={(e) => {
+                                        setFormData({
+                                            ...formData,
+                                            description: e.target.value,
+                                        });
+                                    }}
+                                />
+                            </div>
+                        </form>
+                        <div className="flex justify-end gap-3 mt-8 pt-4 border-t border-primary/10">
+                            <Button
+                                type="button"
+                                variant="outline"
+                                onClick={handleCloseModal}
+                                disabled={
+                                    createMutation.isPending ||
+                                    updateMutation.isPending
+                                }
+                            >
+                                Cancel
+                            </Button>
+                            <Button
+                                type="submit"
+                                variant="primary"
+                                loading={
+                                    createMutation.isPending ||
+                                    updateMutation.isPending
+                                }
+                                disabled={
+                                    createMutation.isPending ||
+                                    updateMutation.isPending
+                                }
+                                form="chart-of-account-form"
+                            >
+                                {editingAccount ? 'Update' : 'Create'}
+                            </Button>
                         </div>
-
-                        <div>
-                            <SelectField
-                                id="account-detail-type"
-                                label="Account Detail Type"
-                                value={formData.accountDetailType}
-                                onChange={(e) => {
-                                    setFormData({
-                                        ...formData,
-                                        accountDetailType: e.target
-                                            .value as AccountDetailType,
-                                    });
-                                    if (formErrors.accountDetailType) {
-                                        setFormErrors((prev) => ({
-                                            ...prev,
-                                            accountDetailType: '',
-                                        }));
-                                    }
-                                }}
-                                required
-                                options={detailTypeOptions}
-                            />
-                            {formErrors.accountDetailType && (
-                                <p className="text-red-500 text-xs mt-1">
-                                    {formErrors.accountDetailType}
-                                </p>
-                            )}
-                        </div>
-
-                        <div>
-                            <InputField
-                                id="opening-balance"
-                                label="Opening Balance"
-                                type="number"
-                                step="0.01"
-                                placeholder="0.00"
-                                value={formData.openingBalance.toString()}
-                                onChange={(e) => {
-                                    const value =
-                                        parseFloat(e.target.value) || 0;
-                                    setFormData({
-                                        ...formData,
-                                        openingBalance: value,
-                                    });
-                                    if (formErrors.openingBalance) {
-                                        setFormErrors((prev) => ({
-                                            ...prev,
-                                            openingBalance: '',
-                                        }));
-                                    }
-                                }}
-                                required
-                            />
-                            {formErrors.openingBalance && (
-                                <p className="text-red-500 text-xs mt-1">
-                                    {formErrors.openingBalance}
-                                </p>
-                            )}
-                        </div>
-
-                        <div>
-                            <InputField
-                                id="description"
-                                label="Description"
-                                placeholder="Enter description (optional)"
-                                value={formData.description || ''}
-                                onChange={(e) => {
-                                    setFormData({
-                                        ...formData,
-                                        description: e.target.value,
-                                    });
-                                }}
-                            />
-                        </div>
-                    </form>
-
-                    <div className="flex justify-end gap-3 mt-8 pt-4 border-t border-primary/10">
-                        <Button
-                            type="button"
-                            variant="outline"
-                            onClick={handleCloseModal}
-                            disabled={
-                                createMutation.isPending ||
-                                updateMutation.isPending
-                            }
-                        >
-                            Cancel
-                        </Button>
-                        <Button
-                            type="submit"
-                            variant="primary"
-                            loading={
-                                createMutation.isPending ||
-                                updateMutation.isPending
-                            }
-                            disabled={
-                                createMutation.isPending ||
-                                updateMutation.isPending
-                            }
-                            form="chart-of-account-form"
-                        >
-                            {editingAccount ? 'Update' : 'Create'}
-                        </Button>
                     </div>
-                </div>
-            </Offcanvas>
+                </DrawerContent>
+            </Drawer>
 
             {/* Delete Confirmation Dialog */}
             <ConfirmationDialog

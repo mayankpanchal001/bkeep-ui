@@ -27,6 +27,9 @@ const Transactionpage = lazy(
     () => import('../pages/protected/Transactionpage')
 );
 const Reportpage = lazy(() => import('../pages/protected/Reportpage'));
+const ReportDetailpage = lazy(
+    () => import('../pages/protected/ReportDetailpage')
+);
 const IncomeStatementpage = lazy(
     () => import('../pages/protected/IncomeStatementpage')
 );
@@ -73,6 +76,7 @@ const DataPrivacyTab = lazy(
 const RolesTab = lazy(() => import('../components/settings/RolesTab'));
 const SecurityTab = lazy(() => import('../components/settings/SecurityTab'));
 const TenantsTab = lazy(() => import('../components/settings/TenantsTab'));
+const TaxesTab = lazy(() => import('../components/settings/TaxesTab'));
 const UsersTab = lazy(() => import('../components/settings/UsersTab'));
 
 // Helper component to wrap lazy-loaded routes with Suspense
@@ -142,6 +146,10 @@ const routes = createBrowserRouter([
                 element: withSuspense(Reportpage),
             },
             {
+                path: '/reports/:category/:report',
+                element: withSuspense(ReportDetailpage),
+            },
+            {
                 path: '/reports/income-statement',
                 element: withSuspense(IncomeStatementpage),
             },
@@ -177,10 +185,14 @@ const routes = createBrowserRouter([
                         path: '/settings/roles',
                         element: withSuspense(RolesTab),
                     },
-                    {
-                        path: '/settings/security',
-                        element: withSuspense(SecurityTab),
-                    },
+            {
+                path: '/settings/security',
+                element: withSuspense(SecurityTab),
+            },
+            {
+                path: '/settings/taxes',
+                element: withSuspense(TaxesTab),
+            },
                     {
                         path: '/settings/data',
                         element: withSuspense(DataPrivacyTab),

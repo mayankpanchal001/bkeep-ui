@@ -166,7 +166,7 @@ export async function getChartOfAccounts(
     }
 
     const queryString = queryParams.toString();
-    const url = `/chart-of-accounts${queryString ? `?${queryString}` : ''}`;
+    const url = `/accounts${queryString ? `?${queryString}` : ''}`;
 
     const response = await axiosInstance.get(url);
     return response.data;
@@ -178,7 +178,7 @@ export async function getChartOfAccounts(
 export async function getChartOfAccountById(
     id: string
 ): Promise<ChartOfAccountResponse> {
-    const response = await axiosInstance.get(`/chart-of-accounts/${id}`);
+    const response = await axiosInstance.get(`/accounts/${id}`);
     return response.data;
 }
 
@@ -188,7 +188,7 @@ export async function getChartOfAccountById(
 export async function createChartOfAccount(
     payload: CreateChartOfAccountPayload
 ): Promise<ChartOfAccountResponse> {
-    const response = await axiosInstance.post('/chart-of-accounts', payload);
+    const response = await axiosInstance.post('/accounts', payload);
     return response.data;
 }
 
@@ -199,10 +199,7 @@ export async function updateChartOfAccount(
     id: string,
     payload: UpdateChartOfAccountPayload
 ): Promise<ChartOfAccountResponse> {
-    const response = await axiosInstance.put(
-        `/chart-of-accounts/${id}`,
-        payload
-    );
+    const response = await axiosInstance.put(`/accounts/${id}`, payload);
     return response.data;
 }
 
@@ -212,7 +209,7 @@ export async function updateChartOfAccount(
 export async function deleteChartOfAccount(
     id: string
 ): Promise<{ success: boolean; message: string }> {
-    const response = await axiosInstance.delete(`/chart-of-accounts/${id}`);
+    const response = await axiosInstance.delete(`/accounts/${id}`);
     return response.data;
 }
 
@@ -222,9 +219,7 @@ export async function deleteChartOfAccount(
 export async function restoreChartOfAccount(
     id: string
 ): Promise<ChartOfAccountResponse> {
-    const response = await axiosInstance.patch(
-        `/chart-of-accounts/${id}/restore`
-    );
+    const response = await axiosInstance.patch(`/accounts/${id}/restore`);
     return response.data;
 }
 
@@ -232,9 +227,7 @@ export async function restoreChartOfAccount(
  * Get import fields configuration
  */
 export async function getImportFields(): Promise<ImportFieldsResponse> {
-    const response = await axiosInstance.get(
-        '/chart-of-accounts/import/fields'
-    );
+    const response = await axiosInstance.get('/accounts/import/fields');
     return response.data;
 }
 
@@ -242,15 +235,12 @@ export async function getImportFields(): Promise<ImportFieldsResponse> {
  * Download sample data for import
  */
 export async function downloadSampleData(): Promise<Blob> {
-    const response = await axiosInstance.get(
-        '/chart-of-accounts/import/sample',
-        {
-            responseType: 'blob',
-            headers: {
-                Accept: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            },
-        }
-    );
+    const response = await axiosInstance.get('/accounts/import/sample', {
+        responseType: 'blob',
+        headers: {
+            Accept: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        },
+    });
     return response.data;
 }
 
@@ -267,15 +257,11 @@ export async function importChartOfAccounts(
         formData.append('mapping', JSON.stringify(mapping));
     }
 
-    const response = await axiosInstance.post(
-        '/chart-of-accounts/import',
-        formData,
-        {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-            },
-        }
-    );
+    const response = await axiosInstance.post('/accounts/import', formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    });
     return response.data;
 }
 
@@ -286,7 +272,7 @@ export async function importChartOfAccounts(
  */
 export const useImportFields = () => {
     return useQuery<ImportFieldsResponse, Error>({
-        queryKey: ['chart-of-accounts-import-fields'],
+        queryKey: ['accounts-import-fields'],
         queryFn: getImportFields,
         staleTime: Infinity, // Fields config unlikely to change often
     });
@@ -297,7 +283,7 @@ export const useImportFields = () => {
  */
 export const useChartOfAccounts = (params?: ChartOfAccountsQueryParams) => {
     return useQuery<ChartOfAccountsListResponse, Error>({
-        queryKey: ['chart-of-accounts', params],
+        queryKey: ['accounts', params],
         queryFn: () => getChartOfAccounts(params),
     });
 };
@@ -331,7 +317,7 @@ export const useImportChartOfAccounts = () => {
             showSuccessToast(
                 data?.message || 'Chart of accounts imported successfully'
             );
-            queryClient.invalidateQueries({ queryKey: ['chart-of-accounts'] });
+            queryClient.invalidateQueries({ queryKey: ['accounts'] });
         },
         onError: (error) => {
             console.error('Import chart of accounts failed:', error);
@@ -359,7 +345,7 @@ export const useCreateChartOfAccount = () => {
             showSuccessToast(
                 data?.message || 'Chart of account created successfully'
             );
-            queryClient.invalidateQueries({ queryKey: ['chart-of-accounts'] });
+            queryClient.invalidateQueries({ queryKey: ['accounts'] });
         },
         onError: (error) => {
             console.error('Create chart of account failed:', error);
@@ -392,7 +378,7 @@ export const useUpdateChartOfAccount = () => {
             showSuccessToast(
                 data?.message || 'Chart of account updated successfully'
             );
-            queryClient.invalidateQueries({ queryKey: ['chart-of-accounts'] });
+            queryClient.invalidateQueries({ queryKey: ['accounts'] });
             queryClient.invalidateQueries({
                 queryKey: ['chart-of-account', variables.id],
             });
@@ -422,7 +408,7 @@ export const useDeleteChartOfAccount = () => {
             showSuccessToast(
                 data?.message || 'Chart of account deleted successfully'
             );
-            queryClient.invalidateQueries({ queryKey: ['chart-of-accounts'] });
+            queryClient.invalidateQueries({ queryKey: ['accounts'] });
         },
         onError: (error) => {
             console.error('Delete chart of account failed:', error);
@@ -449,7 +435,7 @@ export const useRestoreChartOfAccount = () => {
             showSuccessToast(
                 data?.message || 'Chart of account restored successfully'
             );
-            queryClient.invalidateQueries({ queryKey: ['chart-of-accounts'] });
+            queryClient.invalidateQueries({ queryKey: ['accounts'] });
             queryClient.invalidateQueries({
                 queryKey: ['chart-of-account', id],
             });
