@@ -4,16 +4,16 @@ const PricingSection = () => {
     return (
         <section
             id="pricing"
-            className="mx-auto max-w-6xl px-6 py-20 text-white"
+            className="mx-auto max-w-6xl px-6 py-20"
         >
             <div className="space-y-4 text-center">
-                <p className="text-xs font-semibold uppercase tracking-[0.45em] text-white/40">
+                <p className="text-xs font-semibold uppercase tracking-[0.45em] text-muted-foreground">
                     Pricing options
                 </p>
-                <h2 className="text-3xl font-semibold text-white sm:text-4xl">
+                <h2 className="text-3xl font-semibold text-foreground sm:text-4xl">
                     Choose the subscription that fits your strategy.
                 </h2>
-                <p className="text-base text-white/65">
+                <p className="text-base text-muted-foreground">
                     Monthly or annual billing, transparent fees, and dedicated
                     onboarding for every workspace.
                 </p>
@@ -22,39 +22,39 @@ const PricingSection = () => {
                 {PRICING_PLANS.map((plan) => (
                     <div
                         key={plan.name}
-                        className={`rounded-3xl border border-white/5 p-8 ${
+                        className={`rounded-3xl border border-border p-8 ${
                             plan.highlight
-                                ? 'bg-gradient-to-br from-[#ff7a42]/30 to-[#1a0f0b]'
-                                : 'bg-[#0b0b0b]'
+                                ? 'bg-gradient-to-br from-primary/15 via-muted/20 to-background'
+                                : 'bg-background'
                         }`}
                     >
                         {plan.highlight && (
-                            <span className="inline-flex rounded-full border border-white/20 px-3 py-1 text-xs font-semibold uppercase tracking-[0.35em] text-white/70">
+                            <span className="inline-flex rounded-full border border-border px-3 py-1 text-xs font-semibold uppercase tracking-[0.35em] text-muted-foreground">
                                 {plan.highlight}
                             </span>
                         )}
                         <div className="mt-4 flex items-end gap-3">
-                            <p className="text-4xl font-semibold text-white">
+                            <p className="text-4xl font-semibold text-foreground">
                                 {plan.price}
                             </p>
-                            <p className="text-sm text-white/60">
+                            <p className="text-sm text-muted-foreground">
                                 {plan.cadence}
                             </p>
                         </div>
-                        <p className="mt-4 text-sm text-white/70">
+                        <p className="mt-4 text-sm text-muted-foreground">
                             {plan.description}
                         </p>
-                        <ul className="mt-6 space-y-3 text-sm text-white/70">
+                        <ul className="mt-6 space-y-3 text-sm text-muted-foreground">
                             {plan.features.map((feature) => (
                                 <li
                                     key={feature}
-                                    className="rounded-2 border border-white/5 bg-white/5 px-4 py-2"
+                                    className="rounded-2 border border-border bg-muted/30 px-4 py-2"
                                 >
                                     {feature}
                                 </li>
                             ))}
                         </ul>
-                        <button className="mt-6 w-full rounded-2 border border-white/10 bg-white/10 py-3 text-sm font-semibold text-white transition hover:bg-white/20">
+                        <button className="mt-6 w-full rounded-2 border border-border bg-muted py-3 text-sm font-semibold text-foreground transition hover:bg-muted/80">
                             {plan.name === 'Core'
                                 ? 'Get started'
                                 : 'Upgrade now'}

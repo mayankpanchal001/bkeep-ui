@@ -106,112 +106,111 @@ export const TRUSTED_LOGOS = [
 ];
 
 export const HERO_METRICS = [
-    { value: '98.7%', label: 'Client retention rate' },
-    { value: '$250M+', label: 'Assets managed with BKeep AI' },
-    { value: '120+', label: 'Automated strategies live' },
+    { value: '90%+', label: 'Transactions auto‑categorized' },
+    { value: '50% faster', label: 'Month‑end close' },
+    { value: '10+', label: 'Tenants per firm on average' },
 ];
 
 export const PERFORMANCE_STATS = [
-    { value: '98.7%', label: 'Client retention rate' },
-    { value: '$250M+', label: 'Capital actively managed' },
-    { value: '120+', label: 'Automated AI strategies' },
+    { value: '95%+', label: 'Bank feed match accuracy' },
+    { value: '3x', label: 'Faster reconciliations' },
+    { value: '100%', label: 'Audit trail coverage' },
 ];
 
 export const INVEST_FEATURES = [
     {
-        title: 'Precision-driven portfolio growth',
+        title: 'Automated transaction categorization',
         description:
-            'Every allocation is data backed with real-time signals so you can scale faster with conviction.',
-        tag: 'Portfolio Intelligence',
+            'AI classifies bank and card activity to your chart of accounts with high accuracy.',
+        tag: 'Bookkeeping AI',
     },
     {
-        title: 'Diversified assets on autopilot',
+        title: 'Smart journal entries',
         description:
-            'Blend equities, credit, and digital assets with automated rebalancing tuned to your risk profile.',
-        tag: 'Adaptive Allocation',
+            'Create multi-line entries with validations, attachments, and approval workflows.',
+        tag: 'Journals',
     },
     {
-        title: 'Insights in milliseconds',
+        title: 'Real-time financial statements',
         description:
-            'Live dashboards track performance, exposure, and cash flow so your next move is always informed.',
-        tag: 'Live Analytics',
+            'Income statements and balance sheets update as you post entries and reconciliations.',
+        tag: 'Reporting',
     },
     {
-        title: 'Maximize returns with less effort',
+        title: 'Multi-tenant workspaces',
         description:
-            'Let autonomous execution handle the busywork while you stay focused on strategy and relationships.',
-        tag: 'Autonomous Execution',
+            'Manage clients and entities with strict data isolation, roles, and permissions.',
+        tag: 'Tenants & Roles',
     },
 ];
 
 export const CAPABILITY_FEATURES = [
     {
-        title: 'Transparent performance tracking',
+        title: 'Audit‑ready books',
         description:
-            'Monitor every portfolio move with intuitive analytics, benchmark overlays, and exported reports.',
-        metric: 'Real-time analytics',
+            'Immutable logs, attachments, and approvals ensure every change is traceable.',
+        metric: 'Audit trail',
     },
     {
-        title: 'Seamless asset allocation',
+        title: 'Role‑based access & MFA',
         description:
-            'Balance across asset classes with guardrails that adapt instantly to market volatility.',
-        metric: 'Dynamic allocation',
+            'Granular permissions per tenant with passkeys and OTP for secure sign‑in.',
+        metric: 'Security',
     },
     {
-        title: 'Smart risk management',
+        title: 'Client collaboration',
         description:
-            'AI scans volatility, liquidity, and macro signals to adjust exposure before risk compounds.',
-        metric: 'Adaptive hedging',
+            'Share requests, upload documents, and review transactions in one place.',
+        metric: 'Portal',
     },
 ];
 
 export const OUTCOME_CARDS = [
     {
-        title: 'AI-powered strategies',
+        title: 'Accurate books faster',
         description:
-            'Adaptive models trained on millions of market data points deliver institutional-grade precision.',
+            'Reduce manual work with AI categorization and guided reconciliations.',
     },
     {
-        title: 'Real-time insights',
+        title: 'Centralized chart of accounts',
         description:
-            'See how every desk, entity, or client is performing with streaming analytics you can trust.',
+            'Standardize across clients with reusable account structures and mapping.',
     },
     {
-        title: 'Automated execution',
+        title: 'Live cash‑flow insights',
         description:
-            'Go from signal to trade without latency thanks to automated approvals and routing.',
+            'Track cash positions and payables/receivables in real time.',
     },
     {
-        title: 'Adaptive risk controls',
+        title: 'Secure collaboration',
         description:
-            'Reduce drawdowns with AI that tightens or widens exposure as volatility shifts.',
+            'Role‑based access, MFA, and audit trails across every tenant.',
     },
 ];
 
 export const PRICING_PLANS = [
     {
-        name: 'Core',
+        name: 'Starter',
         price: '$99',
         cadence: 'Billed monthly',
-        description: 'Perfect for lean finance teams modernizing client work.',
+        description: 'Perfect for small teams automating bookkeeping and reporting.',
         features: [
-            '0.4% management fee',
-            'AI rebalancing & tracking',
-            'Market insights feed',
-            'Advisor support',
+            'AI categorization',
+            'Bank feeds & reconciliations',
+            'Basic reporting',
+            'Email support',
         ],
     },
     {
-        name: 'Vision',
+        name: 'Firm',
         price: '$2,099',
         cadence: 'Billed monthly',
-        description: 'Best for global firms scaling automation at speed.',
+        description: 'Best for firms managing multiple tenants and complex workflows.',
         highlight: 'Best value',
         features: [
-            '0.2%–0.4% management fee',
-            'Advanced AI strategies',
-            '2.75% cash interest',
-            'Investment team access',
+            'Advanced AI workflows',
+            'Multi‑tenant & roles',
+            'Custom reports & exports',
             'Priority onboarding & support',
         ],
     },
@@ -219,42 +218,42 @@ export const PRICING_PLANS = [
 
 export const TESTIMONIALS = [
     {
-        quote: 'BKeep AI gave us clarity and automation across every treasury workflow. It feels like an institutional desk in a single platform.',
+        quote: 'BKeep AI automated our entire month-end close process. It feels like having an extra team of accountants working 24/7.',
         name: 'Olivia Bennett',
-        role: 'Product Manager',
+        role: 'Controller',
     },
     {
-        quote: 'I fine-tune portfolio strategies in minutes now. The live analytics and automation easily save hours every week.',
+        quote: 'I categorize thousands of transactions in minutes now. The live analytics and automation save me hours every single week.',
         name: 'Ethan Carter',
-        role: 'Wealth Advisor',
+        role: 'Senior Accountant',
     },
     {
-        quote: 'As a founder, I finally have a treasury dashboard that is just as intuitive as it is intelligent.',
+        quote: 'As a founder, I finally have a financial dashboard that is just as intuitive as it is intelligent. Cash flow is clear.',
         name: 'Jenna Wallace',
         role: 'Startup Founder',
     },
     {
-        quote: 'The AI insights helped us balance risk across both traditional and crypto assets without adding headcount.',
+        quote: 'The AI insights helped us catch categorization errors across multiple entities without needing manual review.',
         name: 'Marcus Reed',
-        role: 'Crypto Analyst',
+        role: 'CFO',
     },
 ];
 
 export const FAQ_ITEMS = [
     {
-        question: 'How is BKeep different from legacy investment tools?',
-        answer: 'BKeep combines real-time AI models, automated execution, and transparent analytics so you can adapt instantly. No manual exports or disconnected spreadsheets.',
+        question: 'How is BKeep different from legacy accounting tools?',
+        answer: 'BKeep combines AI categorization, guided reconciliations, and real-time reporting with multi-tenant controls. No more manual exports or disconnected spreadsheets.',
     },
     {
-        question: 'Is BKeep suitable for new teams or individual investors?',
-        answer: 'Yes. We designed the experience to feel approachable for new investors while still offering the controls that institutional teams expect.',
+        question: 'Is BKeep suitable for small teams or solo accountants?',
+        answer: 'Yes. The experience is approachable for small teams while offering enterprise-grade security and audit features.',
     },
     {
-        question: 'Can I customize strategies and risk preferences?',
-        answer: 'Every workspace supports bespoke risk bands, hedging logic, and approval policies so your automation mirrors how your firm already operates.',
+        question: 'Can I customize chart of accounts and workflows?',
+        answer: 'Every tenant supports bespoke COA mapping, approval policies, and document workflows so your process mirrors how your firm operates.',
     },
     {
         question: 'How secure is my data?',
-        answer: 'Customer data is encrypted in transit and at rest, and every workspace includes audit trails, SSO, and granular access controls.',
+        answer: 'Data is encrypted in transit and at rest. Each tenant includes audit trails, MFA/passkeys, and granular role-based access controls.',
     },
 ];

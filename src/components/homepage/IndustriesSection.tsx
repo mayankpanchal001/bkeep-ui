@@ -2,29 +2,28 @@ import { OUTCOME_CARDS } from './constants.tsx';
 
 export default function IndustriesSection() {
     return (
-        <section className="mx-auto max-w-6xl px-6 pb-20 text-white">
+        <section className="mx-auto max-w-6xl px-6 pb-20">
             <div className="space-y-4 text-center">
-                <p className="text-xs font-semibold uppercase tracking-[0.4em] text-white/40">
-                    Smarter investing. Stronger outcomes.
+                <p className="text-xs font-semibold uppercase tracking-[0.4em] text-muted-foreground">
+                    Built for firms, finance teams, and startups
                 </p>
-                <h2 className="text-3xl font-semibold text-white sm:text-4xl">
-                    AI that adapts to every market condition.
+                <h2 className="text-3xl font-semibold text-foreground sm:text-4xl">
+                    One workspace per tenant with roles, approvals, and audit trails.
                 </h2>
-                <p className="text-base text-white/65">
-                    Built for ambitious teams that need complete visibility and
-                    confident execution.
+                <p className="text-base text-muted-foreground">
+                    Collaborate securely across clients while maintaining clean separation of data.
                 </p>
             </div>
             <div className="mt-12 grid gap-4 md:grid-cols-2">
                 {OUTCOME_CARDS.map((card) => (
                     <div
                         key={card.title}
-                        className="rounded-3xl border border-white/5 bg-gradient-to-br from-white/8 to-transparent p-4"
+                        className="rounded-3xl border border-border bg-gradient-to-br from-muted to-transparent p-4"
                     >
-                        <h3 className="text-xl font-semibold text-white">
+                        <h3 className="text-xl font-semibold text-foreground">
                             {card.title}
                         </h3>
-                        <p className="mt-2 text-sm text-white/65">
+                        <p className="mt-2 text-sm text-muted-foreground">
                             {card.description}
                         </p>
                     </div>

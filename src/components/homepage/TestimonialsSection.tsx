@@ -2,15 +2,12 @@ import { TESTIMONIALS } from './constants.tsx';
 
 const TestimonialsSection = () => {
     return (
-        <section
-            id="testimonials"
-            className="mx-auto max-w-6xl px-6 py-20 text-white"
-        >
+        <section id="testimonials" className="mx-auto max-w-6xl px-6 py-20">
             <div className="space-y-4 text-center">
-                <p className="text-xs font-semibold uppercase tracking-[0.45em] text-white/40">
+                <p className="text-xs font-semibold uppercase tracking-[0.45em] text-muted-foreground">
                     Trusted by investors worldwide
                 </p>
-                <h2 className="text-3xl font-semibold text-white sm:text-4xl">
+                <h2 className="text-3xl font-semibold text-foreground sm:text-4xl">
                     Real stories from forward-thinking leaders.
                 </h2>
             </div>
@@ -18,13 +15,13 @@ const TestimonialsSection = () => {
                 {TESTIMONIALS.map((testimonial, index) => (
                     <div
                         key={`${testimonial.name}-${index}`}
-                        className="rounded-3xl border border-white/5 bg-[#0b0b0b] p-4 text-left"
+                        className="rounded-3xl border border-border bg-background p-4 text-left"
                     >
-                        <p className="text-sm text-white/70">
+                        <p className="text-sm text-muted-foreground">
                             “{testimonial.quote}”
                         </p>
-                        <div className="mt-4 text-sm text-white/60">
-                            <p className="font-semibold text-white">
+                        <div className="mt-4 text-sm text-muted-foreground">
+                            <p className="font-semibold text-foreground">
                                 {testimonial.name}
                             </p>
                             <p>{testimonial.role}</p>
