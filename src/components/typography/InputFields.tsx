@@ -47,7 +47,7 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
                     </label>
                 )}
                 <div
-                    className={`relative input-wrap ${error ? '!border-red-500 shadow-[0_0_0_1px_rgba(239,68,68,0.1)]' : ''}`}
+                    className={`relative input-wrap ${error ? 'border-red-500! shadow-[0_0_0_1px_rgba(239,68,68,0.1)]' : ''}`}
                 >
                     {icon && (
                         <div className="absolute left-2 top-2 text-primary/40">
@@ -57,9 +57,7 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
                     <input
                         ref={ref}
                         id={id}
-                        className={`input ${icon ? 'pl-10' : 'pl-4'} ${
-                            isPasswordField ? 'pr-10' : 'pr-4'
-                        }`}
+                        className={`input`}
                         type={inputType}
                         placeholder={placeholder}
                         required={required}
@@ -233,7 +231,7 @@ export const TextareaField = forwardRef<
                     {required && <span className="text-red-500 ml-0">*</span>}
                 </label>
             )}
-            <div className="relative input-wrap !w-full !px-4">
+            <div className="relative input-wrap w-full! px-4!">
                 <textarea
                     ref={ref}
                     id={id}

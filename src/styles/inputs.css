@@ -9,7 +9,7 @@ input::placeholder {
 }
 
 .input {
-    @apply py-1 focus:outline-none focus:ring-0 w-full text-sm font-normal text-primary;
+    @apply py-1 px-1 focus:outline-none focus:ring-0 w-full text-sm font-normal text-primary;
     /* Ensure autofill also uses primary text color */
     &:-webkit-autofill,
     &:-webkit-autofill:hover,

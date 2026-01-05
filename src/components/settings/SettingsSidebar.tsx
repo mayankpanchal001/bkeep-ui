@@ -25,7 +25,7 @@ export function SettingsSidebar({
 
     return (
         <nav className={navClasses} {...props}>
-            <div className="flex gap-4 sm:gap-2 sm:flex-col">
+            <div className="flex gap-4 sm:gap-0.5 sm:flex-col lg:bg-white lg:border lg:border-primary/10 lg:rounded-md lg:p-2">
                 {items.map((item) => {
                     const isActive =
                         location.pathname === item.href ||
@@ -35,8 +35,8 @@ export function SettingsSidebar({
                             key={item.href}
                             to={item.href}
                             className={`
-                                flex items-center gap-2 py-4 text-sm font-medium transition-colors whitespace-nowrap border-b-2
-                                lg:px-3 lg:py-2 lg:rounded-md lg:border-0 lg:gap-3
+                                flex items-center gap-2 p-1 sm:p-2 text-xs font-normal transition-colors whitespace-nowrap border-b-2
+                                rounded-sm lg:border-0
                                 ${
                                     isActive
                                         ? 'border-primary text-primary lg:bg-primary/5 lg:text-primary'
