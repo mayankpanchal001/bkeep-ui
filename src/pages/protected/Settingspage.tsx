@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router';
 import { SettingsSidebar } from '../../components/settings/SettingsSidebar';
 import { Icons } from '../../components/shared/Icons';
+import PageHeader from '../../components/shared/PageHeader';
 import { useAuth } from '../../stores/auth/authSelectore';
 
 const Settingspage = () => {
@@ -61,13 +62,39 @@ const Settingspage = () => {
         },
     ];
 
+    // Dynamic header based on current route
+    const currentItem =
+        sidebarNavItems.find((item) =>
+            location.pathname.startsWith(item.href)
+        ) || null;
+
+    const subtitleMap: Record<string, string> = {
+        '/settings/profile': 'Manage your account settings',
+        '/settings/tenants': 'Manage client organizations',
+        '/settings/users': 'Manage workspace users',
+        '/settings/roles': 'Manage roles and permissions',
+        '/settings/security': 'Authentication and MFA preferences',
+        '/settings/data': 'Personal data and privacy controls',
+        '/settings/notifications': 'Notification preferences',
+    };
+
+    const headerTitle = currentItem?.title || 'Settings';
+    const headerSubtitle =
+        (currentItem && subtitleMap[currentItem.href]) ||
+        'Manage your account settings';
+
     return (
-        <div className="flex flex-col h-full gap-4 lg:flex-row lg:space-x-12  lg:space-y-0">
-            <aside className="lg:w-1/5 m-0 sm:h-full">
-                <SettingsSidebar items={sidebarNavItems} />
-            </aside>
-            <div className="flex-1 ">
-                <Outlet />
+        <div className="flex flex-col gap-4 w-full lg:max-w-5xl lg:mx-auto">
+            <PageHeader title={headerTitle} subtitle={headerSubtitle} />
+            <div className="flex w-full flex-col h-full gap-4 lg:flex-row lg:space-x-8 lg:space-y-0 ">
+                <aside className="lg:w-1/4 m-0 sm:h-full">
+                    <SettingsSidebar items={sidebarNavItems} />
+                </aside>
+                <div className="flex-1">
+                    <div className="bg-white rounded-md border border-primary/10 p-4">
+                        <Outlet />
+                    </div>
+                </div>
             </div>
         </div>
     );
