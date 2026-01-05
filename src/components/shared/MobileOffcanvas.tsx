@@ -233,12 +233,16 @@ const MobileOffcanvas = ({ isOpen, onClose }: MobileOffcanvasProps) => {
                                             `}
                                         >
                                             <div className="flex flex-col gap-1 mt-1 ml-4 border-l border-primary/10 pl-2">
-                                                {computedChildren.map((child) => (
-                                                    <Link
-                                                        key={child.label}
-                                                        to={child.path || '#'}
-                                                        onClick={onClose}
-                                                        className={`
+                                                {computedChildren.map(
+                                                    (child) => (
+                                                        <Link
+                                                            key={child.label}
+                                                            to={
+                                                                child.path ||
+                                                                '#'
+                                                            }
+                                                            onClick={onClose}
+                                                            className={`
                                                             flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors
                                                             ${
                                                                 isItemActive(
@@ -248,10 +252,11 @@ const MobileOffcanvas = ({ isOpen, onClose }: MobileOffcanvasProps) => {
                                                                     : 'text-primary/50 hover:text-primary hover:bg-white'
                                                             }
                                                         `}
-                                                    >
-                                                        {child.label}
-                                                    </Link>
-                                                ))}
+                                                        >
+                                                            {child.label}
+                                                        </Link>
+                                                    )
+                                                )}
                                             </div>
                                         </div>
                                     </div>

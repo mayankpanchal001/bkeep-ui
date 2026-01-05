@@ -472,6 +472,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                                     <Link
                                         to="/settings/profile"
                                         className="w-full flex gap-1"
+                                        onClick={() => {
+                                            if (isMobile) setOpenMobile(false);
+                                        }}
                                     >
                                         <Icons.Profile className="mr-2 h-4 w-4" />
                                         Profile
@@ -482,13 +485,21 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                                     <Link
                                         to="/settings/notifications"
                                         className="w-full flex gap-1"
+                                        onClick={() => {
+                                            if (isMobile) setOpenMobile(false);
+                                        }}
                                     >
                                         <Icons.Notifications className="mr-2 h-4 w-4" />
                                         Notifications
                                     </Link>
                                 </DropdownMenuItem>
                                 <DropdownMenuSeparator />
-                                <DropdownMenuItem onClick={() => logout()}>
+                                <DropdownMenuItem
+                                    onClick={() => {
+                                        if (isMobile) setOpenMobile(false);
+                                        logout();
+                                    }}
+                                >
                                     <Icons.Logout className="mr-2 h-4 w-4" />
                                     Log out
                                 </DropdownMenuItem>

@@ -16,7 +16,10 @@ const REPORT_CATEGORIES: ReportCategory[] = [
         title: 'Business overview',
         reports: [
             { key: 'balance-sheet', title: 'Balance Sheet' },
-            { key: 'statement-of-cash-flows', title: 'Statement of Cash Flows' },
+            {
+                key: 'statement-of-cash-flows',
+                title: 'Statement of Cash Flows',
+            },
             { key: 'profit-and-loss', title: 'Profit and Loss' },
         ],
     },
@@ -63,8 +66,8 @@ const ReportDetailpage = () => {
             const next = prev.includes(id)
                 ? prev.filter((x) => x !== id)
                 : [...prev, id];
-        try {
-            localStorage.setItem(LS_FAV_KEY, JSON.stringify(next));
+            try {
+                localStorage.setItem(LS_FAV_KEY, JSON.stringify(next));
                 const rawLabels = localStorage.getItem(LS_FAV_LABEL_KEY);
                 const labels: Record<string, string> = rawLabels
                     ? JSON.parse(rawLabels)
@@ -74,21 +77,16 @@ const ReportDetailpage = () => {
                 } else if (report?.title) {
                     labels[id] = report.title;
                 }
-                localStorage.setItem(
-                    LS_FAV_LABEL_KEY,
-                    JSON.stringify(labels)
-                );
-        } catch {
-            // ignore
-        }
+                localStorage.setItem(LS_FAV_LABEL_KEY, JSON.stringify(labels));
+            } catch {
+                // ignore
+            }
             return next;
         });
     };
 
     const title = report?.title || 'Report';
-    const subtitle = category
-        ? `Category: ${category.title}`
-        : 'Report detail';
+    const subtitle = category ? `Category: ${category.title}` : 'Report detail';
 
     return (
         <div className="flex flex-col gap-4 w-full lg:max-w-5xl lg:mx-auto">

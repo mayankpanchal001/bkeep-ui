@@ -160,7 +160,10 @@ const TaxForm = ({ onClose, initialData }: TaxFormProps) => {
                         }
                         id="tax-active"
                     />
-                    <label htmlFor="tax-active" className="text-sm text-primary">
+                    <label
+                        htmlFor="tax-active"
+                        className="text-sm text-primary"
+                    >
                         Active
                     </label>
                 </div>
@@ -199,4 +202,3 @@ const TaxForm = ({ onClose, initialData }: TaxFormProps) => {
 };
 
 export default TaxForm;
-

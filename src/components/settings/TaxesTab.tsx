@@ -49,8 +49,10 @@ import TaxForm from './TaxForm';
 
 const TaxesTab = () => {
     const [sorting, setSorting] = React.useState<SortingState>([]);
-    const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
-    const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
+    const [columnFilters, setColumnFilters] =
+        React.useState<ColumnFiltersState>([]);
+    const [columnVisibility, setColumnVisibility] =
+        React.useState<VisibilityState>({});
     const [rowSelection, setRowSelection] = React.useState({});
 
     const [search, setSearch] = React.useState('');
@@ -83,9 +85,18 @@ const TaxesTab = () => {
     const { mutate: enableTax } = useEnableTax();
     const { mutate: disableTax } = useDisableTax();
 
-    const handleDelete = React.useCallback((id: string) => deleteTax(id), [deleteTax]);
-    const handleEnable = React.useCallback((id: string) => enableTax(id), [enableTax]);
-    const handleDisable = React.useCallback((id: string) => disableTax(id), [disableTax]);
+    const handleDelete = React.useCallback(
+        (id: string) => deleteTax(id),
+        [deleteTax]
+    );
+    const handleEnable = React.useCallback(
+        (id: string) => enableTax(id),
+        [enableTax]
+    );
+    const handleDisable = React.useCallback(
+        (id: string) => disableTax(id),
+        [disableTax]
+    );
 
     const columns = React.useMemo<ColumnDef<Tax, unknown>[]>(() => {
         return [
@@ -151,11 +162,15 @@ const TaxesTab = () => {
                                 </DropdownMenuItem>
                                 <DropdownMenuSeparator />
                                 {tax.isActive ? (
-                                    <DropdownMenuItem onClick={() => handleDisable(tax.id)}>
+                                    <DropdownMenuItem
+                                        onClick={() => handleDisable(tax.id)}
+                                    >
                                         Disable
                                     </DropdownMenuItem>
                                 ) : (
-                                    <DropdownMenuItem onClick={() => handleEnable(tax.id)}>
+                                    <DropdownMenuItem
+                                        onClick={() => handleEnable(tax.id)}
+                                    >
                                         Enable
                                     </DropdownMenuItem>
                                 )}
@@ -229,11 +244,14 @@ const TaxesTab = () => {
                 <div className="bg-white rounded-2 shadow-sm border border-primary/10 p-4">
                     <p className="text-xs text-primary/50 uppercase">Active</p>
                     <p className="text-lg font-bold text-primary">
-                        {statsData?.data?.active ?? taxes.filter((t) => t.isActive).length}
+                        {statsData?.data?.active ??
+                            taxes.filter((t) => t.isActive).length}
                     </p>
                 </div>
                 <div className="bg-white rounded-2 shadow-sm border border-primary/10 p-4">
-                    <p className="text-xs text-primary/50 uppercase">Inactive</p>
+                    <p className="text-xs text-primary/50 uppercase">
+                        Inactive
+                    </p>
                     <p className="text-lg font-bold text-primary">
                         {statsData?.data?.inactive ??
                             taxes.filter((t) => !t.isActive).length}
@@ -252,7 +270,8 @@ const TaxesTab = () => {
                                             {header.isPlaceholder
                                                 ? null
                                                 : flexRender(
-                                                      header.column.columnDef.header,
+                                                      header.column.columnDef
+                                                          .header,
                                                       header.getContext()
                                                   )}
                                         </TableHead>
@@ -264,7 +283,10 @@ const TaxesTab = () => {
                     <TableBody>
                         {isLoading ? (
                             <TableRow>
-                                <TableCell colSpan={columns.length} className="h-24 text-center">
+                                <TableCell
+                                    colSpan={columns.length}
+                                    className="h-24 text-center"
+                                >
                                     <div className="flex justify-center items-center gap-2 text-primary/50">
                                         <div className="animate-spin w-4 h-4 border-2 border-primary/50 border-t-transparent rounded-full" />
                                         Loading...
@@ -275,18 +297,26 @@ const TaxesTab = () => {
                             table.getRowModel().rows.map((row) => (
                                 <TableRow
                                     key={row.id}
-                                    data-state={row.getIsSelected() && 'selected'}
+                                    data-state={
+                                        row.getIsSelected() && 'selected'
+                                    }
                                 >
                                     {row.getVisibleCells().map((cell) => (
                                         <TableCell key={cell.id}>
-                                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                            {flexRender(
+                                                cell.column.columnDef.cell,
+                                                cell.getContext()
+                                            )}
                                         </TableCell>
                                     ))}
                                 </TableRow>
                             ))
                         ) : (
                             <TableRow>
-                                <TableCell colSpan={columns.length} className="h-24 text-center">
+                                <TableCell
+                                    colSpan={columns.length}
+                                    className="h-24 text-center"
+                                >
                                     No taxes found
                                 </TableCell>
                             </TableRow>
@@ -297,7 +327,12 @@ const TaxesTab = () => {
                     <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => setPagination((p) => ({ ...p, pageIndex: p.pageIndex - 1 }))}
+                        onClick={() =>
+                            setPagination((p) => ({
+                                ...p,
+                                pageIndex: p.pageIndex - 1,
+                            }))
+                        }
                         disabled={pagination.pageIndex === 0}
                     >
                         Previous
@@ -305,7 +340,12 @@ const TaxesTab = () => {
                     <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => setPagination((p) => ({ ...p, pageIndex: p.pageIndex + 1 }))}
+                        onClick={() =>
+                            setPagination((p) => ({
+                                ...p,
+                                pageIndex: p.pageIndex + 1,
+                            }))
+                        }
                         disabled={pagination.pageIndex + 1 >= pageCount}
                     >
                         Next

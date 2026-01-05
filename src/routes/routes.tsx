@@ -185,14 +185,14 @@ const routes = createBrowserRouter([
                         path: '/settings/roles',
                         element: withSuspense(RolesTab),
                     },
-            {
-                path: '/settings/security',
-                element: withSuspense(SecurityTab),
-            },
-            {
-                path: '/settings/taxes',
-                element: withSuspense(TaxesTab),
-            },
+                    {
+                        path: '/settings/security',
+                        element: withSuspense(SecurityTab),
+                    },
+                    {
+                        path: '/settings/taxes',
+                        element: withSuspense(TaxesTab),
+                    },
                     {
                         path: '/settings/data',
                         element: withSuspense(DataPrivacyTab),
