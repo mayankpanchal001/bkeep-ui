@@ -14,8 +14,10 @@ export async function getContacts(
     params: ContactsQueryParams = {}
 ): Promise<ContactsListResponse> {
     const queryParams = new URLSearchParams();
-    if (params.page !== undefined) queryParams.append('page', String(params.page));
-    if (params.limit !== undefined) queryParams.append('limit', String(params.limit));
+    if (params.page !== undefined)
+        queryParams.append('page', String(params.page));
+    if (params.limit !== undefined)
+        queryParams.append('limit', String(params.limit));
     if (params.search) queryParams.append('search', params.search);
     if (params.type) queryParams.append('type', params.type);
     if (params.isActive !== undefined)
@@ -107,9 +109,12 @@ export const useCreateContact = () => {
         },
         onError: (error) => {
             console.error('Create contact failed:', error);
-            const maybeAxiosError = error as { response?: { data?: { message?: string } } };
+            const maybeAxiosError = error as {
+                response?: { data?: { message?: string } };
+            };
             const message =
-                maybeAxiosError.response?.data?.message || 'Failed to create contact';
+                maybeAxiosError.response?.data?.message ||
+                'Failed to create contact';
             showErrorToast(message);
         },
     });
@@ -118,18 +123,28 @@ export const useCreateContact = () => {
 export const useUpdateContact = () => {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: ({ id, payload }: { id: string; payload: UpdateContactPayload }) =>
-            updateContact(id, payload),
+        mutationFn: ({
+            id,
+            payload,
+        }: {
+            id: string;
+            payload: UpdateContactPayload;
+        }) => updateContact(id, payload),
         onSuccess: (data, variables) => {
             showSuccessToast(data?.message || 'Contact updated successfully');
             queryClient.invalidateQueries({ queryKey: ['contacts'] });
-            queryClient.invalidateQueries({ queryKey: ['contact', variables.id] });
+            queryClient.invalidateQueries({
+                queryKey: ['contact', variables.id],
+            });
         },
         onError: (error) => {
             console.error('Update contact failed:', error);
-            const maybeAxiosError = error as { response?: { data?: { message?: string } } };
+            const maybeAxiosError = error as {
+                response?: { data?: { message?: string } };
+            };
             const message =
-                maybeAxiosError.response?.data?.message || 'Failed to update contact';
+                maybeAxiosError.response?.data?.message ||
+                'Failed to update contact';
             showErrorToast(message);
         },
     });
@@ -145,9 +160,12 @@ export const useDeleteContact = () => {
         },
         onError: (error) => {
             console.error('Delete contact failed:', error);
-            const maybeAxiosError = error as { response?: { data?: { message?: string } } };
+            const maybeAxiosError = error as {
+                response?: { data?: { message?: string } };
+            };
             const message =
-                maybeAxiosError.response?.data?.message || 'Failed to delete contact';
+                maybeAxiosError.response?.data?.message ||
+                'Failed to delete contact';
             showErrorToast(message);
         },
     });
@@ -163,9 +181,12 @@ export const useEnableContact = () => {
         },
         onError: (error) => {
             console.error('Enable contact failed:', error);
-            const maybeAxiosError = error as { response?: { data?: { message?: string } } };
+            const maybeAxiosError = error as {
+                response?: { data?: { message?: string } };
+            };
             const message =
-                maybeAxiosError.response?.data?.message || 'Failed to enable contact';
+                maybeAxiosError.response?.data?.message ||
+                'Failed to enable contact';
             showErrorToast(message);
         },
     });
@@ -181,9 +202,12 @@ export const useDisableContact = () => {
         },
         onError: (error) => {
             console.error('Disable contact failed:', error);
-            const maybeAxiosError = error as { response?: { data?: { message?: string } } };
+            const maybeAxiosError = error as {
+                response?: { data?: { message?: string } };
+            };
             const message =
-                maybeAxiosError.response?.data?.message || 'Failed to disable contact';
+                maybeAxiosError.response?.data?.message ||
+                'Failed to disable contact';
             showErrorToast(message);
         },
     });
@@ -199,9 +223,12 @@ export const useRestoreContact = () => {
         },
         onError: (error) => {
             console.error('Restore contact failed:', error);
-            const maybeAxiosError = error as { response?: { data?: { message?: string } } };
+            const maybeAxiosError = error as {
+                response?: { data?: { message?: string } };
+            };
             const message =
-                maybeAxiosError.response?.data?.message || 'Failed to restore contact';
+                maybeAxiosError.response?.data?.message ||
+                'Failed to restore contact';
             showErrorToast(message);
         },
     });

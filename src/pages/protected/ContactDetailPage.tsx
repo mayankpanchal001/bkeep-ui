@@ -14,10 +14,23 @@ import {
 } from '../../types/contact';
 import { Loader2 } from 'lucide-react';
 import Button from '../../components/typography/Button';
-import { InputField, SelectField } from '../../components/typography/InputFields';
+import {
+    InputField,
+    SelectField,
+} from '../../components/typography/InputFields';
 import { showErrorToast, showSuccessToast } from '../../utills/toast';
-import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../components/ui/tabs';
+import {
+    Card,
+    CardContent,
+    CardHeader,
+    CardTitle,
+} from '../../components/ui/card';
+import {
+    Tabs,
+    TabsContent,
+    TabsList,
+    TabsTrigger,
+} from '../../components/ui/tabs';
 import { Switch } from '../../components/ui/switch';
 import Chips from '../../components/typography/Chips';
 import { Icons } from '../../components/shared/Icons';
@@ -32,13 +45,21 @@ const ContactDetailPage = () => {
     const navigate = useNavigate();
     const isNew = id === 'new';
 
-    const { data: contactData, isLoading, refetch } = useContact(isNew ? '' : id || '');
+    const {
+        data: contactData,
+        isLoading,
+        refetch,
+    } = useContact(isNew ? '' : id || '');
     const contact = contactData?.data;
 
-    const { mutateAsync: createContact, isPending: isCreating } = useCreateContact();
-    const { mutateAsync: updateContact, isPending: isUpdating } = useUpdateContact();
-    const { mutateAsync: enableContact, isPending: isEnabling } = useEnableContact();
-    const { mutateAsync: disableContact, isPending: isDisabling } = useDisableContact();
+    const { mutateAsync: createContact, isPending: isCreating } =
+        useCreateContact();
+    const { mutateAsync: updateContact, isPending: isUpdating } =
+        useUpdateContact();
+    const { mutateAsync: enableContact, isPending: isEnabling } =
+        useEnableContact();
+    const { mutateAsync: disableContact, isPending: isDisabling } =
+        useDisableContact();
 
     const isBusy = isCreating || isUpdating || (isLoading && !isNew);
     const isStatusBusy = isEnabling || isDisabling;
@@ -83,29 +104,37 @@ const ContactDetailPage = () => {
             email: (formData.get('email') as string) || null,
             phoneNumber: (formData.get('phoneNumber') as string) || null,
             nameOnCheques: (formData.get('nameOnCheques') as string) || null,
-            defaultAccountId: (formData.get('defaultAccountId') as string) || null,
+            defaultAccountId:
+                (formData.get('defaultAccountId') as string) || null,
             defaultTaxId: (formData.get('defaultTaxId') as string) || null,
             openingBalance:
                 formData.get('openingBalance') !== null &&
                 formData.get('openingBalance') !== ''
                     ? Number(formData.get('openingBalance'))
                     : null,
-            openingBalanceDate: (formData.get('openingBalanceDate') as string) || null,
+            openingBalanceDate:
+                (formData.get('openingBalanceDate') as string) || null,
             notes: (formData.get('notes') as string) || null,
             billingAddress: {
-                streetAddress1: (formData.get('billing_streetAddress1') as string) || null,
-                streetAddress2: (formData.get('billing_streetAddress2') as string) || null,
+                streetAddress1:
+                    (formData.get('billing_streetAddress1') as string) || null,
+                streetAddress2:
+                    (formData.get('billing_streetAddress2') as string) || null,
                 city: (formData.get('billing_city') as string) || null,
                 province: (formData.get('billing_province') as string) || null,
-                postalCode: (formData.get('billing_postalCode') as string) || null,
+                postalCode:
+                    (formData.get('billing_postalCode') as string) || null,
                 country: (formData.get('billing_country') as string) || null,
             },
             shippingAddress: {
-                streetAddress1: (formData.get('shipping_streetAddress1') as string) || null,
-                streetAddress2: (formData.get('shipping_streetAddress2') as string) || null,
+                streetAddress1:
+                    (formData.get('shipping_streetAddress1') as string) || null,
+                streetAddress2:
+                    (formData.get('shipping_streetAddress2') as string) || null,
                 city: (formData.get('shipping_city') as string) || null,
                 province: (formData.get('shipping_province') as string) || null,
-                postalCode: (formData.get('shipping_postalCode') as string) || null,
+                postalCode:
+                    (formData.get('shipping_postalCode') as string) || null,
                 country: (formData.get('shipping_country') as string) || null,
             },
         };
@@ -120,7 +149,10 @@ const ContactDetailPage = () => {
                 await createContact(payload);
                 showSuccessToast('Contact created successfully');
             } else if (id) {
-                await updateContact({ id, payload: payload as UpdateContactPayload });
+                await updateContact({
+                    id,
+                    payload: payload as UpdateContactPayload,
+                });
                 showSuccessToast('Contact updated successfully');
             }
             navigate('/expenses/contacts');
@@ -132,10 +164,19 @@ const ContactDetailPage = () => {
     const copyBillingToShipping = (e: React.MouseEvent<HTMLButtonElement>) => {
         const form = e.currentTarget.closest('form');
         if (!form) return;
-        const fields = ['streetAddress1', 'streetAddress2', 'city', 'province', 'postalCode', 'country'];
+        const fields = [
+            'streetAddress1',
+            'streetAddress2',
+            'city',
+            'province',
+            'postalCode',
+            'country',
+        ];
         fields.forEach((field) => {
             const b = form.querySelector<HTMLInputElement>(`#billing_${field}`);
-            const s = form.querySelector<HTMLInputElement>(`#shipping_${field}`);
+            const s = form.querySelector<HTMLInputElement>(
+                `#shipping_${field}`
+            );
             if (b && s) s.value = b.value;
         });
         showSuccessToast('Billing address copied to shipping');
@@ -148,34 +189,50 @@ const ContactDetailPage = () => {
             <div className="flex h-[calc(100vh-200px)] items-center justify-center">
                 <div className="flex flex-col items-center gap-2">
                     <Loader2 className="w-8 h-8 animate-spin text-primary" />
-                    <span className="text-sm text-primary/60">Loading contact details...</span>
+                    <span className="text-sm text-primary/60">
+                        Loading contact details...
+                    </span>
                 </div>
             </div>
         );
     }
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-6 max-w-7xl mx-auto pb-10">
+        <form
+            onSubmit={handleSubmit}
+            className="space-y-6 max-w-7xl mx-auto pb-10"
+        >
             {/* Header */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-primary/10 pb-6">
                 <div className="space-y-1">
                     <div className="flex items-center gap-3">
                         <h1 className="text-2xl font-bold text-primary tracking-tight">
-                            {isNew ? 'New Contact' : contact?.displayName || 'Edit Contact'}
+                            {isNew
+                                ? 'New Contact'
+                                : contact?.displayName || 'Edit Contact'}
                         </h1>
                         {!isNew && contact && (
                             <Chips
                                 label={contact.isActive ? 'Active' : 'Inactive'}
-                                variant={contact.isActive ? 'success' : 'danger'}
+                                variant={
+                                    contact.isActive ? 'success' : 'danger'
+                                }
                             />
                         )}
                     </div>
                     <div className="text-sm text-primary/60 font-medium">
-                        {isNew ? 'Create a new customer or supplier' : `Manage details for ${contact?.companyName || contact?.displayName}`}
+                        {isNew
+                            ? 'Create a new customer or supplier'
+                            : `Manage details for ${contact?.companyName || contact?.displayName}`}
                     </div>
                 </div>
                 <div className="flex items-center gap-3">
-                    <Button type="button" variant="outline" onClick={handleBackToList} disabled={isBusy}>
+                    <Button
+                        type="button"
+                        variant="outline"
+                        onClick={handleBackToList}
+                        disabled={isBusy}
+                    >
                         Cancel
                     </Button>
                     <Button type="submit" variant="primary" loading={isBusy}>
@@ -245,10 +302,10 @@ const ContactDetailPage = () => {
                                     />
                                 </div>
                             </div>
-                            
+
                             <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
                                 <div className="sm:col-span-1">
-                                     <InputField
+                                    <InputField
                                         id="suffix"
                                         label="Suffix"
                                         placeholder="Jr."
@@ -260,7 +317,9 @@ const ContactDetailPage = () => {
                                         id="companyName"
                                         label="Company Name"
                                         placeholder="Acme Corporation"
-                                        defaultValue={contact?.companyName || ''}
+                                        defaultValue={
+                                            contact?.companyName || ''
+                                        }
                                     />
                                 </div>
                             </div>
@@ -282,14 +341,14 @@ const ContactDetailPage = () => {
                                     defaultValue={contact?.phoneNumber || ''}
                                 />
                             </div>
-                             <div className="grid grid-cols-1 gap-4">
-                                 <InputField
+                            <div className="grid grid-cols-1 gap-4">
+                                <InputField
                                     id="nameOnCheques"
                                     label="Name on Cheques"
                                     placeholder="Acme Corporation"
                                     defaultValue={contact?.nameOnCheques || ''}
                                 />
-                             </div>
+                            </div>
                         </CardContent>
                     </Card>
 
@@ -310,22 +369,35 @@ const ContactDetailPage = () => {
                         <CardContent>
                             <Tabs defaultValue="billing" className="w-full">
                                 <TabsList className="grid w-full grid-cols-2 mb-6">
-                                    <TabsTrigger value="billing">Billing Address</TabsTrigger>
-                                    <TabsTrigger value="shipping">Shipping Address</TabsTrigger>
+                                    <TabsTrigger value="billing">
+                                        Billing Address
+                                    </TabsTrigger>
+                                    <TabsTrigger value="shipping">
+                                        Shipping Address
+                                    </TabsTrigger>
                                 </TabsList>
-                                <TabsContent value="billing" className="space-y-4">
+                                <TabsContent
+                                    value="billing"
+                                    className="space-y-4"
+                                >
                                     <div className="grid grid-cols-1 gap-4">
                                         <InputField
                                             id="billing_streetAddress1"
                                             label="Street Address 1"
                                             placeholder="123 Main St"
-                                            defaultValue={contact?.billingAddress?.streetAddress1 || ''}
+                                            defaultValue={
+                                                contact?.billingAddress
+                                                    ?.streetAddress1 || ''
+                                            }
                                         />
                                         <InputField
                                             id="billing_streetAddress2"
                                             label="Street Address 2"
                                             placeholder="Suite 100"
-                                            defaultValue={contact?.billingAddress?.streetAddress2 || ''}
+                                            defaultValue={
+                                                contact?.billingAddress
+                                                    ?.streetAddress2 || ''
+                                            }
                                         />
                                     </div>
                                     <div className="grid grid-cols-2 gap-4">
@@ -333,13 +405,19 @@ const ContactDetailPage = () => {
                                             id="billing_city"
                                             label="City"
                                             placeholder="Toronto"
-                                            defaultValue={contact?.billingAddress?.city || ''}
+                                            defaultValue={
+                                                contact?.billingAddress?.city ||
+                                                ''
+                                            }
                                         />
                                         <InputField
                                             id="billing_province"
                                             label="Province/State"
                                             placeholder="Ontario"
-                                            defaultValue={contact?.billingAddress?.province || ''}
+                                            defaultValue={
+                                                contact?.billingAddress
+                                                    ?.province || ''
+                                            }
                                         />
                                     </div>
                                     <div className="grid grid-cols-2 gap-4">
@@ -347,29 +425,44 @@ const ContactDetailPage = () => {
                                             id="billing_postalCode"
                                             label="Postal/Zip Code"
                                             placeholder="M5H 2N2"
-                                            defaultValue={contact?.billingAddress?.postalCode || ''}
+                                            defaultValue={
+                                                contact?.billingAddress
+                                                    ?.postalCode || ''
+                                            }
                                         />
                                         <InputField
                                             id="billing_country"
                                             label="Country"
                                             placeholder="Canada"
-                                            defaultValue={contact?.billingAddress?.country || ''}
+                                            defaultValue={
+                                                contact?.billingAddress
+                                                    ?.country || ''
+                                            }
                                         />
                                     </div>
                                 </TabsContent>
-                                <TabsContent value="shipping" className="space-y-4">
+                                <TabsContent
+                                    value="shipping"
+                                    className="space-y-4"
+                                >
                                     <div className="grid grid-cols-1 gap-4">
                                         <InputField
                                             id="shipping_streetAddress1"
                                             label="Street Address 1"
                                             placeholder="456 Shipping Ave"
-                                            defaultValue={contact?.shippingAddress?.streetAddress1 || ''}
+                                            defaultValue={
+                                                contact?.shippingAddress
+                                                    ?.streetAddress1 || ''
+                                            }
                                         />
                                         <InputField
                                             id="shipping_streetAddress2"
                                             label="Street Address 2"
                                             placeholder=""
-                                            defaultValue={contact?.shippingAddress?.streetAddress2 || ''}
+                                            defaultValue={
+                                                contact?.shippingAddress
+                                                    ?.streetAddress2 || ''
+                                            }
                                         />
                                     </div>
                                     <div className="grid grid-cols-2 gap-4">
@@ -377,13 +470,19 @@ const ContactDetailPage = () => {
                                             id="shipping_city"
                                             label="City"
                                             placeholder="Toronto"
-                                            defaultValue={contact?.shippingAddress?.city || ''}
+                                            defaultValue={
+                                                contact?.shippingAddress
+                                                    ?.city || ''
+                                            }
                                         />
                                         <InputField
                                             id="shipping_province"
                                             label="Province/State"
                                             placeholder="Ontario"
-                                            defaultValue={contact?.shippingAddress?.province || ''}
+                                            defaultValue={
+                                                contact?.shippingAddress
+                                                    ?.province || ''
+                                            }
                                         />
                                     </div>
                                     <div className="grid grid-cols-2 gap-4">
@@ -391,13 +490,19 @@ const ContactDetailPage = () => {
                                             id="shipping_postalCode"
                                             label="Postal/Zip Code"
                                             placeholder="M5H 3N3"
-                                            defaultValue={contact?.shippingAddress?.postalCode || ''}
+                                            defaultValue={
+                                                contact?.shippingAddress
+                                                    ?.postalCode || ''
+                                            }
                                         />
                                         <InputField
                                             id="shipping_country"
                                             label="Country"
                                             placeholder="Canada"
-                                            defaultValue={contact?.shippingAddress?.country || ''}
+                                            defaultValue={
+                                                contact?.shippingAddress
+                                                    ?.country || ''
+                                            }
                                         />
                                     </div>
                                 </TabsContent>
@@ -412,13 +517,21 @@ const ContactDetailPage = () => {
                     {!isNew && contact && (
                         <Card>
                             <CardHeader className="pb-3">
-                                <CardTitle className="text-base">Contact Status</CardTitle>
+                                <CardTitle className="text-base">
+                                    Contact Status
+                                </CardTitle>
                             </CardHeader>
                             <CardContent className="flex items-center justify-between pb-4">
                                 <div className="space-y-0.5">
-                                    <div className="text-sm font-medium">{contact.isActive ? 'Active' : 'Inactive'}</div>
+                                    <div className="text-sm font-medium">
+                                        {contact.isActive
+                                            ? 'Active'
+                                            : 'Inactive'}
+                                    </div>
                                     <div className="text-xs text-primary/60">
-                                        {contact.isActive ? 'Contact is enabled' : 'Contact is disabled'}
+                                        {contact.isActive
+                                            ? 'Contact is enabled'
+                                            : 'Contact is disabled'}
                                     </div>
                                 </div>
                                 <Switch

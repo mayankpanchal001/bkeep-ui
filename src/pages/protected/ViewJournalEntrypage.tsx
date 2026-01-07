@@ -84,8 +84,13 @@ export default function ViewJournalEntrypage() {
 
     const contactNameById = useMemo(() => {
         const items =
-            (contactsData as unknown as { data?: { items?: Array<{ id: string; displayName: string }> } })
-                ?.data?.items || [];
+            (
+                contactsData as unknown as {
+                    data?: {
+                        items?: Array<{ id: string; displayName: string }>;
+                    };
+                }
+            )?.data?.items || [];
         const map = new Map<string, string>();
         for (const c of items) {
             if (c?.id) map.set(c.id, c.displayName);
@@ -421,26 +426,24 @@ export default function ViewJournalEntrypage() {
                             Attachments
                         </h3>
                         <div className="space-y-2">
-                            {attachments.map(
-                                (attachment, index) => (
-                                    <div
-                                        key={index}
-                                        className="flex items-center justify-between p-3 border border-primary/10 rounded-lg"
+                            {attachments.map((attachment, index) => (
+                                <div
+                                    key={index}
+                                    className="flex items-center justify-between p-3 border border-primary/10 rounded-lg"
+                                >
+                                    <span className="text-sm text-primary">
+                                        {attachment}
+                                    </span>
+                                    <a
+                                        href={attachment}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="text-sm text-primary hover:underline"
                                     >
-                                        <span className="text-sm text-primary">
-                                            {attachment}
-                                        </span>
-                                        <a
-                                            href={attachment}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="text-sm text-primary hover:underline"
-                                        >
-                                            Download
-                                        </a>
-                                    </div>
-                                )
-                            )}
+                                        Download
+                                    </a>
+                                </div>
+                            ))}
                         </div>
                     </div>
                 );

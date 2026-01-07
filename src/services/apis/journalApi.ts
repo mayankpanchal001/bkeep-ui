@@ -44,13 +44,15 @@ const normalizeJournalEntry = (entry: unknown): JournalEntry => {
         entryNumber:
             typeof entry.entryNumber === 'string'
                 ? entry.entryNumber
-                : typeof (entry as Record<string, unknown>).journalNo === 'string'
+                : typeof (entry as Record<string, unknown>).journalNo ===
+                    'string'
                   ? ((entry as Record<string, unknown>).journalNo as string)
                   : '',
         entryDate:
             typeof entry.entryDate === 'string'
                 ? entry.entryDate
-                : typeof (entry as Record<string, unknown>).journalDate === 'string'
+                : typeof (entry as Record<string, unknown>).journalDate ===
+                    'string'
                   ? ((entry as Record<string, unknown>).journalDate as string)
                   : '',
         totalDebit: toNumber(entry.totalDebit),
@@ -108,7 +110,9 @@ export async function getJournalEntryById(
 
     const data = payload?.data;
     const entry =
-        isRecord(data) && 'journalEntry' in data ? (data as Record<string, unknown>).journalEntry : data;
+        isRecord(data) && 'journalEntry' in data
+            ? (data as Record<string, unknown>).journalEntry
+            : data;
 
     if (!entry) return response.data as JournalEntryResponse;
 

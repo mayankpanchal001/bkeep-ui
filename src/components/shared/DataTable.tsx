@@ -99,7 +99,9 @@ export function DataTable<T extends { [key: string]: any }>({
             <Table
                 enableSelection={!!onSelectionChange}
                 rowIds={rowIds}
-                selectedIds={selectedItems as Array<string | number> | undefined}
+                selectedIds={
+                    selectedItems as Array<string | number> | undefined
+                }
                 onSelectionChange={(ids) =>
                     onSelectionChange?.(ids.map(String))
                 }
@@ -144,7 +146,9 @@ export function DataTable<T extends { [key: string]: any }>({
                 <TableBody>
                     {isLoading ? (
                         <TableLoadingState
-                            colSpan={columns.length + (onSelectionChange ? 1 : 0)}
+                            colSpan={
+                                columns.length + (onSelectionChange ? 1 : 0)
+                            }
                         />
                     ) : data.length === 0 ? (
                         typeof emptyMessage === 'string' ? (
@@ -158,7 +162,8 @@ export function DataTable<T extends { [key: string]: any }>({
                             <tr>
                                 <td
                                     colSpan={
-                                        columns.length + (onSelectionChange ? 1 : 0)
+                                        columns.length +
+                                        (onSelectionChange ? 1 : 0)
                                     }
                                     className="h-24 text-center text-muted-foreground"
                                 >
@@ -226,13 +231,14 @@ export function DataTable<T extends { [key: string]: any }>({
                     <div className="text-sm text-muted-foreground">
                         {selectedItems && selectedItems.length > 0 ? (
                             <span>
-                                {selectedItems.length} of {pagination.totalItems}{' '}
-                                selected
+                                {selectedItems.length} of{' '}
+                                {pagination.totalItems} selected
                             </span>
                         ) : (
                             <span>
-                                Page {pagination.page} of {pagination.totalPages}{' '}
-                                ({pagination.totalItems} items)
+                                Page {pagination.page} of{' '}
+                                {pagination.totalPages} ({pagination.totalItems}{' '}
+                                items)
                             </span>
                         )}
                     </div>

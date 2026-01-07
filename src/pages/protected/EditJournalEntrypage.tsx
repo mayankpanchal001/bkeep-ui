@@ -63,7 +63,9 @@ export default function EditJournalEntrypage() {
                         entryDate: normalizeDate(journalEntry.entryDate),
                         entryType:
                             journalEntry.entryType ||
-                            (journalEntry.isAdjusting ? 'adjusting' : 'standard'),
+                            (journalEntry.isAdjusting
+                                ? 'adjusting'
+                                : 'standard'),
                         isAdjusting: journalEntry.isAdjusting,
                         lines: journalEntry.lines.map((line, index) => ({
                             id: line.id,

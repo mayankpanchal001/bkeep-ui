@@ -106,4 +106,3 @@ export type ImportFieldsResponse = {
     message: string;
     data?: ImportField[];
 };
-

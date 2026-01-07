@@ -19,7 +19,11 @@ interface CommandItem {
     category: 'Navigation' | 'Action';
 }
 
-const CommandPalette = ({ isOpen, onClose, onOpenShortcuts }: CommandPaletteProps) => {
+const CommandPalette = ({
+    isOpen,
+    onClose,
+    onOpenShortcuts,
+}: CommandPaletteProps) => {
     const [query, setQuery] = useState('');
     const [selectedIndex, setSelectedIndex] = useState(0);
     const inputRef = useRef<HTMLInputElement>(null);

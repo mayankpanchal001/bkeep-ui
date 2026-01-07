@@ -19,7 +19,9 @@ function lazyWithRetry<T extends React.ComponentType<Record<string, never>>>(
             const message =
                 error instanceof Error ? error.message : String(error);
             const isChunkLoadError =
-                message.includes('Failed to fetch dynamically imported module') ||
+                message.includes(
+                    'Failed to fetch dynamically imported module'
+                ) ||
                 message.includes('Importing a module script failed') ||
                 message.includes('Failed to load module script');
 
@@ -44,7 +46,9 @@ const Loginpage = lazyWithRetry(() => import('../pages/public/Loginpage'));
 const PasskeyLoginpage = lazyWithRetry(
     () => import('../pages/public/PasskeyLoginpage')
 );
-const Registerpage = lazyWithRetry(() => import('../pages/public/Registerpage'));
+const Registerpage = lazyWithRetry(
+    () => import('../pages/public/Registerpage')
+);
 const ForgotPasswordpage = lazyWithRetry(
     () => import('../pages/public/ForgotPasswordpage')
 );
@@ -77,14 +81,24 @@ const BalanceSheetpage = lazyWithRetry(
 const ChartOfAccountspage = lazyWithRetry(
     () => import('../pages/protected/ChartOfAccountspage')
 );
-const Settingspage = lazyWithRetry(() => import('../pages/protected/Settingspage'));
-const Invoicepage = lazyWithRetry(() => import('../pages/protected/Invoicepage'));
-const Expensespage = lazyWithRetry(() => import('../pages/protected/Expensespage'));
-const ContactsPage = lazyWithRetry(() => import('../pages/protected/ContactsPage'));
+const Settingspage = lazyWithRetry(
+    () => import('../pages/protected/Settingspage')
+);
+const Invoicepage = lazyWithRetry(
+    () => import('../pages/protected/Invoicepage')
+);
+const Expensespage = lazyWithRetry(
+    () => import('../pages/protected/Expensespage')
+);
+const ContactsPage = lazyWithRetry(
+    () => import('../pages/protected/ContactsPage')
+);
 const ContactDetailPage = lazyWithRetry(
     () => import('../pages/protected/ContactDetailPage')
 );
-const Documentspage = lazyWithRetry(() => import('../pages/protected/Documentspage'));
+const Documentspage = lazyWithRetry(
+    () => import('../pages/protected/Documentspage')
+);
 const ClientReviewpage = lazyWithRetry(
     () => import('../pages/protected/ClientReviewpage')
 );
@@ -119,7 +133,9 @@ const RolesTab = lazyWithRetry(() => import('../components/settings/RolesTab'));
 const SecurityTab = lazyWithRetry(
     () => import('../components/settings/SecurityTab')
 );
-const TenantsTab = lazyWithRetry(() => import('../components/settings/TenantsTab'));
+const TenantsTab = lazyWithRetry(
+    () => import('../components/settings/TenantsTab')
+);
 const TaxesTab = lazyWithRetry(() => import('../components/settings/TaxesTab'));
 const UsersTab = lazyWithRetry(() => import('../components/settings/UsersTab'));
 

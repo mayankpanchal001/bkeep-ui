@@ -22,10 +22,7 @@ export type JournalEntryLine = {
     taxId?: string;
 };
 
-export type CreateJournalEntryLine = Omit<
-    JournalEntryLine,
-    'id'
-> & {
+export type CreateJournalEntryLine = Omit<JournalEntryLine, 'id'> & {
     id?: string;
     contactId?: string;
     taxId?: string;

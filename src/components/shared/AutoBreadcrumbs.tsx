@@ -45,18 +45,11 @@ function flattenSidebar(): FlatItem[] {
     return out;
 }
 
-export default function AutoBreadcrumbs({
-    className,
-}: {
-    className?: string;
-}) {
+export default function AutoBreadcrumbs({ className }: { className?: string }) {
     const location = useLocation();
     const flat = useMemo(() => flattenSidebar(), []);
 
-    const segments = location.pathname
-        .split('/')
-        .filter(Boolean)
-        .slice(0, 6); // safety cap
+    const segments = location.pathname.split('/').filter(Boolean).slice(0, 6); // safety cap
 
     const parts = useMemo(() => {
         const acc: { path: string; label: string; isMatch: boolean }[] = [];
