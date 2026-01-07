@@ -1,10 +1,7 @@
 import { useMemo, useState } from 'react';
 import {
-    FaCog,
     FaGripVertical,
     FaPlus,
-    FaQuestionCircle,
-    FaRegCommentAlt,
     FaRegCopy,
     FaTimes,
     FaTrash,
