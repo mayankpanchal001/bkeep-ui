@@ -1,3 +1,4 @@
+import { SINGLE_TENANT_PREFIX } from '@/components/homepage/constants';
 import { Check, ChevronRight, ChevronsUpDown } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router';
@@ -82,8 +83,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             selectTenant(tenantId);
             window.location.reload();
         } catch (error) {
-            console.error('Failed to switch tenant:', error);
-            showErrorToast('Failed to switch tenant. Please try again.');
+            console.error(`Failed to switch ${SINGLE_TENANT_PREFIX}:`, error);
+            showErrorToast(
+                `Failed to switch ${SINGLE_TENANT_PREFIX}. Please try again.`
+            );
         } finally {
             setIsSwitching(false);
         }
@@ -171,7 +174,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                                     <div className="grid flex-1 text-left text-sm leading-tight">
                                         <span className="truncate font-semibold">
                                             {selectedTenant?.name ||
-                                                'Select Tenant'}
+                                                `Select ${
+                                                    SINGLE_TENANT_PREFIX.charAt(
+                                                        0
+                                                    ).toUpperCase() +
+                                                    SINGLE_TENANT_PREFIX.slice(
+                                                        1
+                                                    )
+                                                }`}
                                         </span>
                                         <span className="truncate text-xs">
                                             Enterprise
@@ -187,7 +197,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                                 sideOffset={4}
                             >
                                 <DropdownMenuLabel className="text-xs text-muted-foreground">
-                                    Switch Tenant
+                                    {`Switch ${
+                                        SINGLE_TENANT_PREFIX.charAt(
+                                            0
+                                        ).toUpperCase() +
+                                        SINGLE_TENANT_PREFIX.slice(1)
+                                    }`}
                                 </DropdownMenuLabel>
                                 {tenants.map((tenant) => (
                                     <DropdownMenuItem
@@ -212,7 +227,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                                         <Icons.Plus className="size-4" />
                                     </div>
                                     <div className="font-medium text-muted-foreground">
-                                        Add tenant
+                                        {`Add ${
+                                            SINGLE_TENANT_PREFIX.charAt(
+                                                0
+                                            ).toUpperCase() +
+                                            SINGLE_TENANT_PREFIX.slice(1)
+                                        }`}
                                     </div>
                                 </DropdownMenuItem>
                             </DropdownMenuContent>

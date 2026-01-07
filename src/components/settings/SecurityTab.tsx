@@ -128,126 +128,110 @@ const SecurityTab = () => {
             <h3 className="text-lg font-semibold text-primary mb-4">
                 Security Settings
             </h3>
-            <div className="space-y-4">
-                <div className="p-4 border border-primary/10 rounded-2">
-                    <div className="flex items-center justify-between mb-4">
-                        <div>
-                            <div className="font-medium text-primary">
-                                Change Password
-                            </div>
-                            <div className="text-sm text-primary/50">
-                                Update your password to keep your account secure
-                            </div>
-                        </div>
-                        <Button
-                            size="sm"
-                            onClick={() => setIsChangePasswordModalOpen(true)}
-                        >
+            <div className="flex flex-col gap-4">
+                <div className="flex items-center justify-between mb-4">
+                    <div>
+                        <div className="font-medium text-primary">
                             Change Password
-                        </Button>
-                    </div>
-                </div>
-                <div className="p-4 border border-primary/10 rounded-2">
-                    <div className="flex items-center justify-between mb-4">
-                        <div>
-                            <div className="font-medium text-primary">
-                                Two-Factor Authentication (Email)
-                            </div>
-                            <div className="text-sm text-primary/50">
-                                Receive verification codes via email
-                            </div>
-                            <div className="text-xs text-primary/40 mt-2">
-                                Status:{' '}
-                                <span className={statusClass}>
-                                    {statusLabel}
-                                </span>
-                            </div>
                         </div>
-                        <Button
-                            size="sm"
-                            onClick={handleMfaToggle}
-                            loading={isEnabling || isDisabling}
-                            disabled={
-                                isEnabling || isDisabling || isStatusLoading
-                            }
-                        >
-                            {mfaButtonLabel}
-                        </Button>
-                    </div>
-                </div>
-                <div className="p-4 border border-primary/10 rounded-2">
-                    <div className="flex items-center justify-between mb-4">
-                        <div>
-                            <div className="font-medium text-primary">
-                                Authenticator App
-                            </div>
-                            <div className="text-sm text-primary/50">
-                                Use an authenticator app like Google/Microsoft
-                                Authenticator
-                            </div>
-                            <div className="text-xs text-primary/40 mt-2">
-                                Status:{' '}
-                                <span className={totpStatusClass}>
-                                    {totpStatusLabel}
-                                </span>
-                            </div>
+                        <div className="text-sm text-primary/50">
+                            Update your password to keep your account secure
                         </div>
-                        <Button
-                            size="sm"
-                            onClick={
-                                totpEnabled
-                                    ? handleDisableTOTP
-                                    : handleTotpSetup
-                            }
-                            loading={isDisablingTOTP}
-                            disabled={isDisablingTOTP || isTotpStatusLoading}
-                        >
-                            {totpEnabled
-                                ? isDisablingTOTP
-                                    ? 'Disabling...'
-                                    : 'Disable TOTP'
-                                : 'Enable TOTP'}
-                        </Button>
                     </div>
+                    <Button
+                        size="sm"
+                        onClick={() => setIsChangePasswordModalOpen(true)}
+                    >
+                        Change Password
+                    </Button>
                 </div>
-                <div className="p-4 border border-primary/10 rounded-2">
-                    <div className="flex items-center justify-between mb-4">
-                        <div>
-                            <div className="font-medium text-primary">
-                                Passkeys
-                            </div>
-                            <div className="text-sm text-primary/50">
-                                Use biometrics or security keys for passwordless
-                                sign-in
-                            </div>
-                            <div className="text-xs text-primary/40 mt-2">
-                                {isLoadingPasskeyStats ? (
-                                    'Loading...'
-                                ) : passkeyStats?.total ? (
-                                    <>
-                                        {passkeyStats.active} active of{' '}
-                                        {passkeyStats.total} total passkey
-                                        {passkeyStats.total !== 1 ? 's' : ''}
-                                        {' • '}
-                                        {passkeyStats.platform} device
-                                        {passkeyStats.platform !== 1 ? 's' : ''}
-                                        {', '}
-                                        {passkeyStats.roaming} security key
-                                        {passkeyStats.roaming !== 1 ? 's' : ''}
-                                    </>
-                                ) : (
-                                    'No passkeys configured'
-                                )}
-                            </div>
+                <div className="flex items-center justify-between mb-4">
+                    <div>
+                        <div className="font-medium text-primary">
+                            Two-Factor Authentication (Email)
                         </div>
-                        <Button
-                            size="sm"
-                            onClick={() => setIsPasskeyModalOpen(true)}
-                            disabled={isLoadingPasskeyStats}
-                        >
-                            Manage Passkeys
-                        </Button>
+                        <div className="text-sm text-primary/50">
+                            Receive verification codes via email
+                        </div>
+                        <div className="text-xs text-primary/40 mt-2">
+                            Status:{' '}
+                            <span className={statusClass}>{statusLabel}</span>
+                        </div>
                     </div>
+                    <Button
+                        size="sm"
+                        onClick={handleMfaToggle}
+                        loading={isEnabling || isDisabling}
+                        disabled={isEnabling || isDisabling || isStatusLoading}
+                    >
+                        {mfaButtonLabel}
+                    </Button>
+                </div>
+                <div className="flex items-center justify-between mb-4">
+                    <div>
+                        <div className="font-medium text-primary">
+                            Authenticator App
+                        </div>
+                        <div className="text-sm text-primary/50">
+                            Use an authenticator app like Google/Microsoft
+                            Authenticator
+                        </div>
+                        <div className="text-xs text-primary/40 mt-2">
+                            Status:{' '}
+                            <span className={totpStatusClass}>
+                                {totpStatusLabel}
+                            </span>
+                        </div>
+                    </div>
+                    <Button
+                        size="sm"
+                        onClick={
+                            totpEnabled ? handleDisableTOTP : handleTotpSetup
+                        }
+                        loading={isDisablingTOTP}
+                        disabled={isDisablingTOTP || isTotpStatusLoading}
+                    >
+                        {totpEnabled
+                            ? isDisablingTOTP
+                                ? 'Disabling...'
+                                : 'Disable TOTP'
+                            : 'Enable TOTP'}
+                    </Button>
+                </div>
+                <div className="flex items-center justify-between mb-4">
+                    <div>
+                        <div className="font-medium text-primary">Passkeys</div>
+                        <div className="text-sm text-primary/50">
+                            Use biometrics or security keys for passwordless
+                            sign-in
+                        </div>
+                        <div className="text-xs text-primary/40 mt-2">
+                            {isLoadingPasskeyStats ? (
+                                'Loading...'
+                            ) : passkeyStats?.total ? (
+                                <>
+                                    {passkeyStats.active} active of{' '}
+                                    {passkeyStats.total} total passkey
+                                    {passkeyStats.total !== 1 ? 's' : ''}
+                                    {' • '}
+                                    {passkeyStats.platform} device
+                                    {passkeyStats.platform !== 1 ? 's' : ''}
+                                    {', '}
+                                    {passkeyStats.roaming} security key
+                                    {passkeyStats.roaming !== 1 ? 's' : ''}
+                                </>
+                            ) : (
+                                'No passkeys configured'
+                            )}
+                        </div>
+                    </div>
+                    <Button
+                        size="sm"
+                        onClick={() => setIsPasskeyModalOpen(true)}
+                        disabled={isLoadingPasskeyStats}
+                    >
+                        Manage Passkeys
+                    </Button>
                 </div>
             </div>
 

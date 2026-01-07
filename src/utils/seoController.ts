@@ -1,4 +1,15 @@
+import {
+    PLURAL_TENANT_PREFIX,
+    SINGLE_TENANT_PREFIX,
+} from '@/components/homepage/constants';
 import { APP_TITLE } from '../constants';
+
+const CAP_SINGULAR =
+    SINGLE_TENANT_PREFIX.charAt(0).toUpperCase() +
+    SINGLE_TENANT_PREFIX.slice(1);
+const CAP_PLURAL =
+    PLURAL_TENANT_PREFIX.charAt(0).toUpperCase() +
+    PLURAL_TENANT_PREFIX.slice(1);
 
 export interface SEOData {
     title: string;
@@ -130,10 +141,9 @@ export const seoController: Record<string, SEOData> = {
             'profile settings, user profile, account information, personal settings',
     },
     '/settings/tenants': {
-        title: `Tenants Management - ${APP_TITLE}`,
-        description: `Manage your organization tenants and multi-tenant settings.`,
-        keywords:
-            'tenants, organization management, multi-tenant, workspace settings',
+        title: `${CAP_PLURAL} Management - ${APP_TITLE}`,
+        description: `Manage your organization ${CAP_PLURAL} and multi-${SINGLE_TENANT_PREFIX} settings.`,
+        keywords: `${PLURAL_TENANT_PREFIX}, organization management, multi-${SINGLE_TENANT_PREFIX}, workspace settings`,
     },
     '/settings/users': {
         title: `Users Management - ${APP_TITLE}`,
@@ -192,10 +202,9 @@ export const seoController: Record<string, SEOData> = {
 
     // Client Review
     '/client-review': {
-        title: `Client Review - ${APP_TITLE}`,
+        title: `${CAP_SINGULAR} Review - ${APP_TITLE}`,
         description: `Review and categorize transactions that need your input and approval.`,
-        keywords:
-            'client review, transaction review, approval workflow, transaction categorization',
+        keywords: `${SINGLE_TENANT_PREFIX} review, transaction review, approval workflow, transaction categorization`,
     },
 
     // Journal Entries

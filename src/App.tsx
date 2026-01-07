@@ -21,6 +21,13 @@ function App() {
                 <Toaster
                     position="top-center"
                     toastOptions={{
+                        style: {
+                            fontSize: '12px',
+                            padding: '4px',
+                            border: '1px solid var(--color-primary)',
+                            color: 'var(--color-primary)',
+                            background: 'var(--color-surface)',
+                        },
                         duration: 4000,
                     }}
                 />

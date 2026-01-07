@@ -11,6 +11,13 @@ import {
 } from 'react-icons/fa';
 import Button from '@/components/typography/Button';
 import { InputField, TextareaField } from '@/components/typography/InputFields';
+import {
+    SINGLE_TENANT_PREFIX,
+} from '@/components/homepage/constants';
+
+const CAP_SINGULAR =
+    SINGLE_TENANT_PREFIX.charAt(0).toUpperCase() +
+    SINGLE_TENANT_PREFIX.slice(1);
 
 type Transaction = {
     id: string;
@@ -53,7 +60,7 @@ const MOCK_TRANSACTIONS: Transaction[] = [
     {
         id: '4',
         date: '2024-01-22',
-        description: 'Refund from Client ABC',
+        description: `Refund from ${CAP_SINGULAR} ABC`,
         amount: -500.0,
         suggestedCategory: 'Refunds',
         status: 'reviewed',
@@ -161,7 +168,7 @@ const ClientReviewpage = () => {
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div>
                     <h2 className="text-2xl font-bold text-primary">
-                        Client Review
+                        {CAP_SINGULAR} Review
                     </h2>
                     <p className="text-sm text-primary/50 mt-1">
                         Review and categorize transactions that need your input

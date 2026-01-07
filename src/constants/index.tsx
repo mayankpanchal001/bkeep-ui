@@ -1,5 +1,16 @@
 import { SidebarItemProps } from '../types';
 import { Icons } from '@/components/shared/Icons';
+import {
+    SINGLE_TENANT_PREFIX,
+    PLURAL_TENANT_PREFIX,
+} from '@/components/homepage/constants';
+
+const CAP_SINGULAR =
+    SINGLE_TENANT_PREFIX.charAt(0).toUpperCase() +
+    SINGLE_TENANT_PREFIX.slice(1);
+const CAP_PLURAL =
+    PLURAL_TENANT_PREFIX.charAt(0).toUpperCase() +
+    PLURAL_TENANT_PREFIX.slice(1);
 
 export const SIDEBAR_ITEMS: SidebarItemProps[] = [
     {
@@ -53,7 +64,7 @@ export const SIDEBAR_ITEMS: SidebarItemProps[] = [
         path: '/documents',
     },
     {
-        label: 'Client Review',
+        label: `${CAP_SINGULAR} Review`,
         icon: <Icons.ClientReview />,
         path: '/client-review',
     },
@@ -68,7 +79,7 @@ export const SIDEBAR_ITEMS: SidebarItemProps[] = [
                 path: '/settings/profile',
             },
             {
-                label: 'Tenants',
+                label: CAP_PLURAL,
                 icon: <Icons.Building />,
                 path: '/settings/tenants',
             },

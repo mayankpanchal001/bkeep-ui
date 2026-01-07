@@ -5,17 +5,31 @@ import {
     useResendInvitation,
     useRevokeInvitation,
     useUsers,
-    type PendingInvitation,
     type InvitationsQueryParams,
+    type PendingInvitation,
     type UsersQueryParams,
 } from '../../services/apis/usersApi';
 
 import { UserType } from '../../types';
-import { DataTable, type Column } from '../shared/DataTable';
 import { Icons } from '../shared/Icons';
 import Button from '../typography/Button';
 import Chips from '../typography/Chips';
 import { InputField } from '../typography/InputFields';
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableEmptyState,
+    TableHead,
+    TableHeader,
+    TableLoadingState,
+    TablePagination,
+    TableRow,
+    TableRowCheckbox,
+    TableSelectAllCheckbox,
+    TableSelectionToolbar,
+    type SortDirection,
+} from '../ui/table';
 import EditUserModal from './EditUserModal';
 import InviteUserModal from './InviteUserModal';
 
@@ -24,6 +38,10 @@ const UsersTab = () => {
     const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [selectedUser, setSelectedUser] = useState<UserType | null>(null);
+    const [selectedItems, setSelectedItems] = useState<(string | number)[]>([]);
+    const [selectedInvitations, setSelectedInvitations] = useState<(string | number)[]>([]);
+    const [sortKey, setSortKey] = useState<string | null>('createdAt');
+    const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
     const [filters, setFilters] = useState<UsersQueryParams>({
         page: 1,
         limit: 10,
@@ -106,18 +124,6 @@ const UsersTab = () => {
         }));
     };
 
-    const handleInvitationSortChange = (
-        sort: string,
-        order: 'asc' | 'desc'
-    ) => {
-        setInvitationFilters((prev) => ({
-            ...prev,
-            sort,
-            order,
-            page: 1,
-        }));
-    };
-
     const handlePageChange = (newPage: number) => {
         setFilters((prev) => ({
             ...prev,
@@ -136,11 +142,13 @@ const UsersTab = () => {
         }));
     };
 
-    const handleSortChange = (sort: string, order: 'asc' | 'desc') => {
+    const handleSortChange = (key: string, direction: SortDirection) => {
+        setSortKey(direction ? key : null);
+        setSortDirection(direction);
         setFilters((prev) => ({
             ...prev,
-            sort,
-            order,
+            sort: key,
+            order: direction || 'asc',
             page: 1,
         }));
     };
@@ -149,113 +157,18 @@ const UsersTab = () => {
     const pagination = data?.data?.pagination;
     const pendingInvitations = invitationsData?.data?.items || [];
     const invitationsPagination = invitationsData?.data?.pagination;
+    const userRowIds = users.map((u: UserType) => u.id);
+    const invitationRowIds = pendingInvitations.map((i: PendingInvitation) => i.id);
 
-    const columns: Column<UserType>[] = [
-        {
-            header: 'Name',
-            accessorKey: 'name',
-            sortable: true,
-            className: 'text-primary font-medium',
-        },
-        {
-            header: 'Email',
-            accessorKey: 'email',
-            className: 'text-primary/75',
-        },
-        {
-            header: 'Role',
-            accessorKey: 'role',
-            cell: (user) =>
-                user.role?.displayName ||
-                user.role?.name ||
-                user.roles?.[0]?.displayName ||
-                user.roles?.[0]?.name ||
-                'N/A',
-            className: 'text-primary/75',
-        },
-        {
-            header: 'Status',
-            accessorKey: 'isVerified',
-            cell: (user) => (
-                <Chips
-                    label={user.isVerified ? 'Verified' : 'Unverified'}
-                    variant={user.isVerified ? 'success' : 'danger'}
-                />
-            ),
-        },
-        {
-            header: 'Actions',
-            className: 'text-right',
-            cell: (user) => (
-                <div className="flex items-center justify-end gap-2">
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleEditUser(user)}
-                    >
-                        <Icons.Edit className="mr-1 w-3 h-3" />
-                        Edit
-                    </Button>
-                </div>
-            ),
-        },
-    ];
+    const handleBulkExport = () => {
+        console.log('Exporting users:', selectedItems);
+        setSelectedItems([]);
+    };
 
-    const invitationColumns: Column<PendingInvitation>[] = [
-        {
-            header: 'Name',
-            accessorKey: 'userName',
-            className: 'text-primary font-medium',
-        },
-        {
-            header: 'Email',
-            accessorKey: 'email',
-            className: 'text-primary/75',
-        },
-        {
-            header: 'Tenant',
-            accessorKey: 'tenant',
-            cell: (invitation) => invitation.tenant?.name || '—',
-            className: 'text-primary/75',
-        },
-        {
-            header: 'Invited At',
-            accessorKey: 'createdAt',
-            cell: (invitation) =>
-                new Date(invitation.createdAt).toLocaleDateString(),
-            className: 'text-primary/75',
-        },
-        {
-            header: 'Actions',
-            className: 'text-right',
-            cell: (invitation) => (
-                <div className="flex items-center justify-end gap-2">
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleResendInvitation(invitation.id)}
-                        loading={isResendingInvitation}
-                        disabled={isResendingInvitation}
-                        title="Resend invitation email"
-                    >
-                        <Icons.Send className="mr-1 w-3 h-3" />
-                        Resend
-                    </Button>
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => revokeInvitation(invitation.id)}
-                        loading={isRevokingInvitation}
-                        disabled={isRevokingInvitation}
-                        title="Revoke invitation"
-                    >
-                        <Icons.Close className="mr-1 w-3 h-3" />
-                        Revoke
-                    </Button>
-                </div>
-            ),
-        },
-    ];
+    const handleBulkRevokeInvitations = () => {
+        console.log('Revoking invitations:', selectedInvitations);
+        setSelectedInvitations([]);
+    };
 
     if (isError) {
         return (
@@ -354,6 +267,7 @@ const UsersTab = () => {
                 </div>
             </div>
 
+            {/* Pending Invitations Section */}
             <div className="space-y-3">
                 <div className="flex items-center justify-between">
                     <h4 className="text-base font-semibold text-primary">
@@ -380,60 +294,204 @@ const UsersTab = () => {
                         Failed to load invitations. Please try again.
                     </div>
                 ) : (
-                    <DataTable
-                        data={pendingInvitations}
-                        columns={invitationColumns}
-                        isLoading={isLoadingInvitations}
-                        keyField="id"
-                        pagination={
-                            invitationsPagination
-                                ? {
-                                      page: invitationsPagination.page,
-                                      totalPages:
-                                          invitationsPagination.totalPages,
-                                      totalItems: invitationsPagination.total,
-                                      onPageChange: handleInvitationPageChange,
-                                      hasPreviousPage:
-                                          invitationsPagination.hasPreviousPage,
-                                      hasNextPage:
-                                          invitationsPagination.hasNextPage,
-                                  }
-                                : undefined
-                        }
-                        sorting={{
-                            sort: invitationFilters.sort || 'createdAt',
-                            order: invitationFilters.order || 'asc',
-                            onSortChange: handleInvitationSortChange,
-                        }}
-                        emptyMessage="No pending invitations"
-                    />
+                    <>
+                        <Table
+                            enableSelection
+                            rowIds={invitationRowIds}
+                            selectedIds={selectedInvitations}
+                            onSelectionChange={setSelectedInvitations}
+                        >
+                            <TableSelectionToolbar>
+                                <button
+                                    onClick={handleBulkRevokeInvitations}
+                                    className="px-3 py-1.5 text-xs font-medium text-red-700 bg-red-100 hover:bg-red-200 rounded-md transition-colors"
+                                >
+                                    Revoke Selected
+                                </button>
+                            </TableSelectionToolbar>
+
+                            <TableHeader>
+                                <tr>
+                                    <TableHead>
+                                        <TableSelectAllCheckbox />
+                                    </TableHead>
+                                    <TableHead>Name</TableHead>
+                                    <TableHead>Email</TableHead>
+                                    <TableHead>Company</TableHead>
+                                    <TableHead sortable sortKey="createdAt">Invited At</TableHead>
+                                    <TableHead align="right">Actions</TableHead>
+                                </tr>
+                            </TableHeader>
+                            <TableBody>
+                                {isLoadingInvitations ? (
+                                    <TableLoadingState colSpan={6} rows={3} />
+                                ) : pendingInvitations.length === 0 ? (
+                                    <TableEmptyState colSpan={6} message="No pending invitations" />
+                                ) : (
+                                    pendingInvitations.map((invitation: PendingInvitation) => (
+                                        <TableRow key={invitation.id} rowId={invitation.id}>
+                                            <TableCell>
+                                                <TableRowCheckbox rowId={invitation.id} />
+                                            </TableCell>
+                                            <TableCell>
+                                                <span className="font-medium text-primary">
+                                                    {invitation.userName}
+                                                </span>
+                                            </TableCell>
+                                            <TableCell>
+                                                <span className="text-primary/75">
+                                                    {invitation.email}
+                                                </span>
+                                            </TableCell>
+                                            <TableCell>
+                                                <span className="text-primary/75">
+                                                    {invitation.tenant?.name || '—'}
+                                                </span>
+                                            </TableCell>
+                                            <TableCell>
+                                                <span className="text-primary/75">
+                                                    {new Date(invitation.createdAt).toLocaleDateString()}
+                                                </span>
+                                            </TableCell>
+                                            <TableCell align="right">
+                                                <div className="flex items-center justify-end gap-2">
+                                                    <Button
+                                                        variant="outline"
+                                                        size="sm"
+                                                        onClick={() => handleResendInvitation(invitation.id)}
+                                                        loading={isResendingInvitation}
+                                                        disabled={isResendingInvitation}
+                                                        title="Resend invitation email"
+                                                    >
+                                                        <Icons.Send className="mr-1 w-3 h-3" />
+                                                        Resend
+                                                    </Button>
+                                                    <Button
+                                                        variant="outline"
+                                                        size="sm"
+                                                        onClick={() => revokeInvitation(invitation.id)}
+                                                        loading={isRevokingInvitation}
+                                                        disabled={isRevokingInvitation}
+                                                        title="Revoke invitation"
+                                                    >
+                                                        <Icons.Close className="mr-1 w-3 h-3" />
+                                                        Revoke
+                                                    </Button>
+                                                </div>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))
+                                )}
+                            </TableBody>
+                        </Table>
+
+                        {invitationsPagination && invitationsPagination.totalPages > 1 && (
+                            <TablePagination
+                                page={invitationsPagination.page}
+                                totalPages={invitationsPagination.totalPages}
+                                totalItems={invitationsPagination.total}
+                                itemsPerPage={10}
+                                onPageChange={handleInvitationPageChange}
+                            />
+                        )}
+                    </>
                 )}
             </div>
 
-            <DataTable
-                data={users}
-                columns={columns}
-                isLoading={isLoading}
-                keyField="id"
-                pagination={
-                    pagination
-                        ? {
-                              page: pagination.page,
-                              totalPages: pagination.totalPages,
-                              totalItems: pagination.total,
-                              onPageChange: handlePageChange,
-                              hasPreviousPage: pagination.hasPreviousPage,
-                              hasNextPage: pagination.hasNextPage,
-                          }
-                        : undefined
-                }
-                sorting={{
-                    sort: filters.sort || 'createdAt',
-                    order: filters.order || 'asc',
-                    onSortChange: handleSortChange,
-                }}
-                emptyMessage="No users found"
-            />
+            {/* Users Table */}
+            <Table
+                enableSelection
+                rowIds={userRowIds}
+                selectedIds={selectedItems}
+                onSelectionChange={setSelectedItems}
+                sortKey={sortKey}
+                sortDirection={sortDirection}
+                onSortChange={handleSortChange}
+            >
+                <TableSelectionToolbar>
+                    <button
+                        onClick={handleBulkExport}
+                        className="px-3 py-1.5 text-xs font-medium text-blue-700 bg-blue-100 hover:bg-blue-200 rounded-md transition-colors"
+                    >
+                        Export Selected
+                    </button>
+                </TableSelectionToolbar>
+
+                <TableHeader>
+                    <tr>
+                        <TableHead>
+                            <TableSelectAllCheckbox />
+                        </TableHead>
+                        <TableHead sortable sortKey="name">Name</TableHead>
+                        <TableHead>Email</TableHead>
+                        <TableHead>Role</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead align="right">Actions</TableHead>
+                    </tr>
+                </TableHeader>
+                <TableBody>
+                    {isLoading ? (
+                        <TableLoadingState colSpan={6} rows={5} />
+                    ) : users.length === 0 ? (
+                        <TableEmptyState colSpan={6} message="No users found" />
+                    ) : (
+                        users.map((user: UserType) => (
+                            <TableRow key={user.id} rowId={user.id}>
+                                <TableCell>
+                                    <TableRowCheckbox rowId={user.id} />
+                                </TableCell>
+                                <TableCell>
+                                    <span className="font-medium text-primary">
+                                        {user.name}
+                                    </span>
+                                </TableCell>
+                                <TableCell>
+                                    <span className="text-primary/75">
+                                        {user.email}
+                                    </span>
+                                </TableCell>
+                                <TableCell>
+                                    <span className="text-primary/75">
+                                        {user.role?.displayName ||
+                                            user.role?.name ||
+                                            user.roles?.[0]?.displayName ||
+                                            user.roles?.[0]?.name ||
+                                            'N/A'}
+                                    </span>
+                                </TableCell>
+                                <TableCell>
+                                    <Chips
+                                        label={user.isVerified ? 'Verified' : 'Unverified'}
+                                        variant={user.isVerified ? 'success' : 'danger'}
+                                    />
+                                </TableCell>
+                                <TableCell align="right">
+                                    <div className="flex items-center justify-end gap-2">
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            onClick={() => handleEditUser(user)}
+                                        >
+                                            <Icons.Edit className="mr-1 w-3 h-3" />
+                                            Edit
+                                        </Button>
+                                    </div>
+                                </TableCell>
+                            </TableRow>
+                        ))
+                    )}
+                </TableBody>
+            </Table>
+
+            {pagination && pagination.totalPages > 1 && (
+                <TablePagination
+                    page={pagination.page}
+                    totalPages={pagination.totalPages}
+                    totalItems={pagination.total}
+                    itemsPerPage={10}
+                    onPageChange={handlePageChange}
+                />
+            )}
 
             {/* Modals */}
             <InviteUserModal

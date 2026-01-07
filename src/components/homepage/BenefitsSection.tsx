@@ -13,7 +13,7 @@ export default function BenefitsSection() {
                 </h2>
                 <p className="text-base text-muted-foreground">
                     Accurate books, automated workflows, and proactive insights
-                    for teams and clients.
+                    for teams and companies.
                 </p>
             </div>
             <div className="mt-12 grid gap-8 md:grid-cols-3">

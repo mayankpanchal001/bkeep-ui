@@ -1,5 +1,14 @@
 // Constants for homepage sections inspired by the Aset layout
 
+export const SINGLE_TENANT_PREFIX = 'company';
+export const PLURAL_TENANT_PREFIX = 'companies';
+const CAP_SINGULAR =
+    SINGLE_TENANT_PREFIX.charAt(0).toUpperCase() +
+    SINGLE_TENANT_PREFIX.slice(1);
+const CAP_PLURAL =
+    PLURAL_TENANT_PREFIX.charAt(0).toUpperCase() +
+    PLURAL_TENANT_PREFIX.slice(1);
+
 export const PAGE_HEADERS = [
     {
         path: '/dashboard',
@@ -44,8 +53,8 @@ export const PAGE_HEADERS = [
     },
     {
         path: '/settings/tenants',
-        title: 'Tenants Management',
-        subtitle: 'Manage your organization tenants and workspaces',
+        title: `${CAP_PLURAL} Management`,
+        subtitle: `Manage your organization ${PLURAL_TENANT_PREFIX} and workspaces`,
     },
     {
         path: '/settings/users',
@@ -89,7 +98,7 @@ export const PAGE_HEADERS = [
     },
     {
         path: '/client-review',
-        title: 'Client Review',
+        title: `${CAP_SINGULAR} Review`,
         subtitle: 'Review and categorize transactions that need your input',
     },
 ];
@@ -108,7 +117,7 @@ export const TRUSTED_LOGOS = [
 export const HERO_METRICS = [
     { value: '90%+', label: 'Transactions auto‑categorized' },
     { value: '50% faster', label: 'Month‑end close' },
-    { value: '10+', label: 'Tenants per firm on average' },
+    { value: '10+', label: `${CAP_PLURAL} per firm on average` },
 ];
 
 export const PERFORMANCE_STATS = [
@@ -137,10 +146,9 @@ export const INVEST_FEATURES = [
         tag: 'Reporting',
     },
     {
-        title: 'Multi-tenant workspaces',
-        description:
-            'Manage clients and entities with strict data isolation, roles, and permissions.',
-        tag: 'Tenants & Roles',
+        title: `Multi-${SINGLE_TENANT_PREFIX} workspaces`,
+        description: `Manage ${PLURAL_TENANT_PREFIX} and entities with strict data isolation, roles, and permissions.`,
+        tag: `${CAP_PLURAL} & Roles`,
     },
 ];
 
@@ -153,12 +161,11 @@ export const CAPABILITY_FEATURES = [
     },
     {
         title: 'Role‑based access & MFA',
-        description:
-            'Granular permissions per tenant with passkeys and OTP for secure sign‑in.',
+        description: `Granular permissions per ${SINGLE_TENANT_PREFIX} with passkeys and OTP for secure sign‑in.`,
         metric: 'Security',
     },
     {
-        title: 'Client collaboration',
+        title: `${CAP_SINGULAR} collaboration`,
         description:
             'Share requests, upload documents, and review transactions in one place.',
         metric: 'Portal',
@@ -173,8 +180,7 @@ export const OUTCOME_CARDS = [
     },
     {
         title: 'Centralized chart of accounts',
-        description:
-            'Standardize across clients with reusable account structures and mapping.',
+        description: `Standardize across ${PLURAL_TENANT_PREFIX} with reusable account structures and mapping.`,
     },
     {
         title: 'Live cash‑flow insights',
@@ -183,8 +189,7 @@ export const OUTCOME_CARDS = [
     },
     {
         title: 'Secure collaboration',
-        description:
-            'Role‑based access, MFA, and audit trails across every tenant.',
+        description: `Role‑based access, MFA, and audit trails across every ${SINGLE_TENANT_PREFIX}.`,
     },
 ];
 
@@ -206,12 +211,11 @@ export const PRICING_PLANS = [
         name: 'Firm',
         price: '$2,099',
         cadence: 'Billed monthly',
-        description:
-            'Best for firms managing multiple tenants and complex workflows.',
+        description: `Best for firms managing multiple ${PLURAL_TENANT_PREFIX} and complex workflows.`,
         highlight: 'Best value',
         features: [
             'Advanced AI workflows',
-            'Multi‑tenant & roles',
+            `Multi‑${SINGLE_TENANT_PREFIX} & roles`,
             'Custom reports & exports',
             'Priority onboarding & support',
         ],
@@ -244,7 +248,7 @@ export const TESTIMONIALS = [
 export const FAQ_ITEMS = [
     {
         question: 'How is BKeep different from legacy accounting tools?',
-        answer: 'BKeep combines AI categorization, guided reconciliations, and real-time reporting with multi-tenant controls. No more manual exports or disconnected spreadsheets.',
+        answer: `BKeep combines AI categorization, guided reconciliations, and real-time reporting with multi-${SINGLE_TENANT_PREFIX} controls. No more manual exports or disconnected spreadsheets.`,
     },
     {
         question: 'Is BKeep suitable for small teams or solo accountants?',
@@ -252,10 +256,10 @@ export const FAQ_ITEMS = [
     },
     {
         question: 'Can I customize chart of accounts and workflows?',
-        answer: 'Every tenant supports bespoke COA mapping, approval policies, and document workflows so your process mirrors how your firm operates.',
+        answer: `Every ${SINGLE_TENANT_PREFIX} supports bespoke COA mapping, approval policies, and document workflows so your process mirrors how your firm operates.`,
     },
     {
         question: 'How secure is my data?',
-        answer: 'Data is encrypted in transit and at rest. Each tenant includes audit trails, MFA/passkeys, and granular role-based access controls.',
+        answer: `Data is encrypted in transit and at rest. Each ${SINGLE_TENANT_PREFIX} includes audit trails, MFA/passkeys, and granular role-based access controls.`,
     },
 ];

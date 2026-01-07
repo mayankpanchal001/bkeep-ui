@@ -1,8 +1,22 @@
+import { useState } from 'react';
 import { useGetRoles } from '../../services/apis/roleApi';
-import { DataTable, type Column } from '../shared/DataTable';
 import { Icons } from '../shared/Icons';
 import Button from '../typography/Button';
 import Chips from '../typography/Chips';
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableEmptyState,
+    TableHead,
+    TableHeader,
+    TableLoadingState,
+    TablePagination,
+    TableRow,
+    TableRowCheckbox,
+    TableSelectAllCheckbox,
+    TableSelectionToolbar,
+} from '../ui/table';
 
 type RoleType = {
     id: string;
@@ -14,45 +28,11 @@ type RoleType = {
 
 const RolesTab = () => {
     const { data, isLoading, isError } = useGetRoles();
+    const [selectedItems, setSelectedItems] = useState<(string | number)[]>([]);
 
     const roles = data?.data?.items || [];
     const pagination = data?.data?.pagination;
-
-    const columns: Column<RoleType>[] = [
-        {
-            header: 'Name',
-            accessorKey: 'name',
-            className: 'text-primary font-medium',
-        },
-        {
-            header: 'Display Name',
-            accessorKey: 'displayName',
-            className: 'text-primary/75',
-        },
-        {
-            header: 'Description',
-            accessorKey: 'description',
-            cell: (role) => (
-                <span
-                    className="max-w-md truncate block"
-                    title={role.description}
-                >
-                    {role.description || '—'}
-                </span>
-            ),
-            className: 'text-primary/75',
-        },
-        {
-            header: 'Status',
-            accessorKey: 'isActive',
-            cell: (role) => (
-                <Chips
-                    label={role.isActive ? 'Active' : 'Inactive'}
-                    variant={role.isActive ? 'success' : 'danger'}
-                />
-            ),
-        },
-    ];
+    const rowIds = roles.map((r: RoleType) => r.id);
 
     if (isError) {
         return (
@@ -81,28 +61,82 @@ const RolesTab = () => {
                 </div>
             </div>
 
-            <DataTable
-                data={roles}
-                columns={columns}
-                isLoading={isLoading}
-                onSelectionChange={(selectedRows) => {
-                    console.log(selectedRows);
-                }}
-                keyField="id"
-                pagination={
-                    pagination && pagination.totalPages > 1
-                        ? {
-                              page: pagination.page,
-                              totalPages: pagination.totalPages,
-                              totalItems: pagination.total,
-                              onPageChange: () => {}, // No-op as per current implementation
-                              hasPreviousPage: false,
-                              hasNextPage: false,
-                          }
-                        : undefined
-                }
-                emptyMessage="No roles found"
-            />
+            <Table
+                enableSelection
+                rowIds={rowIds}
+                selectedIds={selectedItems}
+                onSelectionChange={setSelectedItems}
+            >
+                <TableSelectionToolbar>
+                    <button
+                        onClick={() => console.log('Bulk action on:', selectedItems)}
+                        className="px-3 py-1.5 text-xs font-medium text-blue-700 bg-blue-100 hover:bg-blue-200 rounded-md transition-colors"
+                    >
+                        Export Selected
+                    </button>
+                </TableSelectionToolbar>
+
+                <TableHeader>
+                    <tr>
+                        <TableHead>
+                            <TableSelectAllCheckbox />
+                        </TableHead>
+                        <TableHead>Name</TableHead>
+                        <TableHead>Display Name</TableHead>
+                        <TableHead>Description</TableHead>
+                        <TableHead>Status</TableHead>
+                    </tr>
+                </TableHeader>
+                <TableBody>
+                    {isLoading ? (
+                        <TableLoadingState colSpan={5} rows={5} />
+                    ) : roles.length === 0 ? (
+                        <TableEmptyState colSpan={5} message="No roles found" />
+                    ) : (
+                        roles.map((role: RoleType) => (
+                            <TableRow key={role.id} rowId={role.id}>
+                                <TableCell>
+                                    <TableRowCheckbox rowId={role.id} />
+                                </TableCell>
+                                <TableCell>
+                                    <span className="font-medium text-primary">
+                                        {role.name}
+                                    </span>
+                                </TableCell>
+                                <TableCell>
+                                    <span className="text-primary/75">
+                                        {role.displayName}
+                                    </span>
+                                </TableCell>
+                                <TableCell>
+                                    <span
+                                        className="max-w-md truncate block text-primary/75"
+                                        title={role.description}
+                                    >
+                                        {role.description || '—'}
+                                    </span>
+                                </TableCell>
+                                <TableCell>
+                                    <Chips
+                                        label={role.isActive ? 'Active' : 'Inactive'}
+                                        variant={role.isActive ? 'success' : 'danger'}
+                                    />
+                                </TableCell>
+                            </TableRow>
+                        ))
+                    )}
+                </TableBody>
+            </Table>
+
+            {pagination && pagination.totalPages > 1 && (
+                <TablePagination
+                    page={pagination.page}
+                    totalPages={pagination.totalPages}
+                    totalItems={pagination.total}
+                    itemsPerPage={10}
+                    onPageChange={() => {}} // No-op as per current implementation
+                />
+            )}
         </div>
     );
 };

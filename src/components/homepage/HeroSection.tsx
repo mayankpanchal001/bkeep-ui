@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { Link } from 'react-router';
 import Button from '../typography/Button';
-import { HERO_METRICS } from './constants.tsx';
+import { HERO_METRICS, PLURAL_TENANT_PREFIX } from './constants.tsx';
 
 export default function HeroSection() {
     useEffect(() => {
@@ -34,7 +34,7 @@ export default function HeroSection() {
                         <p className="text-base leading-relaxed text-muted-foreground sm:text-lg">
                             BKeep categorizes transactions, reconciles accounts,
                             and generates real‑time financial statements with
-                            AI—across tenants and clients.
+                            AI—across {PLURAL_TENANT_PREFIX}.
                         </p>
                     </div>
                     <div className="flex flex-wrap gap-4">

@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { SINGLE_TENANT_PREFIX } from '@/components/homepage/constants';
+import { useEffect, useState } from 'react';
 import {
     useCreateTenant,
     useUpdateTenant,
@@ -7,6 +8,10 @@ import {
 import { Tenant } from '../../types';
 import Button from '../typography/Button';
 import { InputField, TextareaField } from '../typography/InputFields';
+
+const CAP_SINGULAR =
+    SINGLE_TENANT_PREFIX.charAt(0).toUpperCase() +
+    SINGLE_TENANT_PREFIX.slice(1);
 
 interface TenantFormProps {
     onClose: () => void;
@@ -80,9 +85,9 @@ const TenantForm = ({ onClose, initialData }: TenantFormProps) => {
         const newErrors: Record<string, string> = {};
 
         if (!formData.name.trim()) {
-            newErrors.name = 'Client name is required';
+            newErrors.name = `${CAP_SINGULAR} name is required`;
         } else if (formData.name.trim().length < 2) {
-            newErrors.name = 'Client name must be at least 2 characters';
+            newErrors.name = `${CAP_SINGULAR} name must be at least 2 characters`;
         }
 
         if (!formData.schemaName.trim()) {
@@ -117,9 +122,13 @@ const TenantForm = ({ onClose, initialData }: TenantFormProps) => {
             };
 
             if (isEditMode && initialData) {
+                const updatePayload: Partial<CreateTenantRequest> = {
+                    ...payload,
+                };
+                delete updatePayload.schemaName;
                 await updateTenant({
                     id: initialData.id,
-                    data: payload,
+                    data: updatePayload,
                 });
             } else {
                 await createTenant(payload);
@@ -139,7 +148,7 @@ const TenantForm = ({ onClose, initialData }: TenantFormProps) => {
             onClose();
         } catch (error) {
             // Error is handled by the mutation's onError
-            console.error('Save client error:', error);
+            console.error(`Save ${SINGLE_TENANT_PREFIX} error:`, error);
         }
     };
 
@@ -148,7 +157,7 @@ const TenantForm = ({ onClose, initialData }: TenantFormProps) => {
             <div>
                 <InputField
                     id="client-name"
-                    label="Client Name"
+                    label={`${CAP_SINGULAR} Name`}
                     placeholder="e.g., Sun Medicose"
                     value={formData.name}
                     onChange={(e) => handleNameChange(e.target.value)}
@@ -174,7 +183,7 @@ const TenantForm = ({ onClose, initialData }: TenantFormProps) => {
                         })
                     }
                     required
-                    disabled={isEditMode} // Usually schema name is immutable after creation
+                    readOnly={isEditMode}
                 />
                 {errors.schemaName && (
                     <p className="text-red-500 text-xs mt-1 pl-1">
@@ -183,7 +192,8 @@ const TenantForm = ({ onClose, initialData }: TenantFormProps) => {
                 )}
                 <p className="text-primary/50 text-xs mt-1 pl-1">
                     Lowercase letters, numbers, and underscores only.
-                    {!isEditMode && ' Auto-generated from tenant name.'}
+                    {!isEditMode &&
+                        ` Auto-generated from ${SINGLE_TENANT_PREFIX} name.`}
                 </p>
             </div>
 
@@ -206,7 +216,7 @@ const TenantForm = ({ onClose, initialData }: TenantFormProps) => {
             <div>
                 <InputField
                     id="client-phone"
-                    label="Client Phone"
+                    label={`${CAP_SINGULAR} Phone`}
                     placeholder="e.g., +1-555-123-4567"
                     value={formData.phone || ''}
                     onChange={(e) =>
@@ -222,7 +232,7 @@ const TenantForm = ({ onClose, initialData }: TenantFormProps) => {
                 <div>
                     <InputField
                         id="client-fiscal-year"
-                        label="Client Fiscal Year Start"
+                        label={`${CAP_SINGULAR} Fiscal Year Start`}
                         placeholder="YYYY-MM-DD"
                         value={formData.fiscalYear || ''}
                         onChange={(e) =>
@@ -237,7 +247,7 @@ const TenantForm = ({ onClose, initialData }: TenantFormProps) => {
                 <div>
                     <InputField
                         id="client-incorporation-date"
-                        label="Client Incorporation Date"
+                        label={`${CAP_SINGULAR} Incorporation Date`}
                         placeholder="YYYY-MM-DD"
                         value={formData.dateOfIncorporation || ''}
                         onChange={(e) =>
@@ -254,7 +264,7 @@ const TenantForm = ({ onClose, initialData }: TenantFormProps) => {
             <div>
                 <TextareaField
                     id="client-address"
-                    label="Client Address"
+                    label={`${CAP_SINGULAR} Address`}
                     placeholder="e.g., 123 Main St, City, State 12345"
                     value={formData.address || ''}
                     onChange={(e) =>
@@ -282,7 +292,9 @@ const TenantForm = ({ onClose, initialData }: TenantFormProps) => {
                     className="flex-1 sm:flex-initial"
                     loading={isPending}
                 >
-                    {isEditMode ? 'Update Client' : 'Create Client'}
+                    {isEditMode
+                        ? `Update ${CAP_SINGULAR}`
+                        : `Create ${CAP_SINGULAR}`}
                 </Button>
             </div>
         </form>

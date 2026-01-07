@@ -6,6 +6,7 @@ import { useTenant } from '../../stores/tenant/tenantSelectore';
 import { showErrorToast } from '../../utills/toast';
 import { cn } from '../../utils/cn';
 
+import { SINGLE_TENANT_PREFIX } from '@/components/homepage/constants';
 import {
     Command,
     CommandEmpty,
@@ -15,6 +16,10 @@ import {
     CommandList,
 } from '../ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
+
+const CAP_SINGULAR =
+    SINGLE_TENANT_PREFIX.charAt(0).toUpperCase() +
+    SINGLE_TENANT_PREFIX.slice(1);
 
 type TenantSwitcherProps = {
     compact?: boolean;
@@ -84,8 +89,10 @@ const TenantSwitcher = ({ compact = false }: TenantSwitcherProps) => {
             // Reload the page to ensure all data is refreshed with new tenant context
             window.location.reload();
         } catch (error) {
-            console.error('Failed to switch tenant:', error);
-            showErrorToast('Failed to switch tenant. Please try again.');
+            console.error(`Failed to switch ${SINGLE_TENANT_PREFIX}:`, error);
+            showErrorToast(
+                `Failed to switch ${SINGLE_TENANT_PREFIX}. Please try again.`
+            );
         } finally {
             setIsSwitching(false);
         }
@@ -98,7 +105,7 @@ const TenantSwitcher = ({ compact = false }: TenantSwitcherProps) => {
             <PopoverTrigger asChild>
                 <button
                     disabled={isSwitching || isLoadingTenants}
-                    aria-label="Tenant switcher"
+                    aria-label={`${CAP_SINGULAR} switcher`}
                     aria-expanded={isOpen}
                     className={cn(
                         'group pl-1 inline-flex items-center gap-2 rounded-full bg-white border border-primary/25 shadow-sm transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white cursor-pointer',
@@ -127,7 +134,8 @@ const TenantSwitcher = ({ compact = false }: TenantSwitcherProps) => {
                     >
                         {isLoadingTenants
                             ? 'Loading...'
-                            : selectedTenant?.name || 'Select tenant'}
+                            : selectedTenant?.name ||
+                              `Select ${CAP_SINGULAR}`}
                     </span>
                     <ChevronsUpDown
                         className={cn(
@@ -139,10 +147,12 @@ const TenantSwitcher = ({ compact = false }: TenantSwitcherProps) => {
             </PopoverTrigger>
             <PopoverContent className="w-72 p-0" align="end">
                 <Command>
-                    <CommandInput placeholder="Search tenant..." />
+                    <CommandInput
+                        placeholder={`Search ${CAP_SINGULAR}...`}
+                    />
                     <CommandList>
-                        <CommandEmpty>No tenant found.</CommandEmpty>
-                        <CommandGroup heading="Switch Tenant">
+                        <CommandEmpty>{`No ${SINGLE_TENANT_PREFIX} found.`}</CommandEmpty>
+                        <CommandGroup heading={`Switch ${CAP_SINGULAR}`}>
                             {tenants.map((tenant) => (
                                 <CommandItem
                                     key={tenant.id}

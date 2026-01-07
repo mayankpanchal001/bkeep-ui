@@ -1,13 +1,25 @@
 import { useState } from 'react';
 import { FaArrowDown, FaArrowUp, FaFilter, FaSearch } from 'react-icons/fa';
-import { DataTable, Column } from '../shared/DataTable';
 import { useTransactions } from '../../services/apis/transactions';
-import { TransactionType2 } from '../../types';
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableEmptyState,
+    TableHead,
+    TableHeader,
+    TablePagination,
+    TableRow,
+    TableRowCheckbox,
+    TableSelectAllCheckbox,
+    TableSelectionToolbar
+} from '../ui/table';
 
 const TransactionsTable = () => {
     const { data, isLoading, isError, error } = useTransactions();
     const [searchTerm, setSearchTerm] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
+    const [selectedItems, setSelectedItems] = useState<(string | number)[]>([]);
     const itemsPerPage = 20;
 
     const filteredTransactions = data?.filter((transaction) => {
@@ -41,152 +53,7 @@ const TransactionsTable = () => {
             currentPage * itemsPerPage
         ) || [];
 
-    const pagination = {
-        page: currentPage,
-        totalPages: totalPages,
-        totalItems: filteredTransactions?.length || 0,
-        onPageChange: setCurrentPage,
-        hasPreviousPage: currentPage > 1,
-        hasNextPage: currentPage < totalPages,
-    };
-
-    const columns: Column<TransactionType2>[] = [
-        {
-            header: 'Date',
-            accessorKey: 'latestPostedDate',
-            cell: (transaction) => {
-                const date = new Date(
-                    transaction.latestPostedDate || transaction.createdAt
-                ).toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'short',
-                    day: 'numeric',
-                });
-                const amount = parseFloat(transaction.totalAmount || '0');
-                const isCredit = amount >= 0;
-                return (
-                    <div className="flex items-center gap-2">
-                        <div
-                            className={`w-2 h-2 rounded-full ${
-                                isCredit ? 'bg-green-500' : 'bg-red-500'
-                            }`}
-                        ></div>
-                        <span className="text-sm font-medium text-primary">
-                            {date}
-                        </span>
-                    </div>
-                );
-            },
-        },
-        {
-            header: 'Description',
-            cell: (transaction) => {
-                const firstSplit = transaction.splits?.[0];
-                const description =
-                    firstSplit?.senderDescription ||
-                    firstSplit?.recipientDescription ||
-                    transaction.itemType ||
-                    'N/A';
-                const displayLabel =
-                    firstSplit?.categoryAndGifi?.[0]?.displayLabel;
-                return (
-                    <div className="flex flex-col">
-                        <span className="text-sm font-medium text-primary">
-                            {description}
-                        </span>
-                        {displayLabel && (
-                            <span className="text-xs text-primary/50">
-                                {displayLabel}
-                            </span>
-                        )}
-                    </div>
-                );
-            },
-        },
-        {
-            header: 'Type',
-            accessorKey: 'itemType',
-            cell: (transaction) => (
-                <span className="text-xs text-primary/50 bg-primary/10 px-2 py-1 rounded">
-                    {transaction.itemType || 'N/A'}
-                </span>
-            ),
-        },
-        {
-            header: 'Amount',
-            cell: (transaction) => {
-                const amount = parseFloat(transaction.totalAmount || '0');
-                const isCredit = amount >= 0;
-                const formattedAmount = new Intl.NumberFormat('en-US', {
-                    style: 'currency',
-                    currency: transaction.currency?.toUpperCase() || 'USD',
-                }).format(Math.abs(amount));
-
-                return (
-                    <div
-                        className={`flex items-center gap-1 font-semibold ${
-                            isCredit ? 'text-green-600' : 'text-red-600'
-                        }`}
-                    >
-                        {isCredit ? (
-                            <FaArrowUp className="w-3 h-3" />
-                        ) : (
-                            <FaArrowDown className="w-3 h-3" />
-                        )}
-                        <span>
-                            {isCredit ? '+' : '-'}
-                            {formattedAmount}
-                        </span>
-                    </div>
-                );
-            },
-        },
-        {
-            header: 'Balance',
-            cell: (transaction) => (
-                <span className="text-sm text-primary/75">
-                    {new Intl.NumberFormat('en-US', {
-                        style: 'currency',
-                        currency: transaction.currency?.toUpperCase() || 'USD',
-                    }).format(0)}
-                </span>
-            ),
-        },
-        {
-            header: 'Tags',
-            cell: (transaction) => {
-                const firstSplit = transaction.splits?.[0];
-                return (
-                    <div className="flex items-center gap-2">
-                        {transaction.pending && (
-                            <span className="text-xs text-primary/50 bg-primary/10 px-2 py-1 rounded">
-                                Pending
-                            </span>
-                        )}
-                        {firstSplit?.pendingTransfer && (
-                            <span className="text-xs text-primary/50 bg-primary/10 px-2 py-1 rounded">
-                                Transfer
-                            </span>
-                        )}
-                        {transaction.matchedReceiptDocs &&
-                            transaction.matchedReceiptDocs.length > 0 && (
-                                <span className="text-xs text-primary/50 bg-primary/10 px-2 py-1 rounded">
-                                    Receipt
-                                </span>
-                            )}
-                    </div>
-                );
-            },
-        },
-        {
-            header: 'Action',
-            cell: () => (
-                <button className="text-primary hover:text-primary/75 text-sm font-medium">
-                    View
-                </button>
-            ),
-        },
-    ];
+    const rowIds = paginatedTransactions.map((t) => t.id);
 
     if (isLoading) {
         return (
@@ -210,6 +77,11 @@ const TransactionsTable = () => {
             </div>
         );
     }
+
+    const handleBulkExport = () => {
+        console.log('Exporting transactions:', selectedItems);
+        setSelectedItems([]);
+    };
 
     return (
         <div className="bg-white max-h-[calc(100vh-100px)] rounded-2 shadow-sm border border-primary/10 overflow-y-auto">
@@ -237,16 +109,169 @@ const TransactionsTable = () => {
             </div>
 
             {/* Table */}
-            <DataTable
-                data={paginatedTransactions}
-                columns={columns}
-                pagination={pagination}
-                emptyMessage={
-                    searchTerm
-                        ? 'No transactions found matching your search'
-                        : 'No transactions available'
-                }
-            />
+            <Table
+                enableSelection
+                rowIds={rowIds}
+                selectedIds={selectedItems}
+                onSelectionChange={setSelectedItems}
+            >
+                <TableSelectionToolbar>
+                    <button
+                        onClick={handleBulkExport}
+                        className="px-3 py-1.5 text-xs font-medium text-blue-700 bg-blue-100 hover:bg-blue-200 rounded-md transition-colors"
+                    >
+                        Export Selected
+                    </button>
+                </TableSelectionToolbar>
+
+                <TableHeader>
+                    <tr>
+                        <TableHead>
+                            <TableSelectAllCheckbox />
+                        </TableHead>
+                        <TableHead sortable sortKey="latestPostedDate">Date</TableHead>
+                        <TableHead>Description</TableHead>
+                        <TableHead>Type</TableHead>
+                        <TableHead align="right">Amount</TableHead>
+                        <TableHead align="right">Balance</TableHead>
+                        <TableHead>Tags</TableHead>
+                        <TableHead>Action</TableHead>
+                    </tr>
+                </TableHeader>
+                <TableBody>
+                    {paginatedTransactions.length === 0 ? (
+                        <TableEmptyState
+                            colSpan={8}
+                            message={
+                                searchTerm
+                                    ? 'No transactions found matching your search'
+                                    : 'No transactions available'
+                            }
+                        />
+                    ) : (
+                        paginatedTransactions.map((transaction) => {
+                            const firstSplit = transaction.splits?.[0];
+                            const description =
+                                firstSplit?.senderDescription ||
+                                firstSplit?.recipientDescription ||
+                                transaction.itemType ||
+                                'N/A';
+                            const displayLabel =
+                                firstSplit?.categoryAndGifi?.[0]?.displayLabel;
+                            const amount = parseFloat(transaction.totalAmount || '0');
+                            const isCredit = amount >= 0;
+                            const formattedAmount = new Intl.NumberFormat('en-US', {
+                                style: 'currency',
+                                currency: transaction.currency?.toUpperCase() || 'USD',
+                            }).format(Math.abs(amount));
+
+                            return (
+                                <TableRow key={transaction.id} rowId={transaction.id}>
+                                    <TableCell>
+                                        <TableRowCheckbox rowId={transaction.id} />
+                                    </TableCell>
+                                    <TableCell>
+                                        <div className="flex items-center gap-2">
+                                            <div
+                                                className={`w-2 h-2 rounded-full ${
+                                                    isCredit ? 'bg-green-500' : 'bg-red-500'
+                                                }`}
+                                            ></div>
+                                            <span className="text-sm font-medium text-primary">
+                                                {new Date(
+                                                    transaction.latestPostedDate || transaction.createdAt
+                                                ).toLocaleDateString('en-US', {
+                                                    year: 'numeric',
+                                                    month: 'short',
+                                                    day: 'numeric',
+                                                })}
+                                            </span>
+                                        </div>
+                                    </TableCell>
+                                    <TableCell>
+                                        <div className="flex flex-col">
+                                            <span className="text-sm font-medium text-primary">
+                                                {description}
+                                            </span>
+                                            {displayLabel && (
+                                                <span className="text-xs text-primary/50">
+                                                    {displayLabel}
+                                                </span>
+                                            )}
+                                        </div>
+                                    </TableCell>
+                                    <TableCell>
+                                        <span className="text-xs text-primary/50 bg-primary/10 px-2 py-1 rounded">
+                                            {transaction.itemType || 'N/A'}
+                                        </span>
+                                    </TableCell>
+                                    <TableCell align="right">
+                                        <div
+                                            className={`flex items-center justify-end gap-1 font-semibold ${
+                                                isCredit ? 'text-green-600' : 'text-red-600'
+                                            }`}
+                                        >
+                                            {isCredit ? (
+                                                <FaArrowUp className="w-3 h-3" />
+                                            ) : (
+                                                <FaArrowDown className="w-3 h-3" />
+                                            )}
+                                            <span>
+                                                {isCredit ? '+' : '-'}
+                                                {formattedAmount}
+                                            </span>
+                                        </div>
+                                    </TableCell>
+                                    <TableCell align="right">
+                                        <span className="text-sm text-primary/75">
+                                            {new Intl.NumberFormat('en-US', {
+                                                style: 'currency',
+                                                currency: transaction.currency?.toUpperCase() || 'USD',
+                                            }).format(0)}
+                                        </span>
+                                    </TableCell>
+                                    <TableCell>
+                                        <div className="flex items-center gap-2">
+                                            {transaction.pending && (
+                                                <span className="text-xs text-primary/50 bg-primary/10 px-2 py-1 rounded">
+                                                    Pending
+                                                </span>
+                                            )}
+                                            {firstSplit?.pendingTransfer && (
+                                                <span className="text-xs text-primary/50 bg-primary/10 px-2 py-1 rounded">
+                                                    Transfer
+                                                </span>
+                                            )}
+                                            {transaction.matchedReceiptDocs &&
+                                                transaction.matchedReceiptDocs.length > 0 && (
+                                                    <span className="text-xs text-primary/50 bg-primary/10 px-2 py-1 rounded">
+                                                        Receipt
+                                                    </span>
+                                                )}
+                                        </div>
+                                    </TableCell>
+                                    <TableCell>
+                                        <button className="text-primary hover:text-primary/75 text-sm font-medium">
+                                            View
+                                        </button>
+                                    </TableCell>
+                                </TableRow>
+                            );
+                        })
+                    )}
+                </TableBody>
+            </Table>
+
+            {/* Pagination */}
+            <div className="p-4 border-t border-primary/10">
+                <TablePagination
+                    page={currentPage}
+                    totalPages={totalPages}
+                    totalItems={filteredTransactions?.length || 0}
+                    itemsPerPage={itemsPerPage}
+                    onPageChange={setCurrentPage}
+                />
+            </div>
         </div>
     );
 };

@@ -1,3 +1,17 @@
+import Button from '@/components/typography/Button';
+import { InputField } from '@/components/typography/InputFields';
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableEmptyState,
+    TableHead,
+    TableHeader,
+    TableRow,
+    TableRowCheckbox,
+    TableSelectAllCheckbox,
+    TableSelectionToolbar,
+} from '@/components/ui/table';
 import { useState } from 'react';
 import {
     FaEdit,
@@ -7,9 +21,6 @@ import {
     FaTag,
     FaTrash,
 } from 'react-icons/fa';
-import { Column, DataTable } from '@/components/shared/DataTable';
-import Button from '@/components/typography/Button';
-import { InputField } from '@/components/typography/InputFields';
 
 type Expense = {
     id: string;
@@ -84,6 +95,7 @@ const Expensespage = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [categoryFilter, setCategoryFilter] = useState<string>('all');
     const [showCreateModal, setShowCreateModal] = useState(false);
+    const [selectedItems, setSelectedItems] = useState<(string | number)[]>([]);
 
     const filteredExpenses = expenses.filter((expense) => {
         const matchesSearch =
@@ -110,86 +122,12 @@ const Expensespage = () => {
         {} as Record<string, number>
     );
 
-    const columns: Column<Expense>[] = [
-        {
-            header: 'Date',
-            accessorKey: 'date',
-            cell: (expense) => (
-                <span className="text-primary/75">
-                    {new Date(expense.date).toLocaleDateString()}
-                </span>
-            ),
-        },
-        {
-            header: 'Vendor',
-            accessorKey: 'vendor',
-            cell: (expense) => (
-                <div className="font-medium text-primary">{expense.vendor}</div>
-            ),
-        },
-        {
-            header: 'Category',
-            accessorKey: 'category',
-            cell: (expense) => (
-                <span className="inline-flex items-center gap-1 px-2 py-1 bg-primary/10 text-primary rounded-full text-xs font-medium">
-                    <FaTag className="w-3 h-3" />
-                    {expense.category}
-                </span>
-            ),
-        },
-        {
-            header: 'Description',
-            accessorKey: 'description',
-            cell: (expense) => (
-                <span className="text-primary/75">{expense.description}</span>
-            ),
-        },
-        {
-            header: 'Amount',
-            accessorKey: 'amount',
-            className: 'text-right',
-            cell: (expense) => (
-                <span className="font-semibold text-primary">
-                    {currencyFormatter.format(expense.amount)}
-                </span>
-            ),
-        },
-        {
-            header: 'Payment Method',
-            accessorKey: 'paymentMethod',
-            cell: (expense) => (
-                <span className="text-primary/75">{expense.paymentMethod}</span>
-            ),
-        },
-        {
-            header: 'Actions',
-            className: 'text-center w-32',
-            cell: (expense) => (
-                <div className="flex items-center justify-center gap-2">
-                    {expense.receipt && (
-                        <button
-                            className="p-2 text-primary/50 hover:text-primary hover:bg-primary/10 rounded transition-colors"
-                            title="View Receipt"
-                        >
-                            <FaReceipt className="w-4 h-4" />
-                        </button>
-                    )}
-                    <button
-                        className="p-2 text-primary/50 hover:text-primary hover:bg-primary/10 rounded transition-colors"
-                        title="Edit"
-                    >
-                        <FaEdit className="w-4 h-4" />
-                    </button>
-                    <button
-                        className="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
-                        title="Delete"
-                    >
-                        <FaTrash className="w-4 h-4" />
-                    </button>
-                </div>
-            ),
-        },
-    ];
+    const rowIds = filteredExpenses.map((e) => e.id);
+
+    const handleBulkDelete = () => {
+        console.log('Deleting expenses:', selectedItems);
+        setSelectedItems([]);
+    };
 
     return (
         <div className="flex flex-col gap-4">
@@ -257,11 +195,108 @@ const Expensespage = () => {
 
             {/* Expenses Table */}
             <div className="bg-white rounded-2 shadow-sm border border-primary/10 overflow-hidden">
-                <DataTable
-                    data={filteredExpenses}
-                    columns={columns}
-                    emptyMessage="No expenses found"
-                />
+                <Table
+                    enableSelection
+                    rowIds={rowIds}
+                    selectedIds={selectedItems}
+                    onSelectionChange={setSelectedItems}
+                >
+                    <TableSelectionToolbar>
+                        <button
+                            onClick={handleBulkDelete}
+                            className="px-3 py-1.5 text-xs font-medium text-red-700 bg-red-100 hover:bg-red-200 rounded-md transition-colors"
+                        >
+                            Delete Selected
+                        </button>
+                    </TableSelectionToolbar>
+
+                    <TableHeader>
+                        <tr>
+                            <TableHead>
+                                <TableSelectAllCheckbox />
+                            </TableHead>
+                            <TableHead sortable sortKey="date">Date</TableHead>
+                            <TableHead sortable sortKey="vendor">Vendor</TableHead>
+                            <TableHead>Category</TableHead>
+                            <TableHead>Description</TableHead>
+                            <TableHead align="right" sortable sortKey="amount">Amount</TableHead>
+                            <TableHead>Payment Method</TableHead>
+                            <TableHead align="center">Actions</TableHead>
+                        </tr>
+                    </TableHeader>
+                    <TableBody>
+                        {filteredExpenses.length === 0 ? (
+                            <TableEmptyState
+                                colSpan={8}
+                                message="No expenses found"
+                                description="Try adjusting your search or filters"
+                            />
+                        ) : (
+                            filteredExpenses.map((expense) => (
+                                <TableRow key={expense.id} rowId={expense.id}>
+                                    <TableCell>
+                                        <TableRowCheckbox rowId={expense.id} />
+                                    </TableCell>
+                                    <TableCell>
+                                        <span className="text-primary/75">
+                                            {new Date(expense.date).toLocaleDateString()}
+                                        </span>
+                                    </TableCell>
+                                    <TableCell>
+                                        <div className="font-medium text-primary">
+                                            {expense.vendor}
+                                        </div>
+                                    </TableCell>
+                                    <TableCell>
+                                        <span className="inline-flex items-center gap-1 px-2 py-1 bg-primary/10 text-primary rounded-full text-xs font-medium">
+                                            <FaTag className="w-3 h-3" />
+                                            {expense.category}
+                                        </span>
+                                    </TableCell>
+                                    <TableCell>
+                                        <span className="text-primary/75">
+                                            {expense.description}
+                                        </span>
+                                    </TableCell>
+                                    <TableCell align="right">
+                                        <span className="font-semibold text-primary">
+                                            {currencyFormatter.format(expense.amount)}
+                                        </span>
+                                    </TableCell>
+                                    <TableCell>
+                                        <span className="text-primary/75">
+                                            {expense.paymentMethod}
+                                        </span>
+                                    </TableCell>
+                                    <TableCell align="center">
+                                        <div className="flex items-center justify-center gap-2">
+                                            {expense.receipt && (
+                                                <button
+                                                    className="p-2 text-primary/50 hover:text-primary hover:bg-primary/10 rounded transition-colors"
+                                                    title="View Receipt"
+                                                >
+                                                    <FaReceipt className="w-4 h-4" />
+                                                </button>
+                                            )}
+                                            <button
+                                                className="p-2 text-primary/50 hover:text-primary hover:bg-primary/10 rounded transition-colors"
+                                                title="Edit"
+                                            >
+                                                <FaEdit className="w-4 h-4" />
+                                            </button>
+                                            <button
+                                                className="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
+                                                title="Delete"
+                                            >
+                                                <FaTrash className="w-4 h-4" />
+                                            </button>
+                                        </div>
+                                    </TableCell>
+                                </TableRow>
+                            ))
+                        )}
+                    </TableBody>
+                </Table>
             </div>
 
             {/* Create Expense Modal */}

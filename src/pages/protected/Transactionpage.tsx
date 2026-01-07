@@ -1,4 +1,3 @@
-import { DataTable, type Column } from '@/components/shared/DataTable';
 import Button from '@/components/typography/Button';
 import { Combobox, type ComboboxOption } from '@/components/ui/combobox';
 import {
@@ -7,6 +6,19 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableEmptyState,
+    TableHead,
+    TableHeader,
+    TablePagination,
+    TableRow,
+    TableRowCheckbox,
+    TableSelectAllCheckbox,
+    TableSelectionToolbar
+} from '@/components/ui/table';
 import { useEffect, useMemo, useState } from 'react';
 import { FaFileInvoiceDollar, FaFilter, FaSearch } from 'react-icons/fa';
 import { useTaxes } from '../../services/apis/taxApi';
@@ -32,9 +44,11 @@ const Transactionpage = () => {
 
     const [activeTab, setActiveTab] = useState<TxStatus>('pending');
     const [search, setSearch] = useState('');
-    const [selectedItems, setSelectedItems] = useState<string[]>([]);
+    const [selectedItems, setSelectedItems] = useState<(string | number)[]>([]);
     const [page, setPage] = useState(1);
     const itemsPerPage = 20;
+    const [sortKey, setSortKey] = useState<keyof BankTransaction>('date');
+    const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
 
     const DEFAULT_TAX_RATE = 0.13;
     const [transactions, setTransactions] = useState<BankTransaction[]>(() => [
@@ -231,34 +245,24 @@ const Transactionpage = () => {
         );
     }, [taxesResponse]);
 
-    const [sorting, setSorting] = useState<{
-        sort: string;
-        order: 'asc' | 'desc';
-    }>({
-        sort: 'date',
-        order: 'asc',
-    });
-
     const sorted = useMemo(() => {
-        if (!sorting.sort) return filtered;
-        const key = sorting.sort as keyof BankTransaction;
-        const order = sorting.order === 'asc' ? 1 : -1;
+        const order = sortDirection === 'asc' ? 1 : -1;
         return [...filtered].sort((a, b) => {
-            const va = a[key];
-            const vb = b[key];
-            if (key === 'date') {
+            const va = a[sortKey];
+            const vb = b[sortKey];
+            if (sortKey === 'date') {
                 const da = new Date(String(va)).getTime();
                 const db = new Date(String(vb)).getTime();
                 return (da - db) * order;
             }
-            if (key === 'spent' || key === 'received') {
+            if (sortKey === 'spent' || sortKey === 'received' || sortKey === 'tax') {
                 const na = Number(va || 0);
                 const nb = Number(vb || 0);
                 return (na - nb) * order;
             }
             return String(va || '').localeCompare(String(vb || '')) * order;
         });
-    }, [filtered, sorting]);
+    }, [filtered, sortKey, sortDirection]);
 
     const totalPages = Math.ceil(filtered.length / itemsPerPage) || 1;
     const pageData = sorted.slice(
@@ -272,233 +276,6 @@ const Transactionpage = () => {
             currency: 'USD',
             minimumFractionDigits: 2,
         }).format(n || 0);
-
-    const columns: Column<BankTransaction>[] = [
-        {
-            header: 'Date',
-            accessorKey: 'date',
-            sortable: true,
-            cell: (t) => (
-                <div className="flex items-center gap-2">
-                    <span className="text-sm font-medium text-primary">
-                        {new Date(t.date).toLocaleDateString()}
-                    </span>
-                </div>
-            ),
-        },
-        {
-            header: 'Bank Description',
-            accessorKey: 'description',
-            cell: (t) => (
-                <div className="flex flex-col">
-                    <span className="text-sm font-medium text-primary">
-                        {t.description}
-                    </span>
-                    <span className="text-xs text-primary/50">{t.account}</span>
-                </div>
-            ),
-        },
-        {
-            header: 'Spent',
-            cell: (t) => (
-                <span className="text-red-600 font-semibold">
-                    {t.spent ? `-${currency(t.spent)}` : ''}
-                </span>
-            ),
-        },
-        {
-            header: 'Received',
-            cell: (t) => (
-                <span className="text-green-600 font-semibold">
-                    {t.received ? `+${currency(t.received)}` : ''}
-                </span>
-            ),
-        },
-        {
-            header: 'Tax',
-            accessorKey: 'tax',
-            cell: (t) => (
-                <div className="flex items-center gap-3">
-                    <div className="min-w-[200px]">
-                        <Combobox
-                            options={TAX_OPTIONS}
-                            value={t.taxId || ''}
-                            onChange={(value) => {
-                                const rate =
-                                    (value && TAX_RATE_BY_ID[value]) || 0;
-                                setTransactions((prev) =>
-                                    prev.map((tx) => {
-                                        if (tx.id !== t.id) return tx;
-                                        const base = tx.spent ?? 0;
-                                        const taxAmount = Number(
-                                            (base * rate).toFixed(2)
-                                        );
-                                        return {
-                                            ...tx,
-                                            taxId: value || undefined,
-                                            taxRate: rate || undefined,
-                                            tax: taxAmount,
-                                        };
-                                    })
-                                );
-                            }}
-                            placeholder="Select tax..."
-                            searchPlaceholder="Search tax..."
-                            className="h-8"
-                        />
-                    </div>
-                    <span className="text-primary/50 text-xs">
-                        {currency(t.tax ?? 0)}
-                    </span>
-                </div>
-            ),
-        },
-        {
-            header: 'From/To',
-            cell: (t) => (
-                <div className="min-w-[200px]">
-                    <Combobox
-                        options={SUPPLIER_OPTIONS}
-                        value={t.fromTo || ''}
-                        onChange={(value) => {
-                            setTransactions((prev) =>
-                                prev.map((tx) =>
-                                    tx.id === t.id
-                                        ? {
-                                              ...tx,
-                                              fromTo: value || undefined,
-                                          }
-                                        : tx
-                                )
-                            );
-                        }}
-                        placeholder="Select supplier..."
-                        searchPlaceholder="Search supplier..."
-                        className="h-8"
-                    />
-                </div>
-            ),
-        },
-        {
-            header: 'Match/Categorize',
-            cell: (t) => (
-                <div className="flex items-center gap-2">
-                    <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-2">
-                        {t.category || 'Select category'}
-                    </span>
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => {
-                            setTransactions((prev) =>
-                                prev.map((tx) =>
-                                    tx.id === t.id
-                                        ? { ...tx, matched: !tx.matched }
-                                        : tx
-                                )
-                            );
-                            showSuccessToast(
-                                t.matched ? 'Unmatched' : 'Matched'
-                            );
-                        }}
-                    >
-                        {t.matched ? 'Matched' : 'Match'}
-                    </Button>
-                    <div className="min-w-[220px]">
-                        <Combobox
-                            options={CATEGORY_OPTIONS}
-                            value={t.category || ''}
-                            onChange={(value) => {
-                                setTransactions((prev) =>
-                                    prev.map((tx) =>
-                                        tx.id === t.id
-                                            ? {
-                                                  ...tx,
-                                                  category: value || undefined,
-                                              }
-                                            : tx
-                                    )
-                                );
-                                if (value) {
-                                    showSuccessToast(
-                                        `Category set to ${value}`
-                                    );
-                                }
-                            }}
-                            placeholder="Select category..."
-                            searchPlaceholder="Search category..."
-                            className="h-8"
-                        />
-                    </div>
-                </div>
-            ),
-        },
-        {
-            header: 'Action',
-            cell: (t) => (
-                <div className="flex items-center gap-2">
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => {
-                            setTransactions((prev) =>
-                                prev.map((tx) =>
-                                    tx.id === t.id
-                                        ? {
-                                              ...tx,
-                                              status: 'posted',
-                                          }
-                                        : tx
-                                )
-                            );
-                            showSuccessToast('Transaction posted');
-                        }}
-                    >
-                        Post
-                    </Button>
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button variant="outline" size="sm">
-                                ⋯
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                            <DropdownMenuItem
-                                onClick={() =>
-                                    showSuccessToast('Split editor coming soon')
-                                }
-                            >
-                                Split
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                                onClick={() =>
-                                    showSuccessToast(
-                                        'Rule created (demo placeholder)'
-                                    )
-                                }
-                            >
-                                Create rule
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                                onClick={() => {
-                                    setTransactions((prev) =>
-                                        prev.map((tx) =>
-                                            tx.id === t.id
-                                                ? { ...tx, status: 'excluded' }
-                                                : tx
-                                        )
-                                    );
-                                    showSuccessToast('Transaction excluded');
-                                }}
-                            >
-                                Exclude
-                            </DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-                </div>
-            ),
-        },
-    ];
 
     const pendingCount = transactions.filter(
         (t) => t.status === 'pending'
@@ -644,28 +421,313 @@ const Transactionpage = () => {
                     </div>
                 </div>
                 <div className="p-4">
-                    <DataTable
-                        data={pageData}
-                        columns={columns}
-                        selectedItems={selectedItems}
+                    <Table
+                        enableSelection={true}
                         onSelectionChange={setSelectedItems}
-                        sorting={{
-                            sort: sorting.sort,
-                            order: sorting.order,
-                            onSortChange: (sort, order) => {
-                                setSorting({ sort, order });
-                                setPage(1);
-                            },
+                        rowIds={pageData.map((t) => t.id)}
+                        selectedIds={selectedItems}
+                        sortKey={sortKey}
+                        sortDirection={sortDirection}
+                        onSortChange={(key, direction) => {
+                            if (direction) {
+                                setSortKey(key as keyof BankTransaction);
+                                setSortDirection(direction);
+                            } else {
+                                setSortKey('date');
+                                setSortDirection('asc');
+                            }
+                            setPage(1);
                         }}
-                        pagination={{
-                            page,
-                            totalPages,
-                            totalItems: filtered.length,
-                            onPageChange: setPage,
-                            hasPreviousPage: page > 1,
-                            hasNextPage: page < totalPages,
-                        }}
-                        emptyMessage="No transactions found"
+                    >
+                        {/* Bulk Actions Toolbar */}
+                        <TableSelectionToolbar>
+                            <button
+                                onClick={() => {
+                                    setTransactions((prev) =>
+                                        prev.map((tx) =>
+                                            selectedItems.includes(tx.id)
+                                                ? { ...tx, status: 'posted' }
+                                                : tx
+                                        )
+                                    );
+                                    showSuccessToast(`${selectedItems.length} transactions marked as posted`);
+                                    setSelectedItems([]);
+                                }}
+                                className="px-3 py-1.5 text-xs font-medium text-green-700 bg-green-100 hover:bg-green-200 rounded-md transition-colors"
+                            >
+                                Mark as Posted
+                            </button>
+                            <button
+                                onClick={() => {
+                                    setTransactions((prev) =>
+                                        prev.map((tx) =>
+                                            selectedItems.includes(tx.id)
+                                                ? { ...tx, status: 'excluded' }
+                                                : tx
+                                        )
+                                    );
+                                    showSuccessToast(`${selectedItems.length} transactions excluded`);
+                                    setSelectedItems([]);
+                                }}
+                                className="px-3 py-1.5 text-xs font-medium text-red-700 bg-red-100 hover:bg-red-200 rounded-md transition-colors"
+                            >
+                                Exclude
+                            </button>
+                        </TableSelectionToolbar>
+
+                        <TableHeader>
+                            <tr>
+                                <TableHead>
+                                    <TableSelectAllCheckbox />
+                                </TableHead>
+                                <TableHead sortable sortKey="date">
+                                    Date
+                                </TableHead>
+                                <TableHead>Bank Description</TableHead>
+                                <TableHead sortable sortKey="spent">
+                                    Spent
+                                </TableHead>
+                                <TableHead sortable sortKey="received">
+                                    Received
+                                </TableHead>
+                                <TableHead sortable sortKey="tax">
+                                    Tax
+                                </TableHead>
+                                <TableHead>From/To</TableHead>
+                                <TableHead>Match/Categorize</TableHead>
+                                <TableHead>Action</TableHead>
+                            </tr>
+                        </TableHeader>
+                        <TableBody>
+                            {pageData.length === 0 ? (
+                                <TableEmptyState
+                                    colSpan={9}
+                                    message="No transactions found"
+                                    description="Try adjusting your filters or add new transactions."
+                                />
+                            ) : (
+                                pageData.map((t) => (
+                                    <TableRow key={t.id} rowId={t.id}>
+                                        <TableCell>
+                                            <TableRowCheckbox rowId={t.id} />
+                                        </TableCell>
+                                        <TableCell>
+                                            <span className="text-sm font-medium text-primary">
+                                                {new Date(t.date).toLocaleDateString()}
+                                            </span>
+                                        </TableCell>
+                                        <TableCell>
+                                            <div className="flex flex-col">
+                                                <span className="text-sm font-medium text-primary">
+                                                    {t.description}
+                                                </span>
+                                                <span className="text-xs text-primary/50">
+                                                    {t.account}
+                                                </span>
+                                            </div>
+                                        </TableCell>
+                                        <TableCell>
+                                            <span className="text-red-600 font-semibold">
+                                                {t.spent ? `-${currency(t.spent)}` : ''}
+                                            </span>
+                                        </TableCell>
+                                        <TableCell>
+                                            <span className="text-green-600 font-semibold">
+                                                {t.received ? `+${currency(t.received)}` : ''}
+                                            </span>
+                                        </TableCell>
+                                        <TableCell>
+                                            <div className="flex items-center gap-3">
+                                                <div className="min-w-[200px]">
+                                                    <Combobox
+                                                        options={TAX_OPTIONS}
+                                                        value={t.taxId || ''}
+                                                        onChange={(value) => {
+                                                            const rate =
+                                                                (value && TAX_RATE_BY_ID[value]) || 0;
+                                                            setTransactions((prev) =>
+                                                                prev.map((tx) => {
+                                                                    if (tx.id !== t.id) return tx;
+                                                                    const base = tx.spent ?? 0;
+                                                                    const taxAmount = Number(
+                                                                        (base * rate).toFixed(2)
+                                                                    );
+                                                                    return {
+                                                                        ...tx,
+                                                                        taxId: value || undefined,
+                                                                        taxRate: rate || undefined,
+                                                                        tax: taxAmount,
+                                                                    };
+                                                                })
+                                                            );
+                                                        }}
+                                                        placeholder="Select tax..."
+                                                        searchPlaceholder="Search tax..."
+                                                        className="h-8"
+                                                    />
+                                                </div>
+                                                <span className="text-primary/50 text-xs">
+                                                    {currency(t.tax ?? 0)}
+                                                </span>
+                                            </div>
+                                        </TableCell>
+                                        <TableCell>
+                                            <div className="min-w-[200px]">
+                                                <Combobox
+                                                    options={SUPPLIER_OPTIONS}
+                                                    value={t.fromTo || ''}
+                                                    onChange={(value) => {
+                                                        setTransactions((prev) =>
+                                                            prev.map((tx) =>
+                                                                tx.id === t.id
+                                                                    ? {
+                                                                          ...tx,
+                                                                          fromTo: value || undefined,
+                                                                      }
+                                                                    : tx
+                                                            )
+                                                        );
+                                                    }}
+                                                    placeholder="Select supplier..."
+                                                    searchPlaceholder="Search supplier..."
+                                                    className="h-8"
+                                                />
+                                            </div>
+                                        </TableCell>
+                                        <TableCell>
+                                            <div className="flex items-center gap-2">
+                                                <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-2">
+                                                    {t.category || 'Select category'}
+                                                </span>
+                                                <Button
+                                                    variant="outline"
+                                                    size="sm"
+                                                    onClick={() => {
+                                                        setTransactions((prev) =>
+                                                            prev.map((tx) =>
+                                                                tx.id === t.id
+                                                                    ? { ...tx, matched: !tx.matched }
+                                                                    : tx
+                                                            )
+                                                        );
+                                                        showSuccessToast(
+                                                            t.matched ? 'Unmatched' : 'Matched'
+                                                        );
+                                                    }}
+                                                >
+                                                    {t.matched ? 'Matched' : 'Match'}
+                                                </Button>
+                                                <div className="min-w-[220px]">
+                                                    <Combobox
+                                                        options={CATEGORY_OPTIONS}
+                                                        value={t.category || ''}
+                                                        onChange={(value) => {
+                                                            setTransactions((prev) =>
+                                                                prev.map((tx) =>
+                                                                    tx.id === t.id
+                                                                        ? {
+                                                                              ...tx,
+                                                                              category:
+                                                                                  value || undefined,
+                                                                          }
+                                                                        : tx
+                                                                )
+                                                            );
+                                                            if (value) {
+                                                                showSuccessToast(
+                                                                    `Category set to ${value}`
+                                                                );
+                                                            }
+                                                        }}
+                                                        placeholder="Select category..."
+                                                        searchPlaceholder="Search category..."
+                                                        className="h-8"
+                                                    />
+                                                </div>
+                                            </div>
+                                        </TableCell>
+                                        <TableCell>
+                                            <div className="flex items-center gap-2">
+                                                <Button
+                                                    variant="outline"
+                                                    size="sm"
+                                                    onClick={() => {
+                                                        setTransactions((prev) =>
+                                                            prev.map((tx) =>
+                                                                tx.id === t.id
+                                                                    ? {
+                                                                          ...tx,
+                                                                          status: 'posted',
+                                                                      }
+                                                                    : tx
+                                                            )
+                                                        );
+                                                        showSuccessToast('Transaction posted');
+                                                    }}
+                                                >
+                                                    Post
+                                                </Button>
+                                                <DropdownMenu>
+                                                    <DropdownMenuTrigger asChild>
+                                                        <Button variant="outline" size="sm">
+                                                            ⋯
+                                                        </Button>
+                                                    </DropdownMenuTrigger>
+                                                    <DropdownMenuContent align="end">
+                                                        <DropdownMenuItem
+                                                            onClick={() =>
+                                                                showSuccessToast(
+                                                                    'Split editor coming soon'
+                                                                )
+                                                            }
+                                                        >
+                                                            Split
+                                                        </DropdownMenuItem>
+                                                        <DropdownMenuItem
+                                                            onClick={() =>
+                                                                showSuccessToast(
+                                                                    'Rule created (demo placeholder)'
+                                                                )
+                                                            }
+                                                        >
+                                                            Create rule
+                                                        </DropdownMenuItem>
+                                                        <DropdownMenuItem
+                                                            onClick={() => {
+                                                                setTransactions((prev) =>
+                                                                    prev.map((tx) =>
+                                                                        tx.id === t.id
+                                                                            ? {
+                                                                                  ...tx,
+                                                                                  status: 'excluded',
+                                                                              }
+                                                                            : tx
+                                                                    )
+                                                                );
+                                                                showSuccessToast(
+                                                                    'Transaction excluded'
+                                                                );
+                                                            }}
+                                                        >
+                                                            Exclude
+                                                        </DropdownMenuItem>
+                                                    </DropdownMenuContent>
+                                                </DropdownMenu>
+                                            </div>
+                                        </TableCell>
+                                    </TableRow>
+                                ))
+                            )}
+                        </TableBody>
+                    </Table>
+
+                    {/* Pagination */}
+                    <TablePagination
+                        page={page}
+                        totalPages={totalPages}
+                        totalItems={filtered.length}
+                        itemsPerPage={itemsPerPage}
+                        onPageChange={setPage}
                     />
                 </div>
             </div>

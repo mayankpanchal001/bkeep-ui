@@ -1,5 +1,20 @@
-/* eslint-disable react-hooks/rules-of-hooks */
-import { useMemo, useState } from 'react';
+ 
+import CreateInvoiceModal from '@/components/invoice/CreateInvoiceModal';
+import Button from '@/components/typography/Button';
+import { InputField } from '@/components/typography/InputFields';
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableEmptyState,
+    TableHead,
+    TableHeader,
+    TableRow,
+    TableRowCheckbox,
+    TableSelectAllCheckbox,
+    TableSelectionToolbar,
+} from '@/components/ui/table';
+import { useState } from 'react';
 import {
     FaCheckCircle,
     FaClock,
@@ -12,10 +27,6 @@ import {
     FaTimesCircle,
     FaTrash,
 } from 'react-icons/fa';
-import CreateInvoiceModal from '@/components/invoice/CreateInvoiceModal';
-import { Column, DataTable } from '@/components/shared/DataTable';
-import Button from '@/components/typography/Button';
-import { InputField } from '@/components/typography/InputFields';
 
 type Invoice = {
     id: string;
@@ -101,6 +112,7 @@ const Invoicepage = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [statusFilter, setStatusFilter] = useState<string>('all');
     const [showCreateModal, setShowCreateModal] = useState(false);
+    const [selectedItems, setSelectedItems] = useState<(string | number)[]>([]);
 
     const filteredInvoices = invoices.filter((invoice) => {
         const matchesSearch =
@@ -114,6 +126,8 @@ const Invoicepage = () => {
             statusFilter === 'all' || invoice.status === statusFilter;
         return matchesSearch && matchesStatus;
     });
+
+    const rowIds = filteredInvoices.map((i) => i.id);
 
     // When modal is open, show it instead of the regular content
     if (showCreateModal) {
@@ -135,93 +149,10 @@ const Invoicepage = () => {
         );
     }
 
-    const columns: Column<Invoice>[] = useMemo(
-        () => [
-            {
-                header: 'Invoice #',
-                accessorKey: 'invoiceNumber',
-                className: 'text-left font-medium text-primary',
-            },
-            {
-                header: 'Client',
-                accessorKey: 'clientName',
-                className: 'text-left text-primary',
-            },
-            {
-                header: 'Date',
-                accessorKey: 'date',
-                cell: (invoice) => (
-                    <span className="text-primary/75">
-                        {new Date(invoice.date).toLocaleDateString()}
-                    </span>
-                ),
-                className: 'text-left',
-            },
-            {
-                header: 'Due Date',
-                accessorKey: 'dueDate',
-                cell: (invoice) => (
-                    <span className="text-primary/75">
-                        {new Date(invoice.dueDate).toLocaleDateString()}
-                    </span>
-                ),
-                className: 'text-left',
-            },
-            {
-                header: 'Amount',
-                accessorKey: 'amount',
-                cell: (invoice) => currencyFormatter.format(invoice.amount),
-                className: 'text-right font-semibold text-primary',
-            },
-            {
-                header: 'Status',
-                accessorKey: 'status',
-                cell: (invoice) => {
-                    const StatusIcon = statusConfig[invoice.status].icon;
-                    return (
-                        <div className="flex justify-center">
-                            <span
-                                className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium ${
-                                    statusConfig[invoice.status].color
-                                }`}
-                            >
-                                <StatusIcon className="w-3 h-3" />
-                                {statusConfig[invoice.status].label}
-                            </span>
-                        </div>
-                    );
-                },
-                className: 'text-center',
-            },
-            {
-                header: 'Actions',
-                cell: () => (
-                    <div className="flex items-center justify-center gap-2">
-                        <button
-                            className="p-2 text-primary/50 hover:text-primary hover:bg-primary/10 rounded transition-colors"
-                            title="View"
-                        >
-                            <FaEye className="w-4 h-4" />
-                        </button>
-                        <button
-                            className="p-2 text-primary/50 hover:text-primary hover:bg-primary/10 rounded transition-colors"
-                            title="Edit"
-                        >
-                            <FaEdit className="w-4 h-4" />
-                        </button>
-                        <button
-                            className="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
-                            title="Delete"
-                        >
-                            <FaTrash className="w-4 h-4" />
-                        </button>
-                    </div>
-                ),
-                className: 'text-center w-32',
-            },
-        ],
-        []
-    );
+    const handleBulkAction = (action: string) => {
+        console.log(`${action} invoices:`, selectedItems);
+        setSelectedItems([]);
+    };
 
     return (
         <div className="p-6 max-w-[1600px] mx-auto">
@@ -232,7 +163,7 @@ const Invoicepage = () => {
                         Invoices
                     </h1>
                     <p className="text-primary/75 text-sm mt-1">
-                        Manage your client invoices and payments
+                        Manage your company invoices and payments
                     </p>
                 </div>
                 <Button
@@ -277,19 +208,126 @@ const Invoicepage = () => {
 
             {/* Invoices Table */}
             <div className="bg-white rounded-2 shadow-sm border border-primary/10 overflow-hidden">
-                <DataTable
-                    data={filteredInvoices}
-                    columns={columns}
-                    emptyMessage={
-                        <div className="px-4 py-8 text-center text-primary/50">
-                            No invoices found
-                        </div>
-                    }
-                    onRowClick={(invoice) => {
-                        // Optional: Navigate to detail view
-                        console.log('Clicked invoice:', invoice);
-                    }}
-                />
+                <Table
+                    enableSelection
+                    rowIds={rowIds}
+                    selectedIds={selectedItems}
+                    onSelectionChange={setSelectedItems}
+                >
+                    <TableSelectionToolbar>
+                        <button
+                            onClick={() => handleBulkAction('Send')}
+                            className="px-3 py-1.5 text-xs font-medium text-blue-700 bg-blue-100 hover:bg-blue-200 rounded-md transition-colors"
+                        >
+                            Send Selected
+                        </button>
+                        <button
+                            onClick={() => handleBulkAction('Delete')}
+                            className="px-3 py-1.5 text-xs font-medium text-red-700 bg-red-100 hover:bg-red-200 rounded-md transition-colors"
+                        >
+                            Delete Selected
+                        </button>
+                    </TableSelectionToolbar>
+
+                    <TableHeader>
+                        <tr>
+                            <TableHead>
+                                <TableSelectAllCheckbox />
+                            </TableHead>
+                            <TableHead sortable sortKey="invoiceNumber">Invoice #</TableHead>
+                            <TableHead sortable sortKey="clientName">Company</TableHead>
+                            <TableHead sortable sortKey="date">Date</TableHead>
+                            <TableHead sortable sortKey="dueDate">Due Date</TableHead>
+                            <TableHead align="right" sortable sortKey="amount">Amount</TableHead>
+                            <TableHead align="center">Status</TableHead>
+                            <TableHead align="center">Actions</TableHead>
+                        </tr>
+                    </TableHeader>
+                    <TableBody>
+                        {filteredInvoices.length === 0 ? (
+                            <TableEmptyState
+                                colSpan={8}
+                                message="No invoices found"
+                                description="Create your first invoice to get started"
+                            />
+                        ) : (
+                            filteredInvoices.map((invoice) => {
+                                const StatusIcon = statusConfig[invoice.status].icon;
+                                return (
+                                    <TableRow
+                                        key={invoice.id}
+                                        rowId={invoice.id}
+                                        onClick={() => console.log('Clicked invoice:', invoice)}
+                                    >
+                                        <TableCell>
+                                            <TableRowCheckbox rowId={invoice.id} />
+                                        </TableCell>
+                                        <TableCell>
+                                            <span className="font-medium text-primary">
+                                                {invoice.invoiceNumber}
+                                            </span>
+                                        </TableCell>
+                                        <TableCell>
+                                            <span className="text-primary">
+                                                {invoice.clientName}
+                                            </span>
+                                        </TableCell>
+                                        <TableCell>
+                                            <span className="text-primary/75">
+                                                {new Date(invoice.date).toLocaleDateString()}
+                                            </span>
+                                        </TableCell>
+                                        <TableCell>
+                                            <span className="text-primary/75">
+                                                {new Date(invoice.dueDate).toLocaleDateString()}
+                                            </span>
+                                        </TableCell>
+                                        <TableCell align="right">
+                                            <span className="font-semibold text-primary">
+                                                {currencyFormatter.format(invoice.amount)}
+                                            </span>
+                                        </TableCell>
+                                        <TableCell align="center">
+                                            <span
+                                                className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium ${
+                                                    statusConfig[invoice.status].color
+                                                }`}
+                                            >
+                                                <StatusIcon className="w-3 h-3" />
+                                                {statusConfig[invoice.status].label}
+                                            </span>
+                                        </TableCell>
+                                        <TableCell align="center">
+                                            <div className="flex items-center justify-center gap-2">
+                                                <button
+                                                    className="p-2 text-primary/50 hover:text-primary hover:bg-primary/10 rounded transition-colors"
+                                                    title="View"
+                                                    onClick={(e) => e.stopPropagation()}
+                                                >
+                                                    <FaEye className="w-4 h-4" />
+                                                </button>
+                                                <button
+                                                    className="p-2 text-primary/50 hover:text-primary hover:bg-primary/10 rounded transition-colors"
+                                                    title="Edit"
+                                                    onClick={(e) => e.stopPropagation()}
+                                                >
+                                                    <FaEdit className="w-4 h-4" />
+                                                </button>
+                                                <button
+                                                    className="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
+                                                    title="Delete"
+                                                    onClick={(e) => e.stopPropagation()}
+                                                >
+                                                    <FaTrash className="w-4 h-4" />
+                                                </button>
+                                            </div>
+                                        </TableCell>
+                                    </TableRow>
+                                );
+                            })
+                        )}
+                    </TableBody>
+                </Table>
             </div>
         </div>
     );

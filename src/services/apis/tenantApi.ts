@@ -1,3 +1,7 @@
+import {
+    PLURAL_TENANT_PREFIX,
+    SINGLE_TENANT_PREFIX,
+} from '@/components/homepage/constants';
 import type { QueryClient } from '@tanstack/react-query';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { PaginationInfo, Tenant } from '../../types';
@@ -24,6 +28,13 @@ export type TenantsListResponse = {
         items: Tenant[];
         pagination: PaginationInfo;
     };
+};
+
+export type TenantResponse = {
+    success: boolean;
+    statusCode: number;
+    message: string;
+    data: Tenant;
 };
 
 // Get user-accessible tenants (for all users)
@@ -78,6 +89,47 @@ export async function getTenantsRequest(
     return response.data;
 }
 
+export async function getTenantByIdRequest(
+    id: string
+): Promise<TenantResponse> {
+    const response = await axiosInstance.get(`/tenants/${id}`);
+    return response.data;
+}
+
+export const useTenantById = (
+    id?: string,
+    options?: { enabled?: boolean; showErrorToast?: boolean }
+) => {
+    return useQuery<TenantResponse, Error>({
+        queryKey: ['tenant', id],
+        enabled: options?.enabled !== false && !!id,
+        queryFn: async () => {
+            try {
+                if (!id) {
+                    throw new Error('Tenant ID is required');
+                }
+                return await getTenantByIdRequest(id);
+            } catch (error) {
+                const maybeAxiosError = error as {
+                    response?: {
+                        status?: number;
+                        data?: { message?: string };
+                    };
+                };
+
+                if (options?.showErrorToast !== false) {
+                    const message =
+                        maybeAxiosError.response?.data?.message ||
+                        `Failed to fetch ${SINGLE_TENANT_PREFIX}`;
+                    showErrorToast(message);
+                }
+                throw error;
+            }
+        },
+        retry: false,
+    });
+};
+
 // Hook for getting user-accessible tenants (works for all users)
 export const useUserTenants = (params: TenantsQueryParams = {}) => {
     return useQuery<TenantsListResponse, Error>({
@@ -95,7 +147,7 @@ export const useUserTenants = (params: TenantsQueryParams = {}) => {
                 };
                 const message =
                     maybeAxiosError.response?.data?.message ||
-                    'Failed to fetch tenants';
+                    `Failed to fetch ${PLURAL_TENANT_PREFIX}`;
                 showErrorToast(message);
                 throw error;
             }
@@ -130,7 +182,7 @@ export const useTenants = (
                 ) {
                     const message =
                         maybeAxiosError.response?.data?.message ||
-                        'Failed to fetch tenants';
+                        `Failed to fetch ${PLURAL_TENANT_PREFIX}`;
                     showErrorToast(message);
                 }
                 throw error;
@@ -178,13 +230,15 @@ export const useCreateTenant = () => {
                 };
                 const message =
                     maybeAxiosError.response?.data?.message ||
-                    'Failed to create tenant';
+                    `Failed to create ${SINGLE_TENANT_PREFIX}`;
                 showErrorToast(message);
                 throw error;
             }
         },
         onSuccess: (data) => {
-            showSuccessToast(data.message || 'Tenant created successfully');
+            showSuccessToast(
+                data.message || `${SINGLE_TENANT_PREFIX} created successfully`
+            );
             invalidateTenantQueries(queryClient);
         },
     });
@@ -218,13 +272,15 @@ export const useUpdateTenant = () => {
                 };
                 const message =
                     maybeAxiosError.response?.data?.message ||
-                    'Failed to update tenant';
+                    `Failed to update ${SINGLE_TENANT_PREFIX}`;
                 showErrorToast(message);
                 throw error;
             }
         },
         onSuccess: (data) => {
-            showSuccessToast(data.message || 'Tenant updated successfully');
+            showSuccessToast(
+                data.message || `${SINGLE_TENANT_PREFIX} updated successfully`
+            );
             invalidateTenantQueries(queryClient);
         },
     });
@@ -263,13 +319,15 @@ export const useSwitchTenant = () => {
                 };
                 const message =
                     maybeAxiosError.response?.data?.message ||
-                    'Failed to switch tenant';
+                    `Failed to switch ${SINGLE_TENANT_PREFIX}`;
                 showErrorToast(message);
                 throw error;
             }
         },
         onSuccess: (data) => {
-            showSuccessToast(data.message || 'Tenant switched successfully');
+            showSuccessToast(
+                data.message || `${SINGLE_TENANT_PREFIX} switched successfully`
+            );
         },
     });
 };

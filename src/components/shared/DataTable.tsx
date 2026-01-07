@@ -239,7 +239,6 @@ export function DataTable<T extends { [key: string]: any }>({
                                                     column.accessorKey || index
                                                 )}
                                                 className={cn(
-                                                    'py-4',
                                                     column.className,
                                                     column.cellClassName?.(item)
                                                 )}

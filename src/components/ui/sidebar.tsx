@@ -282,18 +282,19 @@ function SidebarTrigger({
             data-slot="sidebar-trigger"
             variant="ghost"
             size="icon"
-            className={cn('size-7', className)}
+            className={cn('size-9', className)}
             onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
                 onClick?.(event);
                 toggleSidebar();
             }}
             {...props}
         >
-            <PanelLeftIcon />
+            <PanelLeftIcon className="size-5" />
             <span className="sr-only">Toggle Sidebar</span>
         </Button>
     );
 }
+
 
 function SidebarRail({ className, ...props }: React.ComponentProps<'button'>) {
     const { toggleSidebar } = useSidebar();
@@ -751,5 +752,5 @@ export {
     SidebarRail,
     SidebarSeparator,
     SidebarTrigger,
-    useSidebar,
+    useSidebar
 };

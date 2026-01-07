@@ -1,8 +1,6 @@
 import ConfirmationDialog from '@/components/shared/ConfirmationDialog';
-import { Column, DataTable } from '@/components/shared/DataTable';
 import ImportFileModal from '@/components/shared/ImportFileModal';
 import ImportMappingModal from '@/components/shared/ImportMappingModal';
-import Loading from '@/components/shared/Loading';
 import Button from '@/components/typography/Button';
 import { InputField, SelectField } from '@/components/typography/InputFields';
 import {
@@ -12,7 +10,20 @@ import {
     DrawerHeader,
     DrawerTitle,
 } from '@/components/ui/drawer';
-import { useMemo, useState } from 'react';
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableEmptyState,
+    TableHead,
+    TableHeader,
+    TableLoadingState,
+    TableRow,
+    TableRowCheckbox,
+    TableSelectAllCheckbox,
+    TableSelectionToolbar,
+} from '@/components/ui/table';
+import { useEffect, useMemo, useState } from 'react';
 import {
     FaEdit,
     FaFileDownload,
@@ -240,6 +251,7 @@ const getSubTypeByDetailType = (
 
 const ChartOfAccountspage = () => {
     const [searchQuery, setSearchQuery] = useState('');
+    const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
     const [selectedType, setSelectedType] = useState<AccountType | 'all'>(
         'all'
     );
@@ -250,6 +262,7 @@ const ChartOfAccountspage = () => {
     const [deleteAccount, setDeleteAccount] = useState<ChartOfAccount | null>(
         null
     );
+    const [selectedItems, setSelectedItems] = useState<(string | number)[]>([]);
 
     // Import State
     const [showUploadModal, setShowUploadModal] = useState(false);
@@ -269,9 +282,16 @@ const ChartOfAccountspage = () => {
     const [selectedAccountSubType, setSelectedAccountSubType] =
         useState<string>('bank');
 
+    useEffect(() => {
+        const handle = window.setTimeout(() => {
+            setDebouncedSearchQuery(searchQuery.trim());
+        }, 250);
+        return () => window.clearTimeout(handle);
+    }, [searchQuery]);
+
     // API hooks
-    const { data, isLoading, error } = useChartOfAccounts({
-        search: searchQuery || undefined,
+    const { data, isLoading, isFetching, error } = useChartOfAccounts({
+        search: debouncedSearchQuery || undefined,
         accountType: selectedType !== 'all' ? selectedType : undefined,
     });
 
@@ -282,8 +302,28 @@ const ChartOfAccountspage = () => {
     const importMutation = useImportChartOfAccounts();
 
     const accounts = useMemo(() => {
-        return data?.data?.items || [];
-    }, [data]);
+        const allAccounts = data?.data?.items || [];
+        const q = searchQuery.trim().toLowerCase();
+
+        if (!q) return allAccounts;
+
+        return allAccounts.filter((account) => {
+            const haystack = [
+                account.accountName,
+                account.accountNumber,
+                account.description,
+                account.accountType,
+                account.accountDetailType,
+            ]
+                .filter(Boolean)
+                .join(' ')
+                .toLowerCase();
+
+            return haystack.includes(q);
+        });
+    }, [data, searchQuery]);
+
+    const rowIds = accounts.map((a) => a.id);
 
     // Derived state for detail type options
     const detailTypeOptions = useMemo(() => {
@@ -432,158 +472,189 @@ const ChartOfAccountspage = () => {
         downloadSampleData();
     };
 
-    const columns: Column<ChartOfAccount>[] = [
-        {
-            header: 'Account Name',
-            cell: (account) => (
-                <div className="flex flex-col">
-                    <div className="font-medium text-primary">
-                        {account.accountName}
-                    </div>
-                    <div className="text-xs text-primary/50 mt-1">
-                        {account.accountNumber}
-                    </div>
-                    {account.description && (
-                        <div className="text-xs text-primary/50 mt-1">
-                            {account.description}
-                        </div>
-                    )}
-                </div>
-            ),
-        },
-        {
-            header: 'Type',
-            cell: (account) => (
-                <span className="text-sm text-primary">
-                    {ACCOUNT_TYPE_DISPLAY[account.accountType]}
-                </span>
-            ),
-        },
-        {
-            header: 'Detail Type',
-            cell: (account) => (
-                <span className="text-sm text-primary/75 capitalize">
-                    {account.accountDetailType.replace(/-/g, ' ')}
-                </span>
-            ),
-        },
-        {
-            header: 'Current Balance',
-            cell: (account) => (
-                <span className="font-semibold text-primary">
-                    {currencyFormatter.format(
-                        parseFloat(
-                            account.currentBalance ||
-                                String(account.openingBalance)
-                        )
-                    )}
-                </span>
-            ),
-        },
-        {
-            header: 'Actions',
-            className: 'text-center w-24',
-            cell: (account) => (
-                <div className="flex items-center justify-center gap-2">
-                    <button
-                        onClick={() => handleOpenEditModal(account)}
-                        className="p-2 text-primary/50 hover:text-primary hover:bg-primary/10 rounded transition-colors"
-                        title="Edit"
-                    >
-                        <FaEdit className="w-4 h-4" />
-                    </button>
-                    <button
-                        onClick={() => setDeleteAccount(account)}
-                        className="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
-                        title="Delete"
-                    >
-                        <FaTrash className="w-4 h-4" />
-                    </button>
-                </div>
-            ),
-        },
-    ];
+    const handleBulkDelete = () => {
+        console.log('Deleting accounts:', selectedItems);
+        setSelectedItems([]);
+    };
 
-    if (isLoading) return <Loading />;
-    if (error)
-        return (
-            <div className="text-red-500">
-                Error loading accounts: {error.message}
-            </div>
-        );
+    const handleBulkExport = () => {
+        console.log('Exporting accounts:', selectedItems);
+        setSelectedItems([]);
+    };
 
     return (
         <div className="h-full flex flex-col gap-4">
             {/* Filters and Search */}
-            <div className="bg-white rounded-2 shadow-sm border border-primary/10 p-4">
-                <div className="flex flex-col sm:flex-row gap-4">
-                    <div className="flex-1">
-                        <div className="relative">
-                            <InputField
-                                id="search-accounts"
-                                placeholder="Search accounts..."
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                icon={<FaSearch />}
-                            />
-                        </div>
-                    </div>
-                    <div className="flex items-center min-w-[150px] gap-2">
-                        <FaFilter className="text-primary/50" />
-                        <SelectField
-                            id="filter-account-type"
-                            value={selectedType}
-                            label="Filter accounts by type"
-                            onChange={(e) =>
-                                setSelectedType(
-                                    e.target.value as AccountType | 'all'
-                                )
-                            }
-                            options={[
-                                { value: 'all', label: 'All Types' },
-                                ...ACCOUNT_TYPE_OPTIONS,
-                            ]}
+            <div className="flex flex-col sm:flex-row gap-4">
+                <div className="flex-1">
+                    <div className="relative">
+                        <InputField
+                            id="search-accounts"
+                            placeholder="Search accounts..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            icon={<FaSearch />}
                         />
                     </div>
-                    <div className="flex items-center gap-3">
-                        <Button
-                            onClick={handleDownloadSample}
-                            variant="outline"
-                            icon={<FaFileDownload />}
-                            title="Download Sample Excel Template"
-                        >
-                            Sample Data
-                        </Button>
-                        <Button
-                            onClick={handleImportClick}
-                            variant="outline"
-                            icon={<FaFileImport />}
-                            loading={importMutation.isPending}
-                            disabled={importMutation.isPending}
-                        >
-                            Import
-                        </Button>
+                </div>
+                <div className="flex items-center min-w-[150px] gap-2">
+                    <FaFilter className="text-primary/50" />
+                    <SelectField
+                        id="filter-account-type"
+                        value={selectedType}
+                        label="Filter accounts by type"
+                        onChange={(e) =>
+                            setSelectedType(
+                                e.target.value as AccountType | 'all'
+                            )
+                        }
+                        options={[
+                            { value: 'all', label: 'All Types' },
+                            ...ACCOUNT_TYPE_OPTIONS,
+                        ]}
+                    />
+                </div>
+                <div className="flex items-center gap-3">
+                    <Button
+                        onClick={handleDownloadSample}
+                        variant="outline"
+                        icon={<FaFileDownload />}
+                        title="Download Sample Excel Template"
+                    >
+                        Sample Data
+                    </Button>
+                    <Button
+                        onClick={handleImportClick}
+                        variant="outline"
+                        icon={<FaFileImport />}
+                        loading={importMutation.isPending}
+                        disabled={importMutation.isPending}
+                    >
+                        Import
+                    </Button>
 
-                        <div className="h-6 w-px bg-gray-300 mx-2"></div>
-                        <Button
-                            onClick={handleOpenAddModal}
-                            variant="primary"
-                            icon={<FaPlus />}
-                        >
-                            New Account
-                        </Button>
-                    </div>
+                    <div className="h-6 w-px bg-gray-300 mx-2"></div>
+                    <Button
+                        onClick={handleOpenAddModal}
+                        variant="primary"
+                        icon={<FaPlus />}
+                    >
+                        New Account
+                    </Button>
                 </div>
             </div>
 
+            {/* Error State */}
+            {error && (
+                <div className="p-3 text-sm text-red-600 bg-red-50 border-b border-red-200 rounded">
+                    Error loading accounts: {error.message}
+                </div>
+            )}
+
             {/* Accounts Table */}
-            <div className="bg-white rounded-2 shadow-sm border border-primary/10 overflow-hidden">
-                <DataTable
-                    data={accounts}
-                    columns={columns}
-                    emptyMessage="No accounts found"
-                />
-            </div>
+            <Table
+                enableSelection
+                rowIds={rowIds}
+                selectedIds={selectedItems}
+                onSelectionChange={setSelectedItems}
+            >
+                <TableSelectionToolbar>
+                    <button
+                        onClick={handleBulkExport}
+                        className="px-3 py-1.5 text-xs font-medium text-blue-700 bg-blue-100 hover:bg-blue-200 rounded-md transition-colors"
+                    >
+                        Export Selected
+                    </button>
+                    <button
+                        onClick={handleBulkDelete}
+                        className="px-3 py-1.5 text-xs font-medium text-red-700 bg-red-100 hover:bg-red-200 rounded-md transition-colors"
+                    >
+                        Delete Selected
+                    </button>
+                </TableSelectionToolbar>
+
+                <TableHeader>
+                    <tr>
+                        <TableHead>
+                            <TableSelectAllCheckbox />
+                        </TableHead>
+                        <TableHead sortable sortKey="accountName">Account Name</TableHead>
+                        <TableHead sortable sortKey="accountType">Type</TableHead>
+                        <TableHead>Detail Type</TableHead>
+                        <TableHead align="right" sortable sortKey="currentBalance">Current Balance</TableHead>
+                        <TableHead align="center">Actions</TableHead>
+                    </tr>
+                </TableHeader>
+                <TableBody>
+                    {isLoading || isFetching ? (
+                        <TableLoadingState colSpan={6} rows={8} />
+                    ) : accounts.length === 0 ? (
+                        <TableEmptyState
+                            colSpan={6}
+                            message="No accounts found"
+                            description="Create your first account to get started"
+                        />
+                    ) : (
+                        accounts.map((account) => (
+                            <TableRow key={account.id} rowId={account.id}>
+                                <TableCell>
+                                    <TableRowCheckbox rowId={account.id} />
+                                </TableCell>
+                                <TableCell>
+                                    <div className="flex flex-col">
+                                        <div className="font-medium text-primary">
+                                            {account.accountName}
+                                        </div>
+                                        {account.description && (
+                                            <div className="text-xs text-primary/50 mt-1">
+                                                {account.description}
+                                            </div>
+                                        )}
+                                    </div>
+                                </TableCell>
+                                <TableCell>
+                                    <span className="text-sm text-primary">
+                                        {ACCOUNT_TYPE_DISPLAY[account.accountType]}
+                                    </span>
+                                </TableCell>
+                                <TableCell>
+                                    <span className="text-sm text-primary/75 capitalize">
+                                        {account.accountDetailType.replace(/-/g, ' ')}
+                                    </span>
+                                </TableCell>
+                                <TableCell align="right">
+                                    <span className="font-semibold text-primary">
+                                        {currencyFormatter.format(
+                                            parseFloat(
+                                                account.currentBalance ||
+                                                    String(account.openingBalance)
+                                            )
+                                        )}
+                                    </span>
+                                </TableCell>
+                                <TableCell align="center">
+                                    <div className="flex items-center justify-center gap-2">
+                                        <button
+                                            onClick={() => handleOpenEditModal(account)}
+                                            className="p-2 text-primary/50 hover:text-primary hover:bg-primary/10 rounded transition-colors"
+                                            title="Edit"
+                                        >
+                                            <FaEdit className="w-4 h-4" />
+                                        </button>
+                                        <button
+                                            onClick={() => setDeleteAccount(account)}
+                                            className="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
+                                            title="Delete"
+                                        >
+                                            <FaTrash className="w-4 h-4" />
+                                        </button>
+                                    </div>
+                                </TableCell>
+                            </TableRow>
+                        ))
+                    )}
+                </TableBody>
+            </Table>
 
             {/* Add/Edit Account Drawer */}
             <Drawer
