@@ -209,7 +209,7 @@ export default function JournalEntriespage() {
                         }
                         className="px-2 py-1.5 text-sm border border-primary/10 rounded focus:ring-1 focus:ring-primary focus:border-transparent"
                     >
-                        <option value="">All Statuses</option>
+                        <option value="">All</option>
                         <option value="draft">Draft</option>
                         <option value="posted">Posted</option>
                         <option value="voided">Voided</option>

@@ -366,7 +366,7 @@ type ChangePasswordPayload = {
 export async function changePasswordRequest(
     payload: ChangePasswordPayload
 ): Promise<{ message: string }> {
-    const response = await axiosInstance.post('/auth/change-password', payload);
+    const response = await axiosInstance.put('/auth/change-password', payload);
     return response.data;
 }
 

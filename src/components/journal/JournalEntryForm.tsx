@@ -305,19 +305,6 @@ export function JournalEntryForm({
                     </button>
                     <button
                         type="button"
-                        className="flex items-center gap-2 hover:text-primary font-medium"
-                    >
-                        <FaRegCommentAlt className="text-lg" />{' '}
-                        <span>Feedback</span>
-                    </button>
-                    <button type="button" className="hover:text-primary">
-                        <FaCog className="text-2xl" />
-                    </button>
-                    <button type="button" className="hover:text-primary">
-                        <FaQuestionCircle className="text-2xl" />
-                    </button>
-                    <button
-                        type="button"
                         onClick={onCancel}
                         className="hover:text-primary"
                     >
