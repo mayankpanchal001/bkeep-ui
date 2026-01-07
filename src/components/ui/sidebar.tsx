@@ -10,7 +10,8 @@ import * as React from 'react';
 import { useIsMobile } from '../../hooks/use-mobile';
 import { cn } from '../../utils/cn';
 import { Button } from './button';
-import { Input } from './input';
+
+import Input from './input';
 import { Separator } from './separator';
 import {
     Sheet,
@@ -101,8 +102,8 @@ function SidebarProvider({
     React.useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
             if (
-                event.key === SIDEBAR_KEYBOARD_SHORTCUT &&
-                (event.metaKey || event.ctrlKey)
+                (event.metaKey || event.ctrlKey) &&
+                (event.key === SIDEBAR_KEYBOARD_SHORTCUT || event.key === 's')
             ) {
                 event.preventDefault();
                 toggleSidebar();

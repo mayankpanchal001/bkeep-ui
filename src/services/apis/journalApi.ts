@@ -3,11 +3,63 @@ import type {
     CreateJournalEntryPayload,
     JournalEntriesListResponse,
     JournalEntryFilters,
+    JournalEntry,
     JournalEntryResponse,
     UpdateJournalEntryPayload,
 } from '../../types/journal';
 import { showErrorToast, showSuccessToast } from '../../utills/toast';
 import axiosInstance from '../axiosClient';
+
+const toNumber = (v: unknown) => {
+    if (typeof v === 'number') return Number.isFinite(v) ? v : 0;
+    if (typeof v === 'string') {
+        const n = Number(v);
+        return Number.isFinite(n) ? n : 0;
+    }
+    return 0;
+};
+
+const isRecord = (v: unknown): v is Record<string, unknown> =>
+    typeof v === 'object' && v !== null;
+
+const normalizeJournalEntry = (entry: unknown): JournalEntry => {
+    if (!isRecord(entry)) return entry as JournalEntry;
+    const lines = Array.isArray(entry.lines) ? entry.lines : [];
+    const normalizedLines = lines.map((line) => {
+        if (!isRecord(line)) return line;
+        return {
+            ...line,
+            debit: toNumber(line.debit),
+            credit: toNumber(line.credit),
+            lineNumber:
+                typeof line.lineNumber === 'number'
+                    ? line.lineNumber
+                    : toNumber(line.lineNumber),
+            id: typeof line.id === 'string' ? line.id : String(line.id ?? ''),
+        };
+    });
+
+    return {
+        ...(entry as JournalEntry),
+        entryNumber:
+            typeof entry.entryNumber === 'string'
+                ? entry.entryNumber
+                : typeof (entry as Record<string, unknown>).journalNo ===
+                    'string'
+                  ? ((entry as Record<string, unknown>).journalNo as string)
+                  : '',
+        entryDate:
+            typeof entry.entryDate === 'string'
+                ? entry.entryDate
+                : typeof (entry as Record<string, unknown>).journalDate ===
+                    'string'
+                  ? ((entry as Record<string, unknown>).journalDate as string)
+                  : '',
+        totalDebit: toNumber(entry.totalDebit),
+        totalCredit: toNumber(entry.totalCredit),
+        lines: normalizedLines as JournalEntry['lines'],
+    };
+};
 
 // ============= API Functions =============
 
@@ -30,7 +82,16 @@ export async function getJournalEntries(
     const response = await axiosInstance.get(
         `/journal-entries${params.toString() ? `?${params.toString()}` : ''}`
     );
-    return response.data;
+    const payload = response.data as JournalEntriesListResponse;
+    const list = payload?.data?.journalEntries;
+    if (!Array.isArray(list)) return payload;
+    return {
+        ...payload,
+        data: {
+            ...payload.data,
+            journalEntries: list.map(normalizeJournalEntry),
+        },
+    };
 }
 
 /**
@@ -40,7 +101,27 @@ export async function getJournalEntryById(
     id: string
 ): Promise<JournalEntryResponse> {
     const response = await axiosInstance.get(`/journal-entries/${id}`);
-    return response.data;
+    const payload = response.data as unknown as {
+        success: boolean;
+        statusCode: number;
+        message: string;
+        data?: unknown;
+    };
+
+    const data = payload?.data;
+    const entry =
+        isRecord(data) && 'journalEntry' in data
+            ? (data as Record<string, unknown>).journalEntry
+            : data;
+
+    if (!entry) return response.data as JournalEntryResponse;
+
+    return {
+        ...(payload as unknown as JournalEntryResponse),
+        data: {
+            journalEntry: normalizeJournalEntry(entry),
+        },
+    };
 }
 
 /**

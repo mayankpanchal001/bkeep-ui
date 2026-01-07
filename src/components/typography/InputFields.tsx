@@ -26,6 +26,7 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
         const [showPassword, setShowPassword] = useState(false);
         const isPasswordField = type === 'password';
         const inputType = isPasswordField && showPassword ? 'text' : type;
+        const name = rest.name ?? id;
 
         const togglePasswordVisibility = () => {
             setShowPassword(!showPassword);
@@ -57,7 +58,8 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
                     <input
                         ref={ref}
                         id={id}
-                        className={`input ${isPasswordField ? 'pr-10!' : 'pr-4!'} ${icon ? 'pl-10!' : 'pl-4!'}`}
+                        name={name}
+                        className={`input ${isPasswordField ? 'pr-10!' : 'pr-4!'} ${icon ? 'pl-6!' : 'pl-4!'}`}
                         type={inputType}
                         placeholder={placeholder}
                         required={required}
@@ -145,6 +147,7 @@ export const SelectField = forwardRef<
         },
         ref
     ) => {
+        const name = rest.name ?? id;
         return (
             <div className="w-full">
                 {label && labelShow && (
@@ -159,6 +162,7 @@ export const SelectField = forwardRef<
                     <select
                         ref={ref}
                         id={id}
+                        name={name}
                         className="input appearance-none"
                         required={required}
                         {...rest}
@@ -223,6 +227,7 @@ export const TextareaField = forwardRef<
         label?: string;
     }
 >(({ id, label, required, ...rest }, ref) => {
+    const name = rest.name ?? id;
     return (
         <div className="w-full">
             {label && (
@@ -235,6 +240,7 @@ export const TextareaField = forwardRef<
                 <textarea
                     ref={ref}
                     id={id}
+                    name={name}
                     className="input w-full h-20 resize-none"
                     placeholder={label}
                     required={required}

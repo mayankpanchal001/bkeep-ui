@@ -52,7 +52,7 @@ const NotificationsTab = ({
                     </div>
                 ))}
             </div>
-            <div className="flex justify-end pt-4 border-t border-primary/10">
+            <div className="flex justify-end pt-4 ">
                 <Button onClick={onSubmit} variant="primary">
                     <FaSave className="mr-2" />
                     Save Changes

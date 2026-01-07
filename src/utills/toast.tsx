@@ -1,28 +1,25 @@
-import toast from 'react-hot-toast';
-import { FaXmark } from 'react-icons/fa6';
+import { toast } from 'sonner';
+
+export type ToastId = string | number;
 
 export const showSuccessToast = (message: string) => {
-    toast.success(message, {
-        icon: '✅',
-    });
+    toast.success(message);
 };
 
 export const showErrorToast = (message: string) => {
-    toast.error(message, {
-        icon: <FaXmark className="text-primary" />,
-    });
+    toast.error(message);
 };
 
 export const showLoadingToast = (message: string) => {
     return toast.loading(message);
 };
 
-export const dismissToast = (toastId: string) => {
+export const dismissToast = (toastId?: ToastId) => {
     toast.dismiss(toastId);
 };
 
 export const updateToast = (
-    toastId: string,
+    toastId: ToastId,
     type: 'success' | 'error',
     message: string
 ) => {

@@ -1,7 +1,7 @@
 'use client';
 
-import * as React from 'react';
 import { GripVerticalIcon } from 'lucide-react';
+import * as React from 'react';
 import {
     Panel,
     Group as PanelGroup,
@@ -55,4 +55,4 @@ function ResizableHandle({
     );
 }
 
-export { ResizablePanelGroup, ResizablePanel, ResizableHandle };
+export { ResizableHandle, ResizablePanel, ResizablePanelGroup };

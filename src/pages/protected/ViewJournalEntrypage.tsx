@@ -1,15 +1,102 @@
 import { useParams } from 'react-router';
 import { useJournalEntry } from '../../services/apis/journalApi';
-import { JournalEntryLine } from '../../types/journal';
+import type { JournalEntry, JournalEntryLine } from '../../types/journal';
 import { Column, DataTable } from '@/components/shared/DataTable';
 import Loading from '@/components/shared/Loading';
 import PageHeader from '@/components/shared/PageHeader';
+import { useContacts } from '@/services/apis/contactsApi';
+import { useMemo } from 'react';
+
+const toNumber = (v: unknown) => {
+    if (typeof v === 'number') return Number.isFinite(v) ? v : 0;
+    if (typeof v === 'string') {
+        const n = Number(v);
+        return Number.isFinite(n) ? n : 0;
+    }
+    return 0;
+};
+
+const formatDateOnly = (value: unknown) => {
+    if (typeof value !== 'string' || !value) return '—';
+    const normalized = value.includes('T') ? value : `${value}T00:00:00`;
+    const dt = new Date(normalized);
+    if (Number.isNaN(dt.getTime())) return value;
+    return dt.toLocaleDateString();
+};
+
+const formatDateTime = (value: unknown) => {
+    if (typeof value !== 'string' || !value) return '—';
+    const dt = new Date(value);
+    if (Number.isNaN(dt.getTime())) return value;
+    return dt.toLocaleString();
+};
+
+const formatText = (value: unknown) => {
+    if (value === null || value === undefined) return '—';
+    const str = String(value).trim();
+    return str ? str : '—';
+};
+
+const formatBoolean = (value: unknown) => {
+    if (typeof value !== 'boolean') return '—';
+    return value ? 'Yes' : 'No';
+};
 
 export default function ViewJournalEntrypage() {
     const { id } = useParams<{ id: string }>();
     const { data, isLoading } = useJournalEntry(id!);
 
-    const journalEntry = data?.data?.journalEntry;
+    const journalEntry = useMemo<JournalEntry | undefined>(() => {
+        const root = data as unknown as Record<string, unknown> | undefined;
+        const firstData = root?.data as Record<string, unknown> | undefined;
+        const candidates = [
+            firstData?.journalEntry,
+            firstData?.data,
+            firstData,
+            root?.journalEntry,
+        ];
+        const entry = candidates.find(
+            (v) => typeof v === 'object' && v !== null
+        ) as Record<string, unknown> | undefined;
+        if (!entry) return undefined;
+        if (typeof entry.id === 'string' && Array.isArray(entry.lines))
+            return entry as unknown as JournalEntry;
+        if (
+            typeof (entry as { journalEntry?: unknown }).journalEntry ===
+                'object' &&
+            (entry as { journalEntry?: Record<string, unknown> }).journalEntry
+        ) {
+            const nested = (entry as { journalEntry: Record<string, unknown> })
+                .journalEntry;
+            if (typeof nested.id === 'string' && Array.isArray(nested.lines))
+                return nested as unknown as JournalEntry;
+        }
+        return undefined;
+    }, [data]);
+
+    const { data: contactsData } = useContacts({
+        page: 1,
+        limit: 200,
+        isActive: true,
+        sort: 'displayName',
+        order: 'asc',
+    });
+
+    const contactNameById = useMemo(() => {
+        const items =
+            (
+                contactsData as unknown as {
+                    data?: {
+                        items?: Array<{ id: string; displayName: string }>;
+                    };
+                }
+            )?.data?.items || [];
+        const map = new Map<string, string>();
+        for (const c of items) {
+            if (c?.id) map.set(c.id, c.displayName);
+        }
+        return map;
+    }, [contactsData]);
 
     const columns: Column<JournalEntryLine>[] = [
         {
@@ -23,11 +110,15 @@ export default function ViewJournalEntrypage() {
             cell: (line) => (
                 <div>
                     <div className="font-medium text-primary">
-                        {line.accountName}
+                        {line.account?.accountNumber
+                            ? `${line.account.accountNumber} - ${
+                                  line.account.accountName || ''
+                              }`.trim()
+                            : line.accountName || line.accountId}
                     </div>
-                    {line.name && (
+                    {(line.account?.accountType || line.name) && (
                         <div className="text-xs text-primary/50">
-                            {line.name}
+                            {line.account?.accountType || line.name}
                         </div>
                     )}
                 </div>
@@ -38,7 +129,7 @@ export default function ViewJournalEntrypage() {
             accessorKey: 'description',
             cell: (line) => (
                 <div className="text-primary/75">
-                    {line.description}
+                    {line.description ? line.description : '—'}
                     {line.memo && line.memo !== line.description && (
                         <div className="text-xs text-primary/50 mt-0.5">
                             Memo: {line.memo}
@@ -48,16 +139,27 @@ export default function ViewJournalEntrypage() {
             ),
         },
         {
+            header: 'Contact',
+            accessorKey: 'contactId',
+            cell: (line) => (
+                <span className="text-primary/75">
+                    {line.contactId
+                        ? contactNameById.get(line.contactId) || line.contactId
+                        : '—'}
+                </span>
+            ),
+        },
+        {
             header: 'Debit',
             accessorKey: 'debit',
             className: 'text-right font-medium text-primary',
-            cell: (line) => `$${line.debit.toFixed(2)}`,
+            cell: (line) => `$${toNumber(line.debit).toFixed(2)}`,
         },
         {
             header: 'Credit',
             accessorKey: 'credit',
             className: 'text-right font-medium text-primary',
-            cell: (line) => `$${line.credit.toFixed(2)}`,
+            cell: (line) => `$${toNumber(line.credit).toFixed(2)}`,
         },
     ];
 
@@ -104,53 +206,187 @@ export default function ViewJournalEntrypage() {
     return (
         <div className="space-y-4">
             <PageHeader
-                title={`Journal Entry ${journalEntry.journalNo}`}
-                subtitle={new Date(
-                    journalEntry.journalDate
-                ).toLocaleDateString()}
+                title={`Journal Entry ${formatText(journalEntry.entryNumber)}`}
+                subtitle={formatDateOnly(journalEntry.entryDate)}
             />
 
-            {/* Status and Details */}
             <div className="bg-white rounded-lg border border-primary/10 p-4">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
                     <div>
                         <label className="block text-sm font-medium text-primary/50 mb-1">
                             Status
                         </label>
-                        {getStatusBadge(journalEntry.status)}
+                        {getStatusBadge(formatText(journalEntry.status))}
                     </div>
                     <div>
                         <label className="block text-sm font-medium text-primary/50 mb-1">
-                            Journal No.
+                            Entry Number
                         </label>
                         <p className="text-primary font-medium">
-                            {journalEntry.journalNo}
+                            {formatText(journalEntry.entryNumber)}
                         </p>
                     </div>
                     <div>
                         <label className="block text-sm font-medium text-primary/50 mb-1">
-                            Date
+                            Entry Date
                         </label>
                         <p className="text-primary font-medium">
-                            {new Date(
-                                journalEntry.journalDate
-                            ).toLocaleDateString()}
+                            {formatDateOnly(journalEntry.entryDate)}
                         </p>
                     </div>
-                    {journalEntry.isAdjusting && (
-                        <div>
-                            <label className="block text-sm font-medium text-primary/50 mb-1">
-                                Type
-                            </label>
-                            <p className="text-blue-600 font-medium">
-                                Adjusting Entry
-                            </p>
-                        </div>
-                    )}
+                    <div>
+                        <label className="block text-sm font-medium text-primary/50 mb-1">
+                            Entry Type
+                        </label>
+                        <p className="text-primary font-medium capitalize">
+                            {formatText(journalEntry.entryType)}
+                        </p>
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-primary/50 mb-1">
+                            ID
+                        </label>
+                        <p className="text-primary font-medium break-all">
+                            {formatText(journalEntry.id)}
+                        </p>
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-primary/50 mb-1">
+                            Reference
+                        </label>
+                        <p className="text-primary font-medium">
+                            {formatText(journalEntry.reference)}
+                        </p>
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-primary/50 mb-1">
+                            Source Module
+                        </label>
+                        <p className="text-primary font-medium">
+                            {formatText(journalEntry.sourceModule)}
+                        </p>
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-primary/50 mb-1">
+                            Source ID
+                        </label>
+                        <p className="text-primary font-medium break-all">
+                            {formatText(journalEntry.sourceId)}
+                        </p>
+                    </div>
+                </div>
+
+                <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label className="block text-sm font-medium text-primary/50 mb-1">
+                            Adjusting
+                        </label>
+                        <p className="text-primary font-medium">
+                            {formatBoolean(journalEntry.isAdjusting)}
+                        </p>
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-primary/50 mb-1">
+                            Closing
+                        </label>
+                        <p className="text-primary font-medium">
+                            {formatBoolean(journalEntry.isClosing)}
+                        </p>
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-primary/50 mb-1">
+                            Reversing
+                        </label>
+                        <p className="text-primary font-medium">
+                            {formatBoolean(journalEntry.isReversing)}
+                        </p>
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-primary/50 mb-1">
+                            Reversal Date
+                        </label>
+                        <p className="text-primary font-medium">
+                            {formatDateOnly(journalEntry.reversalDate)}
+                        </p>
+                    </div>
+                    <div className="md:col-span-2">
+                        <label className="block text-sm font-medium text-primary/50 mb-1">
+                            Memo
+                        </label>
+                        <p className="text-primary font-medium whitespace-pre-wrap">
+                            {formatText(journalEntry.memo)}
+                        </p>
+                    </div>
+                </div>
+
+                <div className="mt-4 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+                    <div>
+                        <label className="block text-sm font-medium text-primary/50 mb-1">
+                            Approved By
+                        </label>
+                        <p className="text-primary font-medium">
+                            {formatText(journalEntry.approvedBy)}
+                        </p>
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-primary/50 mb-1">
+                            Approved At
+                        </label>
+                        <p className="text-primary font-medium">
+                            {formatDateTime(journalEntry.approvedAt)}
+                        </p>
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-primary/50 mb-1">
+                            Posted By
+                        </label>
+                        <p className="text-primary font-medium">
+                            {formatText(journalEntry.postedBy)}
+                        </p>
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-primary/50 mb-1">
+                            Posted At
+                        </label>
+                        <p className="text-primary font-medium">
+                            {formatDateTime(journalEntry.postedAt)}
+                        </p>
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-primary/50 mb-1">
+                            Created At
+                        </label>
+                        <p className="text-primary font-medium">
+                            {formatDateTime(journalEntry.createdAt)}
+                        </p>
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-primary/50 mb-1">
+                            Updated At
+                        </label>
+                        <p className="text-primary font-medium">
+                            {formatDateTime(journalEntry.updatedAt)}
+                        </p>
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-primary/50 mb-1">
+                            Total Debit
+                        </label>
+                        <p className="text-primary font-semibold">
+                            ${toNumber(journalEntry.totalDebit).toFixed(2)}
+                        </p>
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-primary/50 mb-1">
+                            Total Credit
+                        </label>
+                        <p className="text-primary font-semibold">
+                            ${toNumber(journalEntry.totalCredit).toFixed(2)}
+                        </p>
+                    </div>
                 </div>
             </div>
 
-            {/* Journal Lines */}
             <div className="bg-white rounded-lg border border-primary/10 overflow-hidden">
                 <div className="px-4 py-2 border-b border-primary/10">
                     <h3 className="text-base font-semibold text-primary">
@@ -165,65 +401,53 @@ export default function ViewJournalEntrypage() {
                     footerContent={
                         <tr className="bg-white border-t border-primary/10">
                             <td
-                                colSpan={3}
+                                colSpan={4}
                                 className="px-3 py-2 text-right font-semibold text-sm text-primary"
                             >
                                 Total
                             </td>
                             <td className="px-3 py-2 text-right font-semibold text-sm text-primary">
-                                ${journalEntry.totalDebit.toFixed(2)}
+                                ${toNumber(journalEntry.totalDebit).toFixed(2)}
                             </td>
                             <td className="px-3 py-2 text-right font-semibold text-sm text-primary">
-                                ${journalEntry.totalCredit.toFixed(2)}
+                                ${toNumber(journalEntry.totalCredit).toFixed(2)}
                             </td>
                         </tr>
                     }
                 />
             </div>
 
-            {/* Memo */}
-            {journalEntry.memo && (
-                <div className="bg-white rounded-lg border border-primary/10 p-3">
-                    <h3 className="text-sm font-medium text-primary mb-1">
-                        Memo
-                    </h3>
-                    <p className="text-sm text-primary/75 whitespace-pre-wrap">
-                        {journalEntry.memo}
-                    </p>
-                </div>
-            )}
-
-            {/* Attachments */}
-            {journalEntry.attachments &&
-                journalEntry.attachments.length > 0 && (
+            {(() => {
+                const attachments = journalEntry.attachments || [];
+                if (attachments.length === 0) return null;
+                return (
                     <div className="bg-white rounded-lg border border-primary/10 p-3">
                         <h3 className="text-sm font-medium text-primary mb-2">
                             Attachments
                         </h3>
                         <div className="space-y-2">
-                            {journalEntry.attachments.map(
-                                (attachment, index) => (
-                                    <div
-                                        key={index}
-                                        className="flex items-center justify-between p-3 border border-primary/10 rounded-lg"
+                            {attachments.map((attachment, index) => (
+                                <div
+                                    key={index}
+                                    className="flex items-center justify-between p-3 border border-primary/10 rounded-lg"
+                                >
+                                    <span className="text-sm text-primary">
+                                        {attachment}
+                                    </span>
+                                    <a
+                                        href={attachment}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="text-sm text-primary hover:underline"
                                     >
-                                        <span className="text-sm text-primary">
-                                            {attachment}
-                                        </span>
-                                        <a
-                                            href={attachment}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="text-sm text-primary hover:underline"
-                                        >
-                                            Download
-                                        </a>
-                                    </div>
-                                )
-                            )}
+                                        Download
+                                    </a>
+                                </div>
+                            ))}
                         </div>
                     </div>
-                )}
+                );
+            })()}
         </div>
     );
 }

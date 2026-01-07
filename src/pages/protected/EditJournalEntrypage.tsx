@@ -16,6 +16,10 @@ export default function EditJournalEntrypage() {
 
     const journalEntry = data?.data?.journalEntry;
 
+    const normalizeDate = (value: string) => {
+        return value.includes('T') ? value.split('T')[0] : value;
+    };
+
     const handleSubmit = (payload: CreateJournalEntryPayload) => {
         if (!id) return;
 
@@ -48,20 +52,23 @@ export default function EditJournalEntrypage() {
     return (
         <div className="space-y-4">
             <PageHeader
-                title={`Edit Journal Entry ${journalEntry.journalNo}`}
+                title={`Edit Journal Entry ${journalEntry.entryNumber}`}
                 subtitle="Update journal entry details"
             />
 
             <div className="bg-white rounded-lg border border-primary/10 p-4">
                 <JournalEntryForm
                     initialData={{
-                        entryNumber: journalEntry.journalNo,
-                        entryDate: journalEntry.journalDate,
-                        entryType: journalEntry.isAdjusting
-                            ? 'adjusting'
-                            : 'standard',
+                        entryNumber: journalEntry.entryNumber,
+                        entryDate: normalizeDate(journalEntry.entryDate),
+                        entryType:
+                            journalEntry.entryType ||
+                            (journalEntry.isAdjusting
+                                ? 'adjusting'
+                                : 'standard'),
                         isAdjusting: journalEntry.isAdjusting,
                         lines: journalEntry.lines.map((line, index) => ({
+                            id: line.id,
                             accountId: line.accountId,
                             lineNumber: index + 1,
                             debit: line.debit,
