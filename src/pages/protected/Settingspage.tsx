@@ -1,10 +1,10 @@
+import { PLURAL_TENANT_PREFIX } from '@/components/homepage/constants';
 import { useEffect } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router';
 import { SettingsSidebar } from '../../components/settings/SettingsSidebar';
 import { Icons } from '../../components/shared/Icons';
 import PageHeader from '../../components/shared/PageHeader';
 import { useAuth } from '../../stores/auth/authSelectore';
-import { PLURAL_TENANT_PREFIX } from '@/components/homepage/constants';
 
 const CAP_PLURAL =
     PLURAL_TENANT_PREFIX.charAt(0).toUpperCase() +
@@ -95,14 +95,15 @@ const Settingspage = () => {
         'Manage your account settings';
 
     return (
-        <div className="flex flex-col gap-4 w-full lg:max-w-5xl lg:mx-auto">
+        <div className="flex flex-col gap-4 w-full max-w-6xl lg:mx-auto">
             <PageHeader title={headerTitle} subtitle={headerSubtitle} />
-            <div className="flex w-full flex-col h-full gap-4 lg:flex-row lg:space-x-8 lg:space-y-0 ">
-                <aside className="lg:w-1/4 m-0 sm:h-full">
+            <div className="flex w-full flex-col gap-4 lg:flex-row min-h-0">
+                <aside className="w-full lg:w-1/5 shrink-0 overflow-hidden">
                     <SettingsSidebar items={sidebarNavItems} />
                 </aside>
-                <div className="flex-1">
-                    <div className="bg-white rounded-md border border-primary/10 p-4">
+                <div className="flex-1 min-w-0">
+                    {/* <div className="bg-white rounded-md border border-primary/10 p-4 overflow-hidden"> */}
+                    <div className="bg-white  px-4 overflow-hidden">
                         <Outlet />
                     </div>
                 </div>

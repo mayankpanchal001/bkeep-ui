@@ -3,81 +3,125 @@ import { createBrowserRouter, Navigate } from 'react-router';
 import Loading from '../components/shared/Loading';
 import ProtectedRoutes from './ProtectedRoutes';
 import PublicRoutes from './PublicRoutes';
+import RouteErrorBoundary from './RouteErrorBoundary';
+
+const LAZY_IMPORT_RETRY_KEY = 'bkeep_lazy_import_retry';
+
+function lazyWithRetry<T extends React.ComponentType<Record<string, never>>>(
+    importer: () => Promise<{ default: T }>
+) {
+    return lazy(async () => {
+        try {
+            const mod = await importer();
+            sessionStorage.removeItem(LAZY_IMPORT_RETRY_KEY);
+            return mod;
+        } catch (error) {
+            const message =
+                error instanceof Error ? error.message : String(error);
+            const isChunkLoadError =
+                message.includes('Failed to fetch dynamically imported module') ||
+                message.includes('Importing a module script failed') ||
+                message.includes('Failed to load module script');
+
+            if (isChunkLoadError) {
+                const hasRetried = sessionStorage.getItem(
+                    LAZY_IMPORT_RETRY_KEY
+                );
+                if (!hasRetried) {
+                    sessionStorage.setItem(LAZY_IMPORT_RETRY_KEY, '1');
+                    window.location.reload();
+                }
+            }
+
+            throw error;
+        }
+    });
+}
 
 // Lazy load pages for code splitting
-const Homepage = lazy(() => import('../pages/public/Homepage'));
-const Loginpage = lazy(() => import('../pages/public/Loginpage'));
-const PasskeyLoginpage = lazy(() => import('../pages/public/PasskeyLoginpage'));
-const Registerpage = lazy(() => import('../pages/public/Registerpage'));
-const ForgotPasswordpage = lazy(
+const Homepage = lazyWithRetry(() => import('../pages/public/Homepage'));
+const Loginpage = lazyWithRetry(() => import('../pages/public/Loginpage'));
+const PasskeyLoginpage = lazyWithRetry(
+    () => import('../pages/public/PasskeyLoginpage')
+);
+const Registerpage = lazyWithRetry(() => import('../pages/public/Registerpage'));
+const ForgotPasswordpage = lazyWithRetry(
     () => import('../pages/public/ForgotPasswordpage')
 );
-const OtpVerificationpage = lazy(
+const OtpVerificationpage = lazyWithRetry(
     () => import('../pages/public/OtpVerificationpage')
 );
-const ResetPasswordpage = lazy(
+const ResetPasswordpage = lazyWithRetry(
     () => import('../pages/public/ResetPasswordpage')
 );
-const AcceptInvitationpage = lazy(
+const AcceptInvitationpage = lazyWithRetry(
     () => import('../pages/public/AcceptInvitationpage')
 );
 
-const Dashboardpage = lazy(() => import('../pages/protected/Dashboardpage'));
-const Transactionpage = lazy(
+const Dashboardpage = lazyWithRetry(
+    () => import('../pages/protected/Dashboardpage')
+);
+const Transactionpage = lazyWithRetry(
     () => import('../pages/protected/Transactionpage')
 );
-const Reportpage = lazy(() => import('../pages/protected/Reportpage'));
-const ReportDetailpage = lazy(
+const Reportpage = lazyWithRetry(() => import('../pages/protected/Reportpage'));
+const ReportDetailpage = lazyWithRetry(
     () => import('../pages/protected/ReportDetailpage')
 );
-const IncomeStatementpage = lazy(
+const IncomeStatementpage = lazyWithRetry(
     () => import('../pages/protected/IncomeStatementpage')
 );
-const BalanceSheetpage = lazy(
+const BalanceSheetpage = lazyWithRetry(
     () => import('../pages/protected/BalanceSheetpage')
 );
-const ChartOfAccountspage = lazy(
+const ChartOfAccountspage = lazyWithRetry(
     () => import('../pages/protected/ChartOfAccountspage')
 );
-const Settingspage = lazy(() => import('../pages/protected/Settingspage'));
-const Invoicepage = lazy(() => import('../pages/protected/Invoicepage'));
-const Expensespage = lazy(() => import('../pages/protected/Expensespage'));
-const Documentspage = lazy(() => import('../pages/protected/Documentspage'));
-const ClientReviewpage = lazy(
+const Settingspage = lazyWithRetry(() => import('../pages/protected/Settingspage'));
+const Invoicepage = lazyWithRetry(() => import('../pages/protected/Invoicepage'));
+const Expensespage = lazyWithRetry(() => import('../pages/protected/Expensespage'));
+const ContactsPage = lazyWithRetry(() => import('../pages/protected/ContactsPage'));
+const ContactDetailPage = lazyWithRetry(
+    () => import('../pages/protected/ContactDetailPage')
+);
+const Documentspage = lazyWithRetry(() => import('../pages/protected/Documentspage'));
+const ClientReviewpage = lazyWithRetry(
     () => import('../pages/protected/ClientReviewpage')
 );
-const JournalEntriespage = lazy(
+const JournalEntriespage = lazyWithRetry(
     () => import('../pages/protected/JournalEntriespage')
 );
-const CreateJournalEntrypage = lazy(
+const CreateJournalEntrypage = lazyWithRetry(
     () => import('../pages/protected/CreateJournalEntrypage')
 );
-const ViewJournalEntrypage = lazy(
+const ViewJournalEntrypage = lazyWithRetry(
     () => import('../pages/protected/ViewJournalEntrypage')
 );
-const EditJournalEntrypage = lazy(
+const EditJournalEntrypage = lazyWithRetry(
     () => import('../pages/protected/EditJournalEntrypage')
 );
 
 // Lazy load settings components
-const ProfileTabWrapper = lazy(() =>
+const ProfileTabWrapper = lazyWithRetry(() =>
     import('../components/settings/SettingsTabWrappers').then((module) => ({
         default: module.ProfileTabWrapper,
     }))
 );
-const NotificationsTabWrapper = lazy(() =>
+const NotificationsTabWrapper = lazyWithRetry(() =>
     import('../components/settings/SettingsTabWrappers').then((module) => ({
         default: module.NotificationsTabWrapper,
     }))
 );
-const DataPrivacyTab = lazy(
+const DataPrivacyTab = lazyWithRetry(
     () => import('../components/settings/DataPrivacyTab')
 );
-const RolesTab = lazy(() => import('../components/settings/RolesTab'));
-const SecurityTab = lazy(() => import('../components/settings/SecurityTab'));
-const TenantsTab = lazy(() => import('../components/settings/TenantsTab'));
-const TaxesTab = lazy(() => import('../components/settings/TaxesTab'));
-const UsersTab = lazy(() => import('../components/settings/UsersTab'));
+const RolesTab = lazyWithRetry(() => import('../components/settings/RolesTab'));
+const SecurityTab = lazyWithRetry(
+    () => import('../components/settings/SecurityTab')
+);
+const TenantsTab = lazyWithRetry(() => import('../components/settings/TenantsTab'));
+const TaxesTab = lazyWithRetry(() => import('../components/settings/TaxesTab'));
+const UsersTab = lazyWithRetry(() => import('../components/settings/UsersTab'));
 
 // Helper component to wrap lazy-loaded routes with Suspense
 const withSuspense = (
@@ -95,6 +139,7 @@ const withSuspense = (
 const routes = createBrowserRouter([
     {
         element: <PublicRoutes />,
+        errorElement: <RouteErrorBoundary />,
         children: [
             {
                 path: '/',
@@ -132,6 +177,7 @@ const routes = createBrowserRouter([
     },
     {
         element: <ProtectedRoutes />,
+        errorElement: <RouteErrorBoundary />,
         children: [
             {
                 path: '/dashboard',
@@ -209,7 +255,20 @@ const routes = createBrowserRouter([
             },
             {
                 path: '/expenses',
-                element: withSuspense(Expensespage),
+                children: [
+                    {
+                        index: true,
+                        element: withSuspense(Expensespage),
+                    },
+                    {
+                        path: 'contacts',
+                        element: withSuspense(ContactsPage),
+                    },
+                    {
+                        path: 'contacts/:id',
+                        element: withSuspense(ContactDetailPage),
+                    },
+                ],
             },
             {
                 path: '/documents',

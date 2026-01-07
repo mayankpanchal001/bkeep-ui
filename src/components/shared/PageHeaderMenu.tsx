@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { useEffect, useRef, useState } from 'react';
-import { FaSignOutAlt, FaUserCircle } from 'react-icons/fa';
+import { CircleUser, LogOut } from 'lucide-react';
 import { Link } from 'react-router';
 import { LOGOUT_ITEM } from '../../constants';
 import { useLogout } from '../../services/apis/authApi';
@@ -72,7 +72,7 @@ const PageHeaderMenu = () => {
     const menuItems: MenuItem[] = [
         {
             label: 'Profile',
-            icon: <FaUserCircle className="w-4 h-4" />,
+            icon: <CircleUser className="w-4 h-4" />,
             to: '/settings/profile',
             onClick: () => {
                 console.log('Profile clicked');
@@ -90,7 +90,7 @@ const PageHeaderMenu = () => {
         // },
         {
             label: LOGOUT_ITEM.label,
-            icon: <FaSignOutAlt className="w-4 h-4" />,
+            icon: <LogOut className="w-4 h-4" />,
             onClick: handleLogoutClick,
             isDanger: true,
         },

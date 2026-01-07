@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { FaArrowDown, FaArrowUp, FaFilter, FaSearch } from 'react-icons/fa';
+import { ArrowDown, ArrowUp, Filter, Search } from 'lucide-react';
 import { useTransactions } from '../../services/apis/transactions';
 import {
     Table,
@@ -89,7 +89,7 @@ const TransactionsTable = () => {
             <div className="p-4 border-b border-primary/10 sticky top-0 bg-white z-10">
                 <div className="flex items-center justify-between gap-4">
                     <div className="flex-1 relative">
-                        <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-primary/50 w-4 h-4" />
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-primary/50 w-4 h-4" />
                         <input
                             type="text"
                             placeholder="Search transactions..."
@@ -102,7 +102,7 @@ const TransactionsTable = () => {
                         />
                     </div>
                     <button className="flex items-center gap-2 px-4 py-2 border border-primary/10 rounded-lg hover:bg-primary/10 transition-colors text-sm font-medium text-primary">
-                        <FaFilter className="w-4 h-4" />
+                        <Filter className="w-4 h-4" />
                         Filter
                     </button>
                 </div>
@@ -231,9 +231,9 @@ const TransactionsTable = () => {
                                             }`}
                                         >
                                             {isCredit ? (
-                                                <FaArrowUp className="w-3 h-3" />
+                                                <ArrowUp className="w-3 h-3" />
                                             ) : (
-                                                <FaArrowDown className="w-3 h-3" />
+                                                <ArrowDown className="w-3 h-3" />
                                             )}
                                             <span>
                                                 {isCredit ? '+' : '-'}

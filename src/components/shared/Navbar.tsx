@@ -7,6 +7,7 @@ import {
     CreditCard,
     DollarSign,
     FileText,
+    Keyboard,
     LogOut,
     Search,
     Settings,
@@ -30,10 +31,12 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import { ScrollArea } from '../ui/scroll-area';
 import { SidebarTrigger } from '../ui/sidebar';
+import AutoBreadcrumbs from './AutoBreadcrumbs';
 import ThemeSwitcher from './ThemeSwitcher';
 
 interface NavbarProps {
     onSearchClick?: () => void;
+    onShortcutsClick?: () => void;
 }
 
 type NotificationType = 'invoice' | 'payment' | 'report' | 'alert' | 'system';
@@ -64,7 +67,7 @@ const notificationColors: Record<NotificationType, string> = {
     system: 'bg-slate-100 dark:bg-slate-500/20 text-slate-600 dark:text-slate-400',
 };
 
-const Navbar = ({ onSearchClick }: NavbarProps) => {
+const Navbar = ({ onSearchClick, onShortcutsClick }: NavbarProps) => {
     const { user } = useAuth();
     const navigate = useNavigate();
     const { mutate: logout } = useLogout();
@@ -157,11 +160,18 @@ const Navbar = ({ onSearchClick }: NavbarProps) => {
         }
     };
 
+    const isMac = navigator.userAgent.includes('Macintosh');
+
     return (
         <nav className="flex items-center justify-between p-4 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-primary/10 sticky top-0 z-40 w-full">
             <div className="flex items-center gap-4">
                 <SidebarTrigger className="-ml-1" />
 
+                <AutoBreadcrumbs className="hidden sm:block max-w-[50vw]" />
+            </div>
+
+            {/* Right Actions */}
+            <div className="flex items-center gap-3 min-w-fit">
                 <button
                     onClick={onSearchClick}
                     className="w-[min(150px,30vw)] hidden sm:flex items-center gap-2 px-3 py-1.5 bg-white dark:bg-slate-900 hover:bg-primary/10 rounded-md border border-primary/10 text-primary/50 transition-colors group"
@@ -169,13 +179,19 @@ const Navbar = ({ onSearchClick }: NavbarProps) => {
                     <Search className="w-3.5 h-3.5 group-hover:text-primary" />
                     <span className="text-xs font-medium">Search</span>
                     <kbd className="ml-auto inline-block px-1.5 py-0.5 text-[10px] font-bold text-primary/40 bg-white dark:bg-slate-800 border border-primary/10 rounded shadow-sm">
-                        ⌘K
+                        {isMac ? '⌘' : 'Ctrl'}
                     </kbd>
                 </button>
-            </div>
-
-            {/* Right Actions */}
-            <div className="flex items-center gap-3 min-w-fit">
+                <button
+                    onClick={onShortcutsClick}
+                    className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-white dark:bg-slate-900 hover:bg-primary/10 rounded-md border border-primary/10 text-primary/50 transition-colors group"
+                >
+                    <Keyboard className="w-3.5 h-3.5 group-hover:text-primary" />
+                    <span className="text-xs font-medium">Shortcuts</span>
+                    <kbd className="ml-auto inline-block px-1.5 py-0.5 text-[10px] font-bold text-primary/40 bg-white dark:bg-slate-800 border border-primary/10 rounded shadow-sm">
+                        ?
+                    </kbd>
+                </button>
                 <ThemeSwitcher />
 
                 {/* Enhanced Notifications Popover */}

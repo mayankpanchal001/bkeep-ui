@@ -1,13 +1,26 @@
 /* eslint-disable react-refresh/only-export-components */
 import * as React from 'react';
 
+import {
+    ResizableHandle,
+    ResizablePanel,
+    ResizablePanelGroup,
+} from '@/components/ui/resizable';
 import { cn } from '@/utils/cn';
+import type { Layout } from 'react-resizable-panels';
 
 // ============================================================================
 // Types & Interfaces
 // ============================================================================
 
 export type SortDirection = 'asc' | 'desc' | null;
+
+type TableColumnRegistration = {
+    id: string;
+    resizable: boolean;
+    minWidth?: number;
+    maxWidth?: number;
+};
 
 export interface TableSelectionContextValue {
     selectedRows: Set<string | number>;
@@ -33,6 +46,13 @@ const TableSelectionContext =
 const TableSortContext = React.createContext<TableSortContextValue | null>(
     null
 );
+const TableColumnResizeContext = React.createContext<{
+    columns: TableColumnRegistration[];
+    registerColumn: (col: TableColumnRegistration) => void;
+    unregisterColumn: (id: string) => void;
+    columnLayout: number[] | null;
+    setColumnLayout: (layout: number[]) => void;
+} | null>(null);
 
 // ============================================================================
 // Custom Hooks
@@ -95,6 +115,10 @@ interface TableProps extends React.ComponentProps<'table'> {
     hoverStyle?: 'default' | 'highlight' | 'none';
     /** Border style */
     borderStyle?: 'default' | 'minimal' | 'none';
+    /** Enable shadcn resizable-based column resizing (TableHead resizable) */
+    enableColumnResize?: boolean;
+    /** Class name applied to the table container */
+    containerClassName?: string;
 }
 
 function Table({
@@ -110,9 +134,16 @@ function Table({
     striped = false,
     hoverStyle = 'default',
     borderStyle = 'default',
+    enableColumnResize = true,
+    containerClassName,
     children,
     ...props
 }: TableProps) {
+    const scrollRef = React.useRef<HTMLDivElement>(null);
+    const tableRef = React.useRef<HTMLTableElement>(null);
+    const [scrollLeft, setScrollLeft] = React.useState(0);
+    const [overlayWidth, setOverlayWidth] = React.useState<number>(0);
+
     // Selection state (uncontrolled)
     const [internalSelectedRows, setInternalSelectedRows] = React.useState<
         Set<string | number>
@@ -268,14 +299,81 @@ function Table({
         [sortKey, sortDirection, handleSort]
     );
 
+    const [columns, setColumns] = React.useState<TableColumnRegistration[]>([]);
+    const [columnLayout, setColumnLayout] = React.useState<number[] | null>(
+        null
+    );
+
+    React.useEffect(() => {
+        const el = scrollRef.current;
+        const onScroll = () => setScrollLeft(el?.scrollLeft ?? 0);
+        if (el) {
+            el.addEventListener('scroll', onScroll, { passive: true });
+            onScroll();
+        }
+        return () => el?.removeEventListener('scroll', onScroll);
+    }, []);
+
+    const updateOverlayWidth = React.useCallback(() => {
+        const w =
+            (tableRef.current?.scrollWidth ?? 0) ||
+            (scrollRef.current?.clientWidth ?? 0);
+        setOverlayWidth(w);
+    }, []);
+
+    React.useEffect(() => {
+        updateOverlayWidth();
+        const onResize = () => updateOverlayWidth();
+        window.addEventListener('resize', onResize);
+        return () => window.removeEventListener('resize', onResize);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [columns.length, columnLayout]);
+
+    const registerColumn = React.useCallback((col: TableColumnRegistration) => {
+        setColumns((prev) => {
+            const idx = prev.findIndex((c) => c.id === col.id);
+            if (idx >= 0) {
+                const next = prev.slice();
+                next[idx] = col;
+                return next;
+            }
+            return [...prev, col];
+        });
+    }, []);
+
+    const unregisterColumn = React.useCallback((id: string) => {
+        setColumns((prev) => prev.filter((c) => c.id !== id));
+    }, []);
+
+    const hasResizableColumns =
+        enableColumnResize && columns.some((c) => c.resizable);
+
+    const computedLayout = React.useMemo(() => {
+        if (!hasResizableColumns) return null;
+        if (columnLayout && columnLayout.length === columns.length) {
+            return columnLayout;
+        }
+        if (columns.length === 0) return null;
+        const base = columns.map((c) =>
+            typeof c.maxWidth === 'number' ? Math.max(c.maxWidth, 1) : 10
+        );
+        const sum = base.reduce((acc, n) => acc + n, 0);
+        if (sum <= 0) {
+            const even = 100 / columns.length;
+            return Array.from({ length: columns.length }).map(() => even);
+        }
+        return base.map((n) => (n / sum) * 100);
+    }, [hasResizableColumns, columnLayout, columns]);
+
     // Container styles based on borderStyle
     const containerClasses = cn(
         'relative w-full overflow-hidden',
         borderStyle === 'default' &&
-            'rounded-xl border border-slate-200/80 dark:border-slate-700/80 bg-white dark:bg-slate-900 shadow-sm',
+            'rounded-md border border-border bg-background',
         borderStyle === 'minimal' &&
-            'rounded-lg border border-slate-200/50 dark:border-slate-800/50',
-        borderStyle === 'none' && ''
+            'rounded-md border border-border/60 bg-background',
+        borderStyle === 'none' && '',
+        containerClassName
     );
 
     // Separate toolbar children from table children
@@ -300,29 +398,107 @@ function Table({
             value={enableSelection ? selectionContextValue : null}
         >
             <TableSortContext.Provider value={sortContextValue}>
-                {/* Render toolbar OUTSIDE the table container */}
-                {toolbarChildren}
-
-                <div
-                    data-slot="table-container"
-                    data-compact={compact || undefined}
-                    data-striped={striped || undefined}
-                    data-hover={hoverStyle}
-                    className={containerClasses}
+                <TableColumnResizeContext.Provider
+                    value={
+                        hasResizableColumns
+                            ? {
+                                  columns,
+                                  registerColumn,
+                                  unregisterColumn,
+                                  columnLayout: computedLayout,
+                                  setColumnLayout,
+                              }
+                            : null
+                    }
                 >
-                    <div className="overflow-x-auto">
-                        <table
-                            data-slot="table"
-                            className={cn(
-                                'min-w-full w-max caption-bottom text-sm border-collapse',
-                                className
-                            )}
-                            {...props}
+                    {/* Render toolbar OUTSIDE the table container */}
+                    {toolbarChildren}
+
+                    <div
+                        data-slot="table-container"
+                        data-compact={compact || undefined}
+                        data-striped={striped || undefined}
+                        data-hover={hoverStyle}
+                        className={containerClasses}
+                    >
+                        <div
+                            ref={scrollRef}
+                            className="relative overflow-x-auto"
                         >
-                            {tableChildren}
-                        </table>
+                            {hasResizableColumns && computedLayout && (
+                                <div
+                                    className="pointer-events-none absolute left-0 top-0 z-20 h-10"
+                                    style={{
+                                        width: overlayWidth,
+                                        transform: `translateX(-${scrollLeft}px)`,
+                                    }}
+                                >
+                                    <ResizablePanelGroup
+                                        orientation="horizontal"
+                                        onLayoutChange={(layout: Layout) => {
+                                            const next: number[] =
+                                                Array.isArray(layout)
+                                                    ? (layout as number[])
+                                                    : columns.map(
+                                                          (c) =>
+                                                              (
+                                                                  layout as Record<
+                                                                      string,
+                                                                      number
+                                                                  >
+                                                              )[c.id] ?? 0
+                                                      );
+                                            setColumnLayout(next);
+                                            updateOverlayWidth();
+                                        }}
+                                        className="h-full w-full pointer-events-none"
+                                    >
+                                        {columns.map((col, idx) => {
+                                            return (
+                                                <React.Fragment key={col.id}>
+                                                    <ResizablePanel
+                                                        id={col.id}
+                                                        defaultSize={
+                                                            computedLayout[idx]
+                                                        }
+                                                        minSize={col.minWidth}
+                                                        maxSize={col.maxWidth}
+                                                        className="pointer-events-none"
+                                                    />
+                                                    {idx <
+                                                        columns.length - 1 && (
+                                                        <ResizableHandle className="pointer-events-auto w-2 bg-transparent after:w-1 after:bg-border/40 hover:after:bg-border" />
+                                                    )}
+                                                </React.Fragment>
+                                            );
+                                        })}
+                                    </ResizablePanelGroup>
+                                </div>
+                            )}
+                            <table
+                                ref={tableRef}
+                                data-slot="table"
+                                className={cn(
+                                    'w-max md:w-full caption-bottom text-sm table-fixed',
+                                    className
+                                )}
+                                {...props}
+                            >
+                                {hasResizableColumns && computedLayout && (
+                                    <colgroup>
+                                        {computedLayout.map((size, idx) => (
+                                            <col
+                                                key={columns[idx]?.id ?? idx}
+                                                style={{ width: `${size}%` }}
+                                            />
+                                        ))}
+                                    </colgroup>
+                                )}
+                                {tableChildren}
+                            </table>
+                        </div>
                     </div>
-                </div>
+                </TableColumnResizeContext.Provider>
             </TableSortContext.Provider>
         </TableSelectionContext.Provider>
     );
@@ -342,8 +518,8 @@ function TableHeader({ className, sticky = true, ...props }: TableHeaderProps) {
             data-slot="table-header"
             className={cn(
                 sticky && 'sticky top-0 z-10',
-                'bg-linear-to-r from-slate-50 to-slate-100/80 dark:from-slate-800/95 dark:to-slate-800/90',
-                'backdrop-blur-sm border-b border-slate-200 dark:border-slate-700',
+                'bg-primary/10 backdrop-blur',
+                'border-b border-border',
                 className
             )}
             {...props}
@@ -361,7 +537,7 @@ function TableBody({ className, ...props }: React.ComponentProps<'tbody'>) {
             data-slot="table-body"
             className={cn(
                 '[&_tr:last-child]:border-0',
-                'divide-y divide-slate-200/60 dark:divide-slate-700/60',
+                'divide-y divide-border',
                 className
             )}
             {...props}
@@ -378,8 +554,7 @@ function TableFooter({ className, ...props }: React.ComponentProps<'tfoot'>) {
         <tfoot
             data-slot="table-footer"
             className={cn(
-                'bg-linear-to-r from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-800/90',
-                'border-t border-slate-200 dark:border-slate-700 font-medium',
+                'bg-muted/40 border-t border-border font-medium',
                 '[&>tr]:last:border-b-0',
                 className
             )}
@@ -420,17 +595,10 @@ function TableRow({ className, rowId, onClick, ...props }: TableRowProps) {
             data-row-id={rowId}
             onClick={handleClick}
             className={cn(
-                'group transition-all duration-150',
-                // Hover styles
-                'hover:bg-linear-to-r hover:from-blue-50/60 hover:to-indigo-50/60',
-                'dark:hover:from-blue-950/30 dark:hover:to-indigo-950/30',
-                // Selected styles
-                isSelected && [
-                    'bg-linear-to-r from-blue-100/70 to-indigo-100/70',
-                    'dark:from-blue-900/40 dark:to-indigo-900/40',
-                    'ring-1 ring-inset ring-blue-400/30 dark:ring-blue-500/30',
-                ],
-                // Cursor
+                'transition-colors',
+                'hover:bg-primary/5 data-[state=selected]:bg-primary/10',
+                'group-data-[hover=none]/table:hover:bg-transparent',
+                'group-data-[striped=true]/table:odd:bg-primary/10',
                 onClick && 'cursor-pointer',
                 className
             )}
@@ -462,20 +630,16 @@ function TableHead({
     className,
     children,
     resizable = false,
-    minWidth = 60,
-    maxWidth = 600,
+    minWidth = 8,
+    maxWidth = 92,
     sortable = false,
     sortKey: columnSortKey,
     align = 'left',
     ...props
 }: TableHeadProps) {
-    const ref = React.useRef<HTMLTableCellElement | null>(null);
-    const [width, setWidth] = React.useState<number | undefined>(undefined);
-    const dragging = React.useRef(false);
-    const startX = React.useRef(0);
-    const startWidth = React.useRef(0);
-
     const sortContext = useTableSort();
+    const colResizeContext = React.useContext(TableColumnResizeContext);
+    const colId = React.useId();
     const sortKey =
         columnSortKey || (typeof children === 'string' ? children : '');
     const isCurrentSort = sortContext?.sortKey === sortKey;
@@ -484,56 +648,15 @@ function TableHead({
         : null;
 
     React.useEffect(() => {
-        if (ref.current && width === undefined) {
-            setWidth(ref.current.offsetWidth);
-        }
-    }, [width]);
-
-    const onMouseMove = React.useCallback(
-        (e: MouseEvent) => {
-            if (!dragging.current || !ref.current) return;
-            const delta = e.clientX - startX.current;
-            let next = startWidth.current + delta;
-            if (next < minWidth) next = minWidth;
-            if (maxWidth && next > maxWidth) next = maxWidth;
-            ref.current.style.width = `${next}px`;
-            setWidth(next);
-        },
-        [minWidth, maxWidth]
-    );
-
-    const onMouseUp = React.useCallback(() => {
-        if (!dragging.current) return;
-        dragging.current = false;
-        document.body.style.cursor = '';
-        document.body.style.userSelect = '';
-        window.removeEventListener('mousemove', onMouseMove);
-        window.removeEventListener('mouseup', onMouseUp);
-    }, [onMouseMove]);
-
-    const onMouseDown = React.useCallback(
-        (e: React.MouseEvent) => {
-            if (!resizable || !ref.current) return;
-            e.preventDefault();
-            e.stopPropagation();
-            dragging.current = true;
-            startX.current = e.clientX;
-            startWidth.current = ref.current.offsetWidth;
-            document.body.style.cursor = 'col-resize';
-            document.body.style.userSelect = 'none';
-            window.addEventListener('mousemove', onMouseMove);
-            window.addEventListener('mouseup', onMouseUp);
-        },
-        [resizable, onMouseMove, onMouseUp]
-    );
-
-    const style = React.useMemo<React.CSSProperties>(
-        () => ({
-            ...(props.style || {}),
-            ...(width !== undefined ? { width } : {}),
-        }),
-        [props.style, width]
-    );
+        if (!colResizeContext) return;
+        colResizeContext.registerColumn({
+            id: colId,
+            resizable,
+            minWidth,
+            maxWidth,
+        });
+        return () => colResizeContext.unregisterColumn(colId);
+    }, [colResizeContext, colId, resizable, minWidth, maxWidth]);
 
     const handleClick = React.useCallback(() => {
         if (sortable && sortContext && sortKey) {
@@ -549,26 +672,18 @@ function TableHead({
 
     return (
         <th
-            ref={ref}
             data-slot="table-head"
             data-sortable={sortable || undefined}
             data-sorted={isCurrentSort || undefined}
-            style={style}
             className={cn(
-                'relative h-10 px-3 py-2 align-middle',
-                'text-xs font-semibold uppercase tracking-wider',
-                'text-slate-600 dark:text-slate-400',
+                'relative h-10 px-2 py-1 align-middle',
+                'text-xs font-medium text-muted-foreground',
                 'whitespace-nowrap select-none',
                 alignClass,
-                '[&:has([role=checkbox])]:w-12 [&:has([role=checkbox])]:px-3',
-                sortable && [
-                    'cursor-pointer',
-                    'hover:text-slate-900 dark:hover:text-slate-200',
-                    'hover:bg-slate-100/50 dark:hover:bg-slate-700/30',
-                    'active:bg-slate-200/50 dark:active:bg-slate-600/30',
-                ],
-                isCurrentSort && 'text-blue-600 dark:text-blue-400',
-                'transition-colors duration-150',
+                '[&:has([role=checkbox])]:w-12 [&:has([role=checkbox])]:px-3 [&:has([role=checkbox])>div]:justify-center',
+                sortable && ['cursor-pointer', 'hover:text-foreground'],
+                isCurrentSort && 'text-foreground',
+                'transition-colors ',
                 className
             )}
             onClick={handleClick}
@@ -576,7 +691,7 @@ function TableHead({
         >
             <div
                 className={cn(
-                    'flex items-center gap-1.5',
+                    'flex items-center ',
                     align === 'center' && 'justify-center',
                     align === 'right' && 'justify-end'
                 )}
@@ -584,18 +699,6 @@ function TableHead({
                 <span>{children}</span>
                 {sortable && <SortIndicator direction={currentSortDirection} />}
             </div>
-            {resizable && (
-                <span
-                    aria-hidden="true"
-                    onMouseDown={onMouseDown}
-                    className={cn(
-                        'absolute right-0 top-0 h-full w-1',
-                        'cursor-col-resize select-none',
-                        'hover:bg-blue-500/60 active:bg-blue-600',
-                        'transition-colors'
-                    )}
-                />
-            )}
         </th>
     );
 }
@@ -680,8 +783,7 @@ function TableCell({
         <td
             data-slot="table-cell"
             className={cn(
-                'px-3 py-2.5 align-middle',
-                'text-sm text-slate-700 dark:text-slate-300',
+                'px-3 py-2 align-middle text-sm text-foreground',
                 alignClass,
                 !noTruncate && 'truncate',
                 '[&:has([role=checkbox])]:w-12 [&:has([role=checkbox])]:px-3',
@@ -740,7 +842,7 @@ function TableCheckbox({
     }, [indeterminate]);
 
     return (
-        <div className="flex items-center justify-center">
+        <div className="flex items-center justify-center mx-auto ">
             <input
                 ref={ref}
                 type="checkbox"
@@ -750,7 +852,7 @@ function TableCheckbox({
                 disabled={disabled}
                 onChange={(e) => onChange?.(e.target.checked)}
                 className={cn(
-                    'h-4 w-4 rounded border-2 transition-all duration-150',
+                    'h-3 w-3 rounded border-2 transition-all duration-150',
                     'border-slate-300 dark:border-slate-600',
                     'bg-white dark:bg-slate-800',
                     'focus:ring-2 focus:ring-blue-500/40 focus:ring-offset-0 focus:outline-none',

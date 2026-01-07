@@ -1,8 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
-import { FaRegStar, FaStar } from 'react-icons/fa';
-import PageHeader from '@/components/shared/PageHeader';
-import { ArrowLeft, Calendar, FileText } from 'lucide-react';
+import { ArrowLeft, Calendar, FileText, Star } from 'lucide-react';
 
 const LS_FAV_KEY = 'bkeep-report-favourites';
 const LS_FAV_LABEL_KEY = 'bkeep-report-favourites-labels';
@@ -90,7 +88,12 @@ const ReportDetailpage = () => {
 
     return (
         <div className="flex flex-col gap-4 w-full lg:max-w-5xl lg:mx-auto">
-            <PageHeader title={title} subtitle={subtitle} />
+            <div className="flex flex-col gap-1">
+                <h1 className="text-xl font-semibold text-foreground">
+                    {title}
+                </h1>
+                <p className="text-sm text-muted-foreground">{subtitle}</p>
+            </div>
 
             <div className="flex items-center justify-between">
                 <button
@@ -108,9 +111,9 @@ const ReportDetailpage = () => {
                     className="inline-flex items-center gap-2 px-3 py-2 rounded-2 bg-white border border-primary/10 text-primary hover:bg-primary/5"
                 >
                     {isFav ? (
-                        <FaStar className="w-4 h-4 text-green-600" />
+                        <Star className="w-4 h-4 text-green-600 fill-current" />
                     ) : (
-                        <FaRegStar className="w-4 h-4 text-primary/50" />
+                        <Star className="w-4 h-4 text-primary/50" />
                     )}
                     <span className="text-sm">
                         {isFav ? 'Favourited' : 'Add to favourites'}

@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useRef, useState } from 'react';
-import { FaArrowRight, FaSearch } from 'react-icons/fa';
+import { ArrowRight, Search, Keyboard } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import { LOGOUT_ITEM, SIDEBAR_ITEMS } from '../../constants';
 import { useLogout } from '../../services/apis/authApi';
@@ -8,6 +8,7 @@ import { useLogout } from '../../services/apis/authApi';
 interface CommandPaletteProps {
     isOpen: boolean;
     onClose: () => void;
+    onOpenShortcuts?: () => void;
 }
 
 interface CommandItem {
@@ -18,7 +19,7 @@ interface CommandItem {
     category: 'Navigation' | 'Action';
 }
 
-const CommandPalette = ({ isOpen, onClose }: CommandPaletteProps) => {
+const CommandPalette = ({ isOpen, onClose, onOpenShortcuts }: CommandPaletteProps) => {
     const [query, setQuery] = useState('');
     const [selectedIndex, setSelectedIndex] = useState(0);
     const inputRef = useRef<HTMLInputElement>(null);
@@ -37,6 +38,12 @@ const CommandPalette = ({ isOpen, onClose }: CommandPaletteProps) => {
             label: 'Logout',
             icon: LOGOUT_ITEM.icon,
             action: () => logout(),
+            category: 'Action' as const,
+        },
+        {
+            label: 'Keyboard Shortcuts',
+            icon: <Keyboard className="w-4 h-4" />,
+            action: () => onOpenShortcuts?.(),
             category: 'Action' as const,
         },
     ];
@@ -112,7 +119,7 @@ const CommandPalette = ({ isOpen, onClose }: CommandPaletteProps) => {
             <div className="relative w-full max-w-lg bg-white rounded-xl shadow-2xl overflow-hidden flex flex-col animate-in fade-in zoom-in-95 duration-200 border border-primary/10">
                 {/* Search Input */}
                 <div className="flex items-center px-4 py-3 border-b border-primary/10">
-                    <FaSearch className="text-primary/40 w-5 h-5 mr-3" />
+                    <Search className="text-primary/40 w-5 h-5 mr-3" />
                     <input
                         ref={inputRef}
                         type="text"
@@ -162,7 +169,7 @@ const CommandPalette = ({ isOpen, onClose }: CommandPaletteProps) => {
                                         </div>
                                     </div>
                                     {index === selectedIndex && (
-                                        <FaArrowRight className="w-3 h-3 text-primary opacity-50" />
+                                        <ArrowRight className="w-3 h-3 text-primary opacity-50" />
                                     )}
                                 </button>
                             ))}

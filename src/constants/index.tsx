@@ -1,9 +1,9 @@
-import { SidebarItemProps } from '../types';
-import { Icons } from '@/components/shared/Icons';
 import {
-    SINGLE_TENANT_PREFIX,
     PLURAL_TENANT_PREFIX,
+    SINGLE_TENANT_PREFIX,
 } from '@/components/homepage/constants';
+import { Icons } from '@/components/shared/Icons';
+import { SidebarItemProps } from '../types';
 
 const CAP_SINGULAR =
     SINGLE_TENANT_PREFIX.charAt(0).toUpperCase() +
@@ -57,6 +57,16 @@ export const SIDEBAR_ITEMS: SidebarItemProps[] = [
         label: 'Expenses',
         icon: <Icons.Expenses />,
         path: '/expenses',
+        children: [
+            {
+                label: 'All Expenses',
+                path: '/expenses',
+            },
+            {
+                label: 'Contacts',
+                path: '/expenses/contacts',
+            },
+        ],
     },
     {
         label: 'Documents',

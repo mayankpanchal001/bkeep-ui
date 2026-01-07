@@ -1,30 +1,19 @@
-import { useMemo, useState } from 'react';
+import Button from '@/components/typography/Button';
+import { InputField } from '@/components/typography/InputFields';
 import {
-    FaCog,
-    FaGripVertical,
-    FaPlus,
-    FaQuestionCircle,
-    FaRegCommentAlt,
-    FaRegCopy,
-    FaTimes,
-    FaTrash,
-} from 'react-icons/fa';
-import { useChartOfAccounts } from '../../services/apis/chartsAccountApi';
-import { useTaxes } from '../../services/apis/taxApi';
-import type {
-    CreateJournalEntryLine,
-    CreateJournalEntryPayload,
-} from '../../types/journal';
-import { cn } from '../../utils/cn';
-import { InputField } from '../typography/InputFields';
-
-// Mock Contacts for the "Name" dropdown
-const MOCK_CONTACTS = [
-    { id: '1', name: 'Testing', type: 'Customer' },
-    { id: '2', name: 'RBC', type: 'Supplier' },
-    { id: '3', name: 'Vaibhav Inc.', type: 'Supplier' },
-    { id: '4', name: 'WagePoint', type: 'Supplier' },
-];
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from '@/components/ui/table';
+import { useChartOfAccounts } from '@/services/apis/chartsAccountApi';
+import { useContacts } from '@/services/apis/contactsApi';
+import { useTaxes } from '@/services/apis/taxApi';
+import type { CreateJournalEntryPayload } from '@/types/journal';
+import { useMemo, useState } from 'react';
+import { FaPlus, FaTrash } from 'react-icons/fa';
 
 type JournalEntryFormProps = {
     initialData?: Partial<CreateJournalEntryPayload>;
@@ -39,25 +28,69 @@ export function JournalEntryForm({
     onCancel,
     isLoading = false,
 }: JournalEntryFormProps) {
-    // Fetch chart of accounts
-    const { data: accountsData } = useChartOfAccounts();
-    const accounts = useMemo(() => {
-        return accountsData?.data?.items || [];
-    }, [accountsData]);
+    type DraftLine = {
+        id: string | undefined;
+        lineNumber: number;
+        accountId: string;
+        description: string;
+        debit: string;
+        credit: string;
+        contactId: string | undefined;
+        taxId: string | undefined;
+    };
 
-    // Fetch taxes
+    const toNumber = (v: unknown) => {
+        if (typeof v === 'number') return Number.isFinite(v) ? v : 0;
+        if (typeof v === 'string') {
+            const n = Number(v);
+            return Number.isFinite(n) ? n : 0;
+        }
+        return 0;
+    };
+
+    const normalizeDate = (value: string | undefined) => {
+        if (!value) return new Date().toISOString().split('T')[0];
+        return value.includes('T') ? value.split('T')[0] : value;
+    };
+
+    const emptyLine = (lineNumber: number): DraftLine => ({
+        id: undefined,
+        lineNumber,
+        accountId: '',
+        description: '',
+        debit: '',
+        credit: '',
+        contactId: undefined,
+        taxId: undefined,
+    });
+
+    const { data: accountsData } = useChartOfAccounts({ page: 1, limit: 200 });
+    const accounts = useMemo(
+        () => accountsData?.data?.items || [],
+        [accountsData]
+    );
+
     const { data: taxesData } = useTaxes({
         page: 1,
-        limit: 100,
+        limit: 200,
         isActive: true,
         sort: 'name',
         order: 'asc',
     });
-    const taxes = useMemo(() => {
-        return taxesData?.data?.items || [];
-    }, [taxesData]);
+    const taxes = taxesData?.data?.items || [];
 
-    // Account options for dropdown
+    const { data: contactsData } = useContacts({
+        page: 1,
+        limit: 200,
+        isActive: true,
+        sort: 'displayName',
+        order: 'asc',
+    });
+    const contacts = useMemo(
+        () => contactsData?.data?.items || [],
+        [contactsData]
+    );
+
     const accountOptions = useMemo(() => {
         return accounts.map((account) => ({
             value: account.id,
@@ -65,212 +98,209 @@ export function JournalEntryForm({
         }));
     }, [accounts]);
 
+    const contactOptions = useMemo(() => {
+        return contacts.map((contact) => ({
+            value: contact.id,
+            label: contact.displayName,
+        }));
+    }, [contacts]);
+
     const [entryNumber, setEntryNumber] = useState(
         initialData?.entryNumber || ''
     );
     const [entryDate, setEntryDate] = useState(
-        initialData?.entryDate || new Date().toISOString().split('T')[0]
+        normalizeDate(initialData?.entryDate)
     );
     const [isAdjusting, setIsAdjusting] = useState(
-        initialData?.isAdjusting || false
+        Boolean(initialData?.isAdjusting)
     );
     const [memo, setMemo] = useState(initialData?.memo || '');
-    const [lines, setLines] = useState<CreateJournalEntryLine[]>(
-        initialData?.lines ||
-            Array(8)
-                .fill(null)
-                .map((_, i) => ({
-                    accountId: '',
-                    lineNumber: i + 1,
-                    debit: 0,
-                    credit: 0,
-                    description: '',
-                    memo: '',
-                    contactId: '',
-                    taxId: '',
-                    id: 0,
-                    accountName: '',
-                    name: '',
-                }))
-    );
 
-    // Drag and Drop State
-    const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+    const [lines, setLines] = useState<DraftLine[]>(() => {
+        const fromInitial =
+            initialData?.lines?.map((l) => ({
+                id: typeof l.id === 'string' ? l.id : undefined,
+                lineNumber: typeof l.lineNumber === 'number' ? l.lineNumber : 0,
+                accountId: l.accountId || '',
+                description: l.description || '',
+                debit: (() => {
+                    const n = toNumber(l.debit);
+                    return n !== 0 ? String(n) : '';
+                })(),
+                credit: (() => {
+                    const n = toNumber(l.credit);
+                    return n !== 0 ? String(n) : '';
+                })(),
+                contactId: l.contactId || undefined,
+                taxId: l.taxId || undefined,
+            })) || [];
 
-    // Row selection state for showing input boxes
-    const [focusedLineIndex, setFocusedLineIndex] = useState<number | null>(
-        null
-    );
+        const base = fromInitial.length > 0 ? fromInitial : [];
+        const minLines = 6;
+        const next = [...base];
+        const withLineNumbers = next.map((l, i) => ({
+            ...l,
+            lineNumber: i + 1,
+        }));
+        while (withLineNumbers.length < minLines)
+            withLineNumbers.push(emptyLine(withLineNumbers.length + 1));
+        return withLineNumbers;
+    });
 
-    const getInputClassName = (index: number, additionalClasses?: string) => {
-        const isSelected = focusedLineIndex === index;
-        return cn(
-            'w-full px-3 py-2 rounded transition-colors h-10 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary',
-            isSelected
-                ? 'bg-card border border-border hover:border-primary/50'
-                : 'bg-transparent border border-transparent',
-            additionalClasses
-        );
+    const [formError, setFormError] = useState<string | null>(null);
+    const [lineErrors, setLineErrors] = useState<
+        { accountId?: string; amount?: string }[]
+    >([]);
+
+    // pure helper – keep outside useMemo to avoid dep issues
+    const parseAmount = (v: string) => {
+        const n = Number(v);
+        return Number.isFinite(n) && n > 0 ? n : 0;
     };
 
-    const calculateTotals = () => {
+    const totals = useMemo(() => {
+        const parseAmount = (value: string) => {
+            return toNumber(value);
+        };
         const totalDebit = lines.reduce(
-            (sum, line) => sum + (Number(line.debit) || 0),
+            (sum, l) => sum + parseAmount(l.debit),
             0
         );
         const totalCredit = lines.reduce(
-            (sum, line) => sum + (Number(line.credit) || 0),
+            (sum, l) => sum + parseAmount(l.credit),
             0
         );
         return { totalDebit, totalCredit };
+    }, [lines]);
+
+    const isBalanced = Math.abs(totals.totalDebit - totals.totalCredit) < 0.01;
+
+    const updateLine = (
+        index: number,
+        patch: Partial<Omit<DraftLine, 'id'>>
+    ) => {
+        setLines((prev) =>
+            prev.map((l, i) => (i === index ? { ...l, ...patch } : l))
+        );
+        setFormError(null);
+        setLineErrors((prev) => {
+            if (prev.length === 0) return prev;
+            const next = [...prev];
+            next[index] = {};
+            return next;
+        });
     };
 
-    const { totalDebit, totalCredit } = calculateTotals();
-    const isBalanced = Math.abs(totalDebit - totalCredit) < 0.01;
-
     const handleAddLine = () => {
-        setLines([
-            ...lines,
-            {
-                accountId: '',
-                lineNumber: lines.length + 1,
-                debit: 0,
-                credit: 0,
-                description: '',
-                memo: '',
-                contactId: '',
-                taxId: '',
-                id: 0,
-                accountName: '',
-                name: '',
-            },
-        ]);
+        setLines((prev) => [...prev, emptyLine(prev.length + 1)]);
     };
 
     const handleRemoveLine = (index: number) => {
-        const updatedLines = lines.filter((_, i) => i !== index);
-        // Ensure at least 2 lines or empty lines to match UI preference
-        // But for flexible UI, maybe we don't force it, but let's keep at least 2 for journal entry logic
-        if (updatedLines.length < 2) {
-            updatedLines.push({
-                accountId: '',
-                lineNumber: updatedLines.length + 1,
-                debit: 0,
-                credit: 0,
-                description: '',
-                memo: '',
-                contactId: '',
-                taxId: '',
-                id: 0,
-                accountName: '',
-                name: '',
-            });
+        setLines((prev) => {
+            const next = prev.filter((_, i) => i !== index);
+            if (next.length < 2) return prev;
+            return next.map((l, i) => ({ ...l, lineNumber: i + 1 }));
+        });
+        setLineErrors((prev) => prev.filter((_, i) => i !== index));
+    };
+
+    const validate = () => {
+        const errors: Array<{ accountId?: string; amount?: string }> = [];
+
+        const filled = lines.filter((l) => {
+            const hasAmount =
+                Boolean(l.debit.trim()) || Boolean(l.credit.trim());
+            return (
+                Boolean(l.accountId) ||
+                hasAmount ||
+                Boolean(l.description.trim()) ||
+                Boolean(l.contactId) ||
+                Boolean(l.taxId)
+            );
+        });
+
+        for (let i = 0; i < lines.length; i++) {
+            const l = lines[i];
+            const isFilled = filled.includes(l);
+            if (!isFilled) {
+                errors[i] = {};
+                continue;
+            }
+
+            const debit = parseAmount(l.debit);
+            const credit = parseAmount(l.credit);
+            const rowErr: { accountId?: string; amount?: string } = {};
+
+            if (!l.accountId) rowErr.accountId = 'Account is required';
+
+            const hasDebit = debit > 0;
+            const hasCredit = credit > 0;
+
+            if (!hasDebit && !hasCredit)
+                rowErr.amount = 'Debit or credit is required';
+            if (hasDebit && hasCredit)
+                rowErr.amount = 'Only one of debit or credit';
+
+            errors[i] = rowErr;
         }
-        // Re-index
-        const reindexed = updatedLines.map((line, idx) => ({
-            ...line,
-            lineNumber: idx + 1,
-        }));
-        setLines(reindexed);
-    };
 
-    const handleClearAll = () => {
-        setLines(
-            Array(8)
-                .fill(null)
-                .map((_, i) => ({
-                    accountId: '',
-                    lineNumber: i + 1,
-                    debit: 0,
-                    credit: 0,
-                    description: '',
-                    memo: '',
-                    contactId: '',
-                    taxId: '',
-                    id: 0,
-                    accountName: '',
-                    name: '',
-                }))
-        );
-    };
+        const validLines = filled.filter((l) => l.accountId);
+        if (validLines.length < 2) {
+            setFormError('Add at least two lines with accounts.');
+            setLineErrors(errors);
+            return false;
+        }
 
-    const handleLineChange = (
-        index: number,
-        field: keyof CreateJournalEntryLine,
-        value: string | number
-    ) => {
-        const updatedLines = [...lines];
-        updatedLines[index] = {
-            ...updatedLines[index],
-            [field]: value,
-        };
-        setLines(updatedLines);
-    };
+        if (!isBalanced) {
+            setFormError('Debits and credits must balance.');
+            setLineErrors(errors);
+            return false;
+        }
 
-    // Drag and Drop Handlers
-    const handleDragStart = (e: React.DragEvent, index: number) => {
-        setDraggedIndex(index);
-        e.dataTransfer.effectAllowed = 'move';
-        // Optional: Set drag image
-    };
+        const hasAnyRowError = errors.some((e) => e.accountId || e.amount);
+        if (hasAnyRowError) {
+            setFormError('Fix highlighted lines.');
+            setLineErrors(errors);
+            return false;
+        }
 
-    const handleDragOver = (e: React.DragEvent) => {
-        e.preventDefault();
-        e.dataTransfer.dropEffect = 'move';
-    };
-
-    const handleDrop = (e: React.DragEvent, dropIndex: number) => {
-        e.preventDefault();
-        if (draggedIndex === null || draggedIndex === dropIndex) return;
-
-        const updatedLines = [...lines];
-        const [movedItem] = updatedLines.splice(draggedIndex, 1);
-        updatedLines.splice(dropIndex, 0, movedItem);
-
-        // Re-index line numbers
-        const reindexed = updatedLines.map((line, idx) => ({
-            ...line,
-            lineNumber: idx + 1,
-        }));
-
-        setLines(reindexed);
-        setDraggedIndex(null);
+        setLineErrors([]);
+        setFormError(null);
+        return true;
     };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        if (!validate()) return;
 
-        // Filter out empty lines (no account selected)
-        const validLines = lines.filter((line) => line.accountId);
-
-        if (validLines.length < 2) {
-            alert('Please add at least two lines with accounts.');
-            return;
-        }
-
-        if (!isBalanced) {
-            alert('Debits and Credits must balance!');
-            return;
-        }
+        const filled = lines.filter((l) => {
+            const hasAmount =
+                Boolean(l.debit.trim()) || Boolean(l.credit.trim());
+            return (
+                Boolean(l.accountId) ||
+                hasAmount ||
+                Boolean(l.description.trim()) ||
+                Boolean(l.contactId) ||
+                Boolean(l.taxId)
+            );
+        });
 
         const payload: CreateJournalEntryPayload = {
-            entryNumber: entryNumber || undefined,
+            entryNumber: entryNumber.trim() || undefined,
             entryDate,
             entryType: isAdjusting ? 'adjusting' : 'standard',
             isAdjusting,
-            description: memo || undefined,
-            memo: memo || undefined,
-            currency: 'USD',
-            exchangeRate: 1.0,
-            lines: validLines.map((line, index) => ({
-                accountId: line.accountId,
-                lineNumber: index + 1,
-                debit: Number(line.debit),
-                credit: Number(line.credit),
-                description: line.description,
-                memo: line.memo || '',
-                contactId: line.contactId,
-                taxId: line.taxId,
+            memo: memo.trim() || undefined,
+            description: memo.trim() || undefined,
+            lines: filled.map((l, idx) => ({
+                id: l.id,
+                accountId: l.accountId,
+                lineNumber: idx + 1,
+                debit: parseAmount(l.debit),
+                credit: parseAmount(l.credit),
+                description: l.description.trim(),
+                contactId: l.contactId || undefined,
+                taxId: l.taxId || undefined,
             })),
         };
 
@@ -278,152 +308,83 @@ export function JournalEntryForm({
     };
 
     return (
-        <form
-            onSubmit={handleSubmit}
-            className="flex flex-col h-full bg-background min-h-screen"
-        >
-            {/* Top Bar - mimicking the image header */}
-            <div className="flex items-center justify-between px-6 py-4 bg-card border-b border-border">
-                <div className="flex items-center gap-3">
-                    <div className="flex items-center justify-center w-10 h-10 bg-muted rounded-full">
-                        <span className="text-xl font-bold text-muted-foreground">
-                            ↺
-                        </span>
-                    </div>
-                    <h1 className="text-2xl font-bold text-primary">
-                        {entryNumber
-                            ? `Journal Entry no.${entryNumber}`
-                            : 'Journal Entry'}
-                    </h1>
-                </div>
-                <div className="flex items-center gap-4 text-muted-foreground">
-                    <button
-                        type="button"
-                        className="flex items-center gap-2 hover:text-primary font-medium"
-                    >
-                        <FaRegCopy className="text-lg" /> <span>Copy</span>
-                    </button>
-                    <button
-                        type="button"
-                        className="flex items-center gap-2 hover:text-primary font-medium"
-                    >
-                        <FaRegCommentAlt className="text-lg" />{' '}
-                        <span>Feedback</span>
-                    </button>
-                    <button type="button" className="hover:text-primary">
-                        <FaCog className="text-2xl" />
-                    </button>
-                    <button type="button" className="hover:text-primary">
-                        <FaQuestionCircle className="text-2xl" />
-                    </button>
-                    <button
-                        type="button"
-                        onClick={onCancel}
-                        className="hover:text-primary"
-                    >
-                        <FaTimes className="text-2xl" />
-                    </button>
+        <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <InputField
+                    label="Entry date"
+                    type="date"
+                    value={entryDate}
+                    onChange={(e) => setEntryDate(e.target.value)}
+                    required
+                />
+                <InputField
+                    label="Entry number"
+                    type="text"
+                    value={entryNumber}
+                    onChange={(e) => setEntryNumber(e.target.value)}
+                    placeholder="Optional"
+                />
+                <div className="flex items-end">
+                    <label className="flex items-center gap-3 text-sm text-primary/70 select-none">
+                        <input
+                            type="checkbox"
+                            checked={isAdjusting}
+                            onChange={(e) => setIsAdjusting(e.target.checked)}
+                            className="h-4 w-4 rounded border-primary/20 text-primary"
+                        />
+                        Adjusting entry
+                    </label>
                 </div>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-8 space-y-8">
-                {/* Header Fields */}
-                <div className="flex flex-wrap items-start gap-12">
-                    <div className="w-48">
-                        <InputField
-                            label="Journal date"
-                            type="date"
-                            value={entryDate}
-                            onChange={(e) => setEntryDate(e.target.value)}
-                            required
-                        />
-                    </div>
-                    <div className="w-80">
-                        <InputField
-                            label="Journal no."
-                            type="text"
-                            value={entryNumber}
-                            onChange={(e) => setEntryNumber(e.target.value)}
-                            placeholder={initialData?.entryNumber || '2'}
-                        />
-                    </div>
-                    <div className="flex items-center gap-3 pt-9">
-                        <input
-                            type="checkbox"
-                            id="isAdjusting"
-                            checked={isAdjusting}
-                            onChange={(e) => setIsAdjusting(e.target.checked)}
-                            className="w-5 h-5 text-primary border-border rounded focus:ring-primary"
-                        />
-                        <label
-                            htmlFor="isAdjusting"
-                            className="text-muted-foreground font-medium"
-                        >
-                            Is Adjusting Journal Entry?
-                        </label>
-                    </div>
+            {formError && (
+                <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                    {formError}
                 </div>
+            )}
 
-                {/* Grid Table */}
-                <div className="bg-card rounded shadow-sm border border-border overflow-hidden">
-                    <table className="w-full text-sm text-left">
-                        <thead className="text-xs font-bold text-muted-foreground uppercase bg-card border-b border-border">
-                            <tr>
-                                <th className="w-10 px-2 py-3"></th>
-                                <th className="px-2 py-3 w-10">#</th>
-                                <th className="px-2 py-3 min-w-[200px]">
-                                    ACCOUNT
-                                </th>
-                                <th className="px-2 py-3 w-32">DEBITS</th>
-                                <th className="px-2 py-3 w-32">CREDITS</th>
-                                <th className="px-2 py-3">DESCRIPTION</th>
-                                <th className="px-2 py-3 w-48">NAME</th>
-                                <th className="px-2 py-3 w-32">SALES TAX</th>
-                                <th className="w-16 px-2 py-3"></th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-gray-100">
-                            {lines.map((line, index) => (
-                                <tr
-                                    key={index}
-                                    draggable
-                                    onDragStart={(e) =>
-                                        handleDragStart(e, index)
-                                    }
-                                    onDragOver={handleDragOver}
-                                    onDrop={(e) => handleDrop(e, index)}
-                                    onClick={() => setFocusedLineIndex(index)}
-                                    className={cn(
-                                        'group hover:bg-muted/50 transition-colors',
-                                        draggedIndex === index &&
-                                            'opacity-50 bg-muted',
-                                        focusedLineIndex === index &&
-                                            'bg-muted/30'
-                                    )}
-                                >
-                                    <td className="px-2 py-2 cursor-grab text-muted/50 hover:text-muted-foreground text-center align-top pt-4">
-                                        <FaGripVertical className="mx-auto" />
-                                    </td>
-                                    <td className="px-2 py-2 text-muted-foreground align-top pt-4 font-medium">
-                                        {index + 1}
-                                    </td>
-                                    <td className="px-2 py-2 align-top">
+            <Table borderStyle="default" className="w-full">
+                <TableHeader sticky>
+                    <tr>
+                        <TableHead className="w-12">#</TableHead>
+                        <TableHead className="min-w-[260px]">Account</TableHead>
+                        <TableHead className="min-w-[260px]">
+                            Description
+                        </TableHead>
+                        <TableHead className="w-56">Contact</TableHead>
+                        <TableHead align="right" className="w-36">
+                            Debit
+                        </TableHead>
+                        <TableHead align="right" className="w-36">
+                            Credit
+                        </TableHead>
+                        <TableHead className="w-56">Tax</TableHead>
+                        <TableHead className="w-20"></TableHead>
+                    </tr>
+                </TableHeader>
+                <TableBody>
+                    {lines.map((line, index) => {
+                        const rowError = lineErrors[index] || {};
+                        return (
+                            <TableRow key={index}>
+                                <TableCell className="text-primary/60 font-medium">
+                                    {index + 1}
+                                </TableCell>
+                                <TableCell noTruncate>
+                                    <div
+                                        className={`input-wrap ${rowError.accountId ? '!border-red-500' : ''}`}
+                                    >
                                         <select
                                             value={line.accountId}
                                             onChange={(e) =>
-                                                handleLineChange(
-                                                    index,
-                                                    'accountId',
-                                                    e.target.value
-                                                )
+                                                updateLine(index, {
+                                                    accountId: e.target.value,
+                                                })
                                             }
-                                            onFocus={() =>
-                                                setFocusedLineIndex(index)
-                                            }
-                                            className={getInputClassName(index)}
+                                            className="input"
                                         >
                                             <option value="">
-                                                Select Account
+                                                Select account
                                             </option>
                                             {accountOptions.map((opt) => (
                                                 <option
@@ -434,118 +395,107 @@ export function JournalEntryForm({
                                                 </option>
                                             ))}
                                         </select>
-                                    </td>
-                                    <td className="px-2 py-2 align-top">
+                                    </div>
+                                </TableCell>
+                                <TableCell noTruncate>
+                                    <div className="input-wrap">
                                         <input
-                                            type="number"
-                                            value={line.debit || ''}
-                                            onChange={(e) =>
-                                                handleLineChange(
-                                                    index,
-                                                    'debit',
-                                                    parseFloat(
-                                                        e.target.value
-                                                    ) || 0
-                                                )
-                                            }
-                                            onFocus={() =>
-                                                setFocusedLineIndex(index)
-                                            }
-                                            className={getInputClassName(
-                                                index,
-                                                'text-right'
-                                            )}
-                                            placeholder=""
-                                        />
-                                    </td>
-                                    <td className="px-2 py-2 align-top">
-                                        <input
-                                            type="number"
-                                            value={line.credit || ''}
-                                            onChange={(e) =>
-                                                handleLineChange(
-                                                    index,
-                                                    'credit',
-                                                    parseFloat(
-                                                        e.target.value
-                                                    ) || 0
-                                                )
-                                            }
-                                            onFocus={() =>
-                                                setFocusedLineIndex(index)
-                                            }
-                                            className={getInputClassName(
-                                                index,
-                                                'text-right'
-                                            )}
-                                            placeholder=""
-                                        />
-                                    </td>
-                                    <td className="px-2 py-2 align-top">
-                                        <input
-                                            type="text"
                                             value={line.description}
                                             onChange={(e) =>
-                                                handleLineChange(
-                                                    index,
-                                                    'description',
-                                                    e.target.value
-                                                )
+                                                updateLine(index, {
+                                                    description: e.target.value,
+                                                })
                                             }
-                                            onFocus={() =>
-                                                setFocusedLineIndex(index)
-                                            }
-                                            className={getInputClassName(index)}
+                                            className="input"
+                                            placeholder="Optional"
                                         />
-                                    </td>
-                                    <td className="px-2 py-2 align-top">
+                                    </div>
+                                </TableCell>
+                                <TableCell noTruncate>
+                                    <div className="input-wrap">
                                         <select
                                             value={line.contactId || ''}
                                             onChange={(e) =>
-                                                handleLineChange(
-                                                    index,
-                                                    'contactId',
-                                                    e.target.value
-                                                )
+                                                updateLine(index, {
+                                                    contactId:
+                                                        e.target.value ||
+                                                        undefined,
+                                                })
                                             }
-                                            onFocus={() =>
-                                                setFocusedLineIndex(index)
-                                            }
-                                            className={getInputClassName(index)}
+                                            className="input"
                                         >
-                                            <option value="">
-                                                Select Name
-                                            </option>
-                                            <option
-                                                value="new"
-                                                className="text-accent font-semibold"
-                                            >
-                                                + Add new
-                                            </option>
-                                            {MOCK_CONTACTS.map((contact) => (
+                                            <option value="">No contact</option>
+                                            {contactOptions.map((opt) => (
                                                 <option
-                                                    key={contact.id}
-                                                    value={contact.id}
+                                                    key={opt.value}
+                                                    value={opt.value}
                                                 >
-                                                    {contact.name} (
-                                                    {contact.type})
+                                                    {opt.label}
                                                 </option>
                                             ))}
                                         </select>
-                                    </td>
-                                    <td className="px-2 py-2 align-top">
+                                    </div>
+                                </TableCell>
+                                <TableCell align="right" noTruncate>
+                                    <div
+                                        className={`input-wrap ${rowError.amount ? '!border-red-500' : ''}`}
+                                    >
+                                        <input
+                                            type="number"
+                                            value={line.debit}
+                                            onChange={(e) => {
+                                                const next = e.target.value;
+                                                updateLine(index, {
+                                                    debit: next,
+                                                    credit: next
+                                                        ? ''
+                                                        : line.credit,
+                                                });
+                                            }}
+                                            className="input text-right"
+                                            placeholder="0.00"
+                                            step="0.01"
+                                            min="0"
+                                        />
+                                    </div>
+                                </TableCell>
+                                <TableCell align="right" noTruncate>
+                                    <div
+                                        className={`input-wrap ${rowError.amount ? '!border-red-500' : ''}`}
+                                    >
+                                        <input
+                                            type="number"
+                                            value={line.credit}
+                                            onChange={(e) => {
+                                                const next = e.target.value;
+                                                updateLine(index, {
+                                                    credit: next,
+                                                    debit: next
+                                                        ? ''
+                                                        : line.debit,
+                                                });
+                                            }}
+                                            className="input text-right"
+                                            placeholder="0.00"
+                                            step="0.01"
+                                            min="0"
+                                        />
+                                    </div>
+                                </TableCell>
+                                <TableCell noTruncate>
+                                    <div className="input-wrap">
                                         <select
                                             value={line.taxId || ''}
                                             onChange={(e) =>
-                                                handleLineChange(
-                                                    index,
-                                                    'taxId',
-                                                    e.target.value
-                                                )
+                                                updateLine(index, {
+                                                    taxId:
+                                                        e.target.value ||
+                                                        undefined,
+                                                })
                                             }
-                                            className="w-full px-3 py-2 bg-card border border-border rounded hover:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-colors h-10"
+                                            className="input"
                                         >
-                                            <option value="">Select Tax</option>
+                                            <option value="">No tax</option>
                                             {taxes.map((tax) => (
                                                 <option
                                                     key={tax.id}
@@ -555,152 +505,94 @@ export function JournalEntryForm({
                                                 </option>
                                             ))}
                                         </select>
-                                    </td>
-                                    <td className="px-2 py-2 text-center align-top pt-3">
-                                        <div className="flex items-center justify-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
-                                            <button
-                                                type="button"
-                                                className="text-muted-foreground/70 hover:text-primary"
-                                            >
-                                                <FaRegCopy size={16} />
-                                            </button>
-                                            <button
-                                                type="button"
-                                                onClick={() =>
-                                                    handleRemoveLine(index)
-                                                }
-                                                className="text-muted-foreground/70 hover:text-primary"
-                                            >
-                                                <FaTrash size={16} />
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                        <tfoot className="bg-muted font-bold text-primary">
-                            <tr>
-                                <td
-                                    colSpan={3}
-                                    className="px-4 py-4 text-right"
-                                >
-                                    Total
-                                </td>
-                                <td className="px-4 py-4 text-right">
-                                    ${totalDebit.toFixed(2)}
-                                </td>
-                                <td className="px-4 py-4 text-right">
-                                    ${totalCredit.toFixed(2)}
-                                </td>
-                                <td colSpan={4}></td>
-                            </tr>
-                        </tfoot>
-                    </table>
-                </div>
+                                    </div>
+                                </TableCell>
+                                <TableCell noTruncate>
+                                    <button
+                                        type="button"
+                                        onClick={() => handleRemoveLine(index)}
+                                        disabled={
+                                            isLoading || lines.length <= 2
+                                        }
+                                        className="p-2 text-primary/40 hover:text-red-600 disabled:opacity-40 disabled:hover:text-primary/40"
+                                        title="Remove line"
+                                    >
+                                        <FaTrash className="h-4 w-4" />
+                                    </button>
+                                </TableCell>
+                            </TableRow>
+                        );
+                    })}
+                </TableBody>
+            </Table>
 
-                <div className="flex gap-4">
-                    <button
-                        type="button"
-                        onClick={handleAddLine}
-                        className="px-4 py-2 text-sm font-bold text-primary bg-card border border-border rounded shadow-sm hover:bg-muted transition-colors"
-                    >
-                        Add lines
-                    </button>
-                    <button
-                        type="button"
-                        onClick={handleClearAll}
-                        className="px-4 py-2 text-sm font-bold text-primary bg-card border border-border rounded shadow-sm hover:bg-muted transition-colors"
-                    >
-                        Clear all lines
-                    </button>
-                </div>
+            <div className="flex items-center justify-between gap-3 flex-wrap">
+                <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    icon={<FaPlus className="w-3.5 h-3.5" />}
+                    onClick={handleAddLine}
+                    disabled={isLoading}
+                >
+                    Add line
+                </Button>
 
-                {/* Bottom Section */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mt-8">
-                    <div className="space-y-3">
-                        <label className="text-sm font-medium text-muted-foreground">
-                            Memo
-                        </label>
-                        <textarea
-                            value={memo}
-                            onChange={(e) => setMemo(e.target.value)}
-                            className="w-full h-32 px-4 py-3 text-sm border border-border rounded hover:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary resize-none transition-colors"
-                            placeholder="Enter a note about this journal entry"
-                        />
-                    </div>
-                    <div className="space-y-3">
-                        <label className="text-sm font-medium text-muted-foreground">
-                            Attachments
-                        </label>
-                        <div className="flex flex-col items-center justify-center w-full h-32 border border-dashed border-border rounded bg-card hover:bg-muted transition-colors cursor-pointer">
-                            <div className="text-center">
-                                <p className="text-sm font-bold text-primary mb-1">
-                                    Add attachment
-                                </p>
-                                <p className="text-xs text-muted-foreground">
-                                    Max file size: 20 MB
-                                </p>
-                            </div>
-                        </div>
-                    </div>
+                <div className="flex items-center gap-4 text-sm">
+                    <span className="text-primary/70">
+                        Debit:{' '}
+                        <span className="text-primary font-semibold">
+                            ${totals.totalDebit.toFixed(2)}
+                        </span>
+                    </span>
+                    <span className="text-primary/70">
+                        Credit:{' '}
+                        <span className="text-primary font-semibold">
+                            ${totals.totalCredit.toFixed(2)}
+                        </span>
+                    </span>
+                    <span
+                        className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                            isBalanced
+                                ? 'bg-green-100 text-green-700'
+                                : 'bg-red-100 text-red-700'
+                        }`}
+                    >
+                        {isBalanced ? 'Balanced' : 'Not balanced'}
+                    </span>
                 </div>
             </div>
 
-            {/* Footer Action Bar */}
-            <div className="px-6 py-4 bg-card border-t border-border flex items-center justify-between sticky bottom-0 z-10 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
-                <div className="flex gap-4">
-                    <button
-                        type="button"
-                        onClick={onCancel}
-                        className="px-6 py-2 text-sm font-bold text-primary border border-border rounded hover:bg-muted transition-colors"
-                    >
-                        Cancel
-                    </button>
-                    <button
-                        type="button"
-                        onClick={handleClearAll}
-                        className="px-6 py-2 text-sm font-bold text-primary border border-border rounded hover:bg-muted transition-colors"
-                    >
-                        Clear
-                    </button>
+            <div className="space-y-2">
+                <label className="input-label">Memo</label>
+                <div className="input-wrap">
+                    <textarea
+                        value={memo}
+                        onChange={(e) => setMemo(e.target.value)}
+                        className="input min-h-[120px] resize-y py-2"
+                        placeholder="Optional"
+                    />
                 </div>
+            </div>
 
-                <div className="text-sm font-bold text-primary hover:text-accent cursor-pointer">
-                    Make recurring
-                </div>
-
-                <div className="flex gap-0 relative group">
-                    <button
-                        type="submit"
-                        disabled={isLoading}
-                        className="px-8 py-2 text-sm font-bold text-white bg-primary border border-primary rounded-l hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors"
-                    >
-                        Save
-                    </button>
-                    <button
-                        type="button"
-                        disabled={isLoading}
-                        className="px-3 py-2 text-white bg-primary border-l border-primary/80 border-y border-r border-primary rounded-r hover:bg-primary/90 focus:outline-none transition-colors"
-                    >
-                        <FaPlus className="w-3 h-3 text-white" />
-                    </button>
-                    <div className="absolute right-0 bottom-full mb-1 w-48 bg-card border border-border rounded shadow-lg hidden group-hover:block z-20">
-                        <div className="py-1">
-                            <button
-                                type="button"
-                                className="block w-full text-left px-4 py-2 text-sm text-primary hover:bg-muted font-medium"
-                            >
-                                Save and new
-                            </button>
-                            <button
-                                type="button"
-                                className="block w-full text-left px-4 py-2 text-sm text-primary hover:bg-muted font-medium"
-                            >
-                                Save and close
-                            </button>
-                        </div>
-                    </div>
-                </div>
+            <div className="flex items-center justify-end gap-3">
+                <Button
+                    type="button"
+                    variant="outline"
+                    size="md"
+                    onClick={onCancel}
+                    disabled={isLoading}
+                >
+                    Cancel
+                </Button>
+                <Button
+                    type="submit"
+                    variant="primary"
+                    size="md"
+                    loading={isLoading}
+                >
+                    Save
+                </Button>
             </div>
         </form>
     );
