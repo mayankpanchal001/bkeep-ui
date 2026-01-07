@@ -578,10 +578,20 @@ const ChartOfAccountspage = () => {
                         <TableHead>
                             <TableSelectAllCheckbox />
                         </TableHead>
-                        <TableHead sortable sortKey="accountName">Account Name</TableHead>
-                        <TableHead sortable sortKey="accountType">Type</TableHead>
+                        <TableHead sortable sortKey="accountName">
+                            Account Name
+                        </TableHead>
+                        <TableHead sortable sortKey="accountType">
+                            Type
+                        </TableHead>
                         <TableHead>Detail Type</TableHead>
-                        <TableHead align="right" sortable sortKey="currentBalance">Current Balance</TableHead>
+                        <TableHead
+                            align="right"
+                            sortable
+                            sortKey="currentBalance"
+                        >
+                            Current Balance
+                        </TableHead>
                         <TableHead align="center">Actions</TableHead>
                     </tr>
                 </TableHeader>
@@ -614,12 +624,19 @@ const ChartOfAccountspage = () => {
                                 </TableCell>
                                 <TableCell>
                                     <span className="text-sm text-primary">
-                                        {ACCOUNT_TYPE_DISPLAY[account.accountType]}
+                                        {
+                                            ACCOUNT_TYPE_DISPLAY[
+                                                account.accountType
+                                            ]
+                                        }
                                     </span>
                                 </TableCell>
                                 <TableCell>
                                     <span className="text-sm text-primary/75 capitalize">
-                                        {account.accountDetailType.replace(/-/g, ' ')}
+                                        {account.accountDetailType.replace(
+                                            /-/g,
+                                            ' '
+                                        )}
                                     </span>
                                 </TableCell>
                                 <TableCell align="right">
@@ -627,7 +644,9 @@ const ChartOfAccountspage = () => {
                                         {currencyFormatter.format(
                                             parseFloat(
                                                 account.currentBalance ||
-                                                    String(account.openingBalance)
+                                                    String(
+                                                        account.openingBalance
+                                                    )
                                             )
                                         )}
                                     </span>
@@ -635,14 +654,18 @@ const ChartOfAccountspage = () => {
                                 <TableCell align="center">
                                     <div className="flex items-center justify-center gap-2">
                                         <button
-                                            onClick={() => handleOpenEditModal(account)}
+                                            onClick={() =>
+                                                handleOpenEditModal(account)
+                                            }
                                             className="p-2 text-primary/50 hover:text-primary hover:bg-primary/10 rounded transition-colors"
                                             title="Edit"
                                         >
                                             <FaEdit className="w-4 h-4" />
                                         </button>
                                         <button
-                                            onClick={() => setDeleteAccount(account)}
+                                            onClick={() =>
+                                                setDeleteAccount(account)
+                                            }
                                             className="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
                                             title="Delete"
                                         >

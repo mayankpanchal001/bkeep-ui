@@ -215,11 +215,17 @@ const Expensespage = () => {
                             <TableHead>
                                 <TableSelectAllCheckbox />
                             </TableHead>
-                            <TableHead sortable sortKey="date">Date</TableHead>
-                            <TableHead sortable sortKey="vendor">Vendor</TableHead>
+                            <TableHead sortable sortKey="date">
+                                Date
+                            </TableHead>
+                            <TableHead sortable sortKey="vendor">
+                                Vendor
+                            </TableHead>
                             <TableHead>Category</TableHead>
                             <TableHead>Description</TableHead>
-                            <TableHead align="right" sortable sortKey="amount">Amount</TableHead>
+                            <TableHead align="right" sortable sortKey="amount">
+                                Amount
+                            </TableHead>
                             <TableHead>Payment Method</TableHead>
                             <TableHead align="center">Actions</TableHead>
                         </tr>
@@ -239,7 +245,9 @@ const Expensespage = () => {
                                     </TableCell>
                                     <TableCell>
                                         <span className="text-primary/75">
-                                            {new Date(expense.date).toLocaleDateString()}
+                                            {new Date(
+                                                expense.date
+                                            ).toLocaleDateString()}
                                         </span>
                                     </TableCell>
                                     <TableCell>
@@ -260,7 +268,9 @@ const Expensespage = () => {
                                     </TableCell>
                                     <TableCell align="right">
                                         <span className="font-semibold text-primary">
-                                            {currencyFormatter.format(expense.amount)}
+                                            {currencyFormatter.format(
+                                                expense.amount
+                                            )}
                                         </span>
                                     </TableCell>
                                     <TableCell>

@@ -12,7 +12,7 @@ import {
     TableRow,
     TableRowCheckbox,
     TableSelectAllCheckbox,
-    TableSelectionToolbar
+    TableSelectionToolbar,
 } from '../ui/table';
 
 const TransactionsTable = () => {
@@ -129,7 +129,9 @@ const TransactionsTable = () => {
                         <TableHead>
                             <TableSelectAllCheckbox />
                         </TableHead>
-                        <TableHead sortable sortKey="latestPostedDate">Date</TableHead>
+                        <TableHead sortable sortKey="latestPostedDate">
+                            Date
+                        </TableHead>
                         <TableHead>Description</TableHead>
                         <TableHead>Type</TableHead>
                         <TableHead align="right">Amount</TableHead>
@@ -158,28 +160,43 @@ const TransactionsTable = () => {
                                 'N/A';
                             const displayLabel =
                                 firstSplit?.categoryAndGifi?.[0]?.displayLabel;
-                            const amount = parseFloat(transaction.totalAmount || '0');
+                            const amount = parseFloat(
+                                transaction.totalAmount || '0'
+                            );
                             const isCredit = amount >= 0;
-                            const formattedAmount = new Intl.NumberFormat('en-US', {
-                                style: 'currency',
-                                currency: transaction.currency?.toUpperCase() || 'USD',
-                            }).format(Math.abs(amount));
+                            const formattedAmount = new Intl.NumberFormat(
+                                'en-US',
+                                {
+                                    style: 'currency',
+                                    currency:
+                                        transaction.currency?.toUpperCase() ||
+                                        'USD',
+                                }
+                            ).format(Math.abs(amount));
 
                             return (
-                                <TableRow key={transaction.id} rowId={transaction.id}>
+                                <TableRow
+                                    key={transaction.id}
+                                    rowId={transaction.id}
+                                >
                                     <TableCell>
-                                        <TableRowCheckbox rowId={transaction.id} />
+                                        <TableRowCheckbox
+                                            rowId={transaction.id}
+                                        />
                                     </TableCell>
                                     <TableCell>
                                         <div className="flex items-center gap-2">
                                             <div
                                                 className={`w-2 h-2 rounded-full ${
-                                                    isCredit ? 'bg-green-500' : 'bg-red-500'
+                                                    isCredit
+                                                        ? 'bg-green-500'
+                                                        : 'bg-red-500'
                                                 }`}
                                             ></div>
                                             <span className="text-sm font-medium text-primary">
                                                 {new Date(
-                                                    transaction.latestPostedDate || transaction.createdAt
+                                                    transaction.latestPostedDate ||
+                                                        transaction.createdAt
                                                 ).toLocaleDateString('en-US', {
                                                     year: 'numeric',
                                                     month: 'short',
@@ -208,7 +225,9 @@ const TransactionsTable = () => {
                                     <TableCell align="right">
                                         <div
                                             className={`flex items-center justify-end gap-1 font-semibold ${
-                                                isCredit ? 'text-green-600' : 'text-red-600'
+                                                isCredit
+                                                    ? 'text-green-600'
+                                                    : 'text-red-600'
                                             }`}
                                         >
                                             {isCredit ? (
@@ -226,7 +245,9 @@ const TransactionsTable = () => {
                                         <span className="text-sm text-primary/75">
                                             {new Intl.NumberFormat('en-US', {
                                                 style: 'currency',
-                                                currency: transaction.currency?.toUpperCase() || 'USD',
+                                                currency:
+                                                    transaction.currency?.toUpperCase() ||
+                                                    'USD',
                                             }).format(0)}
                                         </span>
                                     </TableCell>
@@ -243,7 +264,8 @@ const TransactionsTable = () => {
                                                 </span>
                                             )}
                                             {transaction.matchedReceiptDocs &&
-                                                transaction.matchedReceiptDocs.length > 0 && (
+                                                transaction.matchedReceiptDocs
+                                                    .length > 0 && (
                                                     <span className="text-xs text-primary/50 bg-primary/10 px-2 py-1 rounded">
                                                         Receipt
                                                     </span>

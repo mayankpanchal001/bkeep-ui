@@ -39,7 +39,9 @@ const UsersTab = () => {
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [selectedUser, setSelectedUser] = useState<UserType | null>(null);
     const [selectedItems, setSelectedItems] = useState<(string | number)[]>([]);
-    const [selectedInvitations, setSelectedInvitations] = useState<(string | number)[]>([]);
+    const [selectedInvitations, setSelectedInvitations] = useState<
+        (string | number)[]
+    >([]);
     const [sortKey, setSortKey] = useState<string | null>('createdAt');
     const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
     const [filters, setFilters] = useState<UsersQueryParams>({
@@ -158,7 +160,9 @@ const UsersTab = () => {
     const pendingInvitations = invitationsData?.data?.items || [];
     const invitationsPagination = invitationsData?.data?.pagination;
     const userRowIds = users.map((u: UserType) => u.id);
-    const invitationRowIds = pendingInvitations.map((i: PendingInvitation) => i.id);
+    const invitationRowIds = pendingInvitations.map(
+        (i: PendingInvitation) => i.id
+    );
 
     const handleBulkExport = () => {
         console.log('Exporting users:', selectedItems);
@@ -318,7 +322,9 @@ const UsersTab = () => {
                                     <TableHead>Name</TableHead>
                                     <TableHead>Email</TableHead>
                                     <TableHead>Company</TableHead>
-                                    <TableHead sortable sortKey="createdAt">Invited At</TableHead>
+                                    <TableHead sortable sortKey="createdAt">
+                                        Invited At
+                                    </TableHead>
                                     <TableHead align="right">Actions</TableHead>
                                 </tr>
                             </TableHeader>
@@ -326,74 +332,106 @@ const UsersTab = () => {
                                 {isLoadingInvitations ? (
                                     <TableLoadingState colSpan={6} rows={3} />
                                 ) : pendingInvitations.length === 0 ? (
-                                    <TableEmptyState colSpan={6} message="No pending invitations" />
+                                    <TableEmptyState
+                                        colSpan={6}
+                                        message="No pending invitations"
+                                    />
                                 ) : (
-                                    pendingInvitations.map((invitation: PendingInvitation) => (
-                                        <TableRow key={invitation.id} rowId={invitation.id}>
-                                            <TableCell>
-                                                <TableRowCheckbox rowId={invitation.id} />
-                                            </TableCell>
-                                            <TableCell>
-                                                <span className="font-medium text-primary">
-                                                    {invitation.userName}
-                                                </span>
-                                            </TableCell>
-                                            <TableCell>
-                                                <span className="text-primary/75">
-                                                    {invitation.email}
-                                                </span>
-                                            </TableCell>
-                                            <TableCell>
-                                                <span className="text-primary/75">
-                                                    {invitation.tenant?.name || '—'}
-                                                </span>
-                                            </TableCell>
-                                            <TableCell>
-                                                <span className="text-primary/75">
-                                                    {new Date(invitation.createdAt).toLocaleDateString()}
-                                                </span>
-                                            </TableCell>
-                                            <TableCell align="right">
-                                                <div className="flex items-center justify-end gap-2">
-                                                    <Button
-                                                        variant="outline"
-                                                        size="sm"
-                                                        onClick={() => handleResendInvitation(invitation.id)}
-                                                        loading={isResendingInvitation}
-                                                        disabled={isResendingInvitation}
-                                                        title="Resend invitation email"
-                                                    >
-                                                        <Icons.Send className="mr-1 w-3 h-3" />
-                                                        Resend
-                                                    </Button>
-                                                    <Button
-                                                        variant="outline"
-                                                        size="sm"
-                                                        onClick={() => revokeInvitation(invitation.id)}
-                                                        loading={isRevokingInvitation}
-                                                        disabled={isRevokingInvitation}
-                                                        title="Revoke invitation"
-                                                    >
-                                                        <Icons.Close className="mr-1 w-3 h-3" />
-                                                        Revoke
-                                                    </Button>
-                                                </div>
-                                            </TableCell>
-                                        </TableRow>
-                                    ))
+                                    pendingInvitations.map(
+                                        (invitation: PendingInvitation) => (
+                                            <TableRow
+                                                key={invitation.id}
+                                                rowId={invitation.id}
+                                            >
+                                                <TableCell>
+                                                    <TableRowCheckbox
+                                                        rowId={invitation.id}
+                                                    />
+                                                </TableCell>
+                                                <TableCell>
+                                                    <span className="font-medium text-primary">
+                                                        {invitation.userName}
+                                                    </span>
+                                                </TableCell>
+                                                <TableCell>
+                                                    <span className="text-primary/75">
+                                                        {invitation.email}
+                                                    </span>
+                                                </TableCell>
+                                                <TableCell>
+                                                    <span className="text-primary/75">
+                                                        {invitation.tenant
+                                                            ?.name || '—'}
+                                                    </span>
+                                                </TableCell>
+                                                <TableCell>
+                                                    <span className="text-primary/75">
+                                                        {new Date(
+                                                            invitation.createdAt
+                                                        ).toLocaleDateString()}
+                                                    </span>
+                                                </TableCell>
+                                                <TableCell align="right">
+                                                    <div className="flex items-center justify-end gap-2">
+                                                        <Button
+                                                            variant="outline"
+                                                            size="sm"
+                                                            onClick={() =>
+                                                                handleResendInvitation(
+                                                                    invitation.id
+                                                                )
+                                                            }
+                                                            loading={
+                                                                isResendingInvitation
+                                                            }
+                                                            disabled={
+                                                                isResendingInvitation
+                                                            }
+                                                            title="Resend invitation email"
+                                                        >
+                                                            <Icons.Send className="mr-1 w-3 h-3" />
+                                                            Resend
+                                                        </Button>
+                                                        <Button
+                                                            variant="outline"
+                                                            size="sm"
+                                                            onClick={() =>
+                                                                revokeInvitation(
+                                                                    invitation.id
+                                                                )
+                                                            }
+                                                            loading={
+                                                                isRevokingInvitation
+                                                            }
+                                                            disabled={
+                                                                isRevokingInvitation
+                                                            }
+                                                            title="Revoke invitation"
+                                                        >
+                                                            <Icons.Close className="mr-1 w-3 h-3" />
+                                                            Revoke
+                                                        </Button>
+                                                    </div>
+                                                </TableCell>
+                                            </TableRow>
+                                        )
+                                    )
                                 )}
                             </TableBody>
                         </Table>
 
-                        {invitationsPagination && invitationsPagination.totalPages > 1 && (
-                            <TablePagination
-                                page={invitationsPagination.page}
-                                totalPages={invitationsPagination.totalPages}
-                                totalItems={invitationsPagination.total}
-                                itemsPerPage={10}
-                                onPageChange={handleInvitationPageChange}
-                            />
-                        )}
+                        {invitationsPagination &&
+                            invitationsPagination.totalPages > 1 && (
+                                <TablePagination
+                                    page={invitationsPagination.page}
+                                    totalPages={
+                                        invitationsPagination.totalPages
+                                    }
+                                    totalItems={invitationsPagination.total}
+                                    itemsPerPage={10}
+                                    onPageChange={handleInvitationPageChange}
+                                />
+                            )}
                     </>
                 )}
             </div>
@@ -422,7 +460,9 @@ const UsersTab = () => {
                         <TableHead>
                             <TableSelectAllCheckbox />
                         </TableHead>
-                        <TableHead sortable sortKey="name">Name</TableHead>
+                        <TableHead sortable sortKey="name">
+                            Name
+                        </TableHead>
                         <TableHead>Email</TableHead>
                         <TableHead>Role</TableHead>
                         <TableHead>Status</TableHead>
@@ -461,8 +501,16 @@ const UsersTab = () => {
                                 </TableCell>
                                 <TableCell>
                                     <Chips
-                                        label={user.isVerified ? 'Verified' : 'Unverified'}
-                                        variant={user.isVerified ? 'success' : 'danger'}
+                                        label={
+                                            user.isVerified
+                                                ? 'Verified'
+                                                : 'Unverified'
+                                        }
+                                        variant={
+                                            user.isVerified
+                                                ? 'success'
+                                                : 'danger'
+                                        }
                                     />
                                 </TableCell>
                                 <TableCell align="right">

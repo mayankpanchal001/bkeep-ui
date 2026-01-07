@@ -1,4 +1,3 @@
- 
 import CreateInvoiceModal from '@/components/invoice/CreateInvoiceModal';
 import Button from '@/components/typography/Button';
 import { InputField } from '@/components/typography/InputFields';
@@ -234,11 +233,21 @@ const Invoicepage = () => {
                             <TableHead>
                                 <TableSelectAllCheckbox />
                             </TableHead>
-                            <TableHead sortable sortKey="invoiceNumber">Invoice #</TableHead>
-                            <TableHead sortable sortKey="clientName">Company</TableHead>
-                            <TableHead sortable sortKey="date">Date</TableHead>
-                            <TableHead sortable sortKey="dueDate">Due Date</TableHead>
-                            <TableHead align="right" sortable sortKey="amount">Amount</TableHead>
+                            <TableHead sortable sortKey="invoiceNumber">
+                                Invoice #
+                            </TableHead>
+                            <TableHead sortable sortKey="clientName">
+                                Company
+                            </TableHead>
+                            <TableHead sortable sortKey="date">
+                                Date
+                            </TableHead>
+                            <TableHead sortable sortKey="dueDate">
+                                Due Date
+                            </TableHead>
+                            <TableHead align="right" sortable sortKey="amount">
+                                Amount
+                            </TableHead>
                             <TableHead align="center">Status</TableHead>
                             <TableHead align="center">Actions</TableHead>
                         </tr>
@@ -252,15 +261,23 @@ const Invoicepage = () => {
                             />
                         ) : (
                             filteredInvoices.map((invoice) => {
-                                const StatusIcon = statusConfig[invoice.status].icon;
+                                const StatusIcon =
+                                    statusConfig[invoice.status].icon;
                                 return (
                                     <TableRow
                                         key={invoice.id}
                                         rowId={invoice.id}
-                                        onClick={() => console.log('Clicked invoice:', invoice)}
+                                        onClick={() =>
+                                            console.log(
+                                                'Clicked invoice:',
+                                                invoice
+                                            )
+                                        }
                                     >
                                         <TableCell>
-                                            <TableRowCheckbox rowId={invoice.id} />
+                                            <TableRowCheckbox
+                                                rowId={invoice.id}
+                                            />
                                         </TableCell>
                                         <TableCell>
                                             <span className="font-medium text-primary">
@@ -274,27 +291,37 @@ const Invoicepage = () => {
                                         </TableCell>
                                         <TableCell>
                                             <span className="text-primary/75">
-                                                {new Date(invoice.date).toLocaleDateString()}
+                                                {new Date(
+                                                    invoice.date
+                                                ).toLocaleDateString()}
                                             </span>
                                         </TableCell>
                                         <TableCell>
                                             <span className="text-primary/75">
-                                                {new Date(invoice.dueDate).toLocaleDateString()}
+                                                {new Date(
+                                                    invoice.dueDate
+                                                ).toLocaleDateString()}
                                             </span>
                                         </TableCell>
                                         <TableCell align="right">
                                             <span className="font-semibold text-primary">
-                                                {currencyFormatter.format(invoice.amount)}
+                                                {currencyFormatter.format(
+                                                    invoice.amount
+                                                )}
                                             </span>
                                         </TableCell>
                                         <TableCell align="center">
                                             <span
                                                 className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium ${
-                                                    statusConfig[invoice.status].color
+                                                    statusConfig[invoice.status]
+                                                        .color
                                                 }`}
                                             >
                                                 <StatusIcon className="w-3 h-3" />
-                                                {statusConfig[invoice.status].label}
+                                                {
+                                                    statusConfig[invoice.status]
+                                                        .label
+                                                }
                                             </span>
                                         </TableCell>
                                         <TableCell align="center">
@@ -302,21 +329,27 @@ const Invoicepage = () => {
                                                 <button
                                                     className="p-2 text-primary/50 hover:text-primary hover:bg-primary/10 rounded transition-colors"
                                                     title="View"
-                                                    onClick={(e) => e.stopPropagation()}
+                                                    onClick={(e) =>
+                                                        e.stopPropagation()
+                                                    }
                                                 >
                                                     <FaEye className="w-4 h-4" />
                                                 </button>
                                                 <button
                                                     className="p-2 text-primary/50 hover:text-primary hover:bg-primary/10 rounded transition-colors"
                                                     title="Edit"
-                                                    onClick={(e) => e.stopPropagation()}
+                                                    onClick={(e) =>
+                                                        e.stopPropagation()
+                                                    }
                                                 >
                                                     <FaEdit className="w-4 h-4" />
                                                 </button>
                                                 <button
                                                     className="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
                                                     title="Delete"
-                                                    onClick={(e) => e.stopPropagation()}
+                                                    onClick={(e) =>
+                                                        e.stopPropagation()
+                                                    }
                                                 >
                                                     <FaTrash className="w-4 h-4" />
                                                 </button>

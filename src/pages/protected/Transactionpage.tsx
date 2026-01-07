@@ -17,7 +17,7 @@ import {
     TableRow,
     TableRowCheckbox,
     TableSelectAllCheckbox,
-    TableSelectionToolbar
+    TableSelectionToolbar,
 } from '@/components/ui/table';
 import { useEffect, useMemo, useState } from 'react';
 import { FaFileInvoiceDollar, FaFilter, FaSearch } from 'react-icons/fa';
@@ -255,7 +255,11 @@ const Transactionpage = () => {
                 const db = new Date(String(vb)).getTime();
                 return (da - db) * order;
             }
-            if (sortKey === 'spent' || sortKey === 'received' || sortKey === 'tax') {
+            if (
+                sortKey === 'spent' ||
+                sortKey === 'received' ||
+                sortKey === 'tax'
+            ) {
                 const na = Number(va || 0);
                 const nb = Number(vb || 0);
                 return (na - nb) * order;
@@ -450,7 +454,9 @@ const Transactionpage = () => {
                                                 : tx
                                         )
                                     );
-                                    showSuccessToast(`${selectedItems.length} transactions marked as posted`);
+                                    showSuccessToast(
+                                        `${selectedItems.length} transactions marked as posted`
+                                    );
                                     setSelectedItems([]);
                                 }}
                                 className="px-3 py-1.5 text-xs font-medium text-green-700 bg-green-100 hover:bg-green-200 rounded-md transition-colors"
@@ -466,7 +472,9 @@ const Transactionpage = () => {
                                                 : tx
                                         )
                                     );
-                                    showSuccessToast(`${selectedItems.length} transactions excluded`);
+                                    showSuccessToast(
+                                        `${selectedItems.length} transactions excluded`
+                                    );
                                     setSelectedItems([]);
                                 }}
                                 className="px-3 py-1.5 text-xs font-medium text-red-700 bg-red-100 hover:bg-red-200 rounded-md transition-colors"
@@ -513,7 +521,9 @@ const Transactionpage = () => {
                                         </TableCell>
                                         <TableCell>
                                             <span className="text-sm font-medium text-primary">
-                                                {new Date(t.date).toLocaleDateString()}
+                                                {new Date(
+                                                    t.date
+                                                ).toLocaleDateString()}
                                             </span>
                                         </TableCell>
                                         <TableCell>
@@ -528,12 +538,16 @@ const Transactionpage = () => {
                                         </TableCell>
                                         <TableCell>
                                             <span className="text-red-600 font-semibold">
-                                                {t.spent ? `-${currency(t.spent)}` : ''}
+                                                {t.spent
+                                                    ? `-${currency(t.spent)}`
+                                                    : ''}
                                             </span>
                                         </TableCell>
                                         <TableCell>
                                             <span className="text-green-600 font-semibold">
-                                                {t.received ? `+${currency(t.received)}` : ''}
+                                                {t.received
+                                                    ? `+${currency(t.received)}`
+                                                    : ''}
                                             </span>
                                         </TableCell>
                                         <TableCell>
@@ -544,21 +558,46 @@ const Transactionpage = () => {
                                                         value={t.taxId || ''}
                                                         onChange={(value) => {
                                                             const rate =
-                                                                (value && TAX_RATE_BY_ID[value]) || 0;
-                                                            setTransactions((prev) =>
-                                                                prev.map((tx) => {
-                                                                    if (tx.id !== t.id) return tx;
-                                                                    const base = tx.spent ?? 0;
-                                                                    const taxAmount = Number(
-                                                                        (base * rate).toFixed(2)
-                                                                    );
-                                                                    return {
-                                                                        ...tx,
-                                                                        taxId: value || undefined,
-                                                                        taxRate: rate || undefined,
-                                                                        tax: taxAmount,
-                                                                    };
-                                                                })
+                                                                (value &&
+                                                                    TAX_RATE_BY_ID[
+                                                                        value
+                                                                    ]) ||
+                                                                0;
+                                                            setTransactions(
+                                                                (prev) =>
+                                                                    prev.map(
+                                                                        (
+                                                                            tx
+                                                                        ) => {
+                                                                            if (
+                                                                                tx.id !==
+                                                                                t.id
+                                                                            )
+                                                                                return tx;
+                                                                            const base =
+                                                                                tx.spent ??
+                                                                                0;
+                                                                            const taxAmount =
+                                                                                Number(
+                                                                                    (
+                                                                                        base *
+                                                                                        rate
+                                                                                    ).toFixed(
+                                                                                        2
+                                                                                    )
+                                                                                );
+                                                                            return {
+                                                                                ...tx,
+                                                                                taxId:
+                                                                                    value ||
+                                                                                    undefined,
+                                                                                taxRate:
+                                                                                    rate ||
+                                                                                    undefined,
+                                                                                tax: taxAmount,
+                                                                            };
+                                                                        }
+                                                                    )
                                                             );
                                                         }}
                                                         placeholder="Select tax..."
@@ -577,15 +616,20 @@ const Transactionpage = () => {
                                                     options={SUPPLIER_OPTIONS}
                                                     value={t.fromTo || ''}
                                                     onChange={(value) => {
-                                                        setTransactions((prev) =>
-                                                            prev.map((tx) =>
-                                                                tx.id === t.id
-                                                                    ? {
-                                                                          ...tx,
-                                                                          fromTo: value || undefined,
-                                                                      }
-                                                                    : tx
-                                                            )
+                                                        setTransactions(
+                                                            (prev) =>
+                                                                prev.map(
+                                                                    (tx) =>
+                                                                        tx.id ===
+                                                                        t.id
+                                                                            ? {
+                                                                                  ...tx,
+                                                                                  fromTo:
+                                                                                      value ||
+                                                                                      undefined,
+                                                                              }
+                                                                            : tx
+                                                                )
                                                         );
                                                     }}
                                                     placeholder="Select supplier..."
@@ -597,41 +641,59 @@ const Transactionpage = () => {
                                         <TableCell>
                                             <div className="flex items-center gap-2">
                                                 <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-2">
-                                                    {t.category || 'Select category'}
+                                                    {t.category ||
+                                                        'Select category'}
                                                 </span>
                                                 <Button
                                                     variant="outline"
                                                     size="sm"
                                                     onClick={() => {
-                                                        setTransactions((prev) =>
-                                                            prev.map((tx) =>
-                                                                tx.id === t.id
-                                                                    ? { ...tx, matched: !tx.matched }
-                                                                    : tx
-                                                            )
+                                                        setTransactions(
+                                                            (prev) =>
+                                                                prev.map(
+                                                                    (tx) =>
+                                                                        tx.id ===
+                                                                        t.id
+                                                                            ? {
+                                                                                  ...tx,
+                                                                                  matched:
+                                                                                      !tx.matched,
+                                                                              }
+                                                                            : tx
+                                                                )
                                                         );
                                                         showSuccessToast(
-                                                            t.matched ? 'Unmatched' : 'Matched'
+                                                            t.matched
+                                                                ? 'Unmatched'
+                                                                : 'Matched'
                                                         );
                                                     }}
                                                 >
-                                                    {t.matched ? 'Matched' : 'Match'}
+                                                    {t.matched
+                                                        ? 'Matched'
+                                                        : 'Match'}
                                                 </Button>
                                                 <div className="min-w-[220px]">
                                                     <Combobox
-                                                        options={CATEGORY_OPTIONS}
+                                                        options={
+                                                            CATEGORY_OPTIONS
+                                                        }
                                                         value={t.category || ''}
                                                         onChange={(value) => {
-                                                            setTransactions((prev) =>
-                                                                prev.map((tx) =>
-                                                                    tx.id === t.id
-                                                                        ? {
-                                                                              ...tx,
-                                                                              category:
-                                                                                  value || undefined,
-                                                                          }
-                                                                        : tx
-                                                                )
+                                                            setTransactions(
+                                                                (prev) =>
+                                                                    prev.map(
+                                                                        (tx) =>
+                                                                            tx.id ===
+                                                                            t.id
+                                                                                ? {
+                                                                                      ...tx,
+                                                                                      category:
+                                                                                          value ||
+                                                                                          undefined,
+                                                                                  }
+                                                                                : tx
+                                                                    )
                                                             );
                                                             if (value) {
                                                                 showSuccessToast(
@@ -652,24 +714,34 @@ const Transactionpage = () => {
                                                     variant="outline"
                                                     size="sm"
                                                     onClick={() => {
-                                                        setTransactions((prev) =>
-                                                            prev.map((tx) =>
-                                                                tx.id === t.id
-                                                                    ? {
-                                                                          ...tx,
-                                                                          status: 'posted',
-                                                                      }
-                                                                    : tx
-                                                            )
+                                                        setTransactions(
+                                                            (prev) =>
+                                                                prev.map(
+                                                                    (tx) =>
+                                                                        tx.id ===
+                                                                        t.id
+                                                                            ? {
+                                                                                  ...tx,
+                                                                                  status: 'posted',
+                                                                              }
+                                                                            : tx
+                                                                )
                                                         );
-                                                        showSuccessToast('Transaction posted');
+                                                        showSuccessToast(
+                                                            'Transaction posted'
+                                                        );
                                                     }}
                                                 >
                                                     Post
                                                 </Button>
                                                 <DropdownMenu>
-                                                    <DropdownMenuTrigger asChild>
-                                                        <Button variant="outline" size="sm">
+                                                    <DropdownMenuTrigger
+                                                        asChild
+                                                    >
+                                                        <Button
+                                                            variant="outline"
+                                                            size="sm"
+                                                        >
                                                             ⋯
                                                         </Button>
                                                     </DropdownMenuTrigger>
@@ -694,15 +766,20 @@ const Transactionpage = () => {
                                                         </DropdownMenuItem>
                                                         <DropdownMenuItem
                                                             onClick={() => {
-                                                                setTransactions((prev) =>
-                                                                    prev.map((tx) =>
-                                                                        tx.id === t.id
-                                                                            ? {
-                                                                                  ...tx,
-                                                                                  status: 'excluded',
-                                                                              }
-                                                                            : tx
-                                                                    )
+                                                                setTransactions(
+                                                                    (prev) =>
+                                                                        prev.map(
+                                                                            (
+                                                                                tx
+                                                                            ) =>
+                                                                                tx.id ===
+                                                                                t.id
+                                                                                    ? {
+                                                                                          ...tx,
+                                                                                          status: 'excluded',
+                                                                                      }
+                                                                                    : tx
+                                                                        )
                                                                 );
                                                                 showSuccessToast(
                                                                     'Transaction excluded'

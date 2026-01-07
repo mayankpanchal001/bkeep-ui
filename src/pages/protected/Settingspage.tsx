@@ -4,9 +4,7 @@ import { SettingsSidebar } from '../../components/settings/SettingsSidebar';
 import { Icons } from '../../components/shared/Icons';
 import PageHeader from '../../components/shared/PageHeader';
 import { useAuth } from '../../stores/auth/authSelectore';
-import {
-    PLURAL_TENANT_PREFIX,
-} from '@/components/homepage/constants';
+import { PLURAL_TENANT_PREFIX } from '@/components/homepage/constants';
 
 const CAP_PLURAL =
     PLURAL_TENANT_PREFIX.charAt(0).toUpperCase() +

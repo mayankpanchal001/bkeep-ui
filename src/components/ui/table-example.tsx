@@ -36,23 +36,81 @@ interface User {
 }
 
 const SAMPLE_USERS: User[] = [
-    { id: '1', name: 'Alice Johnson', email: 'alice@example.com', role: 'Admin', status: 'active', joinDate: '2024-01-15' },
-    { id: '2', name: 'Bob Smith', email: 'bob@example.com', role: 'User', status: 'active', joinDate: '2024-02-20' },
-    { id: '3', name: 'Charlie Davis', email: 'charlie@example.com', role: 'Manager', status: 'inactive', joinDate: '2024-03-10' },
-    { id: '4', name: 'Diana Prince', email: 'diana@example.com', role: 'User', status: 'active', joinDate: '2024-04-05' },
-    { id: '5', name: 'Ethan Hunt', email: 'ethan@example.com', role: 'Admin', status: 'active', joinDate: '2024-05-12' },
-    { id: '6', name: 'Fiona Green', email: 'fiona@example.com', role: 'User', status: 'inactive', joinDate: '2024-06-18' },
-    { id: '7', name: 'George Wilson', email: 'george@example.com', role: 'Manager', status: 'active', joinDate: '2024-07-22' },
-    { id: '8', name: 'Helen Troy', email: 'helen@example.com', role: 'User', status: 'active', joinDate: '2024-08-30' },
+    {
+        id: '1',
+        name: 'Alice Johnson',
+        email: 'alice@example.com',
+        role: 'Admin',
+        status: 'active',
+        joinDate: '2024-01-15',
+    },
+    {
+        id: '2',
+        name: 'Bob Smith',
+        email: 'bob@example.com',
+        role: 'User',
+        status: 'active',
+        joinDate: '2024-02-20',
+    },
+    {
+        id: '3',
+        name: 'Charlie Davis',
+        email: 'charlie@example.com',
+        role: 'Manager',
+        status: 'inactive',
+        joinDate: '2024-03-10',
+    },
+    {
+        id: '4',
+        name: 'Diana Prince',
+        email: 'diana@example.com',
+        role: 'User',
+        status: 'active',
+        joinDate: '2024-04-05',
+    },
+    {
+        id: '5',
+        name: 'Ethan Hunt',
+        email: 'ethan@example.com',
+        role: 'Admin',
+        status: 'active',
+        joinDate: '2024-05-12',
+    },
+    {
+        id: '6',
+        name: 'Fiona Green',
+        email: 'fiona@example.com',
+        role: 'User',
+        status: 'inactive',
+        joinDate: '2024-06-18',
+    },
+    {
+        id: '7',
+        name: 'George Wilson',
+        email: 'george@example.com',
+        role: 'Manager',
+        status: 'active',
+        joinDate: '2024-07-22',
+    },
+    {
+        id: '8',
+        name: 'Helen Troy',
+        email: 'helen@example.com',
+        role: 'User',
+        status: 'active',
+        joinDate: '2024-08-30',
+    },
 ];
 
 export function BasicTableExample() {
     const [selectedIds, setSelectedIds] = useState<(string | number)[]>([]);
-    const rowIds = SAMPLE_USERS.map(u => u.id);
+    const rowIds = SAMPLE_USERS.map((u) => u.id);
 
     return (
         <div className="p-6">
-            <h2 className="text-xl font-bold mb-4">Basic Table with Selection</h2>
+            <h2 className="text-xl font-bold mb-4">
+                Basic Table with Selection
+            </h2>
 
             <Table
                 enableSelection
@@ -72,7 +130,7 @@ export function BasicTableExample() {
                     </tr>
                 </TableHeader>
                 <TableBody>
-                    {SAMPLE_USERS.map(user => (
+                    {SAMPLE_USERS.map((user) => (
                         <TableRow key={user.id} rowId={user.id}>
                             <TableCell>
                                 <TableRowCheckbox rowId={user.id} />
@@ -111,7 +169,7 @@ export function FullFeaturedTableExample() {
     const [page, setPage] = useState(1);
     const itemsPerPage = 5;
 
-    const rowIds = SAMPLE_USERS.map(u => u.id);
+    const rowIds = SAMPLE_USERS.map((u) => u.id);
 
     // Sort data
     const sortedData = useMemo(() => {
@@ -137,7 +195,9 @@ export function FullFeaturedTableExample() {
     };
 
     const handleBulkDelete = () => {
-        alert(`Deleting ${selectedIds.length} items: ${selectedIds.join(', ')}`);
+        alert(
+            `Deleting ${selectedIds.length} items: ${selectedIds.join(', ')}`
+        );
         setSelectedIds([]);
     };
 
@@ -208,9 +268,7 @@ export function FullFeaturedTableExample() {
                         <TableHead sortable sortKey="joinDate">
                             Join Date
                         </TableHead>
-                        <TableHead align="right">
-                            Actions
-                        </TableHead>
+                        <TableHead align="right">Actions</TableHead>
                     </tr>
                 </TableHeader>
                 <TableBody>
@@ -228,7 +286,7 @@ export function FullFeaturedTableExample() {
                             }
                         />
                     ) : (
-                        paginatedData.map(user => (
+                        paginatedData.map((user) => (
                             <TableRow key={user.id} rowId={user.id}>
                                 <TableCell>
                                     <TableRowCheckbox rowId={user.id} />
@@ -236,11 +294,15 @@ export function FullFeaturedTableExample() {
                                 <TableCell>
                                     <div className="flex items-center gap-3">
                                         <Avatar name={user.name} />
-                                        <span className="font-medium">{user.name}</span>
+                                        <span className="font-medium">
+                                            {user.name}
+                                        </span>
                                     </div>
                                 </TableCell>
                                 <TableCell>
-                                    <span className="text-slate-500">{user.email}</span>
+                                    <span className="text-slate-500">
+                                        {user.email}
+                                    </span>
                                 </TableCell>
                                 <TableCell>
                                     <RoleBadge role={user.role} />
@@ -249,11 +311,14 @@ export function FullFeaturedTableExample() {
                                     <StatusBadge status={user.status} />
                                 </TableCell>
                                 <TableCell>
-                                    {new Date(user.joinDate).toLocaleDateString('en-US', {
-                                        year: 'numeric',
-                                        month: 'short',
-                                        day: 'numeric',
-                                    })}
+                                    {new Date(user.joinDate).toLocaleDateString(
+                                        'en-US',
+                                        {
+                                            year: 'numeric',
+                                            month: 'short',
+                                            day: 'numeric',
+                                        }
+                                    )}
                                 </TableCell>
                                 <TableCell align="right">
                                     <ActionButtons userId={user.id} />
@@ -323,7 +388,10 @@ export function MinimalTableExample() {
 // ============================================================================
 
 function Avatar({ name }: { name: string }) {
-    const initials = name.split(' ').map(n => n[0]).join('');
+    const initials = name
+        .split(' ')
+        .map((n) => n[0])
+        .join('');
     return (
         <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-xs font-semibold">
             {initials}
@@ -334,12 +402,15 @@ function Avatar({ name }: { name: string }) {
 function RoleBadge({ role }: { role: User['role'] }) {
     const styles = {
         Admin: 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300',
-        Manager: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300',
+        Manager:
+            'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300',
         User: 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300',
     };
 
     return (
-        <span className={`px-2 py-1 text-xs font-semibold rounded-full ${styles[role]}`}>
+        <span
+            className={`px-2 py-1 text-xs font-semibold rounded-full ${styles[role]}`}
+        >
             {role}
         </span>
     );
@@ -348,9 +419,11 @@ function RoleBadge({ role }: { role: User['role'] }) {
 function StatusBadge({ status }: { status: User['status'] }) {
     return (
         <div className="flex items-center gap-2">
-            <div className={`w-2 h-2 rounded-full ${
-                status === 'active' ? 'bg-green-500' : 'bg-slate-400'
-            }`} />
+            <div
+                className={`w-2 h-2 rounded-full ${
+                    status === 'active' ? 'bg-green-500' : 'bg-slate-400'
+                }`}
+            />
             <span className="capitalize text-sm">{status}</span>
         </div>
     );
@@ -364,8 +437,18 @@ function ActionButtons({ userId }: { userId: string }) {
                 className="p-1.5 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
                 title="Edit"
             >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                >
+                    <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                    />
                 </svg>
             </button>
             <button
@@ -373,8 +456,18 @@ function ActionButtons({ userId }: { userId: string }) {
                 className="p-1.5 text-slate-500 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
                 title="Delete"
             >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                >
+                    <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                    />
                 </svg>
             </button>
         </div>
@@ -394,7 +487,8 @@ export default function TableExample() {
                         Modern Table Component
                     </h1>
                     <p className="mt-2 text-slate-600 dark:text-slate-400">
-                        Reusable table with bulk selection, sorting, pagination, and more
+                        Reusable table with bulk selection, sorting, pagination,
+                        and more
                     </p>
                 </div>
 

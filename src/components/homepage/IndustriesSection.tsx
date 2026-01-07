@@ -12,8 +12,8 @@ export default function IndustriesSection() {
                     trails.
                 </h2>
                 <p className="text-base text-muted-foreground">
-                    Collaborate securely across companies while maintaining clean
-                    separation of data.
+                    Collaborate securely across companies while maintaining
+                    clean separation of data.
                 </p>
             </div>
             <div className="mt-12 grid gap-4 md:grid-cols-2">

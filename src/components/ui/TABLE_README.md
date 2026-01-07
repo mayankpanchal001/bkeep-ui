@@ -3,6 +3,7 @@
 ## Overview
 
 A best-in-class, reusable table component with:
+
 - ✅ **Built-in Bulk Selection** - Select all/individual rows
 - ✅ **Built-in Sorting** - Click column headers to sort
 - ✅ **Controlled & Uncontrolled Modes** - Works both ways
@@ -81,6 +82,7 @@ function MyTable() {
 ## Migration from DataTable
 
 ### Before (Old DataTable)
+
 ```tsx
 import { DataTable, type Column } from '@/components/shared/DataTable';
 
@@ -96,10 +98,11 @@ const columns: Column<User>[] = [
     onSelectionChange={setSelectedItems}
     sorting={{ sort, order, onSortChange }}
     pagination={{ page, totalPages, onPageChange }}
-/>
+/>;
 ```
 
 ### After (New Table)
+
 ```tsx
 import {
     Table,
@@ -166,36 +169,36 @@ import {
 
 Main wrapper component.
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `enableSelection` | `boolean` | `false` | Enable row selection checkboxes |
-| `rowIds` | `(string\|number)[]` | `[]` | All row IDs for selection tracking |
-| `selectedIds` | `(string\|number)[]` | - | Controlled selected IDs |
-| `onSelectionChange` | `(ids) => void` | - | Selection change callback |
-| `sortKey` | `string\|null` | - | Current sort column key |
-| `sortDirection` | `SortDirection` | - | Current sort direction |
-| `onSortChange` | `(key, dir) => void` | - | Sort change callback |
-| `compact` | `boolean` | `false` | Compact mode (less padding) |
-| `striped` | `boolean` | `false` | Striped rows |
-| `borderStyle` | `'default'\|'minimal'\|'none'` | `'default'` | Border style |
+| Prop                | Type                           | Default     | Description                        |
+| ------------------- | ------------------------------ | ----------- | ---------------------------------- |
+| `enableSelection`   | `boolean`                      | `false`     | Enable row selection checkboxes    |
+| `rowIds`            | `(string\|number)[]`           | `[]`        | All row IDs for selection tracking |
+| `selectedIds`       | `(string\|number)[]`           | -           | Controlled selected IDs            |
+| `onSelectionChange` | `(ids) => void`                | -           | Selection change callback          |
+| `sortKey`           | `string\|null`                 | -           | Current sort column key            |
+| `sortDirection`     | `SortDirection`                | -           | Current sort direction             |
+| `onSortChange`      | `(key, dir) => void`           | -           | Sort change callback               |
+| `compact`           | `boolean`                      | `false`     | Compact mode (less padding)        |
+| `striped`           | `boolean`                      | `false`     | Striped rows                       |
+| `borderStyle`       | `'default'\|'minimal'\|'none'` | `'default'` | Border style                       |
 
 ### TableHead
 
 Column header with sorting support.
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `sortable` | `boolean` | `false` | Enable sorting |
-| `sortKey` | `string` | - | Sort key (defaults to text content) |
-| `align` | `'left'\|'center'\|'right'` | `'left'` | Text alignment |
-| `resizable` | `boolean` | `false` | Enable column resizing |
+| Prop        | Type                        | Default  | Description                         |
+| ----------- | --------------------------- | -------- | ----------------------------------- |
+| `sortable`  | `boolean`                   | `false`  | Enable sorting                      |
+| `sortKey`   | `string`                    | -        | Sort key (defaults to text content) |
+| `align`     | `'left'\|'center'\|'right'` | `'left'` | Text alignment                      |
+| `resizable` | `boolean`                   | `false`  | Enable column resizing              |
 
 ### TableRow
 
 Table row with selection support.
 
-| Prop | Type | Description |
-|------|------|-------------|
+| Prop    | Type             | Description                 |
+| ------- | ---------------- | --------------------------- |
 | `rowId` | `string\|number` | Unique row ID for selection |
 
 ### TableSelectionToolbar
@@ -213,33 +216,33 @@ Auto-hiding toolbar that appears when rows are selected.
 
 Pagination controls.
 
-| Prop | Type | Description |
-|------|------|-------------|
-| `page` | `number` | Current page |
-| `totalPages` | `number` | Total pages |
-| `totalItems` | `number` | Total item count |
-| `itemsPerPage` | `number` | Items per page |
+| Prop           | Type             | Description          |
+| -------------- | ---------------- | -------------------- |
+| `page`         | `number`         | Current page         |
+| `totalPages`   | `number`         | Total pages          |
+| `totalItems`   | `number`         | Total item count     |
+| `itemsPerPage` | `number`         | Items per page       |
 | `onPageChange` | `(page) => void` | Page change callback |
 
 ### TableEmptyState
 
 Empty state placeholder.
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `colSpan` | `number` | - | Columns to span |
-| `message` | `string` | `'No data available'` | Main message |
-| `description` | `string` | - | Description text |
-| `action` | `ReactNode` | - | Action button |
+| Prop          | Type        | Default               | Description      |
+| ------------- | ----------- | --------------------- | ---------------- |
+| `colSpan`     | `number`    | -                     | Columns to span  |
+| `message`     | `string`    | `'No data available'` | Main message     |
+| `description` | `string`    | -                     | Description text |
+| `action`      | `ReactNode` | -                     | Action button    |
 
 ### TableLoadingState
 
 Loading skeleton.
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `colSpan` | `number` | - | Columns to span |
-| `rows` | `number` | `5` | Loading rows to show |
+| Prop      | Type     | Default | Description          |
+| --------- | -------- | ------- | -------------------- |
+| `colSpan` | `number` | -       | Columns to span      |
+| `rows`    | `number` | `5`     | Loading rows to show |
 
 ---
 
@@ -251,15 +254,15 @@ Access selection state within Table context.
 
 ```tsx
 const {
-    selectedRows,      // Set<string | number>
-    selectedCount,     // number
-    totalCount,        // number
-    toggleRow,         // (id) => void
-    toggleAll,         // () => void
-    selectRows,        // (ids) => void
-    clearSelection,    // () => void
-    isAllSelected,     // boolean
-    isIndeterminate,   // boolean
+    selectedRows, // Set<string | number>
+    selectedCount, // number
+    totalCount, // number
+    toggleRow, // (id) => void
+    toggleAll, // () => void
+    selectRows, // (ids) => void
+    clearSelection, // () => void
+    isAllSelected, // boolean
+    isIndeterminate, // boolean
 } = useTableSelection();
 ```
 
@@ -269,9 +272,9 @@ Access sort state within Table context.
 
 ```tsx
 const {
-    sortKey,        // string | null
-    sortDirection,  // 'asc' | 'desc' | null
-    onSort,         // (key) => void
+    sortKey, // string | null
+    sortDirection, // 'asc' | 'desc' | null
+    onSort, // (key) => void
 } = useTableSort();
 ```
 

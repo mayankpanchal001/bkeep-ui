@@ -11,9 +11,7 @@ import {
 } from 'react-icons/fa';
 import Button from '@/components/typography/Button';
 import { InputField, TextareaField } from '@/components/typography/InputFields';
-import {
-    SINGLE_TENANT_PREFIX,
-} from '@/components/homepage/constants';
+import { SINGLE_TENANT_PREFIX } from '@/components/homepage/constants';
 
 const CAP_SINGULAR =
     SINGLE_TENANT_PREFIX.charAt(0).toUpperCase() +

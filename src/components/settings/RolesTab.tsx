@@ -69,7 +69,9 @@ const RolesTab = () => {
             >
                 <TableSelectionToolbar>
                     <button
-                        onClick={() => console.log('Bulk action on:', selectedItems)}
+                        onClick={() =>
+                            console.log('Bulk action on:', selectedItems)
+                        }
                         className="px-3 py-1.5 text-xs font-medium text-blue-700 bg-blue-100 hover:bg-blue-200 rounded-md transition-colors"
                     >
                         Export Selected
@@ -118,8 +120,14 @@ const RolesTab = () => {
                                 </TableCell>
                                 <TableCell>
                                     <Chips
-                                        label={role.isActive ? 'Active' : 'Inactive'}
-                                        variant={role.isActive ? 'success' : 'danger'}
+                                        label={
+                                            role.isActive
+                                                ? 'Active'
+                                                : 'Inactive'
+                                        }
+                                        variant={
+                                            role.isActive ? 'success' : 'danger'
+                                        }
                                     />
                                 </TableCell>
                             </TableRow>

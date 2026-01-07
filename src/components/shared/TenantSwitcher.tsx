@@ -134,8 +134,7 @@ const TenantSwitcher = ({ compact = false }: TenantSwitcherProps) => {
                     >
                         {isLoadingTenants
                             ? 'Loading...'
-                            : selectedTenant?.name ||
-                              `Select ${CAP_SINGULAR}`}
+                            : selectedTenant?.name || `Select ${CAP_SINGULAR}`}
                     </span>
                     <ChevronsUpDown
                         className={cn(
@@ -147,9 +146,7 @@ const TenantSwitcher = ({ compact = false }: TenantSwitcherProps) => {
             </PopoverTrigger>
             <PopoverContent className="w-72 p-0" align="end">
                 <Command>
-                    <CommandInput
-                        placeholder={`Search ${CAP_SINGULAR}...`}
-                    />
+                    <CommandInput placeholder={`Search ${CAP_SINGULAR}...`} />
                     <CommandList>
                         <CommandEmpty>{`No ${SINGLE_TENANT_PREFIX} found.`}</CommandEmpty>
                         <CommandGroup heading={`Switch ${CAP_SINGULAR}`}>

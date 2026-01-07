@@ -270,11 +270,19 @@ export default function JournalEntriespage() {
                         <TableHead>
                             <TableSelectAllCheckbox />
                         </TableHead>
-                        <TableHead sortable sortKey="journalDate">Date</TableHead>
-                        <TableHead sortable sortKey="journalNo">Journal No.</TableHead>
+                        <TableHead sortable sortKey="journalDate">
+                            Date
+                        </TableHead>
+                        <TableHead sortable sortKey="journalNo">
+                            Journal No.
+                        </TableHead>
                         <TableHead>Description</TableHead>
-                        <TableHead align="right" sortable sortKey="totalDebit">Debit</TableHead>
-                        <TableHead align="right" sortable sortKey="totalCredit">Credit</TableHead>
+                        <TableHead align="right" sortable sortKey="totalDebit">
+                            Debit
+                        </TableHead>
+                        <TableHead align="right" sortable sortKey="totalCredit">
+                            Credit
+                        </TableHead>
                         <TableHead>Status</TableHead>
                         <TableHead>Actions</TableHead>
                     </tr>
@@ -285,9 +293,15 @@ export default function JournalEntriespage() {
                             colSpan={8}
                             message="No journal entries found"
                             description="Create your first journal entry to get started"
-                            icon={<FaFileAlt className="w-12 h-12 text-primary/20" />}
+                            icon={
+                                <FaFileAlt className="w-12 h-12 text-primary/20" />
+                            }
                             action={
-                                <Button variant="primary" size="sm" onClick={handleCreateNew}>
+                                <Button
+                                    variant="primary"
+                                    size="sm"
+                                    onClick={handleCreateNew}
+                                >
                                     <Icons.Plus className="w-4 h-4 mr-2" />
                                     Create Journal Entry
                                 </Button>
@@ -305,7 +319,9 @@ export default function JournalEntriespage() {
                                 </TableCell>
                                 <TableCell>
                                     <span className="whitespace-nowrap text-primary">
-                                        {new Date(entry.journalDate).toLocaleDateString()}
+                                        {new Date(
+                                            entry.journalDate
+                                        ).toLocaleDateString()}
                                     </span>
                                 </TableCell>
                                 <TableCell>
@@ -320,7 +336,9 @@ export default function JournalEntriespage() {
                                 </TableCell>
                                 <TableCell>
                                     <span className="text-primary/75">
-                                        {entry.memo || entry.lines[0]?.description || '—'}
+                                        {entry.memo ||
+                                            entry.lines[0]?.description ||
+                                            '—'}
                                     </span>
                                 </TableCell>
                                 <TableCell align="right">
@@ -344,21 +362,27 @@ export default function JournalEntriespage() {
                                         {entry.status === 'draft' && (
                                             <>
                                                 <button
-                                                    onClick={() => handleEdit(entry.id)}
+                                                    onClick={() =>
+                                                        handleEdit(entry.id)
+                                                    }
                                                     className="text-blue-600 hover:text-blue-800"
                                                     title="Edit"
                                                 >
                                                     <Icons.Edit className="w-4 h-4" />
                                                 </button>
                                                 <button
-                                                    onClick={() => handlePost(entry)}
+                                                    onClick={() =>
+                                                        handlePost(entry)
+                                                    }
                                                     className="text-green-600 hover:text-green-800 text-sm font-medium hover:underline"
                                                     title="Post"
                                                 >
                                                     Post
                                                 </button>
                                                 <button
-                                                    onClick={() => handleDelete(entry)}
+                                                    onClick={() =>
+                                                        handleDelete(entry)
+                                                    }
                                                     className="text-red-600 hover:text-red-800"
                                                     title="Delete"
                                                 >
@@ -369,14 +393,18 @@ export default function JournalEntriespage() {
                                         {entry.status === 'posted' && (
                                             <>
                                                 <button
-                                                    onClick={() => handleVoid(entry)}
+                                                    onClick={() =>
+                                                        handleVoid(entry)
+                                                    }
                                                     className="text-yellow-600 hover:text-yellow-800 text-sm font-medium hover:underline"
                                                     title="Void"
                                                 >
                                                     Void
                                                 </button>
                                                 <button
-                                                    onClick={() => handleReverse(entry)}
+                                                    onClick={() =>
+                                                        handleReverse(entry)
+                                                    }
                                                     className="text-purple-600 hover:text-purple-800"
                                                     title="Reverse"
                                                 >
@@ -386,7 +414,9 @@ export default function JournalEntriespage() {
                                         )}
                                         {entry.status === 'voided' && (
                                             <button
-                                                onClick={() => handleRestore(entry)}
+                                                onClick={() =>
+                                                    handleRestore(entry)
+                                                }
                                                 className="text-green-600 hover:text-green-800"
                                                 title="Restore"
                                             >
