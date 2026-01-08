@@ -716,7 +716,10 @@ const ChartOfAccountspage = () => {
                                                                       t !==
                                                                       opt.value
                                                               )
-                                                            : [...prev, opt.value]
+                                                            : [
+                                                                  ...prev,
+                                                                  opt.value,
+                                                              ]
                                                     );
                                                 }}
                                                 className={`px-3 py-1.5 text-xs rounded-md transition-colors ${
@@ -745,20 +748,27 @@ const ChartOfAccountspage = () => {
                                                 )
                                         )
                                         .flatMap(([, subs]) =>
-                                            subs.flatMap((sub) =>
-                                                sub.detailTypes
+                                            subs.flatMap(
+                                                (sub) => sub.detailTypes
                                             )
                                         )
-                                        .reduce((acc, dt) => {
-                                            if (
-                                                !acc.some(
-                                                    (x) => x.value === dt.value
-                                                )
-                                            ) {
-                                                acc.push(dt);
-                                            }
-                                            return acc;
-                                        }, [] as { value: AccountDetailType; label: string }[])
+                                        .reduce(
+                                            (acc, dt) => {
+                                                if (
+                                                    !acc.some(
+                                                        (x) =>
+                                                            x.value === dt.value
+                                                    )
+                                                ) {
+                                                    acc.push(dt);
+                                                }
+                                                return acc;
+                                            },
+                                            [] as {
+                                                value: AccountDetailType;
+                                                label: string;
+                                            }[]
+                                        )
                                         .map((dt) => {
                                             const active =
                                                 selectedDetailTypes.includes(
@@ -805,7 +815,8 @@ const ChartOfAccountspage = () => {
                                             const active =
                                                 (isActiveFilter === 'active' &&
                                                     s === 'active') ||
-                                                (isActiveFilter === 'inactive' &&
+                                                (isActiveFilter ===
+                                                    'inactive' &&
                                                     s === 'inactive');
                                             return (
                                                 <button
@@ -813,9 +824,7 @@ const ChartOfAccountspage = () => {
                                                     type="button"
                                                     onClick={() => {
                                                         setIsActiveFilter(
-                                                            active
-                                                                ? 'all'
-                                                                : s
+                                                            active ? 'all' : s
                                                         );
                                                     }}
                                                     className={`px-3 py-1.5 text-xs rounded-md transition-colors capitalize ${
