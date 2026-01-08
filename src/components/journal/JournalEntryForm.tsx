@@ -372,7 +372,7 @@ export function JournalEntryForm({
                                 </TableCell>
                                 <TableCell noTruncate>
                                     <div
-                                        className={`input-wrap ${rowError.accountId ? '!border-red-500' : ''}`}
+                                        className={`input-wrap ${rowError.accountId ? 'border-red-500!' : ''}`}
                                     >
                                         <select
                                             value={line.accountId}
@@ -438,7 +438,7 @@ export function JournalEntryForm({
                                 </TableCell>
                                 <TableCell align="right" noTruncate>
                                     <div
-                                        className={`input-wrap ${rowError.amount ? '!border-red-500' : ''}`}
+                                        className={`input-wrap ${rowError.amount ? 'border-red-500!' : ''}`}
                                     >
                                         <input
                                             type="number"
@@ -461,7 +461,7 @@ export function JournalEntryForm({
                                 </TableCell>
                                 <TableCell align="right" noTruncate>
                                     <div
-                                        className={`input-wrap ${rowError.amount ? '!border-red-500' : ''}`}
+                                        className={`input-wrap ${rowError.amount ? 'border-red-500!' : ''}`}
                                     >
                                         <input
                                             type="number"

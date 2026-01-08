@@ -365,7 +365,7 @@ export default function JournalEntriespage() {
                             }))
                         }
                     >
-                        <option value="">All Statuses</option>
+                        <option value="">All</option>
                         <option value="draft">Draft</option>
                         <option value="posted">Posted</option>
                         <option value="voided">Voided</option>
