@@ -23,21 +23,11 @@ import {
     TableSelectAllCheckbox,
     TableSelectionToolbar,
 } from '@/components/ui/table';
-import {
-    Download,
-    FileUp,
-    Filter,
-    Pencil,
-    Plus,
-    Search,
-    Trash2,
-    X,
-} from 'lucide-react';
+import { FileUp, Filter, Pencil, Plus, Search, Trash2, X } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import * as XLSX from 'xlsx';
 import Input from '../../components/ui/input';
 import {
-    downloadSampleData,
     useChartOfAccounts,
     useCreateChartOfAccount,
     useDeleteChartOfAccount,
@@ -253,9 +243,10 @@ const getSubTypeByDetailType = (
 const ChartOfAccountspage = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
-    const [selectedType, setSelectedType] = useState<AccountType | 'all'>(
-        'all'
-    );
+    const [selectedTypes, setSelectedTypes] = useState<AccountType[]>([]);
+    const [selectedDetailTypes, setSelectedDetailTypes] = useState<
+        AccountDetailType[]
+    >([]);
     const [showAddModal, setShowAddModal] = useState(false);
     const [editingAccount, setEditingAccount] = useState<ChartOfAccount | null>(
         null
@@ -264,6 +255,10 @@ const ChartOfAccountspage = () => {
         null
     );
     const [selectedItems, setSelectedItems] = useState<(string | number)[]>([]);
+    const [isFilterOpen, setIsFilterOpen] = useState(false);
+    const [isActiveFilter, setIsActiveFilter] = useState<
+        'all' | 'active' | 'inactive'
+    >('all');
 
     // Import State
     const [showUploadModal, setShowUploadModal] = useState(false);
@@ -291,9 +286,14 @@ const ChartOfAccountspage = () => {
     }, [searchQuery]);
 
     // API hooks
+    const serverAccountTypeParam =
+        selectedTypes.length === 1 ? selectedTypes[0] : undefined;
+    const serverIsActiveParam =
+        isActiveFilter === 'all' ? undefined : isActiveFilter === 'active';
     const { data, isLoading, isFetching, error } = useChartOfAccounts({
         search: debouncedSearchQuery || undefined,
-        accountType: selectedType !== 'all' ? selectedType : undefined,
+        accountType: serverAccountTypeParam,
+        isActive: serverIsActiveParam,
     });
 
     const { data: importFieldsData } = useImportFields();
@@ -303,8 +303,24 @@ const ChartOfAccountspage = () => {
     const importMutation = useImportChartOfAccounts();
 
     const accounts = useMemo(() => {
-        const allAccounts = data?.data?.items || [];
+        let allAccounts = data?.data?.items || [];
         const q = searchQuery.trim().toLowerCase();
+
+        // Client-side multi filters
+        if (selectedTypes.length > 0) {
+            allAccounts = allAccounts.filter((a) =>
+                selectedTypes.includes(a.accountType)
+            );
+        }
+        if (selectedDetailTypes.length > 0) {
+            allAccounts = allAccounts.filter((a) =>
+                selectedDetailTypes.includes(a.accountDetailType)
+            );
+        }
+        if (isActiveFilter !== 'all') {
+            const wantActive = isActiveFilter === 'active';
+            allAccounts = allAccounts.filter((a) => a.isActive === wantActive);
+        }
 
         if (!q) return allAccounts;
 
@@ -322,7 +338,7 @@ const ChartOfAccountspage = () => {
 
             return haystack.includes(q);
         });
-    }, [data, searchQuery]);
+    }, [data, searchQuery, selectedTypes, selectedDetailTypes, isActiveFilter]);
 
     const rowIds = accounts.map((a) => a.id);
 
@@ -469,10 +485,6 @@ const ChartOfAccountspage = () => {
         }
     };
 
-    const handleDownloadSample = () => {
-        downloadSampleData();
-    };
-
     const handleBulkDelete = () => {
         console.log('Deleting accounts:', selectedItems);
         setSelectedItems([]);
@@ -498,31 +510,13 @@ const ChartOfAccountspage = () => {
                         />
                     </div>
                 </div>
-                <div className="flex items-center min-w-[150px] gap-2">
-                    <Filter className="text-primary/50 h-4 w-4" />
-                    <SelectField
-                        id="filter-account-type"
-                        value={selectedType}
-                        label="Filter accounts by type"
-                        onChange={(e) =>
-                            setSelectedType(
-                                e.target.value as AccountType | 'all'
-                            )
-                        }
-                        options={[
-                            { value: 'all', label: 'All Types' },
-                            ...ACCOUNT_TYPE_OPTIONS,
-                        ]}
-                    />
-                </div>
                 <div className="flex items-center gap-3">
                     <Button
-                        onClick={handleDownloadSample}
+                        onClick={() => setIsFilterOpen(true)}
                         variant="outline"
-                        icon={<Download size={16} />}
-                        title="Download Sample Excel Template"
+                        icon={<Filter size={16} />}
                     >
-                        Sample Data
+                        Filters
                     </Button>
                     <Button
                         onClick={handleImportClick}
@@ -533,7 +527,6 @@ const ChartOfAccountspage = () => {
                     >
                         Import
                     </Button>
-
                     <div className="h-6 w-px bg-gray-300 mx-2"></div>
                     <Button
                         onClick={handleOpenAddModal}
@@ -679,6 +672,189 @@ const ChartOfAccountspage = () => {
                     )}
                 </TableBody>
             </Table>
+
+            {/* Filters Drawer */}
+            <Drawer
+                open={isFilterOpen}
+                onOpenChange={(open) => setIsFilterOpen(open)}
+                direction="right"
+            >
+                <DrawerContent className="data-[vaul-drawer-direction=right]:w-[420px] data-[vaul-drawer-direction=right]:sm:max-w-[420px] bg-white dark:bg-lightBg">
+                    <DrawerHeader className="flex flex-row items-center justify-between px-6 py-4 border-b border-primary/10">
+                        <DrawerTitle className="text-xl font-semibold text-primary">
+                            Filters
+                        </DrawerTitle>
+                        <DrawerClose asChild>
+                            <button
+                                className="p-2 -mr-2 text-primary/50 hover:text-primary rounded-full hover:bg-primary/10 transition-colors"
+                                aria-label="Close"
+                            >
+                                <X className="h-5 w-5" />
+                            </button>
+                        </DrawerClose>
+                    </DrawerHeader>
+                    <div className="flex flex-col h-full p-4">
+                        <div className="space-y-6 flex-1">
+                            <div>
+                                <div className="text-sm font-semibold text-primary mb-2">
+                                    Account Types
+                                </div>
+                                <div className="flex flex-wrap gap-2">
+                                    {ACCOUNT_TYPE_OPTIONS.map((opt) => {
+                                        const active = selectedTypes.includes(
+                                            opt.value
+                                        );
+                                        return (
+                                            <button
+                                                key={opt.value}
+                                                type="button"
+                                                onClick={() => {
+                                                    setSelectedTypes((prev) =>
+                                                        active
+                                                            ? prev.filter(
+                                                                  (t) =>
+                                                                      t !==
+                                                                      opt.value
+                                                              )
+                                                            : [...prev, opt.value]
+                                                    );
+                                                }}
+                                                className={`px-3 py-1.5 text-xs rounded-md transition-colors ${
+                                                    active
+                                                        ? 'bg-primary/10 text-primary border border-primary/10'
+                                                        : 'text-primary/60 hover:bg-primary/10'
+                                                }`}
+                                            >
+                                                {opt.label}
+                                            </button>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                            <div>
+                                <div className="text-sm font-semibold text-primary mb-2">
+                                    Detail Types
+                                </div>
+                                <div className="flex flex-wrap gap-2 max-h-40 overflow-auto pr-1">
+                                    {Object.entries(ACCOUNT_HIERARCHY)
+                                        .filter(
+                                            ([type]) =>
+                                                selectedTypes.length === 0 ||
+                                                selectedTypes.includes(
+                                                    type as AccountType
+                                                )
+                                        )
+                                        .flatMap(([, subs]) =>
+                                            subs.flatMap((sub) =>
+                                                sub.detailTypes
+                                            )
+                                        )
+                                        .reduce((acc, dt) => {
+                                            if (
+                                                !acc.some(
+                                                    (x) => x.value === dt.value
+                                                )
+                                            ) {
+                                                acc.push(dt);
+                                            }
+                                            return acc;
+                                        }, [] as { value: AccountDetailType; label: string }[])
+                                        .map((dt) => {
+                                            const active =
+                                                selectedDetailTypes.includes(
+                                                    dt.value
+                                                );
+                                            return (
+                                                <button
+                                                    key={dt.value}
+                                                    type="button"
+                                                    onClick={() => {
+                                                        setSelectedDetailTypes(
+                                                            (prev) =>
+                                                                active
+                                                                    ? prev.filter(
+                                                                          (v) =>
+                                                                              v !==
+                                                                              dt.value
+                                                                      )
+                                                                    : [
+                                                                          ...prev,
+                                                                          dt.value,
+                                                                      ]
+                                                        );
+                                                    }}
+                                                    className={`px-3 py-1.5 text-xs rounded-md transition-colors capitalize ${
+                                                        active
+                                                            ? 'bg-primary/10 text-primary border border-primary/10'
+                                                            : 'text-primary/60 hover:bg-primary/10'
+                                                    }`}
+                                                >
+                                                    {dt.label}
+                                                </button>
+                                            );
+                                        })}
+                                </div>
+                            </div>
+                            <div>
+                                <div className="text-sm font-semibold text-primary mb-2">
+                                    Status
+                                </div>
+                                <div className="flex flex-wrap gap-2">
+                                    {(['active', 'inactive'] as const).map(
+                                        (s) => {
+                                            const active =
+                                                (isActiveFilter === 'active' &&
+                                                    s === 'active') ||
+                                                (isActiveFilter === 'inactive' &&
+                                                    s === 'inactive');
+                                            return (
+                                                <button
+                                                    key={s}
+                                                    type="button"
+                                                    onClick={() => {
+                                                        setIsActiveFilter(
+                                                            active
+                                                                ? 'all'
+                                                                : s
+                                                        );
+                                                    }}
+                                                    className={`px-3 py-1.5 text-xs rounded-md transition-colors capitalize ${
+                                                        active
+                                                            ? 'bg-primary/10 text-primary border border-primary/10'
+                                                            : 'text-primary/60 hover:bg-primary/10'
+                                                    }`}
+                                                >
+                                                    {s}
+                                                </button>
+                                            );
+                                        }
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                        <div className="flex justify-between gap-3 mt-8 pt-4 border-t border-primary/10">
+                            <Button
+                                type="button"
+                                variant="outline"
+                                onClick={() => {
+                                    setSelectedTypes([]);
+                                    setSelectedDetailTypes([]);
+                                    setIsActiveFilter('all');
+                                }}
+                            >
+                                Clear
+                            </Button>
+                            <Button
+                                type="button"
+                                variant="primary"
+                                onClick={() => setIsFilterOpen(false)}
+                            >
+                                Apply
+                            </Button>
+                        </div>
+                    </div>
+                </DrawerContent>
+            </Drawer>
 
             {/* Add/Edit Account Drawer */}
             <Drawer

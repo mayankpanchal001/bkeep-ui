@@ -1,20 +1,20 @@
 @import 'tailwindcss';
 
 :root {
-    --primary-r: 36;
-    --primary-g: 36;
-    --primary-b: 36;
+    --primary-r: 28;
+    --primary-g: 28;
+    --primary-b: 28;
 
     --secondary-r: 94;
     --secondary-g: 23;
     --secondary-b: 235;
 
-    --accent-r: 255;
-    --accent-g: 122;
-    --accent-b: 66;
+    --accent-r: 197;
+    --accent-g: 90;
+    --accent-b: 17;
 
-    --surface: #fbfbfb;
-    --surface-muted: #fbfbfb;
+    --surface: #ffffff;
+    --surface-muted: #f6f7fb;
 }
 
 @theme {
@@ -50,7 +50,7 @@
         var(--primary-r) var(--primary-g) var(--primary-b) / 0.1
     );
     --color-input: var(--color-border);
-    --color-ring: var(--color-primary);
+    --color-ring: var(--color-accent);
     --color-destructive: var(--color-accent);
     --color-destructive-foreground: var(--color-white);
 }

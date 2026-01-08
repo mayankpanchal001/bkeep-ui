@@ -40,6 +40,15 @@ export function Combobox({
     disabled = false,
 }: ComboboxProps) {
     const [open, setOpen] = React.useState(false);
+    const [query, setQuery] = React.useState('');
+    const filtered = React.useMemo(() => {
+        const q = query.trim().toLowerCase();
+        return q
+            ? options.filter((o) =>
+                  o.label.toLowerCase().includes(q)
+              )
+            : options;
+    }, [options, query]);
 
     return (
         <Popover open={open} onOpenChange={setOpen}>
@@ -60,14 +69,19 @@ export function Combobox({
             </PopoverTrigger>
             <PopoverContent className="w-[200px] p-0" align="start">
                 <Command>
-                    <CommandInput placeholder={searchPlaceholder} />
+                    <CommandInput
+                        placeholder={searchPlaceholder}
+                        value={query}
+                        onChange={(e) => setQuery(e.currentTarget.value)}
+                    />
                     <CommandList>
-                        <CommandEmpty>{emptyText}</CommandEmpty>
+                        {filtered.length === 0 && (
+                            <CommandEmpty>{emptyText}</CommandEmpty>
+                        )}
                         <CommandGroup>
-                            {options.map((option) => (
+                            {filtered.map((option) => (
                                 <CommandItem
                                     key={option.value}
-                                    value={option.label} // Use label for better search experience if values are IDs
                                     onSelect={() => {
                                         onChange(
                                             option.value === value
