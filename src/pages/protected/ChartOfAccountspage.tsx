@@ -23,18 +23,19 @@ import {
     TableSelectAllCheckbox,
     TableSelectionToolbar,
 } from '@/components/ui/table';
-import { useEffect, useMemo, useState } from 'react';
 import {
-    FaEdit,
-    FaFileDownload,
-    FaFileImport,
-    FaFilter,
-    FaPlus,
-    FaSearch,
-    FaTimes,
-    FaTrash,
-} from 'react-icons/fa';
+    Download,
+    FileUp,
+    Filter,
+    Pencil,
+    Plus,
+    Search,
+    Trash2,
+    X,
+} from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
 import * as XLSX from 'xlsx';
+import Input from '../../components/ui/input';
 import {
     downloadSampleData,
     useChartOfAccounts,
@@ -488,17 +489,17 @@ const ChartOfAccountspage = () => {
             <div className="flex flex-col sm:flex-row gap-4">
                 <div className="flex-1">
                     <div className="relative">
-                        <InputField
+                        <Input
                             id="search-accounts"
                             placeholder="Search accounts..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            icon={<FaSearch />}
+                            startIcon={<Search size={16} />}
                         />
                     </div>
                 </div>
                 <div className="flex items-center min-w-[150px] gap-2">
-                    <FaFilter className="text-primary/50" />
+                    <Filter className="text-primary/50 h-4 w-4" />
                     <SelectField
                         id="filter-account-type"
                         value={selectedType}
@@ -518,7 +519,7 @@ const ChartOfAccountspage = () => {
                     <Button
                         onClick={handleDownloadSample}
                         variant="outline"
-                        icon={<FaFileDownload />}
+                        icon={<Download size={16} />}
                         title="Download Sample Excel Template"
                     >
                         Sample Data
@@ -526,7 +527,7 @@ const ChartOfAccountspage = () => {
                     <Button
                         onClick={handleImportClick}
                         variant="outline"
-                        icon={<FaFileImport />}
+                        icon={<FileUp size={16} />}
                         loading={importMutation.isPending}
                         disabled={importMutation.isPending}
                     >
@@ -537,9 +538,9 @@ const ChartOfAccountspage = () => {
                     <Button
                         onClick={handleOpenAddModal}
                         variant="primary"
-                        icon={<FaPlus />}
+                        icon={<Plus size={16} />}
                     >
-                        New Account
+                        New Chart of Account
                     </Button>
                 </div>
             </div>
@@ -660,7 +661,7 @@ const ChartOfAccountspage = () => {
                                             className="p-2 text-primary/50 hover:text-primary hover:bg-primary/10 rounded transition-colors"
                                             title="Edit"
                                         >
-                                            <FaEdit className="w-4 h-4" />
+                                            <Pencil className="w-4 h-4" />
                                         </button>
                                         <button
                                             onClick={() =>
@@ -669,7 +670,7 @@ const ChartOfAccountspage = () => {
                                             className="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
                                             title="Delete"
                                         >
-                                            <FaTrash className="w-4 h-4" />
+                                            <Trash2 className="w-4 h-4" />
                                         </button>
                                     </div>
                                 </TableCell>
@@ -708,7 +709,7 @@ const ChartOfAccountspage = () => {
                                     updateMutation.isPending
                                 }
                             >
-                                <FaTimes size={20} />
+                                <X className="h-5 w-5" />
                             </button>
                         </DrawerClose>
                     </DrawerHeader>

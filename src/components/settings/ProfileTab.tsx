@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '../../stores/auth/authSelectore';
+import { Icons } from '../shared/Icons';
 import Button from '../typography/Button';
 import {
     InputField,
     SelectField,
     TextareaField,
 } from '../typography/InputFields';
+import Input from '../ui/input';
 import { SettingsFormData } from './types';
 
 interface ProfileTabProps {
@@ -20,8 +22,11 @@ const ProfileTab = ({
     onSubmit,
 }: ProfileTabProps) => {
     const { user } = useAuth();
+    const [isEditing, setIsEditing] = useState(false);
 
     const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!isEditing) return;
         onSubmit(e);
     };
 
@@ -37,17 +42,45 @@ const ProfileTab = ({
 
     return (
         <div className="flex flex-col gap-4 ">
-            {/* Header: Avatar + Upload */}
+            {/* Header: Avatar + Upload + Edit Toggle */}
             <div className="bg-surface">
-                <div className="flex items-center gap-6">
-                    <div className="flex h-16 w-16 items-center justify-center rounded-full border border-primary/10 bg-primary/10 text-primary">
-                        <span className="text-xl font-semibold">
-                            {getInitials(formData.name || user?.name || 'User')}
-                        </span>
+                <div className="flex items-center justify-between gap-6">
+                    <div className="flex items-center gap-6">
+                        <div className="flex h-16 w-16 items-center justify-center rounded-full border border-primary/10 bg-primary/10 text-primary">
+                            <span className="text-xl font-semibold">
+                                {getInitials(
+                                    formData.name || user?.name || 'User'
+                                )}
+                            </span>
+                        </div>
+                        <Button size="sm" type="button" disabled={!isEditing}>
+                            Upload image
+                        </Button>
                     </div>
-                    <Button size="sm" type="button">
-                        Upload image
-                    </Button>
+                    {!isEditing ? (
+                        <Button
+                            size="sm"
+                            type="button"
+                            variant="primary"
+                            onClick={() => setIsEditing(true)}
+                        >
+                            Edit profile
+                        </Button>
+                    ) : (
+                        <div className="flex items-center gap-2">
+                            <Button
+                                size="sm"
+                                type="button"
+                                variant="outline"
+                                onClick={() => setIsEditing(false)}
+                            >
+                                Cancel
+                            </Button>
+                            <Button size="sm" type="submit" variant="primary">
+                                Save changes
+                            </Button>
+                        </div>
+                    )}
                 </div>
             </div>
 
@@ -55,9 +88,8 @@ const ProfileTab = ({
             <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="flex flex-col gap-4">
                     <div>
-                        <InputField
+                        <Input
                             id="name"
-                            label="Username"
                             value={formData.name}
                             onChange={(e) =>
                                 onFormDataChange({
@@ -65,8 +97,10 @@ const ProfileTab = ({
                                     name: e.target.value,
                                 })
                             }
+                            startIcon={<Icons.UserCircle size={16} />}
                             required
                             placeholder="shadcn"
+                            disabled={!isEditing}
                         />
                         <p className="mt-2 text-xs text-primary/50">
                             This is your public display name. It can be your
@@ -99,6 +133,7 @@ const ProfileTab = ({
                                     : []
                             }
                             required
+                            disabled={!isEditing}
                         />
                         <p className="mt-2 text-xs text-primary/50">
                             You can manage verified email addresses in your
@@ -118,6 +153,7 @@ const ProfileTab = ({
                                 })
                             }
                             placeholder="I own a computer."
+                            disabled={!isEditing}
                         />
                         <p className="mt-2 text-xs text-primary/50">
                             You can @mention other users and organizations to
@@ -147,6 +183,7 @@ const ProfileTab = ({
                                         });
                                     }}
                                     placeholder="https://"
+                                    disabled={!isEditing}
                                 />
                             ))}
                         </div>
@@ -160,17 +197,24 @@ const ProfileTab = ({
                                     urls: [...(formData.urls || []), ''],
                                 })
                             }
+                            disabled={!isEditing}
                         >
                             Add URL
                         </Button>
                     </div>
                 </div>
 
-                <div className="flex justify-end">
-                    <Button type="submit" variant="primary">
-                        Update profile
-                    </Button>
-                </div>
+                {!isEditing && (
+                    <div className="flex justify-end">
+                        <Button
+                            type="button"
+                            variant="primary"
+                            onClick={() => setIsEditing(true)}
+                        >
+                            Edit profile
+                        </Button>
+                    </div>
+                )}
             </form>
         </div>
     );

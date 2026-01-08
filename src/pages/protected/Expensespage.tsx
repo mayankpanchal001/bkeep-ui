@@ -12,15 +12,8 @@ import {
     TableSelectAllCheckbox,
     TableSelectionToolbar,
 } from '@/components/ui/table';
+import { Filter, Pencil, Receipt, Search, Tag, Trash2 } from 'lucide-react';
 import { useState } from 'react';
-import {
-    FaEdit,
-    FaFilter,
-    FaReceipt,
-    FaSearch,
-    FaTag,
-    FaTrash,
-} from 'react-icons/fa';
 
 type Expense = {
     id: string;
@@ -166,7 +159,7 @@ const Expensespage = () => {
                 <div className="flex flex-col sm:flex-row gap-4">
                     <div className="flex-1">
                         <div className="relative">
-                            <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-primary/50 w-4 h-4" />
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-primary/50 w-4 h-4" />
                             <InputField
                                 id="search-expenses"
                                 placeholder="Search expenses..."
@@ -176,7 +169,7 @@ const Expensespage = () => {
                         </div>
                     </div>
                     <div className="flex items-center gap-2">
-                        <FaFilter className="text-primary/50" />
+                        <Filter className="text-primary/50 h-4 w-4" />
                         <select
                             value={categoryFilter}
                             onChange={(e) => setCategoryFilter(e.target.value)}
@@ -257,7 +250,7 @@ const Expensespage = () => {
                                     </TableCell>
                                     <TableCell>
                                         <span className="inline-flex items-center gap-1 px-2 py-1 bg-primary/10 text-primary rounded-full text-xs font-medium">
-                                            <FaTag className="w-3 h-3" />
+                                            <Tag className="w-3 h-3" />
                                             {expense.category}
                                         </span>
                                     </TableCell>
@@ -285,20 +278,20 @@ const Expensespage = () => {
                                                     className="p-2 text-primary/50 hover:text-primary hover:bg-primary/10 rounded transition-colors"
                                                     title="View Receipt"
                                                 >
-                                                    <FaReceipt className="w-4 h-4" />
+                                                    <Receipt className="w-4 h-4" />
                                                 </button>
                                             )}
                                             <button
                                                 className="p-2 text-primary/50 hover:text-primary hover:bg-primary/10 rounded transition-colors"
                                                 title="Edit"
                                             >
-                                                <FaEdit className="w-4 h-4" />
+                                                <Pencil className="w-4 h-4" />
                                             </button>
                                             <button
                                                 className="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
                                                 title="Delete"
                                             >
-                                                <FaTrash className="w-4 h-4" />
+                                                <Trash2 className="w-4 h-4" />
                                             </button>
                                         </div>
                                     </TableCell>

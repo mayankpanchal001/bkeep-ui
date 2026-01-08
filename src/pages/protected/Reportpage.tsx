@@ -1,15 +1,15 @@
-import PageHeader from '@/components/shared/PageHeader';
+import TabNav from '@/components/shared/TabNav';
 import { cn } from '@/utils/cn';
 import {
-    ChevronDown,
     ChevronRight,
+    Files,
     FileText,
+    LayoutDashboard,
     Search,
     Star,
     TrendingUp,
 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
-import { FaRegStar, FaStar } from 'react-icons/fa';
 import { useNavigate } from 'react-router';
 
 type ReportItem = {
@@ -29,7 +29,7 @@ const REPORT_CATEGORIES: ReportCategory[] = [
     {
         key: 'business-overview',
         title: 'Business Overview',
-        icon: <TrendingUp className="w-4 h-4" />,
+        icon: <TrendingUp className="w-5 h-5" />,
         reports: [
             {
                 key: 'balance-sheet',
@@ -86,7 +86,7 @@ const REPORT_CATEGORIES: ReportCategory[] = [
     {
         key: 'accounting',
         title: 'Accounting',
-        icon: <FileText className="w-4 h-4" />,
+        icon: <Files className="w-5 h-5" />,
         reports: [
             {
                 key: 'general-ledger',
@@ -128,7 +128,7 @@ const REPORT_CATEGORIES: ReportCategory[] = [
     {
         key: 'sales',
         title: 'Sales',
-        icon: <TrendingUp className="w-4 h-4" />,
+        icon: <LayoutDashboard className="w-5 h-5" />,
         reports: [
             {
                 key: 'sales-summary',
@@ -156,13 +156,24 @@ const Reportpage = () => {
     const navigate = useNavigate();
     const [query, setQuery] = useState('');
     const [favourites, setFavourites] = useState<string[]>([]);
-    const [openMap, setOpenMap] = useState<Record<string, boolean>>(() => {
-        const initial: Record<string, boolean> = {};
-        REPORT_CATEGORIES.forEach((c) => (initial[c.key] = true));
-        return initial;
-    });
     const [suggestOpen, setSuggestOpen] = useState(false);
     const [suggestIndex, setSuggestIndex] = useState(0);
+    const [activeTab, setActiveTab] = useState('all');
+    const tabItems = useMemo(
+        () => [
+            {
+                id: 'all',
+                label: 'All',
+                icon: <LayoutDashboard className="w-5 h-5" />,
+            },
+            ...REPORT_CATEGORIES.map((cat) => ({
+                id: cat.key,
+                label: cat.title,
+                icon: cat.icon,
+            })),
+        ],
+        []
+    );
 
     useEffect(() => {
         try {
@@ -210,18 +221,26 @@ const Reportpage = () => {
     };
 
     const filteredCategories = useMemo(() => {
-        if (!query.trim()) return REPORT_CATEGORIES;
+        let cats = REPORT_CATEGORIES;
+
+        if (activeTab !== 'all') {
+            cats = cats.filter((c) => c.key === activeTab);
+        }
+
+        if (!query.trim()) return cats;
         const q = query.toLowerCase();
-        return REPORT_CATEGORIES.map((cat) => ({
-            ...cat,
-            reports: cat.reports.filter(
-                (r) =>
-                    r.title.toLowerCase().includes(q) ||
-                    r.description?.toLowerCase().includes(q) ||
-                    cat.title.toLowerCase().includes(q)
-            ),
-        })).filter((cat) => cat.reports.length > 0);
-    }, [query]);
+        return cats
+            .map((cat) => ({
+                ...cat,
+                reports: cat.reports.filter(
+                    (r) =>
+                        r.title.toLowerCase().includes(q) ||
+                        r.description?.toLowerCase().includes(q) ||
+                        cat.title.toLowerCase().includes(q)
+                ),
+            }))
+            .filter((cat) => cat.reports.length > 0);
+    }, [query, activeTab]);
 
     const suggestions = useMemo(() => {
         const favSet = new Set(favourites);
@@ -247,9 +266,7 @@ const Reportpage = () => {
                 )
                 .slice(0, 8);
         }
-        const favs = base.filter((x) => x.isFav).slice(0, 8);
-        const others = base.filter((x) => !x.isFav).slice(0, 8 - favs.length);
-        return [...favs, ...others];
+        return [];
     }, [query, favourites]);
 
     useEffect(() => {
@@ -287,121 +304,82 @@ const Reportpage = () => {
         }
     };
 
-    const highlight = (title: string) => {
-        const q = query.trim();
-        if (!q) return title;
-        const idx = title.toLowerCase().indexOf(q.toLowerCase());
-        if (idx === -1) return title;
-        const before = title.slice(0, idx);
-        const match = title.slice(idx, idx + q.length);
-        const after = title.slice(idx + q.length);
-        return (
-            <>
-                {before}
-                <span className="text-primary font-semibold">{match}</span>
-                {after}
-            </>
-        );
-    };
-
-    // Modern Report Tile Component
-    const ReportTile = ({
+    const ReportRow = ({
         categoryKey,
         report,
         isFav,
-        onOpen,
         onToggleFav,
     }: {
         categoryKey: string;
         report: ReportItem;
         isFav: boolean;
-        onOpen: () => void;
         onToggleFav: () => void;
     }) => {
         return (
-            <button
-                onClick={onOpen}
-                className={cn(
-                    'group relative bg-white dark:bg-slate-900 rounded-xl p-4 text-left transition-all duration-200',
-                    'border border-slate-200/80 dark:border-slate-700/80',
-                    'hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-0.5 hover:border-primary/30',
-                    'focus:outline-none focus:ring-2 focus:ring-primary/20'
-                )}
-                aria-label={`Open ${report.title}`}
+            <div
+                onClick={() => goToReport(categoryKey, report.key)}
+                className="group flex items-center gap-4 p-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 cursor-pointer transition-colors "
             >
-                {/* Favorite button */}
-                <button
-                    aria-label={
-                        isFav ? 'Remove from favourites' : 'Add to favourites'
-                    }
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        onToggleFav();
-                    }}
-                    className={cn(
-                        'absolute top-3 right-3 p-1.5 rounded-full transition-all duration-200',
-                        isFav
-                            ? 'text-amber-500 bg-amber-50 dark:bg-amber-500/10'
-                            : 'text-slate-400 hover:text-amber-500 hover:bg-amber-50 dark:hover:bg-amber-500/10 opacity-0 group-hover:opacity-100'
-                    )}
-                >
-                    {isFav ? (
-                        <FaStar className="w-3.5 h-3.5" />
-                    ) : (
-                        <FaRegStar className="w-3.5 h-3.5" />
-                    )}
-                </button>
-
-                {/* Icon */}
-                <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-gradient-to-br from-primary/10 to-primary/5 text-primary mb-3">
+                <div className="shrink-0 text-slate-400 group-hover:text-primary transition-colors">
                     <FileText className="w-5 h-5" />
                 </div>
 
-                {/* Content */}
-                <div className="pr-6">
-                    <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-1 line-clamp-1">
+                <div className="flex-1 min-w-0">
+                    <h3 className="text-sm font-medium text-slate-900 dark:text-slate-100 truncate">
                         {report.title}
                     </h3>
                     {report.description && (
-                        <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2">
+                        <p className="text-xs text-slate-500 dark:text-slate-400 truncate mt-0.5">
                             {report.description}
                         </p>
                     )}
                 </div>
 
-                {/* Footer */}
-                <div className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
-                    <span className="text-[10px] uppercase tracking-wider text-slate-400 dark:text-slate-500 font-medium">
-                        {categoryKey.replace(/-/g, ' ')}
-                    </span>
-                    <span className="text-xs font-medium text-primary opacity-0 group-hover:opacity-100 transition-opacity">
-                        Open →
-                    </span>
+                <div className="flex items-center gap-2">
+                    <button
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            onToggleFav();
+                        }}
+                        className={cn(
+                            'p-2 rounded-full transition-all',
+                            isFav
+                                ? 'text-amber-500 bg-amber-50 dark:bg-amber-500/10'
+                                : 'text-slate-300 hover:text-amber-500 hover:bg-slate-100 dark:hover:bg-slate-800'
+                        )}
+                        title={
+                            isFav
+                                ? 'Remove from favourites'
+                                : 'Add to favourites'
+                        }
+                    >
+                        {isFav ? (
+                            <Star className="w-4 h-4 fill-current" />
+                        ) : (
+                            <Star className="w-4 h-4" />
+                        )}
+                    </button>
+                    <ChevronRight className="w-5 h-5 text-slate-300 group-hover:text-primary transition-colors" />
                 </div>
-            </button>
+            </div>
         );
     };
 
     return (
-        <div className="space-y-6">
-            {/* Header */}
-            <PageHeader
-                title="Reports"
-                subtitle="Browse and favourite reports by category"
-            />
+        <div className="w-full mx-auto flex flex-col gap-8 pb-12">
+            <div className="flex flex-col gap-1">
+                <h1 className="text-xl font-semibold text-foreground">
+                    Reports
+                </h1>
+                <p className="text-sm text-muted-foreground">
+                    Access financial statements and business analytics
+                </p>
+            </div>
 
-            {/* Search Section */}
+            {/* Search */}
             <div className="relative">
-                <div
-                    className={cn(
-                        'flex items-center gap-3 rounded-xl border bg-white dark:bg-slate-900 px-4 py-3 transition-all duration-200',
-                        'border-slate-200/80 dark:border-slate-700/80',
-                        'focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary/40',
-                        'shadow-sm focus-within:shadow-lg'
-                    )}
-                    onClick={() => setSuggestOpen(true)}
-                >
-                    <Search className="w-5 h-5 text-slate-400" />
+                <div className="relative">
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                     <input
                         value={query}
                         onChange={(e) => {
@@ -410,289 +388,123 @@ const Reportpage = () => {
                         }}
                         onFocus={() => setSuggestOpen(true)}
                         onBlur={() =>
-                            setTimeout(() => setSuggestOpen(false), 120)
+                            setTimeout(() => setSuggestOpen(false), 200)
                         }
-                        onKeyDown={(e) => {
-                            if (!suggestions.length) return;
-                            if (e.key === 'ArrowDown') {
-                                e.preventDefault();
-                                setSuggestIndex((i) =>
-                                    i < suggestions.length - 1 ? i + 1 : i
-                                );
-                            } else if (e.key === 'ArrowUp') {
-                                e.preventDefault();
-                                setSuggestIndex((i) => (i > 0 ? i - 1 : 0));
-                            } else if (e.key === 'Enter') {
-                                e.preventDefault();
-                                const s = suggestions[suggestIndex];
-                                if (s) handleSelectSuggestion(s);
-                            } else if (e.key === 'Escape') {
-                                e.preventDefault();
-                                setSuggestOpen(false);
-                            }
-                        }}
-                        placeholder="Search reports..."
-                        className="flex-1 bg-transparent outline-none text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400"
-                        aria-label="Search reports"
+                        placeholder="Search for reports..."
+                        className="w-full pl-12 pr-4 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
                     />
-                    {query && (
-                        <button
-                            onClick={() => setQuery('')}
-                            className="p-1 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-                        >
-                            <span className="sr-only">Clear</span>
-                            <svg
-                                className="w-4 h-4 text-slate-400"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M6 18L18 6M6 6l12 12"
-                                />
-                            </svg>
-                        </button>
-                    )}
                 </div>
 
-                {/* Suggestions Dropdown */}
                 {suggestOpen && suggestions.length > 0 && (
-                    <div className="absolute left-0 right-0 top-full mt-2 z-50 bg-white dark:bg-slate-900 rounded-xl border border-slate-200/80 dark:border-slate-700/80 shadow-2xl overflow-hidden">
-                        <div
-                            role="listbox"
-                            className="max-h-80 overflow-auto py-1"
-                        >
-                            {suggestions.map((s, idx) => (
-                                <button
-                                    key={s.id}
-                                    role="option"
-                                    aria-selected={idx === suggestIndex}
-                                    onMouseEnter={() => setSuggestIndex(idx)}
-                                    onMouseDown={(e) => {
-                                        e.preventDefault();
-                                        handleSelectSuggestion(s);
-                                    }}
-                                    className={cn(
-                                        'w-full flex items-center justify-between px-4 py-3 text-left transition-colors',
-                                        idx === suggestIndex
-                                            ? 'bg-primary/5 dark:bg-primary/10'
-                                            : 'hover:bg-slate-50 dark:hover:bg-slate-800/50'
-                                    )}
-                                >
-                                    <div className="flex items-center gap-3">
-                                        <div
-                                            className={cn(
-                                                'flex items-center justify-center w-8 h-8 rounded-lg',
-                                                idx === suggestIndex
-                                                    ? 'bg-primary/10 text-primary'
-                                                    : 'bg-slate-100 dark:bg-slate-800 text-slate-400'
-                                            )}
-                                        >
-                                            <FileText className="w-4 h-4" />
-                                        </div>
-                                        <div className="flex flex-col">
-                                            <span
-                                                className={cn(
-                                                    'text-sm font-medium',
-                                                    idx === suggestIndex
-                                                        ? 'text-primary'
-                                                        : 'text-slate-700 dark:text-slate-300'
-                                                )}
-                                            >
-                                                {highlight(s.title)}
-                                            </span>
-                                            <span className="text-[11px] text-slate-400 dark:text-slate-500">
-                                                {s.categoryTitle}
-                                            </span>
-                                        </div>
+                    <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-slate-900 rounded-lg border border-slate-100 dark:border-slate-800 z-50 overflow-hidden">
+                        {suggestions.map((s, idx) => (
+                            <div
+                                key={s.id}
+                                onClick={() => handleSelectSuggestion(s)}
+                                onMouseEnter={() => setSuggestIndex(idx)}
+                                className={cn(
+                                    'px-4 py-3 flex items-center justify-between cursor-pointer border-b last:border-0 border-slate-50 dark:border-slate-800/50',
+                                    idx === suggestIndex
+                                        ? 'bg-slate-50 dark:bg-slate-800/50'
+                                        : ''
+                                )}
+                            >
+                                <div>
+                                    <div className="text-sm font-medium text-slate-900 dark:text-slate-100">
+                                        {s.title}
                                     </div>
-                                    {s.isFav && (
-                                        <FaStar className="w-3.5 h-3.5 text-amber-500" />
-                                    )}
-                                </button>
-                            ))}
-                        </div>
+                                    <div className="text-xs text-slate-500">
+                                        {s.categoryTitle}
+                                    </div>
+                                </div>
+                                {s.isFav && (
+                                    <Star className="w-3.5 h-3.5 text-amber-500 fill-current" />
+                                )}
+                            </div>
+                        ))}
                     </div>
                 )}
             </div>
 
-            {/* Category Chips */}
-            <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
-                {REPORT_CATEGORIES.map((cat) => (
-                    <button
-                        key={`chip-${cat.key}`}
-                        onClick={() => {
-                            const el = document.getElementById(
-                                `section-${cat.key}`
-                            );
-                            if (el) {
-                                el.scrollIntoView({
-                                    behavior: 'smooth',
-                                    block: 'start',
-                                });
-                            }
-                            setOpenMap((m) => ({ ...m, [cat.key]: true }));
-                        }}
-                        className={cn(
-                            'flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 whitespace-nowrap',
-                            openMap[cat.key]
-                                ? 'bg-primary text-white shadow-md shadow-primary/25'
-                                : 'bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-700/80 text-slate-600 dark:text-slate-400 hover:border-primary/40 hover:text-primary'
-                        )}
-                        aria-label={`Jump to ${cat.title}`}
-                    >
-                        {cat.icon}
-                        {cat.title}
-                        <span
-                            className={cn(
-                                'text-xs px-1.5 py-0.5 rounded-full',
-                                openMap[cat.key]
-                                    ? 'bg-white/20'
-                                    : 'bg-slate-100 dark:bg-slate-800'
-                            )}
-                        >
-                            {cat.reports.length}
-                        </span>
-                    </button>
-                ))}
-            </div>
+            {/* Tabs */}
+            <TabNav
+                items={tabItems}
+                value={activeTab}
+                onChange={setActiveTab}
+                className="w-full"
+            />
 
             {/* Favourites Section */}
             {favouriteItems.length > 0 && (
-                <div className="rounded-xl border border-amber-200/50 dark:border-amber-500/20 bg-gradient-to-br from-amber-50/50 to-orange-50/30 dark:from-amber-500/5 dark:to-orange-500/5 overflow-hidden">
-                    <div className="px-5 py-4 border-b border-amber-200/50 dark:border-amber-500/20">
-                        <div className="flex items-center gap-2">
-                            <Star className="w-5 h-5 text-amber-500 fill-amber-500" />
-                            <h2 className="text-base font-semibold text-slate-900 dark:text-slate-100">
-                                Favourites
+                <div className="space-y-4">
+                    <h2 className="text-sm font-semibold text-slate-500 uppercase tracking-wider flex items-center gap-2">
+                        <Star className="w-4 h-4 text-amber-500 fill-current" />
+                        Favourites
+                    </h2>
+                    <div className="grid sm:grid-cols-2  gap-4">
+                        {favouriteItems.map(({ category, report }) => (
+                            <ReportRow
+                                key={report.key}
+                                categoryKey={category.key}
+                                report={report}
+                                isFav={true}
+                                onToggleFav={() =>
+                                    toggleFavourite(category.key, report.key)
+                                }
+                            />
+                        ))}
+                    </div>
+                </div>
+            )}
+
+            {/* Categories */}
+            <div className="space-y-8">
+                {filteredCategories.map((category) => (
+                    <div key={category.key} className="space-y-4">
+                        <div className="flex items-center gap-2 px-1">
+                            <div className="p-1.5 bg-primary/10 rounded-md text-primary">
+                                {category.icon}
+                            </div>
+                            <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
+                                {category.title}
                             </h2>
-                            <span className="text-xs text-slate-500 dark:text-slate-400">
-                                ({favouriteItems.length})
-                            </span>
+                        </div>
+
+                        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {category.reports.map((report) => (
+                                <ReportRow
+                                    key={report.key}
+                                    categoryKey={category.key}
+                                    report={report}
+                                    isFav={favourites.includes(
+                                        `${category.key}:${report.key}`
+                                    )}
+                                    onToggleFav={() =>
+                                        toggleFavourite(
+                                            category.key,
+                                            report.key
+                                        )
+                                    }
+                                />
+                            ))}
                         </div>
                     </div>
-                    <div className="p-4">
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                            {favouriteItems.map(({ category, report }) => {
-                                const id = `${category.key}:${report.key}`;
-                                const isFav = favourites.includes(id);
-                                return (
-                                    <ReportTile
-                                        key={id}
-                                        categoryKey={category.key}
-                                        report={report}
-                                        isFav={isFav}
-                                        onOpen={() =>
-                                            goToReport(category.key, report.key)
-                                        }
-                                        onToggleFav={() =>
-                                            toggleFavourite(
-                                                category.key,
-                                                report.key
-                                            )
-                                        }
-                                    />
-                                );
-                            })}
+                ))}
+
+                {filteredCategories.length === 0 && (
+                    <div className="text-center py-12">
+                        <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-800 mb-4">
+                            <Search className="w-6 h-6 text-slate-400" />
                         </div>
+                        <h3 className="text-lg font-medium text-slate-900 dark:text-slate-100">
+                            No reports found
+                        </h3>
+                        <p className="text-slate-500 mt-1">
+                            Try adjusting your search query
+                        </p>
                     </div>
-                </div>
-            )}
-
-            {/* Category Sections */}
-            {filteredCategories.map((cat) => (
-                <div
-                    key={cat.key}
-                    id={`section-${cat.key}`}
-                    className="space-y-4"
-                >
-                    <button
-                        onClick={() =>
-                            setOpenMap((m) => ({
-                                ...m,
-                                [cat.key]: !m[cat.key],
-                            }))
-                        }
-                        className="w-full flex items-center justify-between px-4 py-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-700/80 hover:border-primary/30 transition-colors"
-                    >
-                        <div className="flex items-center gap-3">
-                            <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-primary/10 text-primary">
-                                {cat.icon || <FileText className="w-4 h-4" />}
-                            </div>
-                            <div className="text-left">
-                                <h2 className="text-base font-semibold text-slate-900 dark:text-slate-100">
-                                    {cat.title}
-                                </h2>
-                                <p className="text-xs text-slate-500 dark:text-slate-400">
-                                    {cat.reports.length} reports
-                                </p>
-                            </div>
-                        </div>
-                        <div
-                            className={cn(
-                                'flex items-center justify-center w-6 h-6 rounded-full transition-colors',
-                                openMap[cat.key]
-                                    ? 'bg-primary/10 text-primary'
-                                    : 'bg-slate-100 dark:bg-slate-800 text-slate-400'
-                            )}
-                        >
-                            {openMap[cat.key] ? (
-                                <ChevronDown className="w-4 h-4" />
-                            ) : (
-                                <ChevronRight className="w-4 h-4" />
-                            )}
-                        </div>
-                    </button>
-
-                    {openMap[cat.key] && (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 animate-in slide-in-from-top-2 duration-200">
-                            {cat.reports.map((r) => {
-                                const id = `${cat.key}:${r.key}`;
-                                const isFav = favourites.includes(id);
-                                return (
-                                    <ReportTile
-                                        key={id}
-                                        categoryKey={cat.key}
-                                        report={r}
-                                        isFav={isFav}
-                                        onOpen={() =>
-                                            goToReport(cat.key, r.key)
-                                        }
-                                        onToggleFav={() =>
-                                            toggleFavourite(cat.key, r.key)
-                                        }
-                                    />
-                                );
-                            })}
-                        </div>
-                    )}
-                </div>
-            ))}
-
-            {/* Empty State */}
-            {filteredCategories.length === 0 && (
-                <div className="flex flex-col items-center justify-center py-16 px-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-700/80">
-                    <div className="flex items-center justify-center w-16 h-16 rounded-full bg-slate-100 dark:bg-slate-800 mb-4">
-                        <Search className="w-8 h-8 text-slate-400" />
-                    </div>
-                    <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-1">
-                        No reports found
-                    </h3>
-                    <p className="text-sm text-slate-500 dark:text-slate-400 text-center max-w-sm">
-                        Try adjusting your search query or browse the categories
-                        above.
-                    </p>
-                    <button
-                        onClick={() => setQuery('')}
-                        className="mt-4 px-4 py-2 text-sm font-medium text-primary hover:bg-primary/10 rounded-lg transition-colors"
-                    >
-                        Clear search
-                    </button>
-                </div>
-            )}
+                )}
+            </div>
         </div>
     );
 };

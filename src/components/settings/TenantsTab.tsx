@@ -44,7 +44,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
-import { Input } from '../ui/input';
+import Input from '../ui/input';
 import {
     Table,
     TableBody,
@@ -339,6 +339,7 @@ export default function TenantsTab() {
             {
                 id: 'actions',
                 enableHiding: false,
+                header: 'Action',
                 cell: ({ row }) => {
                     const tenant = row.original;
 
@@ -450,7 +451,7 @@ export default function TenantsTab() {
                         (table.getColumn('name')?.getFilterValue() as string) ??
                         ''
                     }
-                    onChange={(event) =>
+                    onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
                         table
                             .getColumn('name')
                             ?.setFilterValue(event.target.value)
@@ -484,71 +485,89 @@ export default function TenantsTab() {
                     </DropdownMenuContent>
                 </DropdownMenu>
             </div>
-            <div className="rounded-md border overflow-hidden border-primary/10">
-                <Table>
-                    <TableHeader>
-                        {table.getHeaderGroups().map((headerGroup) => (
-                            <TableRow key={headerGroup.id}>
-                                {headerGroup.headers.map((header) => {
-                                    return (
-                                        <TableHead key={header.id}>
-                                            {header.isPlaceholder
-                                                ? null
-                                                : flexRender(
-                                                      header.column.columnDef
-                                                          .header,
-                                                      header.getContext()
-                                                  )}
-                                        </TableHead>
-                                    );
-                                })}
+
+            <Table
+                borderStyle="minimal"
+                striped
+                hoverStyle="default"
+                enableColumnResize={true}
+            >
+                <TableHeader>
+                    {table.getHeaderGroups().map((headerGroup) => (
+                        <TableRow key={headerGroup.id}>
+                            {headerGroup.headers.map((header) => {
+                                const isSelect = header.id === 'select';
+                                const isActions = header.id === 'actions';
+                                const isPrimary = header.id === 'isPrimary';
+                                return (
+                                    <TableHead
+                                        key={header.id}
+                                        resizable={!isSelect}
+                                        minWidth={isSelect ? undefined : 10}
+                                        maxWidth={
+                                            isActions ? 20 : isSelect ? 12 : 60
+                                        }
+                                        align={
+                                            isPrimary || isActions
+                                                ? 'center'
+                                                : 'left'
+                                        }
+                                    >
+                                        {header.isPlaceholder
+                                            ? null
+                                            : flexRender(
+                                                  header.column.columnDef
+                                                      .header,
+                                                  header.getContext()
+                                              )}
+                                    </TableHead>
+                                );
+                            })}
+                        </TableRow>
+                    ))}
+                </TableHeader>
+                <TableBody>
+                    {isLoading ? (
+                        <TableRow>
+                            <TableCell
+                                colSpan={columns.length}
+                                className="h-24  text-center"
+                            >
+                                <div className="flex justify-center items-center gap-2 text-primary/50">
+                                    <div className="animate-spin w-4 h-4 border-2 border-primary/50 border-t-transparent rounded-full" />
+                                    Loading...
+                                </div>
+                            </TableCell>
+                        </TableRow>
+                    ) : table.getRowModel().rows?.length ? (
+                        table.getRowModel().rows.map((row) => (
+                            <TableRow
+                                key={row.id}
+                                data-state={row.getIsSelected() && 'selected'}
+                            >
+                                {row.getVisibleCells().map((cell) => (
+                                    <TableCell key={cell.id}>
+                                        {flexRender(
+                                            cell.column.columnDef.cell,
+                                            cell.getContext()
+                                        )}
+                                    </TableCell>
+                                ))}
                             </TableRow>
-                        ))}
-                    </TableHeader>
-                    <TableBody>
-                        {isLoading ? (
-                            <TableRow>
-                                <TableCell
-                                    colSpan={columns.length}
-                                    className="h-24 text-center"
-                                >
-                                    <div className="flex justify-center items-center gap-2 text-primary/50">
-                                        <div className="animate-spin w-4 h-4 border-2 border-primary/50 border-t-transparent rounded-full" />
-                                        Loading...
-                                    </div>
-                                </TableCell>
-                            </TableRow>
-                        ) : table.getRowModel().rows?.length ? (
-                            table.getRowModel().rows.map((row) => (
-                                <TableRow
-                                    key={row.id}
-                                    data-state={
-                                        row.getIsSelected() && 'selected'
-                                    }
-                                >
-                                    {row.getVisibleCells().map((cell) => (
-                                        <TableCell key={cell.id}>
-                                            {flexRender(
-                                                cell.column.columnDef.cell,
-                                                cell.getContext()
-                                            )}
-                                        </TableCell>
-                                    ))}
-                                </TableRow>
-                            ))
-                        ) : (
-                            <TableRow>
-                                <TableCell
-                                    colSpan={columns.length}
-                                    className="h-24 text-center"
-                                >
-                                    No results.
-                                </TableCell>
-                            </TableRow>
-                        )}
-                    </TableBody>
-                </Table>
-            </div>
+                        ))
+                    ) : (
+                        <TableRow>
+                            <TableCell
+                                colSpan={columns.length}
+                                className="h-24 text-center"
+                            >
+                                No results.
+                            </TableCell>
+                        </TableRow>
+                    )}
+                </TableBody>
+            </Table>
+
             <div className="flex items-center justify-end space-x-2 py-4">
                 <div className="flex-1 text-sm text-primary/50">
                     {table.getFilteredSelectedRowModel().rows.length} of{' '}

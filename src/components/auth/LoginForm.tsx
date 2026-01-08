@@ -3,6 +3,7 @@ import { useLogin } from '../../services/apis/authApi';
 
 import { showErrorToast } from '../../utills/toast';
 
+import { Icons } from '../shared/Icons';
 import { InputField } from '../typography/InputFields';
 import { Button } from '../ui/button';
 
@@ -93,7 +94,7 @@ export function LoginForm() {
                         }}
                         error={fieldErrors.email}
                         required
-                        icon={undefined}
+                        icon={<Icons.UserCircle className="w-4 h-4" />}
                     />
                     <InputField
                         id="login-password"
@@ -110,8 +111,8 @@ export function LoginForm() {
                                 });
                         }}
                         error={fieldErrors.password}
+                        icon={<Icons.Lock className="w-4 h-4" />}
                         required
-                        icon={undefined}
                     />
                 </div>
 

@@ -19,8 +19,8 @@ import {
     TableSelectAllCheckbox,
     TableSelectionToolbar,
 } from '@/components/ui/table';
+import { FileText, Filter, Search } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
-import { FaFileInvoiceDollar, FaFilter, FaSearch } from 'react-icons/fa';
 import { useTaxes } from '../../services/apis/taxApi';
 import { showSuccessToast } from '../../utills/toast';
 
@@ -304,7 +304,7 @@ const Transactionpage = () => {
                 <div className="bg-white rounded-2 shadow-sm border border-primary/10 p-4">
                     <div className="flex items-center gap-3 mb-2">
                         <div className="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center">
-                            <FaFileInvoiceDollar className="w-5 h-5 text-green-600" />
+                            <FileText className="w-5 h-5 text-green-600" />
                         </div>
                         <div>
                             <p className="text-xs text-primary/50 uppercase">
@@ -319,7 +319,7 @@ const Transactionpage = () => {
                 <div className="bg-white rounded-2 shadow-sm border border-primary/10 p-4">
                     <div className="flex items-center gap-3 mb-2">
                         <div className="w-10 h-10 rounded-lg bg-red-100 flex items-center justify-center">
-                            <FaFileInvoiceDollar className="w-5 h-5 text-red-600" />
+                            <FileText className="w-5 h-5 text-red-600" />
                         </div>
                         <div>
                             <p className="text-xs text-primary/50 uppercase">
@@ -334,7 +334,7 @@ const Transactionpage = () => {
                 <div className="bg-white rounded-2 shadow-sm border border-primary/10 p-4">
                     <div className="flex items-center gap-3 mb-2">
                         <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                            <FaFileInvoiceDollar className="w-5 h-5 text-primary" />
+                            <FileText className="w-5 h-5 text-primary" />
                         </div>
                         <div>
                             <p className="text-xs text-primary/50 uppercase">
@@ -349,7 +349,7 @@ const Transactionpage = () => {
                 <div className="bg-white rounded-2 shadow-sm border border-primary/10 p-4">
                     <div className="flex items-center gap-3 mb-2">
                         <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                            <FaFileInvoiceDollar className="w-5 h-5 text-primary" />
+                            <FileText className="w-5 h-5 text-primary" />
                         </div>
                         <div>
                             <p className="text-xs text-primary/50 uppercase">
@@ -407,7 +407,7 @@ const Transactionpage = () => {
                         </button>
                         <div className="ml-auto flex items-center gap-3">
                             <div className="relative w-[260px]">
-                                <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-primary/50 w-4 h-4" />
+                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-primary/50 w-4 h-4" />
                                 <input
                                     value={search}
                                     onChange={(e) => {
@@ -419,7 +419,7 @@ const Transactionpage = () => {
                                 />
                             </div>
                             <Button variant="outline" size="sm">
-                                <FaFilter className="mr-2" /> Filters
+                                <Filter className="mr-2 h-4 w-4" /> Filters
                             </Button>
                         </div>
                     </div>

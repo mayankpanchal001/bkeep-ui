@@ -1,4 +1,4 @@
-import { FaMoon, FaSun } from 'react-icons/fa';
+import { Moon, Sun } from 'lucide-react';
 import { useTheme, useThemeActions } from '../../stores/theme/themeSelectors';
 
 const ThemeSwitcher = () => {
@@ -27,9 +27,9 @@ const ThemeSwitcher = () => {
             className={`inline-flex items-center justify-center w-7 h-7 rounded-full bg-white border border-primary/25 text-primary shadow-sm transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white hover:border-primary/20 cursor-pointer`}
         >
             {isDark ? (
-                <FaMoon className="h-3.5 w-3.5 text-primary" />
+                <Moon className="h-3.5 w-3.5 text-primary" />
             ) : (
-                <FaSun className="h-3.5 w-3.5 text-yellow-500" />
+                <Sun className="h-3.5 w-3.5 text-yellow-500" />
             )}
         </button>
     );

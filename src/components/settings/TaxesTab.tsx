@@ -10,15 +10,14 @@ import {
     type SortingState,
     type VisibilityState,
 } from '@tanstack/react-table';
+import { MoreHorizontal, Plus } from 'lucide-react';
 import * as React from 'react';
-import { Plus, MoreHorizontal } from 'lucide-react';
 
 import {
-    useTaxes,
     useDeleteTax,
-    useEnableTax,
     useDisableTax,
-    useTaxStats,
+    useEnableTax,
+    useTaxes,
 } from '../../services/apis/taxApi';
 import { Tax, TaxFilters } from '../../types/tax';
 import {
@@ -36,7 +35,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
-import { Input } from '../ui/input';
+import Input from '../ui/input';
 import {
     Table,
     TableBody,
@@ -75,7 +74,6 @@ const TaxesTab = () => {
     };
 
     const { data, isLoading } = useTaxes(queryParams);
-    const { data: statsData } = useTaxStats();
     const taxes = (data?.data?.items || []) as Tax[];
     const pageCount = data?.data?.pagination?.totalPages || 0;
 
@@ -222,7 +220,9 @@ const TaxesTab = () => {
                     <Input
                         placeholder="Search taxes..."
                         value={search}
-                        onChange={(e) => setSearch(e.target.value)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                            setSearch(e.target.value)
+                        }
                         className="w-[300px]"
                     />
                 </div>
@@ -234,7 +234,7 @@ const TaxesTab = () => {
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {/* <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="bg-white rounded-2 shadow-sm border border-primary/10 p-4">
                     <p className="text-xs text-primary/50 uppercase">Total</p>
                     <p className="text-lg font-bold text-primary">
@@ -257,100 +257,96 @@ const TaxesTab = () => {
                             taxes.filter((t) => !t.isActive).length}
                     </p>
                 </div>
-            </div>
+            </div> */}
 
-            <div className="rounded-md border overflow-hidden border-primary/10">
-                <Table>
-                    <TableHeader>
-                        {table.getHeaderGroups().map((headerGroup) => (
-                            <TableRow key={headerGroup.id}>
-                                {headerGroup.headers.map((header) => {
-                                    return (
-                                        <TableHead key={header.id}>
-                                            {header.isPlaceholder
-                                                ? null
-                                                : flexRender(
-                                                      header.column.columnDef
-                                                          .header,
-                                                      header.getContext()
-                                                  )}
-                                        </TableHead>
-                                    );
-                                })}
+            <Table>
+                <TableHeader>
+                    {table.getHeaderGroups().map((headerGroup) => (
+                        <TableRow key={headerGroup.id}>
+                            {headerGroup.headers.map((header) => {
+                                return (
+                                    <TableHead key={header.id}>
+                                        {header.isPlaceholder
+                                            ? null
+                                            : flexRender(
+                                                  header.column.columnDef
+                                                      .header,
+                                                  header.getContext()
+                                              )}
+                                    </TableHead>
+                                );
+                            })}
+                        </TableRow>
+                    ))}
+                </TableHeader>
+                <TableBody>
+                    {isLoading ? (
+                        <TableRow>
+                            <TableCell
+                                colSpan={columns.length}
+                                className="h-24 text-center"
+                            >
+                                <div className="flex justify-center items-center gap-2 text-primary/50">
+                                    <div className="animate-spin w-4 h-4 border-2 border-primary/50 border-t-transparent rounded-full" />
+                                    Loading...
+                                </div>
+                            </TableCell>
+                        </TableRow>
+                    ) : taxes.length ? (
+                        table.getRowModel().rows.map((row) => (
+                            <TableRow
+                                key={row.id}
+                                data-state={row.getIsSelected() && 'selected'}
+                            >
+                                {row.getVisibleCells().map((cell) => (
+                                    <TableCell key={cell.id}>
+                                        {flexRender(
+                                            cell.column.columnDef.cell,
+                                            cell.getContext()
+                                        )}
+                                    </TableCell>
+                                ))}
                             </TableRow>
-                        ))}
-                    </TableHeader>
-                    <TableBody>
-                        {isLoading ? (
-                            <TableRow>
-                                <TableCell
-                                    colSpan={columns.length}
-                                    className="h-24 text-center"
-                                >
-                                    <div className="flex justify-center items-center gap-2 text-primary/50">
-                                        <div className="animate-spin w-4 h-4 border-2 border-primary/50 border-t-transparent rounded-full" />
-                                        Loading...
-                                    </div>
-                                </TableCell>
-                            </TableRow>
-                        ) : taxes.length ? (
-                            table.getRowModel().rows.map((row) => (
-                                <TableRow
-                                    key={row.id}
-                                    data-state={
-                                        row.getIsSelected() && 'selected'
-                                    }
-                                >
-                                    {row.getVisibleCells().map((cell) => (
-                                        <TableCell key={cell.id}>
-                                            {flexRender(
-                                                cell.column.columnDef.cell,
-                                                cell.getContext()
-                                            )}
-                                        </TableCell>
-                                    ))}
-                                </TableRow>
-                            ))
-                        ) : (
-                            <TableRow>
-                                <TableCell
-                                    colSpan={columns.length}
-                                    className="h-24 text-center"
-                                >
-                                    No taxes found
-                                </TableCell>
-                            </TableRow>
-                        )}
-                    </TableBody>
-                </Table>
-                <div className="flex items-center justify-end space-x-2 p-2">
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() =>
-                            setPagination((p) => ({
-                                ...p,
-                                pageIndex: p.pageIndex - 1,
-                            }))
-                        }
-                        disabled={pagination.pageIndex === 0}
-                    >
-                        Previous
-                    </Button>
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() =>
-                            setPagination((p) => ({
-                                ...p,
-                                pageIndex: p.pageIndex + 1,
-                            }))
-                        }
-                        disabled={pagination.pageIndex + 1 >= pageCount}
-                    >
-                        Next
-                    </Button>
-                </div>
+                        ))
+                    ) : (
+                        <TableRow>
+                            <TableCell
+                                colSpan={columns.length}
+                                className="h-24 text-center"
+                            >
+                                No taxes found
+                            </TableCell>
+                        </TableRow>
+                    )}
+                </TableBody>
+            </Table>
+            <div className="flex items-center justify-end gap-2 p-2">
+                <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() =>
+                        setPagination((p) => ({
+                            ...p,
+                            pageIndex: p.pageIndex - 1,
+                        }))
+                    }
+                    disabled={pagination.pageIndex === 0}
+                >
+                    Previous
+                </Button>
+                <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() =>
+                        setPagination((p) => ({
+                            ...p,
+                            pageIndex: p.pageIndex + 1,
+                        }))
+                    }
+                    disabled={pagination.pageIndex + 1 >= pageCount}
+                >
+                    Next
+                </Button>
             </div>
 
             <AlertDialog open={isDialogOpen} onOpenChange={setDialogOpen}>

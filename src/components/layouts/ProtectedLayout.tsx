@@ -1,10 +1,11 @@
+import { Plus } from 'lucide-react';
 import { useEffect, useState, type ReactNode } from 'react';
-import { FaPlus } from 'react-icons/fa';
 import { useLocation } from 'react-router';
 import { useTenant } from '../../stores/tenant/tenantSelectore';
 import AddNewModal from '../shared/AddNewModal';
 import { AppSidebar } from '../shared/AppSidebar';
 import CommandPalette from '../shared/CommandPalette';
+import KeyboardShortcuts from '../shared/KeyboardShortcuts';
 import Loading from '../shared/Loading';
 import Navbar from '../shared/Navbar';
 import { SidebarInset, SidebarProvider } from '../ui/sidebar';
@@ -21,6 +22,7 @@ const ProtectedLayout = ({
     const [routeLoading, setRouteLoading] = useState(false);
     const [showAddNewModal, setShowAddNewModal] = useState(false);
     const [showCommandPalette, setShowCommandPalette] = useState(false);
+    const [showShortcuts, setShowShortcuts] = useState(false);
 
     useEffect(() => {
         setRouteLoading(true);
@@ -35,6 +37,17 @@ const ProtectedLayout = ({
             if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
                 e.preventDefault();
                 setShowCommandPalette((prev) => !prev);
+                return;
+            }
+            const target = e.target as HTMLElement | null;
+            const isTyping =
+                !!target &&
+                (target.tagName === 'INPUT' ||
+                    target.tagName === 'TEXTAREA' ||
+                    target.isContentEditable);
+            if (!isTyping && ((e.shiftKey && e.key === '/') || e.key === '?')) {
+                e.preventDefault();
+                setShowShortcuts(true);
             }
         };
 
@@ -59,12 +72,18 @@ const ProtectedLayout = ({
 
                         <Navbar
                             onSearchClick={() => setShowCommandPalette(true)}
+                            onShortcutsClick={() => setShowShortcuts(true)}
                             // onToggleSidebar is handled by SidebarTrigger/Provider now
                         />
 
                         <CommandPalette
                             isOpen={showCommandPalette}
                             onClose={() => setShowCommandPalette(false)}
+                            onOpenShortcuts={() => setShowShortcuts(true)}
+                        />
+                        <KeyboardShortcuts
+                            isOpen={showShortcuts}
+                            onClose={() => setShowShortcuts(false)}
                         />
 
                         <div
@@ -79,7 +98,7 @@ const ProtectedLayout = ({
                                 onClick={() => setShowAddNewModal(true)}
                                 className="cursor-pointer group flex items-center justify-center bg-primary text-white rounded-full p-2 shadow-lg hover:shadow-xl transition-all duration-300 ease-in-out hover:pr-5"
                             >
-                                <FaPlus className="w-3 h-3" />
+                                <Plus className="w-3 h-3" />
                                 <span className="max-w-0 overflow-hidden whitespace-nowrap opacity-0 group-hover:max-w-[100px] group-hover:ml-2 group-hover:opacity-100 transition-all duration-300 ease-in-out font-medium text-xs">
                                     Add New
                                 </span>
