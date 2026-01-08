@@ -161,7 +161,7 @@ export default function KeyboardShortcuts({
                                     onChange={(id) => setOsView(id as OSKind)}
                                 />
                                 <div className="hidden sm:flex items-center gap-1 text-xs text-primary/60">
-                                    <Info className="w-3.5 h-3.5" />
+                                    <Info className="w-3 h-3" />
                                     <span>Press ? anywhere to open</span>
                                 </div>
                             </div>

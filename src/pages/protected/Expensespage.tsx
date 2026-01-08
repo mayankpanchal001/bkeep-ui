@@ -155,152 +155,149 @@ const Expensespage = () => {
             </div>
 
             {/* Filters */}
-            <div className="bg-white rounded-2 shadow-sm border border-primary/10 p-4">
-                <div className="flex flex-col sm:flex-row gap-4">
-                    <div className="flex-1">
-                        <div className="relative">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-primary/50 w-4 h-4" />
-                            <InputField
-                                id="search-expenses"
-                                placeholder="Search expenses..."
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                            />
-                        </div>
+
+            <div className="flex flex-col sm:flex-row gap-4">
+                <div className="flex-1">
+                    <div className="relative">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-primary/50 w-4 h-4" />
+                        <InputField
+                            id="search-expenses"
+                            placeholder="Search expenses..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                        />
                     </div>
-                    <div className="flex items-center gap-2">
-                        <Filter className="text-primary/50 h-4 w-4" />
-                        <select
-                            value={categoryFilter}
-                            onChange={(e) => setCategoryFilter(e.target.value)}
-                            className="px-4 py-2 border border-primary/10 rounded-2 text-sm text-primary focus:outline-none focus:border-primary"
-                        >
-                            <option value="all">All Categories</option>
-                            {CATEGORIES.map((category) => (
-                                <option key={category} value={category}>
-                                    {category}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
+                </div>
+                <div className="flex items-center gap-2">
+                    <Filter className="text-primary/50 h-4 w-4" />
+                    <select
+                        value={categoryFilter}
+                        onChange={(e) => setCategoryFilter(e.target.value)}
+                        className="px-4 py-2 border border-primary/10 rounded-2 text-sm text-primary focus:outline-none focus:border-primary"
+                    >
+                        <option value="all">All Categories</option>
+                        {CATEGORIES.map((category) => (
+                            <option key={category} value={category}>
+                                {category}
+                            </option>
+                        ))}
+                    </select>
                 </div>
             </div>
 
             {/* Expenses Table */}
-            <div className="bg-white rounded-2 shadow-sm border border-primary/10 overflow-hidden">
-                <Table
-                    enableSelection
-                    rowIds={rowIds}
-                    selectedIds={selectedItems}
-                    onSelectionChange={setSelectedItems}
-                >
-                    <TableSelectionToolbar>
-                        <button
-                            onClick={handleBulkDelete}
-                            className="px-3 py-1.5 text-xs font-medium text-red-700 bg-red-100 hover:bg-red-200 rounded-md transition-colors"
-                        >
-                            Delete Selected
-                        </button>
-                    </TableSelectionToolbar>
+            <Table
+                enableSelection
+                rowIds={rowIds}
+                selectedIds={selectedItems}
+                onSelectionChange={setSelectedItems}
+            >
+                <TableSelectionToolbar>
+                    <button
+                        onClick={handleBulkDelete}
+                        className="px-3 py-1.5 text-xs font-medium text-red-700 bg-red-100 hover:bg-red-200 rounded-md transition-colors"
+                    >
+                        Delete Selected
+                    </button>
+                </TableSelectionToolbar>
 
-                    <TableHeader>
-                        <tr>
-                            <TableHead>
-                                <TableSelectAllCheckbox />
-                            </TableHead>
-                            <TableHead sortable sortKey="date">
-                                Date
-                            </TableHead>
-                            <TableHead sortable sortKey="vendor">
-                                Vendor
-                            </TableHead>
-                            <TableHead>Category</TableHead>
-                            <TableHead>Description</TableHead>
-                            <TableHead align="right" sortable sortKey="amount">
-                                Amount
-                            </TableHead>
-                            <TableHead>Payment Method</TableHead>
-                            <TableHead align="center">Actions</TableHead>
-                        </tr>
-                    </TableHeader>
-                    <TableBody>
-                        {filteredExpenses.length === 0 ? (
-                            <TableEmptyState
-                                colSpan={8}
-                                message="No expenses found"
-                                description="Try adjusting your search or filters"
-                            />
-                        ) : (
-                            filteredExpenses.map((expense) => (
-                                <TableRow key={expense.id} rowId={expense.id}>
-                                    <TableCell>
-                                        <TableRowCheckbox rowId={expense.id} />
-                                    </TableCell>
-                                    <TableCell>
-                                        <span className="text-primary/75">
-                                            {new Date(
-                                                expense.date
-                                            ).toLocaleDateString()}
-                                        </span>
-                                    </TableCell>
-                                    <TableCell>
-                                        <div className="font-medium text-primary">
-                                            {expense.vendor}
-                                        </div>
-                                    </TableCell>
-                                    <TableCell>
-                                        <span className="inline-flex items-center gap-1 px-2 py-1 bg-primary/10 text-primary rounded-full text-xs font-medium">
-                                            <Tag className="w-3 h-3" />
-                                            {expense.category}
-                                        </span>
-                                    </TableCell>
-                                    <TableCell>
-                                        <span className="text-primary/75">
-                                            {expense.description}
-                                        </span>
-                                    </TableCell>
-                                    <TableCell align="right">
-                                        <span className="font-semibold text-primary">
-                                            {currencyFormatter.format(
-                                                expense.amount
-                                            )}
-                                        </span>
-                                    </TableCell>
-                                    <TableCell>
-                                        <span className="text-primary/75">
-                                            {expense.paymentMethod}
-                                        </span>
-                                    </TableCell>
-                                    <TableCell align="center">
-                                        <div className="flex items-center justify-center gap-2">
-                                            {expense.receipt && (
-                                                <button
-                                                    className="p-2 text-primary/50 hover:text-primary hover:bg-primary/10 rounded transition-colors"
-                                                    title="View Receipt"
-                                                >
-                                                    <Receipt className="w-4 h-4" />
-                                                </button>
-                                            )}
+                <TableHeader>
+                    <tr>
+                        <TableHead>
+                            <TableSelectAllCheckbox />
+                        </TableHead>
+                        <TableHead sortable sortKey="date">
+                            Date
+                        </TableHead>
+                        <TableHead sortable sortKey="vendor">
+                            Vendor
+                        </TableHead>
+                        <TableHead>Category</TableHead>
+                        <TableHead>Description</TableHead>
+                        <TableHead align="right" sortable sortKey="amount">
+                            Amount
+                        </TableHead>
+                        <TableHead>Payment Method</TableHead>
+                        <TableHead align="center">Actions</TableHead>
+                    </tr>
+                </TableHeader>
+                <TableBody>
+                    {filteredExpenses.length === 0 ? (
+                        <TableEmptyState
+                            colSpan={8}
+                            message="No expenses found"
+                            description="Try adjusting your search or filters"
+                        />
+                    ) : (
+                        filteredExpenses.map((expense) => (
+                            <TableRow key={expense.id} rowId={expense.id}>
+                                <TableCell>
+                                    <TableRowCheckbox rowId={expense.id} />
+                                </TableCell>
+                                <TableCell>
+                                    <span className="text-primary/75">
+                                        {new Date(
+                                            expense.date
+                                        ).toLocaleDateString()}
+                                    </span>
+                                </TableCell>
+                                <TableCell>
+                                    <div className="font-medium text-primary">
+                                        {expense.vendor}
+                                    </div>
+                                </TableCell>
+                                <TableCell>
+                                    <span className="inline-flex items-center gap-1 px-2 py-1 bg-primary/10 text-primary rounded-full text-xs font-medium">
+                                        <Tag className="w-3 h-3" />
+                                        {expense.category}
+                                    </span>
+                                </TableCell>
+                                <TableCell>
+                                    <span className="text-primary/75">
+                                        {expense.description}
+                                    </span>
+                                </TableCell>
+                                <TableCell align="right">
+                                    <span className="font-semibold text-primary">
+                                        {currencyFormatter.format(
+                                            expense.amount
+                                        )}
+                                    </span>
+                                </TableCell>
+                                <TableCell>
+                                    <span className="text-primary/75">
+                                        {expense.paymentMethod}
+                                    </span>
+                                </TableCell>
+                                <TableCell align="center">
+                                    <div className="flex items-center justify-center gap-2">
+                                        {expense.receipt && (
                                             <button
                                                 className="p-2 text-primary/50 hover:text-primary hover:bg-primary/10 rounded transition-colors"
-                                                title="Edit"
+                                                title="View Receipt"
                                             >
-                                                <Pencil className="w-4 h-4" />
+                                                <Receipt className="w-4 h-4" />
                                             </button>
-                                            <button
-                                                className="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
-                                                title="Delete"
-                                            >
-                                                <Trash2 className="w-4 h-4" />
-                                            </button>
-                                        </div>
-                                    </TableCell>
-                                </TableRow>
-                            ))
-                        )}
-                    </TableBody>
-                </Table>
-            </div>
+                                        )}
+                                        <button
+                                            className="p-2 text-primary/50 hover:text-primary hover:bg-primary/10 rounded transition-colors"
+                                            title="Edit"
+                                        >
+                                            <Pencil className="w-4 h-4" />
+                                        </button>
+                                        <button
+                                            className="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
+                                            title="Delete"
+                                        >
+                                            <Trash2 className="w-4 h-4" />
+                                        </button>
+                                    </div>
+                                </TableCell>
+                            </TableRow>
+                        ))
+                    )}
+                </TableBody>
+            </Table>
 
             {/* Create Expense Modal */}
             {showCreateModal && (

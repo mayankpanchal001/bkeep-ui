@@ -154,28 +154,29 @@ const Invoicepage = () => {
     };
 
     return (
-        <div className="p-6 max-w-[1600px] mx-auto">
+        <div className="max-w-[1600px] mx-auto">
             {/* Header */}
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
-                <div>
-                    <h1 className="text-2xl font-semibold text-primary">
-                        Invoices
-                    </h1>
-                    <p className="text-primary/75 text-sm mt-1">
-                        Manage your company invoices and payments
-                    </p>
+            <div className="flex flex-col gap-4">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 ">
+                    <div>
+                        <h1 className="text-2xl font-semibold text-primary">
+                            Invoices
+                        </h1>
+                        <p className="text-primary/75 text-sm mt-1">
+                            Manage your company invoices and payments
+                        </p>
+                    </div>
+                    <Button
+                        variant="primary"
+                        icon={<FaPlus className="w-4 h-4" />}
+                        onClick={() => setShowCreateModal(true)}
+                    >
+                        Create Invoice
+                    </Button>
                 </div>
-                <Button
-                    variant="primary"
-                    icon={<FaPlus className="w-4 h-4" />}
-                    onClick={() => setShowCreateModal(true)}
-                >
-                    Create Invoice
-                </Button>
-            </div>
 
-            {/* Filters */}
-            <div className="bg-white p-4 rounded-2 shadow-sm border border-primary/10 mb-6">
+                {/* Filters */}
+
                 <div className="flex flex-col sm:flex-row gap-4">
                     <div className="flex-1">
                         <div className="relative">
@@ -203,10 +204,9 @@ const Invoicepage = () => {
                         </select>
                     </div>
                 </div>
-            </div>
 
-            {/* Invoices Table */}
-            <div className="bg-white rounded-2 shadow-sm border border-primary/10 overflow-hidden">
+                {/* Invoices Table */}
+
                 <Table
                     enableSelection
                     rowIds={rowIds}
