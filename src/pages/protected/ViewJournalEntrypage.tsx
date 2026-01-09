@@ -1,11 +1,23 @@
-import { useParams } from 'react-router';
-import { useJournalEntry } from '../../services/apis/journalApi';
-import type { JournalEntry, JournalEntryLine } from '../../types/journal';
+import ConfirmationDialog from '@/components/shared/ConfirmationDialog';
 import { Column, DataTable } from '@/components/shared/DataTable';
+import { Icons } from '@/components/shared/Icons';
 import Loading from '@/components/shared/Loading';
 import PageHeader from '@/components/shared/PageHeader';
+import Button from '@/components/typography/Button';
 import { useContacts } from '@/services/apis/contactsApi';
-import { useMemo } from 'react';
+import { showErrorToast, showSuccessToast } from '@/utills/toast';
+import { Redo2, Undo2 } from 'lucide-react';
+import { useMemo, useState } from 'react';
+import { useNavigate, useParams } from 'react-router';
+import {
+    useDeleteJournalEntry,
+    useJournalEntry,
+    usePostJournalEntry,
+    useRestoreJournalEntry,
+    useReverseJournalEntry,
+    useVoidJournalEntry,
+} from '../../services/apis/journalApi';
+import type { JournalEntry, JournalEntryLine } from '../../types/journal';
 
 const toNumber = (v: unknown) => {
     if (typeof v === 'number') return Number.isFinite(v) ? v : 0;
@@ -44,7 +56,19 @@ const formatBoolean = (value: unknown) => {
 
 export default function ViewJournalEntrypage() {
     const { id } = useParams<{ id: string }>();
+    const navigate = useNavigate();
     const { data, isLoading } = useJournalEntry(id!);
+
+    const postMutation = usePostJournalEntry();
+    const voidMutation = useVoidJournalEntry();
+    const reverseMutation = useReverseJournalEntry();
+    const restoreMutation = useRestoreJournalEntry();
+    const deleteMutation = useDeleteJournalEntry();
+
+    const [postDialog, setPostDialog] = useState(false);
+    const [voidDialog, setVoidDialog] = useState(false);
+    const [reverseDialog, setReverseDialog] = useState(false);
+    const [deleteDialog, setDeleteDialog] = useState(false);
 
     const journalEntry = useMemo<JournalEntry | undefined>(() => {
         const root = data as unknown as Record<string, unknown> | undefined;
@@ -171,15 +195,78 @@ export default function ViewJournalEntrypage() {
         return (
             <div className="text-center py-12">
                 <p className="text-sm text-red-600">Journal entry not found</p>
+                <Button
+                    variant="outline"
+                    onClick={() => navigate('/journal-entries')}
+                >
+                    Back to List
+                </Button>
             </div>
         );
     }
 
+    const { status } = journalEntry;
+
+    // Actions Handlers
+    const handleEdit = () => {
+        navigate(`/journal-entries/${journalEntry.id}/edit`);
+    };
+
+    const handleConfirmPost = () => {
+        postMutation.mutate(journalEntry.id, {
+            onSuccess: () => {
+                setPostDialog(false);
+                showSuccessToast('Journal entry posted');
+            },
+            onError: () => showErrorToast('Failed to post entry'),
+        });
+    };
+
+    const handleConfirmVoid = () => {
+        voidMutation.mutate(journalEntry.id, {
+            onSuccess: () => {
+                setVoidDialog(false);
+                showSuccessToast('Journal entry voided');
+            },
+            onError: () => showErrorToast('Failed to void entry'),
+        });
+    };
+
+    const handleConfirmReverse = () => {
+        reverseMutation.mutate(journalEntry.id, {
+            onSuccess: () => {
+                setReverseDialog(false);
+                showSuccessToast('Journal entry reversed');
+            },
+            onError: () => showErrorToast('Failed to reverse entry'),
+        });
+    };
+
+    const handleConfirmDelete = () => {
+        deleteMutation.mutate(journalEntry.id, {
+            onSuccess: () => {
+                setDeleteDialog(false);
+                showSuccessToast('Journal entry deleted');
+                navigate('/journal-entries');
+            },
+            onError: () => showErrorToast('Failed to delete entry'),
+        });
+    };
+
+    const handleRestore = () => {
+        restoreMutation.mutate(journalEntry.id, {
+            onSuccess: () => {
+                showSuccessToast('Journal entry restored');
+            },
+            onError: () => showErrorToast('Failed to restore entry'),
+        });
+    };
+
     const getStatusBadge = (status: string) => {
         const statusConfig = {
             draft: {
-                bg: 'bg-gray-100',
-                text: 'text-primary/70',
+                bg: 'bg-gray-100 dark:bg-gray-500',
+                text: 'text-primary/70 dark:text-white',
                 label: 'Draft',
             },
             posted: {
@@ -205,10 +292,71 @@ export default function ViewJournalEntrypage() {
 
     return (
         <div className="space-y-4">
-            <PageHeader
-                title={`Journal Entry ${formatText(journalEntry.entryNumber)}`}
-                subtitle={formatDateOnly(journalEntry.entryDate)}
-            />
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div className="flex-1">
+                    <PageHeader
+                        title={`Journal Entry ${formatText(journalEntry.entryNumber)}`}
+                        subtitle={formatDateOnly(journalEntry.entryDate)}
+                    />
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex items-center gap-2">
+                    {status === 'draft' && (
+                        <>
+                            <Button
+                                variant="outline"
+                                onClick={handleEdit}
+                                icon={<Icons.Edit className="w-4 h-4" />}
+                            >
+                                Edit
+                            </Button>
+                            <Button
+                                variant="outline"
+                                onClick={() => setPostDialog(true)}
+                                className="text-green-600 hover:text-green-700 hover:bg-green-50"
+                            >
+                                Post
+                            </Button>
+                            <Button
+                                variant="outline"
+                                onClick={() => setVoidDialog(true)}
+                                className="text-yellow-600 hover:text-yellow-700 hover:bg-yellow-50"
+                            >
+                                Void
+                            </Button>
+                            <Button
+                                variant="outline"
+                                onClick={() => setDeleteDialog(true)}
+                                className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                                icon={<Icons.Trash className="w-4 h-4" />}
+                            >
+                                Delete
+                            </Button>
+                        </>
+                    )}
+                    {status === 'posted' && (
+                        <Button
+                            variant="outline"
+                            onClick={() => setReverseDialog(true)}
+                            className="text-purple-600 hover:text-purple-700 hover:bg-purple-50"
+                            icon={<Undo2 className="w-4 h-4" />}
+                        >
+                            Reverse
+                        </Button>
+                    )}
+                    {status === 'voided' && (
+                        <Button
+                            variant="outline"
+                            onClick={handleRestore}
+                            className="text-green-600 hover:text-green-700 hover:bg-green-50"
+                            icon={<Redo2 className="w-4 h-4" />}
+                        >
+                            Restore
+                        </Button>
+                    )}
+                </div>
+            </div>
 
             <div className="bg-white rounded-lg border border-primary/10 p-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
@@ -448,6 +596,53 @@ export default function ViewJournalEntrypage() {
                     </div>
                 );
             })()}
+
+            {/* Confirmation Dialogs */}
+            <ConfirmationDialog
+                isOpen={postDialog}
+                onClose={() => setPostDialog(false)}
+                onConfirm={handleConfirmPost}
+                title="Post Journal Entry"
+                message={`Are you sure you want to post journal entry "${formatText(journalEntry.entryNumber)}"? Posted entries cannot be edited.`}
+                confirmText="Post"
+                cancelText="Cancel"
+                loading={postMutation.isPending}
+            />
+
+            <ConfirmationDialog
+                isOpen={voidDialog}
+                onClose={() => setVoidDialog(false)}
+                onConfirm={handleConfirmVoid}
+                title="Void Journal Entry"
+                message={`Are you sure you want to void journal entry "${formatText(journalEntry.entryNumber)}"? This will mark it as voided.`}
+                confirmText="Void"
+                cancelText="Cancel"
+                confirmVariant="danger"
+                loading={voidMutation.isPending}
+            />
+
+            <ConfirmationDialog
+                isOpen={deleteDialog}
+                onClose={() => setDeleteDialog(false)}
+                onConfirm={handleConfirmDelete}
+                title="Delete Journal Entry"
+                message={`Are you sure you want to delete journal entry "${formatText(journalEntry.entryNumber)}"? This action cannot be undone.`}
+                confirmText="Delete"
+                cancelText="Cancel"
+                confirmVariant="danger"
+                loading={deleteMutation.isPending}
+            />
+
+            <ConfirmationDialog
+                isOpen={reverseDialog}
+                onClose={() => setReverseDialog(false)}
+                onConfirm={handleConfirmReverse}
+                title="Reverse Journal Entry"
+                message={`Are you sure you want to reverse journal entry "${formatText(journalEntry.entryNumber)}"? This will create a new reversing entry.`}
+                confirmText="Reverse"
+                cancelText="Cancel"
+                loading={reverseMutation.isPending}
+            />
         </div>
     );
 }

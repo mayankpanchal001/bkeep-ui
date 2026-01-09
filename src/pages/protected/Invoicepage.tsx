@@ -194,9 +194,9 @@ const Invoicepage = () => {
                         <select
                             value={statusFilter}
                             onChange={(e) => setStatusFilter(e.target.value)}
-                            className="px-4 py-2 border border-primary/10 rounded-2 text-sm text-primary focus:outline-none focus:border-primary"
+                            className="px-4 py-2 border border-primary/10 rounded-2 text-sm text-primary focus:outline-none focus:border-primary dark:bg-black white:text-white"
                         >
-                            <option value="all">All Status</option>
+                            <option value="all">All</option>
                             <option value="draft">Draft</option>
                             <option value="sent">Sent</option>
                             <option value="paid">Paid</option>
