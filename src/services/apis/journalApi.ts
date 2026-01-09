@@ -2,8 +2,8 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type {
     CreateJournalEntryPayload,
     JournalEntriesListResponse,
-    JournalEntryFilters,
     JournalEntry,
+    JournalEntryFilters,
     JournalEntryResponse,
     UpdateJournalEntryPayload,
 } from '../../types/journal';
@@ -161,7 +161,10 @@ export async function deleteJournalEntry(
 export async function postJournalEntry(
     id: string
 ): Promise<JournalEntryResponse> {
-    const response = await axiosInstance.post(`/journal-entries/${id}/post`);
+    const response = await axiosInstance.post(
+        `/journal-entries/${id}/post`,
+        {}
+    );
     return response.data;
 }
 
@@ -171,7 +174,10 @@ export async function postJournalEntry(
 export async function voidJournalEntry(
     id: string
 ): Promise<JournalEntryResponse> {
-    const response = await axiosInstance.post(`/journal-entries/${id}/void`);
+    const response = await axiosInstance.post(
+        `/journal-entries/${id}/void`,
+        {}
+    );
     return response.data;
 }
 
@@ -181,7 +187,10 @@ export async function voidJournalEntry(
 export async function reverseJournalEntry(
     id: string
 ): Promise<JournalEntryResponse> {
-    const response = await axiosInstance.post(`/journal-entries/${id}/reverse`);
+    const response = await axiosInstance.post(
+        `/journal-entries/${id}/reverse`,
+        {}
+    );
     return response.data;
 }
 
@@ -192,7 +201,8 @@ export async function restoreJournalEntry(
     id: string
 ): Promise<JournalEntryResponse> {
     const response = await axiosInstance.patch(
-        `/journal-entries/${id}/restore`
+        `/journal-entries/${id}/restore`,
+        {}
     );
     return response.data;
 }

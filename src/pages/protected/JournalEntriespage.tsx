@@ -1,7 +1,13 @@
 import ConfirmationDialog from '@/components/shared/ConfirmationDialog';
 import { Icons } from '@/components/shared/Icons';
 import PageHeader from '@/components/shared/PageHeader';
-import Button from '@/components/typography/Button';
+import { Button } from '@/components/ui/button';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import {
     Table,
     TableBody,
@@ -17,7 +23,7 @@ import {
     type SortDirection,
 } from '@/components/ui/table';
 import { showErrorToast, showSuccessToast } from '@/utills/toast.tsx';
-import { FileText, Redo2, Undo2 } from 'lucide-react';
+import { FileText, MoreHorizontal } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 import Input from '../../components/ui/input';
@@ -52,6 +58,10 @@ export default function JournalEntriespage() {
         entry: JournalEntry | null;
     }>({ isOpen: false, entry: null });
     const [voidDialog, setVoidDialog] = useState<{
+        isOpen: boolean;
+        entry: JournalEntry | null;
+    }>({ isOpen: false, entry: null });
+    const [reverseDialog, setReverseDialog] = useState<{
         isOpen: boolean;
         entry: JournalEntry | null;
     }>({ isOpen: false, entry: null });
@@ -192,8 +202,16 @@ export default function JournalEntriespage() {
     };
 
     const handleReverse = (entry: JournalEntry) => {
-        reverseMutation.mutate(entry.id, {
-            onSuccess: () => showSuccessToast('Journal entry reversed'),
+        setReverseDialog({ isOpen: true, entry });
+    };
+
+    const handleConfirmReverse = () => {
+        if (!reverseDialog.entry) return;
+        reverseMutation.mutate(reverseDialog.entry.id, {
+            onSuccess: () => {
+                showSuccessToast('Journal entry reversed');
+                setReverseDialog({ isOpen: false, entry: null });
+            },
             onError: () => showErrorToast('Failed to reverse entry'),
         });
     };
@@ -259,8 +277,8 @@ export default function JournalEntriespage() {
     const getStatusBadge = (status: string) => {
         const statusConfig = {
             draft: {
-                bg: 'bg-gray-100',
-                text: 'text-primary/70',
+                bg: 'bg-gray-100 dark:bg-gray-500',
+                text: 'text-primary/70 dark:text-white',
                 label: 'Draft',
             },
             posted: {
@@ -333,7 +351,7 @@ export default function JournalEntriespage() {
     }, [rowIds]);
 
     return (
-        <div className="space-y-4">
+        <div className="flex flex-col h-[calc(100vh-6rem)] gap-4 overflow-hidden">
             <PageHeader
                 title="Journal Entries"
                 subtitle={`${total} total entries`}
@@ -400,7 +418,7 @@ export default function JournalEntriespage() {
                     />
                 </div>
 
-                <Button variant="primary" size="sm" onClick={handleCreateNew}>
+                <Button size="sm" onClick={handleCreateNew}>
                     <Icons.Plus className="w-4 h-4 mr-2" />
                     New
                 </Button>
@@ -413,6 +431,7 @@ export default function JournalEntriespage() {
                 </div>
             )}
             <Table
+                containerClassName="flex-1 min-h-0 border rounded-lg bg-white"
                 enableSelection
                 rowIds={rowIds}
                 selectedIds={selectedItems}
@@ -486,11 +505,7 @@ export default function JournalEntriespage() {
                                 <FileText className="w-12 h-12 text-primary/20" />
                             }
                             action={
-                                <Button
-                                    variant="primary"
-                                    size="sm"
-                                    onClick={handleCreateNew}
-                                >
+                                <Button size="sm" onClick={handleCreateNew}>
                                     <Icons.Plus className="w-4 h-4 mr-2" />
                                     Create Journal Entry
                                 </Button>
@@ -586,93 +601,81 @@ export default function JournalEntriespage() {
                                     {getStatusBadge(entry.status)}
                                 </TableCell>
                                 <TableCell>
-                                    <div
-                                        className="flex items-center gap-2"
-                                        onClick={(e) => e.stopPropagation()}
-                                    >
-                                        {entry.status === 'draft' && (
-                                            <>
-                                                <button
-                                                    onClick={() =>
-                                                        handleEdit(entry.id)
-                                                    }
-                                                    className="text-blue-600 hover:text-blue-800 disabled:opacity-50"
-                                                    title="Edit"
-                                                    disabled={
-                                                        deleteMutation.isPending ||
-                                                        postMutation.isPending
-                                                    }
+                                    <div onClick={(e) => e.stopPropagation()}>
+                                        <DropdownMenu>
+                                            <DropdownMenuTrigger asChild>
+                                                <Button
+                                                    variant="outline"
+                                                    className="h-8 w-8 p-0"
                                                 >
-                                                    <Icons.Edit className="w-4 h-4" />
-                                                </button>
-                                                <button
-                                                    onClick={() =>
-                                                        handlePost(entry)
-                                                    }
-                                                    className="text-green-600 hover:text-green-800 text-sm font-medium hover:underline disabled:opacity-50"
-                                                    title="Post"
-                                                    disabled={
-                                                        postMutation.isPending
-                                                    }
-                                                >
-                                                    Post
-                                                </button>
-                                                <button
-                                                    onClick={() =>
-                                                        handleDelete(entry)
-                                                    }
-                                                    className="text-red-600 hover:text-red-800 disabled:opacity-50"
-                                                    title="Delete"
-                                                    disabled={
-                                                        deleteMutation.isPending
-                                                    }
-                                                >
-                                                    <Icons.Trash className="w-4 h-4" />
-                                                </button>
-                                            </>
-                                        )}
-                                        {entry.status === 'posted' && (
-                                            <>
-                                                <button
-                                                    onClick={() =>
-                                                        handleVoid(entry)
-                                                    }
-                                                    className="text-yellow-600 hover:text-yellow-800 text-sm font-medium hover:underline disabled:opacity-50"
-                                                    title="Void"
-                                                    disabled={
-                                                        voidMutation.isPending
-                                                    }
-                                                >
-                                                    Void
-                                                </button>
-                                                <button
-                                                    onClick={() =>
-                                                        handleReverse(entry)
-                                                    }
-                                                    className="text-purple-600 hover:text-purple-800 disabled:opacity-50"
-                                                    title="Reverse"
-                                                    disabled={
-                                                        reverseMutation.isPending
-                                                    }
-                                                >
-                                                    <Undo2 className="w-4 h-4" />
-                                                </button>
-                                            </>
-                                        )}
-                                        {entry.status === 'voided' && (
-                                            <button
-                                                onClick={() =>
-                                                    handleRestore(entry)
-                                                }
-                                                className="text-green-600 hover:text-green-800 disabled:opacity-50"
-                                                title="Restore"
-                                                disabled={
-                                                    restoreMutation.isPending
-                                                }
-                                            >
-                                                <Redo2 className="w-4 h-4" />
-                                            </button>
-                                        )}
+                                                    <span className="sr-only">
+                                                        Open menu
+                                                    </span>
+                                                    <MoreHorizontal className="h-4 w-4" />
+                                                </Button>
+                                            </DropdownMenuTrigger>
+                                            <DropdownMenuContent align="end">
+                                                {entry.status === 'draft' && (
+                                                    <>
+                                                        <DropdownMenuItem
+                                                            onClick={() =>
+                                                                handleEdit(
+                                                                    entry.id
+                                                                )
+                                                            }
+                                                        >
+                                                            Edit
+                                                        </DropdownMenuItem>
+                                                        <DropdownMenuItem
+                                                            onClick={() =>
+                                                                handlePost(
+                                                                    entry
+                                                                )
+                                                            }
+                                                        >
+                                                            Post
+                                                        </DropdownMenuItem>
+                                                        <DropdownMenuItem
+                                                            onClick={() =>
+                                                                handleVoid(
+                                                                    entry
+                                                                )
+                                                            }
+                                                        >
+                                                            Void
+                                                        </DropdownMenuItem>
+                                                        <DropdownMenuItem
+                                                            onClick={() =>
+                                                                handleDelete(
+                                                                    entry
+                                                                )
+                                                            }
+                                                            className="text-red-600 focus:text-red-600"
+                                                        >
+                                                            Delete
+                                                        </DropdownMenuItem>
+                                                    </>
+                                                )}
+                                                {entry.status === 'posted' && (
+                                                    <DropdownMenuItem
+                                                        onClick={() =>
+                                                            handleReverse(entry)
+                                                        }
+                                                    >
+                                                        Reverse
+                                                    </DropdownMenuItem>
+                                                )}
+                                                {entry.status === 'voided' && (
+                                                    <DropdownMenuItem
+                                                        onClick={() =>
+                                                            handleRestore(entry)
+                                                        }
+                                                    >
+                                                        Restore
+                                                    </DropdownMenuItem>
+                                                )}
+                                            </DropdownMenuContent>
+                                        </DropdownMenu>
                                     </div>
                                 </TableCell>
                             </TableRow>
@@ -726,6 +729,18 @@ export default function JournalEntriespage() {
                 cancelText="Cancel"
                 confirmVariant="danger"
                 loading={voidMutation.isPending}
+            />
+
+            {/* Reverse Confirmation Dialog */}
+            <ConfirmationDialog
+                isOpen={reverseDialog.isOpen}
+                onClose={() => setReverseDialog({ isOpen: false, entry: null })}
+                onConfirm={handleConfirmReverse}
+                title="Reverse Journal Entry"
+                message={`Are you sure you want to reverse journal entry "${reverseDialog.entry?.entryNumber}"? This will create a new reversing entry.`}
+                confirmText="Reverse"
+                cancelText="Cancel"
+                loading={reverseMutation.isPending}
             />
 
             <ConfirmationDialog

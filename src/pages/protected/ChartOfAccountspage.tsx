@@ -1,8 +1,7 @@
 import ConfirmationDialog from '@/components/shared/ConfirmationDialog';
 import ImportFileModal from '@/components/shared/ImportFileModal';
 import ImportMappingModal from '@/components/shared/ImportMappingModal';
-import Button from '@/components/typography/Button';
-import { InputField, SelectField } from '@/components/typography/InputFields';
+import { Button } from '@/components/ui/button';
 import {
     Drawer,
     DrawerClose,
@@ -10,6 +9,15 @@ import {
     DrawerHeader,
     DrawerTitle,
 } from '@/components/ui/drawer';
+import Input from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 import {
     Table,
     TableBody,
@@ -26,7 +34,6 @@ import {
 import { FileUp, Filter, Pencil, Plus, Search, Trash2, X } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import * as XLSX from 'xlsx';
-import Input from '../../components/ui/input';
 import {
     useChartOfAccounts,
     useCreateChartOfAccount,
@@ -514,26 +521,19 @@ const ChartOfAccountspage = () => {
                     <Button
                         onClick={() => setIsFilterOpen(true)}
                         variant="outline"
-                        icon={<Filter size={16} />}
                     >
-                        Filters
+                        <Filter size={16} className="mr-2" /> Filters
                     </Button>
                     <Button
                         onClick={handleImportClick}
                         variant="outline"
-                        icon={<FileUp size={16} />}
-                        loading={importMutation.isPending}
                         disabled={importMutation.isPending}
                     >
-                        Import
+                        <FileUp size={16} className="mr-2" /> Import
                     </Button>
                     <div className="h-6 w-px bg-gray-300 mx-2"></div>
-                    <Button
-                        onClick={handleOpenAddModal}
-                        variant="primary"
-                        icon={<Plus size={16} />}
-                    >
-                        New Chart of Account
+                    <Button onClick={handleOpenAddModal} variant="default">
+                        <Plus size={16} className="mr-2" /> New Chart of Account
                     </Button>
                 </div>
             </div>
@@ -548,6 +548,7 @@ const ChartOfAccountspage = () => {
             {/* Accounts Table */}
             <Table
                 enableSelection
+                containerClassName="flex-1 overflow-hidden [&>div]:h-full [&>div]:overflow-auto"
                 rowIds={rowIds}
                 selectedIds={selectedItems}
                 onSelectionChange={setSelectedItems}
@@ -855,7 +856,7 @@ const ChartOfAccountspage = () => {
                             </Button>
                             <Button
                                 type="button"
-                                variant="primary"
+                                variant="default"
                                 onClick={() => setIsFilterOpen(false)}
                             >
                                 Apply
@@ -904,10 +905,13 @@ const ChartOfAccountspage = () => {
                             onSubmit={handleSubmit}
                             className="space-y-4 flex-1"
                         >
-                            <div>
-                                <InputField
+                            <div className="space-y-2">
+                                <Label htmlFor="account-name">
+                                    Account Name{' '}
+                                    <span className="text-red-500">*</span>
+                                </Label>
+                                <Input
                                     id="account-name"
-                                    label="Account Name"
                                     placeholder="Enter account name"
                                     value={formData.accountName}
                                     onChange={(e) => {
@@ -931,13 +935,15 @@ const ChartOfAccountspage = () => {
                                 )}
                             </div>
 
-                            <div>
-                                <SelectField
-                                    id="account-type"
-                                    label="Account Type"
+                            <div className="space-y-2">
+                                <Label htmlFor="account-type">
+                                    Account Type{' '}
+                                    <span className="text-red-500">*</span>
+                                </Label>
+                                <Select
                                     value={selectedAccountSubType}
-                                    onChange={(e) => {
-                                        const newSubType = e.target.value;
+                                    onValueChange={(value) => {
+                                        const newSubType = value;
                                         setSelectedAccountSubType(newSubType);
 
                                         const details =
@@ -961,9 +967,34 @@ const ChartOfAccountspage = () => {
                                             }));
                                         }
                                     }}
-                                    required
-                                    options={ACCOUNT_TYPE_DROPDOWN_OPTIONS}
-                                />
+                                >
+                                    <SelectTrigger id="account-type">
+                                        <SelectValue placeholder="Select Account Type" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {ACCOUNT_TYPE_DROPDOWN_OPTIONS.map(
+                                            (group) => (
+                                                <div key={group.label}>
+                                                    <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">
+                                                        {group.label}
+                                                    </div>
+                                                    {group.options.map(
+                                                        (opt) => (
+                                                            <SelectItem
+                                                                key={opt.value}
+                                                                value={
+                                                                    opt.value
+                                                                }
+                                                            >
+                                                                {opt.label}
+                                                            </SelectItem>
+                                                        )
+                                                    )}
+                                                </div>
+                                            )
+                                        )}
+                                    </SelectContent>
+                                </Select>
                                 {formErrors.accountType && (
                                     <p className="text-red-500 text-xs mt-1">
                                         {formErrors.accountType}
@@ -971,16 +1002,18 @@ const ChartOfAccountspage = () => {
                                 )}
                             </div>
 
-                            <div>
-                                <SelectField
-                                    id="account-detail-type"
-                                    label="Account Detail Type"
+                            <div className="space-y-2">
+                                <Label htmlFor="account-detail-type">
+                                    Account Detail Type{' '}
+                                    <span className="text-red-500">*</span>
+                                </Label>
+                                <Select
                                     value={formData.accountDetailType}
-                                    onChange={(e) => {
+                                    onValueChange={(value) => {
                                         setFormData({
                                             ...formData,
-                                            accountDetailType: e.target
-                                                .value as AccountDetailType,
+                                            accountDetailType:
+                                                value as AccountDetailType,
                                         });
                                         if (formErrors.accountDetailType) {
                                             setFormErrors((prev) => ({
@@ -989,9 +1022,21 @@ const ChartOfAccountspage = () => {
                                             }));
                                         }
                                     }}
-                                    required
-                                    options={detailTypeOptions}
-                                />
+                                >
+                                    <SelectTrigger id="account-detail-type">
+                                        <SelectValue placeholder="Select Detail Type" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {detailTypeOptions.map((opt) => (
+                                            <SelectItem
+                                                key={opt.value}
+                                                value={opt.value}
+                                            >
+                                                {opt.label}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
                                 {formErrors.accountDetailType && (
                                     <p className="text-red-500 text-xs mt-1">
                                         {formErrors.accountDetailType}
@@ -999,10 +1044,13 @@ const ChartOfAccountspage = () => {
                                 )}
                             </div>
 
-                            <div>
-                                <InputField
+                            <div className="space-y-2">
+                                <Label htmlFor="opening-balance">
+                                    Opening Balance{' '}
+                                    <span className="text-red-500">*</span>
+                                </Label>
+                                <Input
                                     id="opening-balance"
-                                    label="Opening Balance"
                                     type="number"
                                     step="0.01"
                                     placeholder="0.00"
@@ -1030,10 +1078,10 @@ const ChartOfAccountspage = () => {
                                 )}
                             </div>
 
-                            <div>
-                                <InputField
+                            <div className="space-y-2">
+                                <Label htmlFor="description">Description</Label>
+                                <Input
                                     id="description"
-                                    label="Description"
                                     placeholder="Enter description (optional)"
                                     value={formData.description || ''}
                                     onChange={(e) => {
@@ -1059,11 +1107,7 @@ const ChartOfAccountspage = () => {
                             </Button>
                             <Button
                                 type="submit"
-                                variant="primary"
-                                loading={
-                                    createMutation.isPending ||
-                                    updateMutation.isPending
-                                }
+                                variant="default"
                                 disabled={
                                     createMutation.isPending ||
                                     updateMutation.isPending
