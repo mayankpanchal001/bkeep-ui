@@ -126,7 +126,7 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
 
 export const SelectField = forwardRef<
     HTMLSelectElement,
-    Omit<React.SelectHTMLAttributes<HTMLSelectElement>, 'className'> & {
+    React.SelectHTMLAttributes<HTMLSelectElement> & {
         label?: string;
         labelShow?: boolean;
         options?:
@@ -143,6 +143,7 @@ export const SelectField = forwardRef<
             required,
             options = [],
             placeholder,
+            className,
             ...rest
         },
         ref
@@ -163,7 +164,7 @@ export const SelectField = forwardRef<
                         ref={ref}
                         id={id}
                         name={name}
-                        className="input appearance-none"
+                        className={`input appearance-none ${className || ''}`}
                         required={required}
                         {...rest}
                     >

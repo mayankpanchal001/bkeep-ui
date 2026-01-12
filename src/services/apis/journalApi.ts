@@ -2,8 +2,8 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type {
     CreateJournalEntryPayload,
     JournalEntriesListResponse,
-    JournalEntryFilters,
     JournalEntry,
+    JournalEntryFilters,
     JournalEntryResponse,
     UpdateJournalEntryPayload,
 } from '../../types/journal';
@@ -78,6 +78,14 @@ export async function getJournalEntries(
     if (filters?.endDate) params.append('endDate', filters.endDate);
     if (filters?.isAdjusting !== undefined)
         params.append('isAdjusting', filters.isAdjusting.toString());
+    if (filters?.contactId) params.append('contactId', filters.contactId);
+    if (filters?.accountId) params.append('accountId', filters.accountId);
+    if (filters?.minAmount !== undefined)
+        params.append('minAmount', filters.minAmount.toString());
+    if (filters?.maxAmount !== undefined)
+        params.append('maxAmount', filters.maxAmount.toString());
+    if (filters?.sort) params.append('sort', filters.sort);
+    if (filters?.order) params.append('order', filters.order);
 
     const response = await axiosInstance.get(
         `/journal-entries${params.toString() ? `?${params.toString()}` : ''}`
@@ -161,7 +169,10 @@ export async function deleteJournalEntry(
 export async function postJournalEntry(
     id: string
 ): Promise<JournalEntryResponse> {
-    const response = await axiosInstance.post(`/journal-entries/${id}/post`);
+    const response = await axiosInstance.post(
+        `/journal-entries/${id}/post`,
+        {}
+    );
     return response.data;
 }
 
@@ -171,7 +182,10 @@ export async function postJournalEntry(
 export async function voidJournalEntry(
     id: string
 ): Promise<JournalEntryResponse> {
-    const response = await axiosInstance.post(`/journal-entries/${id}/void`);
+    const response = await axiosInstance.post(
+        `/journal-entries/${id}/void`,
+        {}
+    );
     return response.data;
 }
 
@@ -181,7 +195,10 @@ export async function voidJournalEntry(
 export async function reverseJournalEntry(
     id: string
 ): Promise<JournalEntryResponse> {
-    const response = await axiosInstance.post(`/journal-entries/${id}/reverse`);
+    const response = await axiosInstance.post(
+        `/journal-entries/${id}/reverse`,
+        {}
+    );
     return response.data;
 }
 
@@ -192,7 +209,8 @@ export async function restoreJournalEntry(
     id: string
 ): Promise<JournalEntryResponse> {
     const response = await axiosInstance.patch(
-        `/journal-entries/${id}/restore`
+        `/journal-entries/${id}/restore`,
+        {}
     );
     return response.data;
 }
@@ -203,8 +221,27 @@ export async function restoreJournalEntry(
  * Hook to get all journal entries
  */
 export const useJournalEntries = (filters?: JournalEntryFilters) => {
+    // Create a stable query key that includes all filter values
+    // This ensures React Query properly detects changes and refetches
+    const queryKey = [
+        'journal-entries',
+        filters?.page,
+        filters?.limit,
+        filters?.search,
+        filters?.status,
+        filters?.startDate,
+        filters?.endDate,
+        filters?.isAdjusting,
+        filters?.contactId,
+        filters?.accountId,
+        filters?.minAmount,
+        filters?.maxAmount,
+        filters?.sort,
+        filters?.order,
+    ];
+
     return useQuery<JournalEntriesListResponse, Error>({
-        queryKey: ['journal-entries', filters],
+        queryKey,
         queryFn: () => getJournalEntries(filters),
     });
 };
