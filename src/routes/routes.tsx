@@ -138,6 +138,9 @@ const TenantsTab = lazyWithRetry(
 );
 const TaxesTab = lazyWithRetry(() => import('../components/settings/TaxesTab'));
 const UsersTab = lazyWithRetry(() => import('../components/settings/UsersTab'));
+const TemplatesTab = lazyWithRetry(
+    () => import('../components/settings/TemplatesTab')
+);
 
 // Helper component to wrap lazy-loaded routes with Suspense
 const withSuspense = (
@@ -254,6 +257,10 @@ const routes = createBrowserRouter([
                     {
                         path: '/settings/taxes',
                         element: withSuspense(TaxesTab),
+                    },
+                    {
+                        path: '/settings/templates',
+                        element: withSuspense(TemplatesTab),
                     },
                     {
                         path: '/settings/data',

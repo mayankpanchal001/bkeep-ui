@@ -145,6 +145,13 @@ export const seoController: Record<string, SEOData> = {
         description: `Manage your organization ${CAP_PLURAL} and multi-${SINGLE_TENANT_PREFIX} settings.`,
         keywords: `${PLURAL_TENANT_PREFIX}, organization management, multi-${SINGLE_TENANT_PREFIX}, workspace settings`,
     },
+    '/settings/templates': {
+        title: `Templates Management - ${APP_TITLE}`,
+        description:
+            'Manage chart of accounts and tax templates for your workspace.',
+        keywords:
+            'templates, chart of accounts templates, tax templates, configuration',
+    },
     '/settings/users': {
         title: `Users Management - ${APP_TITLE}`,
         description: `Manage users, roles, and permissions for your organization.`,

@@ -1,6 +1,13 @@
 import Button from '@/components/typography/Button';
 import { InputField } from '@/components/typography/InputFields';
 import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
+import {
     Table,
     TableBody,
     TableCell,
@@ -14,6 +21,7 @@ import { useTaxes } from '@/services/apis/taxApi';
 import type { CreateJournalEntryPayload } from '@/types/journal';
 import { useMemo, useState } from 'react';
 import { FaPlus, FaTrash } from 'react-icons/fa';
+import Input from '../ui/input';
 
 type JournalEntryFormProps = {
     initialData?: Partial<CreateJournalEntryPayload>;
@@ -371,31 +379,32 @@ export function JournalEntryForm({
                                     {index + 1}
                                 </TableCell>
                                 <TableCell noTruncate>
-                                    <div
-                                        className={`input-wrap ${rowError.accountId ? 'border-red-500!' : ''}`}
+                                    <Select
+                                        value={line.accountId || undefined}
+                                        onValueChange={(v) =>
+                                            updateLine(index, {
+                                                accountId: v,
+                                            })
+                                        }
                                     >
-                                        <select
-                                            value={line.accountId}
-                                            onChange={(e) =>
-                                                updateLine(index, {
-                                                    accountId: e.target.value,
-                                                })
-                                            }
-                                            className="input"
+                                        <SelectTrigger
+                                            aria-invalid={!!rowError.accountId}
+                                            size="sm"
+                                            className="w-full"
                                         >
-                                            <option value="">
-                                                Select account
-                                            </option>
+                                            <SelectValue placeholder="Select account" />
+                                        </SelectTrigger>
+                                        <SelectContent>
                                             {accountOptions.map((opt) => (
-                                                <option
+                                                <SelectItem
                                                     key={opt.value}
                                                     value={opt.value}
                                                 >
                                                     {opt.label}
-                                                </option>
+                                                </SelectItem>
                                             ))}
-                                        </select>
-                                    </div>
+                                        </SelectContent>
+                                    </Select>
                                 </TableCell>
                                 <TableCell noTruncate>
                                     <div className="input-wrap">
@@ -412,100 +421,102 @@ export function JournalEntryForm({
                                     </div>
                                 </TableCell>
                                 <TableCell noTruncate>
-                                    <div className="input-wrap">
-                                        <select
-                                            value={line.contactId || ''}
-                                            onChange={(e) =>
-                                                updateLine(index, {
-                                                    contactId:
-                                                        e.target.value ||
-                                                        undefined,
-                                                })
-                                            }
-                                            className="input"
+                                    <Select
+                                        value={line.contactId || undefined}
+                                        onValueChange={(v) =>
+                                            updateLine(index, {
+                                                contactId:
+                                                    v === 'none'
+                                                        ? undefined
+                                                        : v,
+                                            })
+                                        }
+                                    >
+                                        <SelectTrigger
+                                            size="sm"
+                                            className="w-full"
                                         >
-                                            <option value="">No contact</option>
+                                            <SelectValue placeholder="No contact" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="none">
+                                                No contact
+                                            </SelectItem>
                                             {contactOptions.map((opt) => (
-                                                <option
+                                                <SelectItem
                                                     key={opt.value}
                                                     value={opt.value}
                                                 >
                                                     {opt.label}
-                                                </option>
+                                                </SelectItem>
                                             ))}
-                                        </select>
-                                    </div>
+                                        </SelectContent>
+                                    </Select>
+                                </TableCell>
+                                <TableCell align="right">
+                                    <Input
+                                        type="number"
+                                        value={line.debit}
+                                        onChange={(e) => {
+                                            const next = e.target.value;
+                                            updateLine(index, {
+                                                debit: next,
+                                                credit: next ? '' : line.credit,
+                                            });
+                                        }}
+                                        placeholder="0.00"
+                                        step="0.01"
+                                        min="0"
+                                    />
                                 </TableCell>
                                 <TableCell align="right" noTruncate>
-                                    <div
-                                        className={`input-wrap ${rowError.amount ? 'border-red-500!' : ''}`}
-                                    >
-                                        <input
-                                            type="number"
-                                            value={line.debit}
-                                            onChange={(e) => {
-                                                const next = e.target.value;
-                                                updateLine(index, {
-                                                    debit: next,
-                                                    credit: next
-                                                        ? ''
-                                                        : line.credit,
-                                                });
-                                            }}
-                                            className="input text-right"
-                                            placeholder="0.00"
-                                            step="0.01"
-                                            min="0"
-                                        />
-                                    </div>
-                                </TableCell>
-                                <TableCell align="right" noTruncate>
-                                    <div
-                                        className={`input-wrap ${rowError.amount ? 'border-red-500!' : ''}`}
-                                    >
-                                        <input
-                                            type="number"
-                                            value={line.credit}
-                                            onChange={(e) => {
-                                                const next = e.target.value;
-                                                updateLine(index, {
-                                                    credit: next,
-                                                    debit: next
-                                                        ? ''
-                                                        : line.debit,
-                                                });
-                                            }}
-                                            className="input text-right"
-                                            placeholder="0.00"
-                                            step="0.01"
-                                            min="0"
-                                        />
-                                    </div>
+                                    <Input
+                                        type="number"
+                                        value={line.credit}
+                                        onChange={(e) => {
+                                            const next = e.target.value;
+                                            updateLine(index, {
+                                                credit: next,
+                                                debit: next ? '' : line.debit,
+                                            });
+                                        }}
+                                        placeholder="0.00"
+                                        step="0.01"
+                                        min="0"
+                                    />
                                 </TableCell>
                                 <TableCell noTruncate>
-                                    <div className="input-wrap">
-                                        <select
-                                            value={line.taxId || ''}
-                                            onChange={(e) =>
-                                                updateLine(index, {
-                                                    taxId:
-                                                        e.target.value ||
-                                                        undefined,
-                                                })
-                                            }
-                                            className="input"
+                                    <Select
+                                        value={line.taxId || undefined}
+                                        onValueChange={(v) =>
+                                            updateLine(index, {
+                                                taxId:
+                                                    v === 'none'
+                                                        ? undefined
+                                                        : v,
+                                            })
+                                        }
+                                    >
+                                        <SelectTrigger
+                                            size="sm"
+                                            className="w-full"
                                         >
-                                            <option value="">No tax</option>
+                                            <SelectValue placeholder="No tax" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="none">
+                                                No tax
+                                            </SelectItem>
                                             {taxes.map((tax) => (
-                                                <option
+                                                <SelectItem
                                                     key={tax.id}
                                                     value={tax.id}
                                                 >
                                                     {tax.name}
-                                                </option>
+                                                </SelectItem>
                                             ))}
-                                        </select>
-                                    </div>
+                                        </SelectContent>
+                                    </Select>
                                 </TableCell>
                                 <TableCell noTruncate>
                                     <button

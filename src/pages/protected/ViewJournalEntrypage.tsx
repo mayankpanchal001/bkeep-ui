@@ -1,11 +1,17 @@
-import { useParams } from 'react-router';
-import { useJournalEntry } from '../../services/apis/journalApi';
-import type { JournalEntry, JournalEntryLine } from '../../types/journal';
 import { Column, DataTable } from '@/components/shared/DataTable';
 import Loading from '@/components/shared/Loading';
 import PageHeader from '@/components/shared/PageHeader';
+import {
+    Collapsible,
+    CollapsibleContent,
+    CollapsibleTrigger,
+} from '@/components/ui/collapsible';
 import { useContacts } from '@/services/apis/contactsApi';
-import { useMemo } from 'react';
+import { ChevronDown } from 'lucide-react';
+import { useMemo, useState } from 'react';
+import { useParams } from 'react-router';
+import { useJournalEntry } from '../../services/apis/journalApi';
+import type { JournalEntry, JournalEntryLine } from '../../types/journal';
 
 const toNumber = (v: unknown) => {
     if (typeof v === 'number') return Number.isFinite(v) ? v : 0;
@@ -45,6 +51,7 @@ const formatBoolean = (value: unknown) => {
 export default function ViewJournalEntrypage() {
     const { id } = useParams<{ id: string }>();
     const { data, isLoading } = useJournalEntry(id!);
+    const [isDetailsOpen, setIsDetailsOpen] = useState(false);
 
     const journalEntry = useMemo<JournalEntry | undefined>(() => {
         const root = data as unknown as Record<string, unknown> | undefined;
@@ -210,6 +217,7 @@ export default function ViewJournalEntrypage() {
                 subtitle={formatDateOnly(journalEntry.entryDate)}
             />
 
+            {/* Essential Details - Always Visible */}
             <div className="bg-white rounded-lg border border-primary/10 p-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
                     <div>
@@ -240,148 +248,6 @@ export default function ViewJournalEntrypage() {
                         </label>
                         <p className="text-primary font-medium capitalize">
                             {formatText(journalEntry.entryType)}
-                        </p>
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium text-primary/50 mb-1">
-                            ID
-                        </label>
-                        <p className="text-primary font-medium break-all">
-                            {formatText(journalEntry.id)}
-                        </p>
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium text-primary/50 mb-1">
-                            Reference
-                        </label>
-                        <p className="text-primary font-medium">
-                            {formatText(journalEntry.reference)}
-                        </p>
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium text-primary/50 mb-1">
-                            Source Module
-                        </label>
-                        <p className="text-primary font-medium">
-                            {formatText(journalEntry.sourceModule)}
-                        </p>
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium text-primary/50 mb-1">
-                            Source ID
-                        </label>
-                        <p className="text-primary font-medium break-all">
-                            {formatText(journalEntry.sourceId)}
-                        </p>
-                    </div>
-                </div>
-
-                <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div>
-                        <label className="block text-sm font-medium text-primary/50 mb-1">
-                            Adjusting
-                        </label>
-                        <p className="text-primary font-medium">
-                            {formatBoolean(journalEntry.isAdjusting)}
-                        </p>
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium text-primary/50 mb-1">
-                            Closing
-                        </label>
-                        <p className="text-primary font-medium">
-                            {formatBoolean(journalEntry.isClosing)}
-                        </p>
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium text-primary/50 mb-1">
-                            Reversing
-                        </label>
-                        <p className="text-primary font-medium">
-                            {formatBoolean(journalEntry.isReversing)}
-                        </p>
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium text-primary/50 mb-1">
-                            Reversal Date
-                        </label>
-                        <p className="text-primary font-medium">
-                            {formatDateOnly(journalEntry.reversalDate)}
-                        </p>
-                    </div>
-                    <div className="md:col-span-2">
-                        <label className="block text-sm font-medium text-primary/50 mb-1">
-                            Memo
-                        </label>
-                        <p className="text-primary font-medium whitespace-pre-wrap">
-                            {formatText(journalEntry.memo)}
-                        </p>
-                    </div>
-                </div>
-
-                <div className="mt-4 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
-                    <div>
-                        <label className="block text-sm font-medium text-primary/50 mb-1">
-                            Approved By
-                        </label>
-                        <p className="text-primary font-medium">
-                            {formatText(journalEntry.approvedBy)}
-                        </p>
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium text-primary/50 mb-1">
-                            Approved At
-                        </label>
-                        <p className="text-primary font-medium">
-                            {formatDateTime(journalEntry.approvedAt)}
-                        </p>
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium text-primary/50 mb-1">
-                            Posted By
-                        </label>
-                        <p className="text-primary font-medium">
-                            {formatText(journalEntry.postedBy)}
-                        </p>
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium text-primary/50 mb-1">
-                            Posted At
-                        </label>
-                        <p className="text-primary font-medium">
-                            {formatDateTime(journalEntry.postedAt)}
-                        </p>
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium text-primary/50 mb-1">
-                            Created At
-                        </label>
-                        <p className="text-primary font-medium">
-                            {formatDateTime(journalEntry.createdAt)}
-                        </p>
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium text-primary/50 mb-1">
-                            Updated At
-                        </label>
-                        <p className="text-primary font-medium">
-                            {formatDateTime(journalEntry.updatedAt)}
-                        </p>
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium text-primary/50 mb-1">
-                            Total Debit
-                        </label>
-                        <p className="text-primary font-semibold">
-                            ${toNumber(journalEntry.totalDebit).toFixed(2)}
-                        </p>
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium text-primary/50 mb-1">
-                            Total Credit
-                        </label>
-                        <p className="text-primary font-semibold">
-                            ${toNumber(journalEntry.totalCredit).toFixed(2)}
                         </p>
                     </div>
                 </div>
@@ -416,6 +282,184 @@ export default function ViewJournalEntrypage() {
                     }
                 />
             </div>
+
+            {/* Additional Details - Collapsible */}
+            <Collapsible open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
+                <div className="bg-white rounded-lg border border-primary/10 overflow-hidden">
+                    <CollapsibleTrigger className="w-full px-4 py-3 flex items-center justify-between hover:bg-primary/5 transition-colors">
+                        <h3 className="text-base font-semibold text-primary">
+                            Additional Details
+                        </h3>
+                        <ChevronDown
+                            className={`w-4 h-4 text-primary/50 transition-transform duration-200 ${
+                                isDetailsOpen ? 'rotate-180' : ''
+                            }`}
+                        />
+                    </CollapsibleTrigger>
+                    <CollapsibleContent>
+                        <div className="px-4 pb-4 space-y-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 pt-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-primary/50 mb-1">
+                                        ID
+                                    </label>
+                                    <p className="text-primary font-medium break-all text-sm">
+                                        {formatText(journalEntry.id)}
+                                    </p>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-primary/50 mb-1">
+                                        Reference
+                                    </label>
+                                    <p className="text-primary font-medium text-sm">
+                                        {formatText(journalEntry.reference)}
+                                    </p>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-primary/50 mb-1">
+                                        Source Module
+                                    </label>
+                                    <p className="text-primary font-medium text-sm">
+                                        {formatText(journalEntry.sourceModule)}
+                                    </p>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-primary/50 mb-1">
+                                        Source ID
+                                    </label>
+                                    <p className="text-primary font-medium break-all text-sm">
+                                        {formatText(journalEntry.sourceId)}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-primary/50 mb-1">
+                                        Adjusting
+                                    </label>
+                                    <p className="text-primary font-medium text-sm">
+                                        {formatBoolean(
+                                            journalEntry.isAdjusting
+                                        )}
+                                    </p>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-primary/50 mb-1">
+                                        Closing
+                                    </label>
+                                    <p className="text-primary font-medium text-sm">
+                                        {formatBoolean(journalEntry.isClosing)}
+                                    </p>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-primary/50 mb-1">
+                                        Reversing
+                                    </label>
+                                    <p className="text-primary font-medium text-sm">
+                                        {formatBoolean(
+                                            journalEntry.isReversing
+                                        )}
+                                    </p>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-primary/50 mb-1">
+                                        Reversal Date
+                                    </label>
+                                    <p className="text-primary font-medium text-sm">
+                                        {formatDateOnly(
+                                            journalEntry.reversalDate
+                                        )}
+                                    </p>
+                                </div>
+                                <div className="md:col-span-2">
+                                    <label className="block text-sm font-medium text-primary/50 mb-1">
+                                        Memo
+                                    </label>
+                                    <p className="text-primary font-medium whitespace-pre-wrap text-sm">
+                                        {formatText(journalEntry.memo)}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-primary/50 mb-1">
+                                        Approved By
+                                    </label>
+                                    <p className="text-primary font-medium text-sm">
+                                        {formatText(journalEntry.approvedBy)}
+                                    </p>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-primary/50 mb-1">
+                                        Approved At
+                                    </label>
+                                    <p className="text-primary font-medium text-sm">
+                                        {formatDateTime(
+                                            journalEntry.approvedAt
+                                        )}
+                                    </p>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-primary/50 mb-1">
+                                        Posted By
+                                    </label>
+                                    <p className="text-primary font-medium text-sm">
+                                        {formatText(journalEntry.postedBy)}
+                                    </p>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-primary/50 mb-1">
+                                        Posted At
+                                    </label>
+                                    <p className="text-primary font-medium text-sm">
+                                        {formatDateTime(journalEntry.postedAt)}
+                                    </p>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-primary/50 mb-1">
+                                        Created At
+                                    </label>
+                                    <p className="text-primary font-medium text-sm">
+                                        {formatDateTime(journalEntry.createdAt)}
+                                    </p>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-primary/50 mb-1">
+                                        Updated At
+                                    </label>
+                                    <p className="text-primary font-medium text-sm">
+                                        {formatDateTime(journalEntry.updatedAt)}
+                                    </p>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-primary/50 mb-1">
+                                        Total Debit
+                                    </label>
+                                    <p className="text-primary font-semibold text-sm">
+                                        $
+                                        {toNumber(
+                                            journalEntry.totalDebit
+                                        ).toFixed(2)}
+                                    </p>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-primary/50 mb-1">
+                                        Total Credit
+                                    </label>
+                                    <p className="text-primary font-semibold text-sm">
+                                        $
+                                        {toNumber(
+                                            journalEntry.totalCredit
+                                        ).toFixed(2)}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </CollapsibleContent>
+                </div>
+            </Collapsible>
 
             {(() => {
                 const attachments = journalEntry.attachments || [];

@@ -1,11 +1,23 @@
+import { CreateTransactionDrawer } from '@/components/transactions/CreateTransactionDrawer';
+import { TransactionHeader } from '@/components/transactions/TransactionHeader';
 import Button from '@/components/typography/Button';
 import { Combobox, type ComboboxOption } from '@/components/ui/combobox';
+import {
+    Drawer,
+    DrawerClose,
+    DrawerContent,
+    DrawerFooter,
+    DrawerHeader,
+    DrawerTitle,
+    DrawerTrigger,
+} from '@/components/ui/drawer';
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import Input from '@/components/ui/input';
 import {
     Table,
     TableBody,
@@ -19,13 +31,23 @@ import {
     TableSelectAllCheckbox,
     TableSelectionToolbar,
 } from '@/components/ui/table';
-import { FileText, Filter, Search } from 'lucide-react';
+import { Filter, Search, X } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
+import { useContacts } from '../../services/apis/contactsApi';
 import { useTaxes } from '../../services/apis/taxApi';
-import { showSuccessToast } from '../../utills/toast';
+import {
+    CreateTransactionResponse,
+    usePostTransaction,
+    useReconcileTransaction,
+    useReverseTransaction,
+    useTransactions,
+    useVoidTransaction,
+} from '../../services/apis/transactions';
+import { showErrorToast, showSuccessToast } from '../../utills/toast';
+import { useTransactionsFilterStore } from '../../stores/transactions/transactionsFilterStore';
 
 const Transactionpage = () => {
-    type TxStatus = 'pending' | 'posted' | 'excluded';
+    type TxStatus = 'pending' | 'posted' | 'voided' | 'reversed';
     type BankTransaction = {
         id: string;
         date: string;
@@ -40,119 +62,208 @@ const Transactionpage = () => {
         matched?: boolean;
         status: TxStatus;
         account: string;
+        accountId?: string;
     };
 
-    const [activeTab, setActiveTab] = useState<TxStatus>('pending');
-    const [search, setSearch] = useState('');
+    const filterStore = useTransactionsFilterStore();
     const [selectedItems, setSelectedItems] = useState<(string | number)[]>([]);
-    const [page, setPage] = useState(1);
-    const itemsPerPage = 20;
-    const [sortKey, setSortKey] = useState<keyof BankTransaction>('date');
-    const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
+    
+    // Select individual filter values to make them reactive
+    const page = useTransactionsFilterStore((state) => state.page);
+    const limit = useTransactionsFilterStore((state) => state.limit);
+    const search = useTransactionsFilterStore((state) => state.search);
+    const status = useTransactionsFilterStore((state) => state.status);
+    const selectedAccountId = useTransactionsFilterStore((state) => state.selectedAccountId);
+    const filterStartDate = useTransactionsFilterStore((state) => state.filterStartDate);
+    const filterEndDate = useTransactionsFilterStore((state) => state.filterEndDate);
+    const filterSupplier = useTransactionsFilterStore((state) => state.filterSupplier);
+    const filterCategory = useTransactionsFilterStore((state) => state.filterCategory);
+    const filterTax = useTransactionsFilterStore((state) => state.filterTax);
+    const filterMinAmount = useTransactionsFilterStore((state) => state.filterMinAmount);
+    const filterMaxAmount = useTransactionsFilterStore((state) => state.filterMaxAmount);
+    const sort = useTransactionsFilterStore((state) => state.sort);
+    const order = useTransactionsFilterStore((state) => state.order);
+    
+    const itemsPerPage = limit;
 
-    const DEFAULT_TAX_RATE = 0.13;
-    const [transactions, setTransactions] = useState<BankTransaction[]>(() => [
-        {
-            id: '1',
-            date: '2025-09-02',
-            description: 'Canada Post',
-            spent: 99.33,
-            tax: Number((99.33 * DEFAULT_TAX_RATE).toFixed(2)),
-            status: 'pending',
-            account: 'RBC Visa Business 5599',
-            category: 'Postage & Courier',
-        },
-        {
-            id: '2',
-            date: '2025-09-14',
-            description: 'Canada Post',
-            spent: 35.56,
-            tax: Number((35.56 * DEFAULT_TAX_RATE).toFixed(2)),
-            status: 'pending',
-            account: 'RBC Visa Business 5599',
-            category: 'Postage & Courier',
-        },
-        {
-            id: '3',
-            date: '2025-09-21',
-            description: 'Canada Post',
-            spent: 79.42,
-            tax: Number((79.42 * DEFAULT_TAX_RATE).toFixed(2)),
-            status: 'pending',
-            account: 'RBC Visa Business 5599',
-            category: 'Postage & Courier',
-        },
-        {
-            id: '4',
-            date: '2025-10-02',
-            description: 'Canada Post',
-            spent: 737.65,
-            tax: Number((737.65 * DEFAULT_TAX_RATE).toFixed(2)),
-            status: 'posted',
-            account: 'RBC Visa Business 5599',
-            category: 'Postage & Courier',
-        },
-        {
-            id: '5',
-            date: '2025-10-12',
-            description: 'Canada Post',
-            spent: 793.95,
-            tax: Number((793.95 * DEFAULT_TAX_RATE).toFixed(2)),
-            status: 'pending',
-            account: 'RBC Visa Business 5599',
-            category: 'Postage & Courier',
-        },
-        {
-            id: '6',
-            date: '2025-10-23',
-            description: 'Canada Post',
-            spent: 35.82,
-            tax: Number((35.82 * DEFAULT_TAX_RATE).toFixed(2)),
-            status: 'excluded',
-            account: 'RBC Visa Business 5599',
-            category: 'Postage & Courier',
-        },
-        {
-            id: '7',
-            date: '2025-10-25',
-            description: 'Stripe Payout',
-            received: 1200.0,
-            tax: 0,
-            status: 'posted',
-            account: 'RBC Business Operating',
-            category: 'Income',
-        },
-        {
-            id: '8',
-            date: '2025-10-28',
-            description: 'Office Depot',
-            spent: 153.79,
-            tax: Number((153.79 * DEFAULT_TAX_RATE).toFixed(2)),
-            status: 'pending',
-            account: 'RBC Business Operating',
-            category: 'Office Supplies',
-        },
-        {
-            id: '9',
-            date: '2025-11-02',
-            description: 'Google Workspace',
-            spent: 18.0,
-            tax: Number((18.0 * DEFAULT_TAX_RATE).toFixed(2)),
-            status: 'pending',
-            account: 'RBC Visa Business 5599',
-            category: 'Software',
-        },
-        {
-            id: '10',
-            date: '2025-11-18',
-            description: 'Canada Post',
-            spent: 19.99,
-            tax: Number((19.99 * DEFAULT_TAX_RATE).toFixed(2)),
-            status: 'posted',
-            account: 'RBC Visa Business 5599',
-            category: 'Postage & Courier',
-        },
+    // Fetch contacts data first (needed for supplier filter conversion)
+    const { data: contactsData } = useContacts({
+        isActive: true,
+        limit: 1000,
+    });
+    
+    // Create a map of contactId -> displayName (needed for supplier filter conversion)
+    const contactNameById = useMemo(() => {
+        const items = contactsData?.data?.items || [];
+        const map = new Map<string, string>();
+        for (const contact of items) {
+            if (contact?.id && contact?.displayName) {
+                map.set(contact.id, contact.displayName);
+            }
+        }
+        return map;
+    }, [contactsData]);
+
+    // Build API filters reactively from store values
+    const apiFilters = useMemo(() => {
+        const filters: Record<string, unknown> = {
+            page,
+            limit,
+        };
+        
+        if (search) filters.search = search;
+        if (status !== 'all') filters.status = status;
+        if (selectedAccountId) filters.accountId = selectedAccountId;
+        if (filterStartDate) filters.startDate = filterStartDate;
+        if (filterEndDate) filters.endDate = filterEndDate;
+        
+        // Convert supplier display name to contactId
+        if (filterSupplier) {
+            // First, try to find contactId by displayName
+            const contactId = Array.from(contactNameById.entries()).find(
+                ([, name]) => name === filterSupplier
+            )?.[0];
+            // If found, use contactId; otherwise, check if it's already an ID
+            if (contactId) {
+                filters.contactId = contactId;
+            } else if (contactNameById.has(filterSupplier)) {
+                // It's already a contactId
+                filters.contactId = filterSupplier;
+            }
+            // If neither, we might need to handle it differently or skip it
+        }
+        
+        if (filterCategory) filters.category = filterCategory;
+        if (filterTax) filters.taxId = filterTax;
+        if (filterMinAmount) {
+            const minAmount = parseFloat(filterMinAmount);
+            if (!isNaN(minAmount)) filters.minAmount = minAmount;
+        }
+        if (filterMaxAmount) {
+            const maxAmount = parseFloat(filterMaxAmount);
+            if (!isNaN(maxAmount)) filters.maxAmount = maxAmount;
+        }
+        if (sort) {
+            filters.sort = sort;
+            filters.order = order;
+        }
+        
+        return filters;
+    }, [
+        page,
+        limit,
+        search,
+        status,
+        selectedAccountId,
+        filterStartDate,
+        filterEndDate,
+        filterSupplier,
+        filterCategory,
+        filterTax,
+        filterMinAmount,
+        filterMaxAmount,
+        sort,
+        order,
+        contactNameById,
     ]);
+
+    const [transactions, setTransactions] = useState<BankTransaction[]>([]);
+    const { data: apiResponse, isLoading, error } = useTransactions(apiFilters);
+    const apiTransactions = apiResponse?.items || [];
+    const pagination = apiResponse?.pagination;
+    const [isFilterDrawerOpen, setIsFilterDrawerOpen] = useState(false);
+    const [isBulkProcessing, setIsBulkProcessing] = useState(false);
+    const { mutate: postTransaction, mutateAsync: postTransactionAsync } =
+        usePostTransaction();
+    const {
+        mutate: reconcileTransaction,
+        mutateAsync: reconcileTransactionAsync,
+    } = useReconcileTransaction();
+    const { mutate: voidTransaction, mutateAsync: voidTransactionAsync } =
+        useVoidTransaction();
+    const { mutate: reverseTransaction, mutateAsync: reverseTransactionAsync } =
+        useReverseTransaction();
+
+    const handleBulkAction = async (
+        actionName: string,
+        actionFn: (id: string) => Promise<CreateTransactionResponse>
+    ) => {
+        if (!selectedItems.length) return;
+        setIsBulkProcessing(true);
+        const count = selectedItems.length;
+        try {
+            await Promise.all(selectedItems.map((id) => actionFn(String(id))));
+            showSuccessToast(
+                `${count} transactions ${actionName} successfully`
+            );
+            setSelectedItems([]);
+        } catch (error) {
+            console.error(`Failed to ${actionName} transactions:`, error);
+            showErrorToast(`Failed to ${actionName} some transactions`);
+        } finally {
+            setIsBulkProcessing(false);
+        }
+    };
+
+    useEffect(() => {
+        if (isLoading) return;
+        if (error) {
+            console.error('Error fetching transactions:', error);
+            showErrorToast('Failed to fetch transactions');
+            return;
+        }
+        if (!apiTransactions) {
+            return;
+        }
+
+        const mapped: BankTransaction[] = apiTransactions.map((tx) => {
+            const date = tx.paidAt || tx.createdAt;
+            const description = tx.description || 'Transaction';
+            const rawAmount = parseFloat(tx.amount || '0');
+
+            // Determine spent vs received based on transaction type
+            let spent: number | undefined;
+            let received: number | undefined;
+
+            if (tx.type === 'expense') {
+                spent = rawAmount;
+            } else if (tx.type === 'income') {
+                received = rawAmount;
+            } else {
+                // For transfers, it depends on context, but let's default to spent for now or handle as needed
+                spent = rawAmount;
+            }
+
+            const account = tx.account?.accountName || 'Account';
+            const accountId = tx.accountId;
+
+            // Map reconciled: false -> 'pending' (waiting for reconciliation/review)
+            // Map reconciled: true -> 'posted' (finalized)
+            // If API returns explicit status, use it
+            const status: TxStatus =
+                ((tx as unknown as { status?: string }).status as TxStatus) ||
+                (tx.reconciled ? 'posted' : 'pending');
+
+            return {
+                id: tx.id,
+                date,
+                description,
+                spent,
+                received,
+                tax: undefined,
+                taxId: undefined, // Payload doesn't seem to return tax details on the item
+                taxRate: undefined,
+                fromTo: tx.contactId || undefined, // Use contactId or fetch contact name if available
+                category: undefined, // Payload doesn't show category
+                matched: tx.reconciled,
+                status,
+                account,
+                accountId,
+            };
+        });
+
+        setTransactions(mapped);
+    }, [apiTransactions, isLoading, error]);
 
     const SUPPLIER_OPTIONS: ComboboxOption[] = useMemo(() => {
         const uniqueSuppliers = new Set<string>([
@@ -167,15 +278,30 @@ const Transactionpage = () => {
             'Microsoft',
             'Walmart',
         ]);
+
+        // Add contact names to options
+        contactNameById.forEach((name) => {
+            uniqueSuppliers.add(name);
+        });
+
         transactions.forEach((t) => {
             if (t.description) uniqueSuppliers.add(t.description);
-            if (t.fromTo) uniqueSuppliers.add(t.fromTo);
+            // Add contact name if fromTo is a contactId
+            if (t.fromTo) {
+                const contactName = contactNameById.get(t.fromTo);
+                if (contactName) {
+                    uniqueSuppliers.add(contactName);
+                } else {
+                    // If it's not a contactId, add it as is (for backward compatibility)
+                    uniqueSuppliers.add(t.fromTo);
+                }
+            }
         });
         return Array.from(uniqueSuppliers).map((s) => ({
             value: s,
             label: s,
         }));
-    }, [transactions]);
+    }, [transactions, contactNameById]);
     const CATEGORY_OPTIONS: ComboboxOption[] = useMemo(
         () => [
             { value: 'Postage & Courier', label: 'Postage & Courier' },
@@ -193,19 +319,16 @@ const Transactionpage = () => {
         []
     );
 
-    const filtered = useMemo(() => {
-        return transactions.filter(
-            (t) =>
-                t.status === activeTab &&
-                (search
-                    ? `${t.date} ${t.description} ${t.account} ${t.fromTo || ''} ${
-                          t.category || ''
-                      }`
-                          .toLowerCase()
-                          .includes(search.toLowerCase())
-                    : true)
-        );
-    }, [transactions, activeTab, search]);
+    // Use API data directly - all filtering is handled by the API
+    const filtered = transactions;
+    
+    // Calculate counts from current page transactions (for status tabs)
+    // Note: These counts reflect only the current page, not the total filtered results
+    // For accurate counts, the API would need to return status counts separately
+    const pendingCount = transactions.filter((t) => t.status === 'pending').length;
+    const postedCount = transactions.filter((t) => t.status === 'posted').length;
+    const voidedCount = transactions.filter((t) => t.status === 'voided').length;
+    const reversedCount = transactions.filter((t) => t.status === 'reversed').length;
 
     const { data: taxesResponse } = useTaxes({ isActive: true, limit: 100 });
     const TAX_OPTIONS: ComboboxOption[] = useMemo(() => {
@@ -245,34 +368,13 @@ const Transactionpage = () => {
         );
     }, [taxesResponse]);
 
-    const sorted = useMemo(() => {
-        const order = sortDirection === 'asc' ? 1 : -1;
-        return [...filtered].sort((a, b) => {
-            const va = a[sortKey];
-            const vb = b[sortKey];
-            if (sortKey === 'date') {
-                const da = new Date(String(va)).getTime();
-                const db = new Date(String(vb)).getTime();
-                return (da - db) * order;
-            }
-            if (
-                sortKey === 'spent' ||
-                sortKey === 'received' ||
-                sortKey === 'tax'
-            ) {
-                const na = Number(va || 0);
-                const nb = Number(vb || 0);
-                return (na - nb) * order;
-            }
-            return String(va || '').localeCompare(String(vb || '')) * order;
-        });
-    }, [filtered, sortKey, sortDirection]);
-
-    const totalPages = Math.ceil(filtered.length / itemsPerPage) || 1;
-    const pageData = sorted.slice(
-        (page - 1) * itemsPerPage,
-        page * itemsPerPage
-    );
+    // No client-side sorting or pagination - API handles it
+    // API returns paginated results, so use them directly
+    const pageData = filtered;
+    
+    // Calculate total pages from API pagination metadata if available
+    const totalPages = pagination?.totalPages || Math.ceil((pagination?.total || filtered.length) / itemsPerPage) || 1;
+    const totalItems = pagination?.total || filtered.length;
 
     const currency = (n?: number) =>
         new Intl.NumberFormat('en-US', {
@@ -281,340 +383,469 @@ const Transactionpage = () => {
             minimumFractionDigits: 2,
         }).format(n || 0);
 
-    const pendingCount = transactions.filter(
-        (t) => t.status === 'pending'
-    ).length;
-    const postedCount = transactions.filter(
-        (t) => t.status === 'posted'
-    ).length;
-    const excludedCount = transactions.filter(
-        (t) => t.status === 'excluded'
-    ).length;
-
-    const totalIncome = transactions
-        .filter((t) => t.received)
-        .reduce((sum, t) => sum + (t.received || 0), 0);
-    const totalExpenses = transactions
-        .filter((t) => t.spent)
-        .reduce((sum, t) => sum + (t.spent || 0), 0);
-
     return (
         <div className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div className="bg-white rounded-2 shadow-sm border border-primary/10 p-4">
-                    <div className="flex items-center gap-3 mb-2">
-                        <div className="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center">
-                            <FileText className="w-5 h-5 text-green-600" />
+            <TransactionHeader
+                selectedAccountId={filterStore.selectedAccountId}
+                onAccountSelect={(id) => filterStore.setSelectedAccountId(id)}
+                transactions={transactions}
+            />
+
+            <div className="p-4 border-b border-primary/10">
+                <div className="flex items-center gap-3">
+                    <button
+                        className={`px-3 py-1.5 rounded-2 text-sm ${
+                            filterStore.status === 'pending'
+                                ? 'bg-primary text-white'
+                                : 'bg-white border border-primary/10 text-primary'
+                        }`}
+                        onClick={() => filterStore.setStatus('pending')}
+                    >
+                        Pending ({pendingCount})
+                    </button>
+                    <button
+                        className={`px-3 py-1.5 rounded-2 text-sm ${
+                            filterStore.status === 'posted'
+                                ? 'bg-primary text-white'
+                                : 'bg-white border border-primary/10 text-primary'
+                        }`}
+                        onClick={() => filterStore.setStatus('posted')}
+                    >
+                        Posted ({postedCount})
+                    </button>
+                    <button
+                        className={`px-3 py-1.5 rounded-2 text-sm ${
+                            filterStore.status === 'voided'
+                                ? 'bg-primary text-white'
+                                : 'bg-white border border-primary/10 text-primary'
+                        }`}
+                        onClick={() => filterStore.setStatus('voided')}
+                    >
+                        Voided ({voidedCount})
+                    </button>
+                    <button
+                        className={`px-3 py-1.5 rounded-2 text-sm ${
+                            filterStore.status === 'reversed'
+                                ? 'bg-primary text-white'
+                                : 'bg-white border border-primary/10 text-primary'
+                        }`}
+                        onClick={() => filterStore.setStatus('reversed')}
+                    >
+                        Reversed ({reversedCount})
+                    </button>
+                    <div className="ml-auto flex items-center gap-3">
+                        <div className="relative w-[260px]">
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-primary/50 w-4 h-4" />
+                            <input
+                                value={filterStore.search}
+                                onChange={(e) => filterStore.setSearch(e.target.value)}
+                                placeholder="Search"
+                                className="w-full pl-10 pr-4 py-2 border border-primary/10 rounded-2 text-sm focus:outline-none focus:border-primary"
+                            />
                         </div>
-                        <div>
-                            <p className="text-xs text-primary/50 uppercase">
-                                Total Income
-                            </p>
-                            <p className="text-lg font-bold text-primary">
-                                {currency(totalIncome)}
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div className="bg-white rounded-2 shadow-sm border border-primary/10 p-4">
-                    <div className="flex items-center gap-3 mb-2">
-                        <div className="w-10 h-10 rounded-lg bg-red-100 flex items-center justify-center">
-                            <FileText className="w-5 h-5 text-red-600" />
-                        </div>
-                        <div>
-                            <p className="text-xs text-primary/50 uppercase">
-                                Total Expenses
-                            </p>
-                            <p className="text-lg font-bold text-primary">
-                                {currency(totalExpenses)}
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div className="bg-white rounded-2 shadow-sm border border-primary/10 p-4">
-                    <div className="flex items-center gap-3 mb-2">
-                        <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                            <FileText className="w-5 h-5 text-primary" />
-                        </div>
-                        <div>
-                            <p className="text-xs text-primary/50 uppercase">
-                                This Month
-                            </p>
-                            <p className="text-lg font-bold text-primary">
-                                {currency(totalIncome - totalExpenses)}
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div className="bg-white rounded-2 shadow-sm border border-primary/10 p-4">
-                    <div className="flex items-center gap-3 mb-2">
-                        <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                            <FileText className="w-5 h-5 text-primary" />
-                        </div>
-                        <div>
-                            <p className="text-xs text-primary/50 uppercase">
-                                Total Count
-                            </p>
-                            <p className="text-lg font-bold text-primary">
-                                {transactions.length}
-                            </p>
-                        </div>
+                        <CreateTransactionDrawer />
+                        <Drawer
+                            open={isFilterDrawerOpen}
+                            onOpenChange={setIsFilterDrawerOpen}
+                            direction="right"
+                        >
+                            <DrawerTrigger asChild>
+                                <Button variant="outline" size="sm">
+                                    <Filter className="mr-2 h-4 w-4" /> Filters
+                                    {(filterStore.filterSupplier ||
+                                        filterStore.filterCategory ||
+                                        filterStore.filterTax ||
+                                        filterStore.filterStartDate ||
+                                        filterStore.filterEndDate ||
+                                        filterStore.filterMinAmount ||
+                                        filterStore.filterMaxAmount) && (
+                                        <span className="ml-2 h-2 w-2 rounded-full bg-accent" />
+                                    )}
+                                </Button>
+                            </DrawerTrigger>
+                            <DrawerContent className="h-full w-full sm:w-[400px]">
+                                <DrawerHeader className="border-b border-primary/10">
+                                    <div className="flex items-center justify-between">
+                                        <DrawerTitle>Filter Transactions</DrawerTitle>
+                                        <DrawerClose asChild>
+                                            <button className="p-2 hover:bg-primary/5 rounded-full transition-colors">
+                                                <X className="h-4 w-4 text-primary/70" />
+                                            </button>
+                                        </DrawerClose>
+                                    </div>
+                                </DrawerHeader>
+                                <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                                    <div>
+                                        <label className="text-sm font-medium text-primary/70 mb-2 block">
+                                            Date Range
+                                        </label>
+                                        <div className="grid grid-cols-2 gap-2">
+                                            <Input
+                                                type="date"
+                                                placeholder="Start Date"
+                                                value={filterStore.filterStartDate}
+                                                onChange={(e) =>
+                                                    filterStore.setFilterStartDate(
+                                                        e.target.value
+                                                    )
+                                                }
+                                            />
+                                            <Input
+                                                type="date"
+                                                placeholder="End Date"
+                                                value={filterStore.filterEndDate}
+                                                onChange={(e) =>
+                                                    filterStore.setFilterEndDate(
+                                                        e.target.value
+                                                    )
+                                                }
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label className="text-sm font-medium text-primary/70 mb-2 block">
+                                            Supplier
+                                        </label>
+                                        <Combobox
+                                            options={SUPPLIER_OPTIONS}
+                                            value={filterStore.filterSupplier}
+                                            onChange={(value) =>
+                                                filterStore.setFilterSupplier(
+                                                    value || ''
+                                                )
+                                            }
+                                            placeholder="All suppliers"
+                                            searchPlaceholder="Search supplier..."
+                                            className="h-9"
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label className="text-sm font-medium text-primary/70 mb-2 block">
+                                            Category
+                                        </label>
+                                        <Combobox
+                                            options={CATEGORY_OPTIONS}
+                                            value={filterStore.filterCategory}
+                                            onChange={(value) =>
+                                                filterStore.setFilterCategory(
+                                                    value || ''
+                                                )
+                                            }
+                                            placeholder="All categories"
+                                            searchPlaceholder="Search category..."
+                                            className="h-9"
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label className="text-sm font-medium text-primary/70 mb-2 block">
+                                            Tax
+                                        </label>
+                                        <Combobox
+                                            options={TAX_OPTIONS}
+                                            value={filterStore.filterTax}
+                                            onChange={(value) =>
+                                                filterStore.setFilterTax(
+                                                    value || ''
+                                                )
+                                            }
+                                            placeholder="All taxes"
+                                            searchPlaceholder="Search tax..."
+                                            className="h-9"
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label className="text-sm font-medium text-primary/70 mb-2 block">
+                                            Amount Range
+                                        </label>
+                                        <div className="grid grid-cols-2 gap-2">
+                                            <Input
+                                                type="number"
+                                                placeholder="Min"
+                                                value={filterStore.filterMinAmount}
+                                                onChange={(e) =>
+                                                    filterStore.setFilterMinAmount(
+                                                        e.target.value
+                                                    )
+                                                }
+                                            />
+                                            <Input
+                                                type="number"
+                                                placeholder="Max"
+                                                value={filterStore.filterMaxAmount}
+                                                onChange={(e) =>
+                                                    filterStore.setFilterMaxAmount(
+                                                        e.target.value
+                                                    )
+                                                }
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                                <DrawerFooter className="border-t border-primary/10">
+                                    <DrawerClose asChild>
+                                        <Button
+                                            variant="outline"
+                                            className="w-full"
+                                            onClick={() => filterStore.resetFilters()}
+                                        >
+                                            Clear All Filters
+                                        </Button>
+                                    </DrawerClose>
+                                </DrawerFooter>
+                            </DrawerContent>
+                        </Drawer>
                     </div>
                 </div>
             </div>
-
-            <div className="bg-white rounded-2 border border-primary/10">
-                <div className="p-4 border-b border-primary/10">
-                    <div className="flex items-center gap-3">
-                        <button
-                            className={`px-3 py-1.5 rounded-2 text-sm ${
-                                activeTab === 'pending'
-                                    ? 'bg-primary text-white'
-                                    : 'bg-white border border-primary/10 text-primary'
-                            }`}
-                            onClick={() => {
-                                setActiveTab('pending');
-                                setPage(1);
-                            }}
-                        >
-                            Pending ({pendingCount})
-                        </button>
-                        <button
-                            className={`px-3 py-1.5 rounded-2 text-sm ${
-                                activeTab === 'posted'
-                                    ? 'bg-primary text-white'
-                                    : 'bg-white border border-primary/10 text-primary'
-                            }`}
-                            onClick={() => {
-                                setActiveTab('posted');
-                                setPage(1);
-                            }}
-                        >
-                            Posted ({postedCount})
-                        </button>
-                        <button
-                            className={`px-3 py-1.5 rounded-2 text-sm ${
-                                activeTab === 'excluded'
-                                    ? 'bg-primary text-white'
-                                    : 'bg-white border border-primary/10 text-primary'
-                            }`}
-                            onClick={() => {
-                                setActiveTab('excluded');
-                                setPage(1);
-                            }}
-                        >
-                            Excluded ({excludedCount})
-                        </button>
-                        <div className="ml-auto flex items-center gap-3">
-                            <div className="relative w-[260px]">
-                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-primary/50 w-4 h-4" />
-                                <input
-                                    value={search}
-                                    onChange={(e) => {
-                                        setSearch(e.target.value);
-                                        setPage(1);
-                                    }}
-                                    placeholder="Search"
-                                    className="w-full pl-10 pr-4 py-2 border border-primary/10 rounded-2 text-sm focus:outline-none focus:border-primary"
-                                />
-                            </div>
-                            <Button variant="outline" size="sm">
-                                <Filter className="mr-2 h-4 w-4" /> Filters
+            <div className="p-4">
+                <Table
+                    enableSelection={true}
+                    onSelectionChange={setSelectedItems}
+                    rowIds={pageData.map((t) => t.id)}
+                    selectedIds={selectedItems}
+                    sortKey={filterStore.sort}
+                    sortDirection={filterStore.order}
+                    onSortChange={(key, direction) => {
+                        filterStore.setSort(
+                            direction ? key : null,
+                            direction || undefined
+                        );
+                    }}
+                >
+                    {/* Bulk Actions Toolbar */}
+                    <TableSelectionToolbar>
+                        <div className="flex items-center gap-2">
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                disabled={isBulkProcessing}
+                                className="border border-green-200 bg-green-50 text-green-700 hover:bg-green-100 hover:text-green-900 shadow-none"
+                                onClick={() =>
+                                    handleBulkAction(
+                                        'posted',
+                                        postTransactionAsync
+                                    )
+                                }
+                            >
+                                Post ({selectedItems.length})
+                            </Button>
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                disabled={isBulkProcessing}
+                                className="border border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100 hover:text-blue-900 shadow-none"
+                                onClick={() =>
+                                    handleBulkAction(
+                                        'reconciled',
+                                        reconcileTransactionAsync
+                                    )
+                                }
+                            >
+                                Reconcile ({selectedItems.length})
+                            </Button>
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                disabled={isBulkProcessing}
+                                className="border border-orange-200 bg-orange-50 text-orange-700 hover:bg-orange-100 hover:text-orange-900 shadow-none"
+                                onClick={() =>
+                                    handleBulkAction(
+                                        'reversed',
+                                        reverseTransactionAsync
+                                    )
+                                }
+                            >
+                                Reverse ({selectedItems.length})
+                            </Button>
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                disabled={isBulkProcessing}
+                                className="border border-red-200 bg-red-50 text-red-700 hover:bg-red-100 hover:text-red-900 shadow-none"
+                                onClick={() =>
+                                    handleBulkAction(
+                                        'voided',
+                                        voidTransactionAsync
+                                    )
+                                }
+                            >
+                                Void ({selectedItems.length})
                             </Button>
                         </div>
-                    </div>
-                </div>
-                <div className="p-4">
-                    <Table
-                        enableSelection={true}
-                        onSelectionChange={setSelectedItems}
-                        rowIds={pageData.map((t) => t.id)}
-                        selectedIds={selectedItems}
-                        sortKey={sortKey}
-                        sortDirection={sortDirection}
-                        onSortChange={(key, direction) => {
-                            if (direction) {
-                                setSortKey(key as keyof BankTransaction);
-                                setSortDirection(direction);
-                            } else {
-                                setSortKey('date');
-                                setSortDirection('asc');
-                            }
-                            setPage(1);
-                        }}
-                    >
-                        {/* Bulk Actions Toolbar */}
-                        <TableSelectionToolbar>
-                            <button
-                                onClick={() => {
-                                    setTransactions((prev) =>
-                                        prev.map((tx) =>
-                                            selectedItems.includes(tx.id)
-                                                ? { ...tx, status: 'posted' }
-                                                : tx
-                                        )
-                                    );
-                                    showSuccessToast(
-                                        `${selectedItems.length} transactions marked as posted`
-                                    );
-                                    setSelectedItems([]);
-                                }}
-                                className="px-3 py-1.5 text-xs font-medium text-green-700 bg-green-100 hover:bg-green-200 rounded-md transition-colors"
-                            >
-                                Mark as Posted
-                            </button>
-                            <button
-                                onClick={() => {
-                                    setTransactions((prev) =>
-                                        prev.map((tx) =>
-                                            selectedItems.includes(tx.id)
-                                                ? { ...tx, status: 'excluded' }
-                                                : tx
-                                        )
-                                    );
-                                    showSuccessToast(
-                                        `${selectedItems.length} transactions excluded`
-                                    );
-                                    setSelectedItems([]);
-                                }}
-                                className="px-3 py-1.5 text-xs font-medium text-red-700 bg-red-100 hover:bg-red-200 rounded-md transition-colors"
-                            >
-                                Exclude
-                            </button>
-                        </TableSelectionToolbar>
+                    </TableSelectionToolbar>
 
-                        <TableHeader>
-                            <tr>
-                                <TableHead>
-                                    <TableSelectAllCheckbox />
-                                </TableHead>
-                                <TableHead sortable sortKey="date">
-                                    Date
-                                </TableHead>
-                                <TableHead>Bank Description</TableHead>
-                                <TableHead sortable sortKey="spent">
-                                    Spent
-                                </TableHead>
-                                <TableHead sortable sortKey="received">
-                                    Received
-                                </TableHead>
-                                <TableHead sortable sortKey="tax">
-                                    Tax
-                                </TableHead>
-                                <TableHead>From/To</TableHead>
-                                <TableHead>Match/Categorize</TableHead>
-                                <TableHead>Action</TableHead>
-                            </tr>
-                        </TableHeader>
-                        <TableBody>
-                            {pageData.length === 0 ? (
-                                <TableEmptyState
-                                    colSpan={9}
-                                    message="No transactions found"
-                                    description="Try adjusting your filters or add new transactions."
-                                />
-                            ) : (
-                                pageData.map((t) => (
-                                    <TableRow key={t.id} rowId={t.id}>
-                                        <TableCell>
-                                            <TableRowCheckbox rowId={t.id} />
-                                        </TableCell>
-                                        <TableCell>
+                    <TableHeader>
+                        <tr>
+                            <TableHead>
+                                <TableSelectAllCheckbox />
+                            </TableHead>
+                            <TableHead sortable sortKey="date">
+                                Date
+                            </TableHead>
+                            <TableHead>Bank Description</TableHead>
+                            <TableHead sortable sortKey="spent">
+                                Spent
+                            </TableHead>
+                            <TableHead sortable sortKey="received">
+                                Received
+                            </TableHead>
+                            <TableHead sortable sortKey="tax">
+                                Tax
+                            </TableHead>
+                            <TableHead>From/To</TableHead>
+                            <TableHead>Match/Categorize</TableHead>
+                            <TableHead>Action</TableHead>
+                        </tr>
+                    </TableHeader>
+                    <TableBody>
+                        {pageData.length === 0 ? (
+                            <TableEmptyState
+                                colSpan={9}
+                                message="No transactions found"
+                                description="Try adjusting your filters or add new transactions."
+                            />
+                        ) : (
+                            pageData.map((t) => (
+                                <TableRow key={t.id} rowId={t.id}>
+                                    <TableCell>
+                                        <TableRowCheckbox rowId={t.id} />
+                                    </TableCell>
+                                    <TableCell>
+                                        <span className="text-sm font-medium text-primary">
+                                            {new Date(
+                                                t.date
+                                            ).toLocaleDateString()}
+                                        </span>
+                                    </TableCell>
+                                    <TableCell>
+                                        <div className="flex flex-col">
                                             <span className="text-sm font-medium text-primary">
-                                                {new Date(
-                                                    t.date
-                                                ).toLocaleDateString()}
+                                                {t.description}
                                             </span>
-                                        </TableCell>
-                                        <TableCell>
-                                            <div className="flex flex-col">
-                                                <span className="text-sm font-medium text-primary">
-                                                    {t.description}
-                                                </span>
-                                                <span className="text-xs text-primary/50">
-                                                    {t.account}
-                                                </span>
-                                            </div>
-                                        </TableCell>
-                                        <TableCell>
-                                            <span className="text-red-600 font-semibold">
-                                                {t.spent
-                                                    ? `-${currency(t.spent)}`
-                                                    : ''}
+                                            <span className="text-xs text-primary/50">
+                                                {t.account}
                                             </span>
-                                        </TableCell>
-                                        <TableCell>
-                                            <span className="text-green-600 font-semibold">
-                                                {t.received
-                                                    ? `+${currency(t.received)}`
-                                                    : ''}
-                                            </span>
-                                        </TableCell>
-                                        <TableCell>
-                                            <div className="flex items-center gap-3">
-                                                <div className="min-w-[200px]">
-                                                    <Combobox
-                                                        options={TAX_OPTIONS}
-                                                        value={t.taxId || ''}
-                                                        onChange={(value) => {
-                                                            const rate =
-                                                                (value &&
-                                                                    TAX_RATE_BY_ID[
-                                                                        value
-                                                                    ]) ||
-                                                                0;
-                                                            setTransactions(
-                                                                (prev) =>
-                                                                    prev.map(
-                                                                        (
-                                                                            tx
-                                                                        ) => {
-                                                                            if (
-                                                                                tx.id !==
-                                                                                t.id
-                                                                            )
-                                                                                return tx;
-                                                                            const base =
-                                                                                tx.spent ??
-                                                                                0;
-                                                                            const taxAmount =
-                                                                                Number(
-                                                                                    (
-                                                                                        base *
-                                                                                        rate
-                                                                                    ).toFixed(
-                                                                                        2
-                                                                                    )
-                                                                                );
-                                                                            return {
-                                                                                ...tx,
-                                                                                taxId:
-                                                                                    value ||
-                                                                                    undefined,
-                                                                                taxRate:
-                                                                                    rate ||
-                                                                                    undefined,
-                                                                                tax: taxAmount,
-                                                                            };
-                                                                        }
-                                                                    )
-                                                            );
-                                                        }}
-                                                        placeholder="Select tax..."
-                                                        searchPlaceholder="Search tax..."
-                                                        className="h-8"
-                                                    />
-                                                </div>
-                                                <span className="text-primary/50 text-xs">
-                                                    {currency(t.tax ?? 0)}
-                                                </span>
-                                            </div>
-                                        </TableCell>
-                                        <TableCell>
+                                        </div>
+                                    </TableCell>
+                                    <TableCell>
+                                        <span className="text-red-600 font-semibold">
+                                            {t.spent
+                                                ? `-${currency(t.spent)}`
+                                                : ''}
+                                        </span>
+                                    </TableCell>
+                                    <TableCell>
+                                        <span className="text-green-600 font-semibold">
+                                            {t.received
+                                                ? `+${currency(t.received)}`
+                                                : ''}
+                                        </span>
+                                    </TableCell>
+                                    <TableCell>
+                                        <div className="flex items-center gap-3">
                                             <div className="min-w-[200px]">
                                                 <Combobox
-                                                    options={SUPPLIER_OPTIONS}
-                                                    value={t.fromTo || ''}
+                                                    options={TAX_OPTIONS}
+                                                    value={t.taxId || ''}
+                                                    onChange={(value) => {
+                                                        const rate =
+                                                            (value &&
+                                                                TAX_RATE_BY_ID[
+                                                                    value
+                                                                ]) ||
+                                                            0;
+                                                        setTransactions(
+                                                            (prev) =>
+                                                                prev.map(
+                                                                    (tx) => {
+                                                                        if (
+                                                                            tx.id !==
+                                                                            t.id
+                                                                        )
+                                                                            return tx;
+                                                                        const base =
+                                                                            tx.spent ??
+                                                                            0;
+                                                                        const taxAmount =
+                                                                            Number(
+                                                                                (
+                                                                                    base *
+                                                                                    rate
+                                                                                ).toFixed(
+                                                                                    2
+                                                                                )
+                                                                            );
+                                                                        return {
+                                                                            ...tx,
+                                                                            taxId:
+                                                                                value ||
+                                                                                undefined,
+                                                                            taxRate:
+                                                                                rate ||
+                                                                                undefined,
+                                                                            tax: taxAmount,
+                                                                        };
+                                                                    }
+                                                                )
+                                                        );
+                                                    }}
+                                                    placeholder="Select tax..."
+                                                    searchPlaceholder="Search tax..."
+                                                    className="h-8"
+                                                />
+                                            </div>
+                                        </div>
+                                    </TableCell>
+                                    <TableCell>
+                                        <div className="min-w-[200px]">
+                                            <Combobox
+                                                options={SUPPLIER_OPTIONS}
+                                                value={
+                                                    t.fromTo
+                                                        ? contactNameById.get(
+                                                              t.fromTo
+                                                          ) || t.fromTo
+                                                        : ''
+                                                }
+                                                onChange={(value) => {
+                                                    // Find contactId by displayName
+                                                    const contactId =
+                                                        Array.from(
+                                                            contactNameById.entries()
+                                                        ).find(
+                                                            ([, name]) =>
+                                                                name === value
+                                                        )?.[0] || value;
+
+                                                    setTransactions((prev) =>
+                                                        prev.map((tx) =>
+                                                            tx.id === t.id
+                                                                ? {
+                                                                      ...tx,
+                                                                      fromTo:
+                                                                          contactId ||
+                                                                          undefined,
+                                                                  }
+                                                                : tx
+                                                        )
+                                                    );
+                                                }}
+                                                placeholder="Select supplier..."
+                                                searchPlaceholder="Search supplier..."
+                                                className="h-8"
+                                            />
+                                        </div>
+                                    </TableCell>
+                                    <TableCell>
+                                        <div className="flex items-center gap-2">
+                                            <div className="min-w-[220px]">
+                                                <Combobox
+                                                    options={CATEGORY_OPTIONS}
+                                                    value={t.category || ''}
                                                     onChange={(value) => {
                                                         setTransactions(
                                                             (prev) =>
@@ -624,189 +855,146 @@ const Transactionpage = () => {
                                                                         t.id
                                                                             ? {
                                                                                   ...tx,
-                                                                                  fromTo:
+                                                                                  category:
                                                                                       value ||
                                                                                       undefined,
                                                                               }
                                                                             : tx
                                                                 )
                                                         );
+                                                        if (value) {
+                                                            showSuccessToast(
+                                                                `Category set to ${value}`
+                                                            );
+                                                        }
                                                     }}
-                                                    placeholder="Select supplier..."
-                                                    searchPlaceholder="Search supplier..."
+                                                    placeholder="Select category..."
+                                                    searchPlaceholder="Search category..."
                                                     className="h-8"
                                                 />
                                             </div>
-                                        </TableCell>
-                                        <TableCell>
-                                            <div className="flex items-center gap-2">
-                                                <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-2">
-                                                    {t.category ||
-                                                        'Select category'}
-                                                </span>
+                                            <Button
+                                                size="sm"
+                                                onClick={() => {
+                                                    setTransactions((prev) =>
+                                                        prev.map((tx) =>
+                                                            tx.id === t.id
+                                                                ? {
+                                                                      ...tx,
+                                                                      matched:
+                                                                          !tx.matched,
+                                                                  }
+                                                                : tx
+                                                        )
+                                                    );
+                                                    showSuccessToast(
+                                                        t.matched
+                                                            ? 'Unmatched'
+                                                            : 'Matched'
+                                                    );
+                                                }}
+                                            >
+                                                {t.matched
+                                                    ? 'Matched'
+                                                    : 'Match'}
+                                            </Button>
+                                        </div>
+                                    </TableCell>
+                                    <TableCell>
+                                        <div className="flex items-center gap-2">
+                                            {t.status === 'pending' && (
                                                 <Button
                                                     variant="outline"
                                                     size="sm"
-                                                    onClick={() => {
-                                                        setTransactions(
-                                                            (prev) =>
-                                                                prev.map(
-                                                                    (tx) =>
-                                                                        tx.id ===
-                                                                        t.id
-                                                                            ? {
-                                                                                  ...tx,
-                                                                                  matched:
-                                                                                      !tx.matched,
-                                                                              }
-                                                                            : tx
-                                                                )
-                                                        );
-                                                        showSuccessToast(
-                                                            t.matched
-                                                                ? 'Unmatched'
-                                                                : 'Matched'
-                                                        );
-                                                    }}
-                                                >
-                                                    {t.matched
-                                                        ? 'Matched'
-                                                        : 'Match'}
-                                                </Button>
-                                                <div className="min-w-[220px]">
-                                                    <Combobox
-                                                        options={
-                                                            CATEGORY_OPTIONS
-                                                        }
-                                                        value={t.category || ''}
-                                                        onChange={(value) => {
-                                                            setTransactions(
-                                                                (prev) =>
-                                                                    prev.map(
-                                                                        (tx) =>
-                                                                            tx.id ===
-                                                                            t.id
-                                                                                ? {
-                                                                                      ...tx,
-                                                                                      category:
-                                                                                          value ||
-                                                                                          undefined,
-                                                                                  }
-                                                                                : tx
-                                                                    )
-                                                            );
-                                                            if (value) {
-                                                                showSuccessToast(
-                                                                    `Category set to ${value}`
-                                                                );
-                                                            }
-                                                        }}
-                                                        placeholder="Select category..."
-                                                        searchPlaceholder="Search category..."
-                                                        className="h-8"
-                                                    />
-                                                </div>
-                                            </div>
-                                        </TableCell>
-                                        <TableCell>
-                                            <div className="flex items-center gap-2">
-                                                <Button
-                                                    variant="outline"
-                                                    size="sm"
-                                                    onClick={() => {
-                                                        setTransactions(
-                                                            (prev) =>
-                                                                prev.map(
-                                                                    (tx) =>
-                                                                        tx.id ===
-                                                                        t.id
-                                                                            ? {
-                                                                                  ...tx,
-                                                                                  status: 'posted',
-                                                                              }
-                                                                            : tx
-                                                                )
-                                                        );
-                                                        showSuccessToast(
-                                                            'Transaction posted'
-                                                        );
-                                                    }}
+                                                    onClick={() =>
+                                                        postTransaction(t.id)
+                                                    }
                                                 >
                                                     Post
                                                 </Button>
-                                                <DropdownMenu>
-                                                    <DropdownMenuTrigger
-                                                        asChild
+                                            )}
+                                            <DropdownMenu>
+                                                <DropdownMenuTrigger asChild>
+                                                    <Button
+                                                        variant="outline"
+                                                        size="sm"
                                                     >
-                                                        <Button
-                                                            variant="outline"
-                                                            size="sm"
-                                                        >
-                                                            ⋯
-                                                        </Button>
-                                                    </DropdownMenuTrigger>
-                                                    <DropdownMenuContent align="end">
-                                                        <DropdownMenuItem
-                                                            onClick={() =>
-                                                                showSuccessToast(
-                                                                    'Split editor coming soon'
-                                                                )
-                                                            }
-                                                        >
-                                                            Split
-                                                        </DropdownMenuItem>
-                                                        <DropdownMenuItem
-                                                            onClick={() =>
-                                                                showSuccessToast(
-                                                                    'Rule created (demo placeholder)'
-                                                                )
-                                                            }
-                                                        >
-                                                            Create rule
-                                                        </DropdownMenuItem>
-                                                        <DropdownMenuItem
-                                                            onClick={() => {
-                                                                setTransactions(
-                                                                    (prev) =>
-                                                                        prev.map(
-                                                                            (
-                                                                                tx
-                                                                            ) =>
-                                                                                tx.id ===
-                                                                                t.id
-                                                                                    ? {
-                                                                                          ...tx,
-                                                                                          status: 'excluded',
-                                                                                      }
-                                                                                    : tx
-                                                                        )
-                                                                );
-                                                                showSuccessToast(
-                                                                    'Transaction excluded'
-                                                                );
-                                                            }}
-                                                        >
-                                                            Exclude
-                                                        </DropdownMenuItem>
-                                                    </DropdownMenuContent>
-                                                </DropdownMenu>
-                                            </div>
-                                        </TableCell>
-                                    </TableRow>
-                                ))
-                            )}
-                        </TableBody>
-                    </Table>
+                                                        ⋯
+                                                    </Button>
+                                                </DropdownMenuTrigger>
+                                                <DropdownMenuContent align="end">
+                                                    <DropdownMenuItem
+                                                        onClick={() =>
+                                                            showSuccessToast(
+                                                                'Update coming soon'
+                                                            )
+                                                        }
+                                                    >
+                                                        Update
+                                                    </DropdownMenuItem>
+                                                    <DropdownMenuItem
+                                                        onClick={() =>
+                                                            reconcileTransaction(
+                                                                t.id
+                                                            )
+                                                        }
+                                                    >
+                                                        Reconcile
+                                                    </DropdownMenuItem>
+                                                    <DropdownMenuItem
+                                                        onClick={() =>
+                                                            voidTransaction(
+                                                                t.id
+                                                            )
+                                                        }
+                                                    >
+                                                        Void
+                                                    </DropdownMenuItem>
+                                                    <DropdownMenuItem
+                                                        onClick={() =>
+                                                            reverseTransaction(
+                                                                t.id
+                                                            )
+                                                        }
+                                                    >
+                                                        Reverse
+                                                    </DropdownMenuItem>
+                                                    <DropdownMenuItem
+                                                        onClick={() =>
+                                                            showSuccessToast(
+                                                                'Split editor coming soon'
+                                                            )
+                                                        }
+                                                    >
+                                                        Split
+                                                    </DropdownMenuItem>
+                                                    <DropdownMenuItem
+                                                        onClick={() =>
+                                                            showSuccessToast(
+                                                                'Rule created (demo placeholder)'
+                                                            )
+                                                        }
+                                                    >
+                                                        Create rule
+                                                    </DropdownMenuItem>
+                                                </DropdownMenuContent>
+                                            </DropdownMenu>
+                                        </div>
+                                    </TableCell>
+                                </TableRow>
+                            ))
+                        )}
+                    </TableBody>
+                </Table>
 
-                    {/* Pagination */}
-                    <TablePagination
-                        page={page}
-                        totalPages={totalPages}
-                        totalItems={filtered.length}
-                        itemsPerPage={itemsPerPage}
-                        onPageChange={setPage}
-                    />
-                </div>
+                {/* Pagination */}
+                <TablePagination
+                    page={filterStore.page}
+                    totalPages={totalPages}
+                    totalItems={totalItems}
+                    itemsPerPage={itemsPerPage}
+                    onPageChange={(page) => filterStore.setPage(page)}
+                />
             </div>
         </div>
     );

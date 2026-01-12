@@ -8,6 +8,81 @@ import {
 import { showErrorToast, showSuccessToast } from '../../utills/toast';
 import axiosInstance from '../axiosClient';
 
+export type TaxTemplatePreviewTax = {
+    name: string;
+    type?: string;
+    rate: number;
+    code?: string;
+    description?: string;
+    isActive?: boolean;
+    willBeSkipped?: boolean;
+    skipReason?: string | null;
+};
+
+export type TaxTemplatePreviewResponse = {
+    success: boolean;
+    statusCode: number;
+    message: string;
+    data: {
+        template: {
+            id: string;
+            name: string;
+            description: string | null;
+            templateType: 'tax';
+            isActive: boolean;
+            createdAt: string;
+            updatedAt: string;
+        };
+        taxes: TaxTemplatePreviewTax[];
+        summary: {
+            totalTaxes: number;
+            newTaxes: number;
+            skippedTaxes: number;
+        };
+    };
+};
+
+export type TaxTemplateApplyResponse = {
+    success: boolean;
+    statusCode: number;
+    message: string;
+    data: {
+        template: {
+            id: string;
+            name: string;
+            templateType: 'tax';
+        };
+        usageId: string;
+        status: 'success' | 'partial' | 'failed';
+        taxes: {
+            created: Array<{
+                id: string;
+                name: string;
+                type?: string;
+                rate: number;
+            }>;
+            skipped: Array<{
+                name: string;
+                type?: string;
+                rate?: number;
+                reason: string;
+            }>;
+            failed: Array<{
+                name?: string;
+                type?: string;
+                rate?: number;
+                error: string;
+            }>;
+        };
+        summary: {
+            totalProcessed: number;
+            created: number;
+            skipped: number;
+            failed: number;
+        };
+    };
+};
+
 /**
  * Get all taxes with filters
  */
@@ -102,6 +177,25 @@ export async function restoreTax(id: string): Promise<TaxResponse> {
     return response.data;
 }
 
+export async function getTaxTemplatePreview(
+    templateId: string
+): Promise<TaxTemplatePreviewResponse> {
+    const response = await axiosInstance.get(
+        `/taxes/template/${templateId}/preview`
+    );
+    return response.data;
+}
+
+export async function applyTaxTemplate(
+    templateId: string
+): Promise<TaxTemplateApplyResponse> {
+    const response = await axiosInstance.post(
+        `/taxes/template/${templateId}/apply`,
+        {}
+    );
+    return response.data;
+}
+
 /**
  * Hook to get taxes
  */
@@ -143,6 +237,14 @@ export const useTaxById = (id?: string) => {
     });
 };
 
+export const useTaxTemplatePreview = (templateId?: string) => {
+    return useQuery<TaxTemplatePreviewResponse, Error>({
+        queryKey: ['taxes-template-preview', templateId],
+        queryFn: () => getTaxTemplatePreview(String(templateId)),
+        enabled: !!templateId,
+    });
+};
+
 /**
  * Mutations
  */
@@ -178,11 +280,14 @@ export const useUpdateTax = () => {
             id: string;
             payload: UpdateTaxPayload;
         }) => updateTax(id, payload),
-        onSuccess: (data) => {
+        onSuccess: (data, variables) => {
             showSuccessToast(data?.message || 'Tax updated successfully');
             queryClient.invalidateQueries({ queryKey: ['taxes'] });
             queryClient.invalidateQueries({ queryKey: ['taxes', 'active'] });
             queryClient.invalidateQueries({ queryKey: ['taxes', 'stats'] });
+            queryClient.invalidateQueries({
+                queryKey: ['taxes', variables.id],
+            });
         },
         onError: (error) => {
             const maybeAxiosError = error as {
@@ -200,11 +305,12 @@ export const useDeleteTax = () => {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: (id: string) => deleteTax(id),
-        onSuccess: (data) => {
+        onSuccess: (data, id) => {
             showSuccessToast(data?.message || 'Tax deleted successfully');
             queryClient.invalidateQueries({ queryKey: ['taxes'] });
             queryClient.invalidateQueries({ queryKey: ['taxes', 'active'] });
             queryClient.invalidateQueries({ queryKey: ['taxes', 'stats'] });
+            queryClient.invalidateQueries({ queryKey: ['taxes', id] });
         },
         onError: (error) => {
             const maybeAxiosError = error as {
@@ -222,11 +328,12 @@ export const useEnableTax = () => {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: (id: string) => enableTax(id),
-        onSuccess: (data) => {
+        onSuccess: (data, id) => {
             showSuccessToast(data?.message || 'Tax enabled');
             queryClient.invalidateQueries({ queryKey: ['taxes'] });
             queryClient.invalidateQueries({ queryKey: ['taxes', 'active'] });
             queryClient.invalidateQueries({ queryKey: ['taxes', 'stats'] });
+            queryClient.invalidateQueries({ queryKey: ['taxes', id] });
         },
         onError: (error) => {
             const maybeAxiosError = error as {
@@ -244,11 +351,12 @@ export const useDisableTax = () => {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: (id: string) => disableTax(id),
-        onSuccess: (data) => {
+        onSuccess: (data, id) => {
             showSuccessToast(data?.message || 'Tax disabled');
             queryClient.invalidateQueries({ queryKey: ['taxes'] });
             queryClient.invalidateQueries({ queryKey: ['taxes', 'active'] });
             queryClient.invalidateQueries({ queryKey: ['taxes', 'stats'] });
+            queryClient.invalidateQueries({ queryKey: ['taxes', id] });
         },
         onError: (error) => {
             const maybeAxiosError = error as {
@@ -266,8 +374,34 @@ export const useRestoreTax = () => {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: (id: string) => restoreTax(id),
-        onSuccess: (data) => {
+        onSuccess: (data, id) => {
             showSuccessToast(data?.message || 'Tax restored');
+            queryClient.invalidateQueries({ queryKey: ['taxes'] });
+            queryClient.invalidateQueries({ queryKey: ['taxes', 'active'] });
+            queryClient.invalidateQueries({ queryKey: ['taxes', 'stats'] });
+            queryClient.invalidateQueries({ queryKey: ['taxes', id] });
+        },
+        onError: (error) => {
+            const maybeAxiosError = error as {
+                response?: { data?: { message?: string } };
+            };
+            const message =
+                maybeAxiosError.response?.data?.message ||
+                'Failed to restore tax';
+            showErrorToast(message);
+        },
+    });
+};
+
+export const useApplyTaxTemplate = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: (templateId: string) => applyTaxTemplate(templateId),
+        onSuccess: (data) => {
+            showSuccessToast(
+                data?.message || 'Tax template applied successfully'
+            );
             queryClient.invalidateQueries({ queryKey: ['taxes'] });
             queryClient.invalidateQueries({ queryKey: ['taxes', 'active'] });
             queryClient.invalidateQueries({ queryKey: ['taxes', 'stats'] });
@@ -278,7 +412,7 @@ export const useRestoreTax = () => {
             };
             const message =
                 maybeAxiosError.response?.data?.message ||
-                'Failed to restore tax';
+                'Failed to apply tax template';
             showErrorToast(message);
         },
     });

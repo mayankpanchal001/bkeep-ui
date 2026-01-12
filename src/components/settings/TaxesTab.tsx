@@ -44,6 +44,7 @@ import {
     TableHeader,
     TableRow,
 } from '../ui/table';
+import TaxDetailDrawer from './TaxDetailDrawer';
 import TaxForm from './TaxForm';
 
 const TaxesTab = () => {
@@ -57,6 +58,8 @@ const TaxesTab = () => {
     const [search, setSearch] = React.useState('');
     const [isDialogOpen, setDialogOpen] = React.useState(false);
     const [editTax, setEditTax] = React.useState<Tax | null>(null);
+    const [detailTaxId, setDetailTaxId] = React.useState<string | null>(null);
+    const [isDetailOpen, setDetailOpen] = React.useState(false);
 
     // columns defined after handlers
 
@@ -150,6 +153,15 @@ const TaxesTab = () => {
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
                                 <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                                <DropdownMenuItem
+                                    onClick={() => {
+                                        setDetailTaxId(tax.id);
+                                        setDetailOpen(true);
+                                    }}
+                                >
+                                    View details
+                                </DropdownMenuItem>
+                                <DropdownMenuSeparator />
                                 <DropdownMenuItem
                                     onClick={() => {
                                         setEditTax(tax);
@@ -297,6 +309,20 @@ const TaxesTab = () => {
                             <TableRow
                                 key={row.id}
                                 data-state={row.getIsSelected() && 'selected'}
+                                className="cursor-pointer hover:bg-muted/50"
+                                onClick={(e) => {
+                                    // Prevent opening drawer if clicking on actions or checkbox
+                                    const target = e.target as HTMLElement;
+                                    if (
+                                        target.closest('[role="menuitem"]') ||
+                                        target.closest('button') ||
+                                        target.closest('.dropdown-trigger')
+                                    ) {
+                                        return;
+                                    }
+                                    setDetailTaxId(row.original.id);
+                                    setDetailOpen(true);
+                                }}
                             >
                                 {row.getVisibleCells().map((cell) => (
                                     <TableCell key={cell.id}>
@@ -365,6 +391,12 @@ const TaxesTab = () => {
                     />
                 </AlertDialogContent>
             </AlertDialog>
+
+            <TaxDetailDrawer
+                taxId={detailTaxId}
+                open={isDetailOpen}
+                onOpenChange={setDetailOpen}
+            />
         </div>
     );
 };

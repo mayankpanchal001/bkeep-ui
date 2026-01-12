@@ -78,6 +78,12 @@ export async function getJournalEntries(
     if (filters?.endDate) params.append('endDate', filters.endDate);
     if (filters?.isAdjusting !== undefined)
         params.append('isAdjusting', filters.isAdjusting.toString());
+    if (filters?.contactId) params.append('contactId', filters.contactId);
+    if (filters?.accountId) params.append('accountId', filters.accountId);
+    if (filters?.minAmount !== undefined) params.append('minAmount', filters.minAmount.toString());
+    if (filters?.maxAmount !== undefined) params.append('maxAmount', filters.maxAmount.toString());
+    if (filters?.sort) params.append('sort', filters.sort);
+    if (filters?.order) params.append('order', filters.order);
 
     const response = await axiosInstance.get(
         `/journal-entries${params.toString() ? `?${params.toString()}` : ''}`
@@ -203,8 +209,27 @@ export async function restoreJournalEntry(
  * Hook to get all journal entries
  */
 export const useJournalEntries = (filters?: JournalEntryFilters) => {
+    // Create a stable query key that includes all filter values
+    // This ensures React Query properly detects changes and refetches
+    const queryKey = [
+        'journal-entries',
+        filters?.page,
+        filters?.limit,
+        filters?.search,
+        filters?.status,
+        filters?.startDate,
+        filters?.endDate,
+        filters?.isAdjusting,
+        filters?.contactId,
+        filters?.accountId,
+        filters?.minAmount,
+        filters?.maxAmount,
+        filters?.sort,
+        filters?.order,
+    ];
+    
     return useQuery<JournalEntriesListResponse, Error>({
-        queryKey: ['journal-entries', filters],
+        queryKey,
         queryFn: () => getJournalEntries(filters),
     });
 };
