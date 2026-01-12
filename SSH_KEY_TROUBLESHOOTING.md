@@ -9,6 +9,7 @@ This error occurs when the SSH key in GitHub Secrets is not properly formatted o
 ### 1. Check SSH Key Format in GitHub Secrets
 
 The SSH key must:
+
 - ✅ Start with `-----BEGIN` (exactly 5 dashes)
 - ✅ End with `-----END` (exactly 5 dashes)
 - ✅ Include the entire key content (all lines)
@@ -18,6 +19,7 @@ The SSH key must:
 ### 2. Verify Key Format
 
 **Correct format:**
+
 ```
 -----BEGIN OPENSSH PRIVATE KEY-----
 b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAFwAAAAdz
@@ -28,6 +30,7 @@ c2gtcnNhAAAAAwEAAQAAAQEAy...
 ```
 
 **OR for RSA keys:**
+
 ```
 -----BEGIN RSA PRIVATE KEY-----
 MIIEpAIBAAKCAQEAy...
@@ -48,28 +51,30 @@ ssh-keygen -t ed25519 -C "github-actions-deploy" -f ~/.ssh/github_deploy -N ""
 cat ~/.ssh/github_deploy
 ```
 
-**Important:** 
+**Important:**
+
 - Use `-N ""` to create a key WITHOUT a passphrase
 - GitHub Actions cannot handle passphrase-protected keys interactively
 
 ### Step 2: Copy Key Correctly
 
 1. **Display the key:**
-   ```bash
-   cat ~/.ssh/github_deploy
-   ```
+
+    ```bash
+    cat ~/.ssh/github_deploy
+    ```
 
 2. **Copy the ENTIRE output**, including:
-   - The `-----BEGIN` line
-   - All the encoded lines in the middle
-   - The `-----END` line
-   - No extra spaces or characters
+    - The `-----BEGIN` line
+    - All the encoded lines in the middle
+    - The `-----END` line
+    - No extra spaces or characters
 
 3. **Paste into GitHub Secret:**
-   - Go to: Repository → Settings → Secrets and variables → Actions
-   - Edit `DEPLOY_SSH_KEY`
-   - Paste the entire key (make sure there are no leading/trailing spaces)
-   - Save
+    - Go to: Repository → Settings → Secrets and variables → Actions
+    - Edit `DEPLOY_SSH_KEY`
+    - Paste the entire key (make sure there are no leading/trailing spaces)
+    - Save
 
 ### Step 3: Add Public Key to Server
 
@@ -141,27 +146,34 @@ Before running the deployment, verify:
 ## 🐛 Common Issues
 
 ### Issue 1: Key has passphrase
+
 **Error:** Authentication fails silently
 **Fix:** Regenerate key without passphrase: `ssh-keygen -t ed25519 -f ~/.ssh/github_deploy -N ""`
 
 ### Issue 2: Extra whitespace in GitHub secret
+
 **Error:** `ssh: no key found`
-**Fix:** 
+**Fix:**
+
 1. Copy key again, ensuring no leading/trailing spaces
 2. Paste into GitHub secret
 3. Save and retry
 
 ### Issue 3: Wrong key type
+
 **Error:** `no supported methods remain`
 **Fix:** Ensure server supports the key type (ed25519 is recommended, RSA 4096 is fallback)
 
 ### Issue 4: Public key not on server
+
 **Error:** `Permission denied (publickey)`
 **Fix:** Add public key to server's `~/.ssh/authorized_keys`
 
 ### Issue 5: Wrong permissions on server
+
 **Error:** `Permission denied`
-**Fix:** 
+**Fix:**
+
 ```bash
 chmod 700 ~/.ssh
 chmod 600 ~/.ssh/authorized_keys
