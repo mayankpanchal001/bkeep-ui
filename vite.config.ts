@@ -1,31 +1,34 @@
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
-import dotenv from 'dotenv';
 import { fileURLToPath, URL } from 'node:url';
-import { defineConfig } from 'vite';
+import { defineConfig, loadEnv } from 'vite';
 
 // https://vite.dev/config/
-dotenv.config();
 
-export default defineConfig({
-    plugins: [react(), tailwindcss()],
-    resolve: {
-        alias: {
-            '@': fileURLToPath(new URL('./src', import.meta.url)),
-        },
-    },
-    server: {
-        proxy: {
-            '/api': {
-                target:
-                    process.env.VITE_API_ENDPOINT || 'http://localhost:8000',
-                changeOrigin: true,
-                secure: false,
-                rewrite: (path) => path.replace(/^\/api/, ''),
+export default defineConfig(({ mode }) => {
+    // Load env file based on `mode` in the current working directory.
+    // Vite automatically loads .env.production when mode is 'production'
+    const env = loadEnv(mode, process.cwd(), '');
+    
+    return {
+        plugins: [react(), tailwindcss()],
+        resolve: {
+            alias: {
+                '@': fileURLToPath(new URL('./src', import.meta.url)),
             },
         },
-    },
-    build: {
+        server: {
+            proxy: {
+                '/api': {
+                    target:
+                        env.VITE_API_ENDPOINT || 'http://localhost:4000/api/v1',
+                    changeOrigin: true,
+                    secure: false,
+                    rewrite: (path) => path.replace(/^\/api/, ''),
+                },
+            },
+        },
+        build: {
         rollupOptions: {
             output: {
                 manualChunks: (id) => {
@@ -99,4 +102,5 @@ export default defineConfig({
         // Optimize asset inlining threshold
         assetsInlineLimit: 4096, // 4kb
     },
+    };
 });

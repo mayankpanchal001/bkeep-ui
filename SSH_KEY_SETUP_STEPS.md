@@ -7,6 +7,7 @@
 **Location:** Your local computer (where you're developing)
 
 **Open Terminal and run:**
+
 ```bash
 # Navigate to your project (if not already there)
 cd /Users/mayankpanchal/Workspaces/bkeep/frontend
@@ -18,6 +19,7 @@ ssh-keygen -t ed25519 -C "github-actions-deploy" -f ~/.ssh/github_deploy -N ""
 ```
 
 **What this does:**
+
 - Creates `~/.ssh/github_deploy` (private key - keep secret!)
 - Creates `~/.ssh/github_deploy.pub` (public key - safe to share)
 
@@ -30,6 +32,7 @@ ssh-keygen -t ed25519 -C "github-actions-deploy" -f ~/.ssh/github_deploy -N ""
 **Option A: Using ssh-copy-id (Easiest)**
 
 **On your LOCAL machine, run:**
+
 ```bash
 # Replace with your actual server details
 ssh-copy-id -i ~/.ssh/github_deploy.pub user@your-server-ip
@@ -43,6 +46,7 @@ ssh-copy-id -i ~/.ssh/github_deploy.pub user@your-server-ip
 **Option B: Manual Method**
 
 **1. On your LOCAL machine, display the public key:**
+
 ```bash
 cat ~/.ssh/github_deploy.pub
 ```
@@ -50,12 +54,14 @@ cat ~/.ssh/github_deploy.pub
 **2. Copy the entire output** (it will look like: `ssh-ed25519 AAAA... github-actions-deploy`)
 
 **3. SSH into your server:**
+
 ```bash
 ssh user@your-server-ip
 # Example: ssh root@72.62.161.70
 ```
 
 **4. On the SERVER, run these commands:**
+
 ```bash
 # Create .ssh directory if it doesn't exist
 mkdir -p ~/.ssh
@@ -78,6 +84,7 @@ exit
 **Location:** Your local computer
 
 **Run:**
+
 ```bash
 # Test SSH connection using the new key
 ssh -i ~/.ssh/github_deploy user@your-server-ip
@@ -97,12 +104,14 @@ ssh -i ~/.ssh/github_deploy user@your-server-ip
 **Location:** GitHub website (in your browser)
 
 **1. Get the private key from your LOCAL machine:**
+
 ```bash
 # On your LOCAL machine, display the private key
 cat ~/.ssh/github_deploy
 ```
 
 **2. Copy the ENTIRE output** - it should look like:
+
 ```
 -----BEGIN OPENSSH PRIVATE KEY-----
 b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAFwAAAAdz
@@ -113,23 +122,26 @@ c2gtcnNhAAAAAwEAAQAAAQEAy...
 ```
 
 **3. Go to GitHub:**
-   - Open your browser
-   - Go to: `https://github.com/mayankpanchal001/bkeep-frontend` (or your repo URL)
-   - Click: **Settings** (top menu)
-   - Click: **Secrets and variables** → **Actions** (left sidebar)
+
+- Open your browser
+- Go to: `https://github.com/mayankpanchal001/bkeep-frontend` (or your repo URL)
+- Click: **Settings** (top menu)
+- Click: **Secrets and variables** → **Actions** (left sidebar)
 
 **4. Update the secret:**
-   - Find **`DEPLOY_SSH_KEY`** in the list
-   - Click **Update** (or create it if it doesn't exist)
-   - **Delete any existing value**
-   - **Paste the private key** you copied in step 2
-   - **Make sure there are NO extra spaces** at the beginning or end
-   - Click **Update secret**
+
+- Find **`DEPLOY_SSH_KEY`** in the list
+- Click **Update** (or create it if it doesn't exist)
+- **Delete any existing value**
+- **Paste the private key** you copied in step 2
+- **Make sure there are NO extra spaces** at the beginning or end
+- Click **Update secret**
 
 **5. Verify other secrets are set:**
-   - `DEPLOY_HOST` - Your server IP (e.g., `72.62.161.70`)
-   - `DEPLOY_USER` - Your SSH username (e.g., `root` or `ubuntu`)
-   - `DEPLOY_PORT` - SSH port (usually `22`, optional)
+
+- `DEPLOY_HOST` - Your server IP (e.g., `72.62.161.70`)
+- `DEPLOY_USER` - Your SSH username (e.g., `root` or `ubuntu`)
+- `DEPLOY_PORT` - SSH port (usually `22`, optional)
 
 ---
 
@@ -145,11 +157,11 @@ c2gtcnNhAAAAAwEAAQAAAQEAy...
 
 ## 🎯 Summary: Where Each File Goes
 
-| File | Location | Purpose |
-|------|----------|---------|
-| `~/.ssh/github_deploy` (private) | **Local machine** | Keep this secret, add to GitHub secret |
-| `~/.ssh/github_deploy.pub` (public) | **Server** (`~/.ssh/authorized_keys`) | Allows GitHub Actions to connect |
-| Private key content | **GitHub Secrets** (`DEPLOY_SSH_KEY`) | Used by GitHub Actions workflow |
+| File                                | Location                              | Purpose                                |
+| ----------------------------------- | ------------------------------------- | -------------------------------------- |
+| `~/.ssh/github_deploy` (private)    | **Local machine**                     | Keep this secret, add to GitHub secret |
+| `~/.ssh/github_deploy.pub` (public) | **Server** (`~/.ssh/authorized_keys`) | Allows GitHub Actions to connect       |
+| Private key content                 | **GitHub Secrets** (`DEPLOY_SSH_KEY`) | Used by GitHub Actions workflow        |
 
 ---
 
@@ -158,10 +170,12 @@ c2gtcnNhAAAAAwEAAQAAAQEAy...
 **If you don't know your server IP or username:**
 
 **Server IP:**
+
 - Check your cloud provider dashboard (AWS, DigitalOcean, etc.)
 - Or SSH into your server and run: `curl ifconfig.me`
 
 **Username:**
+
 - Common: `root`, `ubuntu`, `deploy`
 - Or SSH into your server and run: `whoami`
 
@@ -170,6 +184,7 @@ c2gtcnNhAAAAAwEAAQAAAQEAy...
 ## ✅ After Setup
 
 Once all steps are complete:
+
 1. Push a commit to trigger the deployment
 2. Check GitHub Actions tab to see if deployment works
 3. If it fails, check the workflow logs for specific errors
@@ -179,6 +194,7 @@ Once all steps are complete:
 ## 🆘 Need Help?
 
 If you're stuck, check:
+
 - `QUICK_SSH_FIX.md` - Quick troubleshooting
 - `SSH_KEY_TROUBLESHOOTING.md` - Detailed troubleshooting
 - `DEPLOYMENT_SECRETS.md` - Complete deployment guide
