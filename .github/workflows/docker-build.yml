@@ -1,0 +1,132 @@
+name: Build and Push Docker Image
+
+on:
+    push:
+        branches:
+            - main
+            - master
+            - develop
+        tags:
+            - 'v*.*.*'
+    pull_request:
+        branches:
+            - main
+            - master
+    workflow_dispatch:
+        inputs:
+            environment:
+                description: 'Environment to build for'
+                required: true
+                default: 'production'
+                type: choice
+                options:
+                    - production
+                    - staging
+                    - development
+
+env:
+    REGISTRY: ghcr.io
+    IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+    build-and-push:
+        name: Build and Push Docker Image
+        runs-on: ubuntu-latest
+        permissions:
+            contents: read
+            packages: write
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+
+            - name: Set up Docker Buildx
+              uses: docker/setup-buildx-action@v3
+
+            - name: Log in to GitHub Container Registry
+              uses: docker/login-action@v3
+              with:
+                  registry: ${{ env.REGISTRY }}
+                  username: ${{ github.actor }}
+                  password: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Extract metadata
+              id: meta
+              uses: docker/metadata-action@v5
+              with:
+                  images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+                  tags: |
+                      type=ref,event=branch
+                      type=ref,event=pr
+                      type=semver,pattern={{version}}
+                      type=semver,pattern={{major}}.{{minor}}
+                      type=sha,prefix={{branch}}-
+                      type=raw,value=latest,enable={{is_default_branch}}
+
+            - name: Get commit SHA
+              id: commit
+              run: echo "sha=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
+            - name: Get build date
+              id: date
+              run: echo "date=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_OUTPUT
+
+            - name: Determine environment
+              id: env
+              run: |
+                  if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+                      echo "env=${{ github.event.inputs.environment }}" >> $GITHUB_OUTPUT
+                  elif [[ "${{ github.ref }}" == "refs/heads/main" ]] || [[ "${{ github.ref }}" == "refs/heads/master" ]]; then
+                      echo "env=production" >> $GITHUB_OUTPUT
+                  elif [[ "${{ github.ref }}" == "refs/heads/develop" ]]; then
+                      echo "env=staging" >> $GITHUB_OUTPUT
+                  else
+                      echo "env=development" >> $GITHUB_OUTPUT
+                  fi
+
+            - name: Set API endpoint
+              id: api
+              run: |
+                  if [[ "${{ steps.env.outputs.env }}" == "production" ]]; then
+                      echo "endpoint=${{ secrets.VITE_API_ENDPOINT_PRODUCTION || 'http://72.62.161.70:4000/api/v1' }}" >> $GITHUB_OUTPUT
+                  elif [[ "${{ steps.env.outputs.env }}" == "staging" ]]; then
+                      echo "endpoint=${{ secrets.VITE_API_ENDPOINT_STAGING || 'http://72.62.161.70:4000/api/v1' }}" >> $GITHUB_OUTPUT
+                  else
+                      echo "endpoint=${{ secrets.VITE_API_ENDPOINT_DEVELOPMENT || 'http://localhost:4000/api/v1' }}" >> $GITHUB_OUTPUT
+                  fi
+
+            - name: Build Docker image
+              uses: docker/build-push-action@v5
+              with:
+                  context: .
+                  file: ./Dockerfile
+                  push: ${{ github.event_name != 'pull_request' }}
+                  tags: ${{ steps.meta.outputs.tags }}
+                  labels: ${{ steps.meta.outputs.labels }}
+                  cache-from: type=gha
+                  cache-to: type=gha,mode=max
+                  build-args: |
+                      VITE_API_ENDPOINT=${{ steps.api.outputs.endpoint }}
+                      VITE_ENVIRONMENT=${{ steps.env.outputs.env }}
+                      VITE_BUILD_DATE=${{ steps.date.outputs.date }}
+                      VITE_GIT_COMMIT=${{ steps.commit.outputs.sha }}
+
+            - name: Generate build summary
+              if: github.event_name != 'pull_request'
+              run: |
+                  echo "## 🐳 Docker Build Summary" >> $GITHUB_STEP_SUMMARY
+                  echo "" >> $GITHUB_STEP_SUMMARY
+                  echo "**Image:** \`${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}\`" >> $GITHUB_STEP_SUMMARY
+                  echo "**Tags:** ${{ steps.meta.outputs.tags }}" >> $GITHUB_STEP_SUMMARY
+                  echo "**Environment:** ${{ steps.env.outputs.env }}" >> $GITHUB_STEP_SUMMARY
+                  echo "**Commit:** ${{ steps.commit.outputs.sha }}" >> $GITHUB_STEP_SUMMARY
+                  echo "**Build Date:** ${{ steps.date.outputs.date }}" >> $GITHUB_STEP_SUMMARY
+
+            - name: Output image info
+              if: github.event_name != 'pull_request'
+              run: |
+                  echo "✅ Docker image built and pushed successfully!"
+                  echo "📦 Image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}"
+                  echo "🏷️  Tags: ${{ steps.meta.outputs.tags }}"

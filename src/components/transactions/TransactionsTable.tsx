@@ -1,6 +1,7 @@
-import { useState } from 'react';
 import { ArrowDown, ArrowUp, Filter, Search } from 'lucide-react';
+import { useState } from 'react';
 import { useTransactions } from '../../services/apis/transactions';
+import type { TransactionItem } from '../../types';
 import {
     Table,
     TableBody,
@@ -22,7 +23,9 @@ const TransactionsTable = () => {
     const [selectedItems, setSelectedItems] = useState<(string | number)[]>([]);
     const itemsPerPage = 20;
 
-    const filteredTransactions = data?.filter((transaction) => {
+    const transactions = data?.items || [];
+
+    const filteredTransactions = transactions.filter((transaction: TransactionItem) => {
         if (!searchTerm) return true;
         const searchLower = searchTerm.toLowerCase();
         const firstSplit = transaction.splits?.[0];
@@ -45,15 +48,14 @@ const TransactionsTable = () => {
     });
 
     const totalPages = Math.ceil(
-        (filteredTransactions?.length || 0) / itemsPerPage
+        filteredTransactions.length / itemsPerPage
     );
-    const paginatedTransactions =
-        filteredTransactions?.slice(
-            (currentPage - 1) * itemsPerPage,
-            currentPage * itemsPerPage
-        ) || [];
+    const paginatedTransactions = filteredTransactions.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+    );
 
-    const rowIds = paginatedTransactions.map((t) => t.id);
+    const rowIds = paginatedTransactions.map((t: TransactionItem) => t.id);
 
     if (isLoading) {
         return (
@@ -151,7 +153,7 @@ const TransactionsTable = () => {
                             }
                         />
                     ) : (
-                        paginatedTransactions.map((transaction) => {
+                        paginatedTransactions.map((transaction: TransactionItem) => {
                             const firstSplit = transaction.splits?.[0];
                             const description =
                                 firstSplit?.senderDescription ||
@@ -289,7 +291,7 @@ const TransactionsTable = () => {
                 <TablePagination
                     page={currentPage}
                     totalPages={totalPages}
-                    totalItems={filteredTransactions?.length || 0}
+                    totalItems={filteredTransactions.length}
                     itemsPerPage={itemsPerPage}
                     onPageChange={setCurrentPage}
                 />

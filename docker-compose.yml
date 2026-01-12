@@ -1,11 +1,37 @@
+version: '3.8'
+
 services:
     frontend:
         build:
             context: .
             dockerfile: Dockerfile
             args:
-                VITE_ENVIRONMENT: 'production'
-                VITE_API_ENDPOINT: 'http://72.62.161.70:4000/api/v1'
+                VITE_ENVIRONMENT: ${VITE_ENVIRONMENT:-production}
+                VITE_API_ENDPOINT: ${VITE_API_ENDPOINT:-http://72.62.161.70:4000/api/v1}
+                VITE_BUILD_DATE: ${VITE_BUILD_DATE:-$(date -u +'%Y-%m-%dT%H:%M:%SZ')}
+                VITE_GIT_COMMIT: ${VITE_GIT_COMMIT:-local}
+        image: bkeep-frontend:latest
+        container_name: bkeep-frontend
         ports:
-            - '80:80'
+            - '${PORT:-80}:80'
         restart: unless-stopped
+        healthcheck:
+            test:
+                [
+                    'CMD',
+                    'wget',
+                    '--quiet',
+                    '--tries=1',
+                    '--spider',
+                    'http://localhost/',
+                ]
+            interval: 30s
+            timeout: 3s
+            retries: 3
+            start_period: 5s
+        networks:
+            - bkeep-network
+
+networks:
+    bkeep-network:
+        driver: bridge
