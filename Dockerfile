@@ -2,11 +2,17 @@
 FROM node:20-alpine AS deps
 WORKDIR /app
 
-# Copy package files
-COPY package.json package-lock.json ./
+# Copy package files (package-lock.json is optional)
+COPY package.json ./
+COPY package-lock.json* ./
 
 # Install dependencies with clean cache
-RUN npm ci --no-audit --no-fund --prefer-offline && \
+# Use npm ci if lock file exists, otherwise use npm install
+RUN if [ -f package-lock.json ]; then \
+        npm ci --no-audit --no-fund --prefer-offline; \
+    else \
+        npm install --no-audit --no-fund; \
+    fi && \
     npm cache clean --force
 
 # Build stage
@@ -42,10 +48,9 @@ COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
 # Copy built assets from builder stage
 COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Add labels for metadata
+# Add labels for metadata (using static value to avoid ARG issues)
 LABEL maintainer="bkeep-accounting"
 LABEL description="BKeep Accounting Frontend"
-LABEL environment="${VITE_ENVIRONMENT:-production}"
 
 # Expose port 80
 EXPOSE 80
