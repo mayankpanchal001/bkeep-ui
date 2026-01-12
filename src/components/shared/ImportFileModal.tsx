@@ -1,6 +1,11 @@
 import { useRef, useState } from 'react';
 import { FaCloudUploadAlt, FaFileExcel } from 'react-icons/fa';
-import { downloadSampleData } from '../../services/apis/chartsAccountApi';
+import {
+    downloadSampleData,
+    useAccountsTemplatePreview,
+    useApplyAccountsTemplate,
+} from '../../services/apis/chartsAccountApi';
+import { useTemplates } from '../../services/apis/templatesApi';
 import Button from '../typography/Button';
 import Popup from './Popup';
 
@@ -17,7 +22,23 @@ const ImportFileModal = ({
 }: ImportFileModalProps) => {
     const [dragActive, setDragActive] = useState(false);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    const [selectedTemplateId, setSelectedTemplateId] = useState<string | null>(
+        null
+    );
     const inputRef = useRef<HTMLInputElement>(null);
+
+    const { data: templatesData, isLoading: isTemplatesLoading } = useTemplates(
+        { type: 'chart_of_accounts', isActive: true, limit: 50 },
+        isOpen
+    );
+    const templates = templatesData?.data?.items || [];
+    const {
+        data: templatePreviewData,
+        isLoading: isTemplatePreviewLoading,
+        error: templatePreviewError,
+    } = useAccountsTemplatePreview(selectedTemplateId || undefined);
+    const preview = templatePreviewData?.data;
+    const applyTemplateMutation = useApplyAccountsTemplate();
 
     const handleDrag = (e: React.DragEvent) => {
         e.preventDefault();
@@ -83,11 +104,24 @@ const ImportFileModal = ({
             onFileSelect(selectedFile);
             // Reset local state
             setSelectedFile(null);
+            setSelectedTemplateId(null);
         }
+    };
+
+    const handleApplyTemplate = () => {
+        if (!selectedTemplateId) return;
+        applyTemplateMutation.mutate(selectedTemplateId, {
+            onSuccess: () => {
+                setSelectedTemplateId(null);
+                setSelectedFile(null);
+                onClose();
+            },
+        });
     };
 
     const handleClose = () => {
         setSelectedFile(null);
+        setSelectedTemplateId(null);
         onClose();
     };
 
@@ -99,9 +133,18 @@ const ImportFileModal = ({
             size="md"
             footer={
                 <div className="flex justify-between items-center w-full">
-                    <Button onClick={handleDownloadSample}>
-                        Download Sample File
-                    </Button>
+                    <div className="flex gap-2">
+                        {selectedTemplateId ? (
+                            <Button
+                                variant="outline"
+                                onClick={handleApplyTemplate}
+                                loading={applyTemplateMutation.isPending}
+                                disabled={isTemplatePreviewLoading}
+                            >
+                                Apply Template
+                            </Button>
+                        ) : null}
+                    </div>
                     <div className="flex gap-2">
                         <Button variant="outline" onClick={handleClose}>
                             Cancel
@@ -118,6 +161,150 @@ const ImportFileModal = ({
             }
         >
             <div className="space-y-4">
+                <div className="space-y-2">
+                    <div className="flex items-center justify-between gap-2">
+                        <p className="text-sm font-medium text-primary">
+                            Templates
+                        </p>
+                        <Button onClick={handleDownloadSample}>
+                            Download Sample File
+                        </Button>
+                    </div>
+
+                    {isTemplatesLoading ? (
+                        <p className="text-xs text-primary/50">
+                            Loading templates...
+                        </p>
+                    ) : templates.length ? (
+                        <div className="flex flex-wrap gap-2">
+                            {templates.map((t) => (
+                                <button
+                                    key={t.id}
+                                    type="button"
+                                    onClick={() => setSelectedTemplateId(t.id)}
+                                    className={`px-3 py-1.5 rounded-2 text-sm border ${
+                                        selectedTemplateId === t.id
+                                            ? 'bg-primary text-white border-primary'
+                                            : 'bg-white border-primary/10 text-primary hover:bg-primary/5'
+                                    }`}
+                                >
+                                    {t.name || 'Template'}
+                                </button>
+                            ))}
+                        </div>
+                    ) : (
+                        <p className="text-xs text-primary/50">
+                            No templates available.
+                        </p>
+                    )}
+
+                    {selectedTemplateId && (
+                        <div className="rounded-2 border border-primary/10 bg-white p-3">
+                            {isTemplatePreviewLoading ? (
+                                <p className="text-xs text-primary/50">
+                                    Loading template preview...
+                                </p>
+                            ) : preview ? (
+                                <div className="space-y-3">
+                                    <div className="flex items-start justify-between gap-3">
+                                        <div>
+                                            <p className="text-sm font-medium text-primary">
+                                                {preview.template.name ||
+                                                    'Template'}
+                                            </p>
+                                            <p className="text-xs text-primary/50">
+                                                {preview.template.description ||
+                                                    '—'}
+                                            </p>
+                                        </div>
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            onClick={() =>
+                                                setSelectedTemplateId(null)
+                                            }
+                                        >
+                                            Clear
+                                        </Button>
+                                    </div>
+
+                                    <div className="grid grid-cols-3 gap-2">
+                                        <div className="rounded border border-primary/10 p-2">
+                                            <p className="text-[10px] text-primary/60">
+                                                Total
+                                            </p>
+                                            <p className="text-sm font-medium text-primary">
+                                                {preview.summary.totalAccounts}
+                                            </p>
+                                        </div>
+                                        <div className="rounded border border-primary/10 p-2">
+                                            <p className="text-[10px] text-primary/60">
+                                                New
+                                            </p>
+                                            <p className="text-sm font-medium text-primary">
+                                                {preview.summary.newAccounts}
+                                            </p>
+                                        </div>
+                                        <div className="rounded border border-primary/10 p-2">
+                                            <p className="text-[10px] text-primary/60">
+                                                Skipped
+                                            </p>
+                                            <p className="text-sm font-medium text-primary">
+                                                {
+                                                    preview.summary
+                                                        .skippedAccounts
+                                                }
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div className="rounded border border-primary/10 overflow-hidden">
+                                        <div className="grid grid-cols-12 gap-2 bg-primary/5 px-3 py-2">
+                                            <p className="col-span-3 text-[10px] font-medium text-primary/70">
+                                                Number
+                                            </p>
+                                            <p className="col-span-6 text-[10px] font-medium text-primary/70">
+                                                Name
+                                            </p>
+                                            <p className="col-span-3 text-[10px] font-medium text-primary/70 text-right">
+                                                Status
+                                            </p>
+                                        </div>
+                                        <div className="max-h-44 overflow-auto">
+                                            {preview.accounts.map((a) => (
+                                                <div
+                                                    key={`${a.accountNumber}-${a.accountName}`}
+                                                    className="grid grid-cols-12 gap-2 px-3 py-2 border-t border-primary/10"
+                                                >
+                                                    <p className="col-span-3 text-xs text-primary">
+                                                        {a.accountNumber}
+                                                    </p>
+                                                    <p className="col-span-6 text-xs text-primary">
+                                                        {a.accountName}
+                                                    </p>
+                                                    <p className="col-span-3 text-xs text-right text-primary/70">
+                                                        {a.willBeSkipped
+                                                            ? 'Skipped'
+                                                            : 'New'}
+                                                    </p>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                            ) : templatePreviewError ? (
+                                <p className="text-xs text-primary/50">
+                                    Could not load template preview.
+                                </p>
+                            ) : (
+                                <p className="text-xs text-primary/50">
+                                    Could not load template.
+                                </p>
+                            )}
+                        </div>
+                    )}
+                </div>
+
                 <p className="text-sm text-primary/50">
                     Upload your chart of accounts to quickly populate your
                     system. We support .xlsx, .xls, and .csv files.

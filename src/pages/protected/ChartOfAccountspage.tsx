@@ -459,8 +459,38 @@ const ChartOfAccountspage = () => {
             if (jsonData.length > 0) {
                 const headers = jsonData[0] as string[];
                 setFileHeaders(headers);
+
+                // Auto-map fields with matching names (case-insensitive)
+                const importFields = importFieldsData?.data || [];
+                const autoMapping: Record<string, string> = {};
+
+                importFields.forEach((field) => {
+                    const match = headers.find(
+                        (header) =>
+                            header.toLowerCase() ===
+                                field.label.toLowerCase() ||
+                            header.toLowerCase() === field.key.toLowerCase()
+                    );
+                    if (match) {
+                        autoMapping[field.key] = match;
+                    }
+                });
+
+                // Check if all required fields are mapped
+                const requiredFields = importFields.filter((f) => f.required);
+                const allRequiredMapped = requiredFields.every(
+                    (f) => autoMapping[f.key]
+                );
+
                 setShowUploadModal(false);
-                setShowMappingModal(true);
+
+                // If all required fields are auto-mapped, directly import
+                if (allRequiredMapped && requiredFields.length > 0) {
+                    handleImportConfirm(autoMapping);
+                } else {
+                    // Otherwise, show mapping modal
+                    setShowMappingModal(true);
+                }
             }
         };
         reader.readAsArrayBuffer(file);

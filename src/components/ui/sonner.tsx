@@ -4,7 +4,23 @@ import { Toaster as Sonner, type ToasterProps } from 'sonner';
 const Toaster = ({ ...props }: ToasterProps) => {
     const theme = useAppTheme();
 
-    return <Sonner theme={theme as ToasterProps['theme']} {...props} />;
+    const toastOptions: ToasterProps['toastOptions'] = {
+        ...props.toastOptions,
+        style: {
+            maxWidth: '380px',
+            width: '100%',
+            ...props.toastOptions?.style,
+        },
+    };
+
+    return (
+        <Sonner
+            theme={theme as ToasterProps['theme']}
+            closeButton
+            toastOptions={toastOptions}
+            {...props}
+        />
+    );
 };
 
 export { Toaster };

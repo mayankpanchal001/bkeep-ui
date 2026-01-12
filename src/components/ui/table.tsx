@@ -8,6 +8,7 @@ import {
 } from '@/components/ui/resizable';
 import { cn } from '@/utils/cn';
 import type { Layout } from 'react-resizable-panels';
+import { Button } from './button';
 
 // ============================================================================
 // Types & Interfaces
@@ -479,7 +480,7 @@ function Table({
                                 ref={tableRef}
                                 data-slot="table"
                                 className={cn(
-                                    'w-max md:w-full caption-bottom text-sm table-fixed',
+                                    'w-full caption-bottom text-sm table-auto',
                                     className
                                 )}
                                 {...props}
@@ -677,7 +678,7 @@ function TableHead({
             data-sorted={isCurrentSort || undefined}
             className={cn(
                 'relative h-10 px-2 py-1 align-middle',
-                'text-xs font-medium text-muted-foreground',
+                'text-xs font-bold text-muted-foreground',
                 'whitespace-nowrap select-none',
                 alignClass,
                 '[&:has([role=checkbox])]:w-12 [&:has([role=checkbox])]:px-3 [&:has([role=checkbox])>div]:justify-center',
@@ -706,7 +707,7 @@ function TableHead({
 // Sort Indicator Component
 function SortIndicator({ direction }: { direction: SortDirection }) {
     return (
-        <span className="inline-flex items-center w-4 h-4">
+        <span className="inline-flex items-center w-4 h-4 ml-2">
             {direction === 'asc' && (
                 <svg
                     className="w-4 h-4 text-blue-600 dark:text-blue-400"
@@ -784,8 +785,10 @@ function TableCell({
             data-slot="table-cell"
             className={cn(
                 'px-3 py-2 align-middle text-sm text-foreground',
+                noTruncate
+                    ? 'whitespace-normal break-words'
+                    : 'whitespace-nowrap',
                 alignClass,
-                !noTruncate && 'truncate',
                 '[&:has([role=checkbox])]:w-12 [&:has([role=checkbox])]:px-3',
                 className
             )}
@@ -963,32 +966,24 @@ function TableSelectionToolbar({
         <div
             className={cn(
                 'flex items-center justify-between px-4 py-3 mb-3',
-                'bg-linear-to-r from-blue-50 to-indigo-50 dark:from-blue-950/40 dark:to-indigo-950/40',
-                'border border-blue-200/80 dark:border-blue-800/60 rounded-lg',
+                'bg-primary/10 border border-border rounded-lg',
                 'animate-in slide-in-from-top-2 duration-200',
                 className
             )}
         >
             <div className="flex items-center gap-3">
-                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-blue-600 text-white text-sm font-semibold">
+                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-surface text-sm font-semibold">
                     {selectedCount}
                 </div>
-                <span className="text-sm font-medium text-blue-900 dark:text-blue-100">
-                    {selectedCount === 1 ? 'item selected' : 'items selected'}
+                <span className="text-sm font-medium text-foreground">
+                    {selectedCount === 1 ? 'Item selected' : 'Items selected'}
                 </span>
             </div>
             <div className="flex items-center gap-2">
                 {children}
-                <button
-                    onClick={clearSelection}
-                    className={cn(
-                        'px-3 py-1.5 text-xs font-medium rounded-md transition-colors',
-                        'text-slate-600 dark:text-slate-300',
-                        'hover:bg-slate-200/60 dark:hover:bg-slate-700/60'
-                    )}
-                >
+                <Button size="sm" onClick={clearSelection}>
                     Clear
-                </button>
+                </Button>
             </div>
         </div>
     );

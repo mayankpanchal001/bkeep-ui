@@ -38,6 +38,11 @@ const Settingspage = () => {
                       href: '/settings/tenants',
                       icon: <Icons.Building className="w-4 h-4" />,
                   },
+                  {
+                      title: 'Templates',
+                      href: '/settings/templates',
+                      icon: <Icons.ChartOfAccounts className="w-4 h-4" />,
+                  },
               ]
             : []),
         {
@@ -81,6 +86,7 @@ const Settingspage = () => {
     const subtitleMap: Record<string, string> = {
         '/settings/profile': 'Manage your account settings',
         '/settings/tenants': `Manage ${PLURAL_TENANT_PREFIX}`,
+        '/settings/templates': 'Manage accounts and tax templates',
         '/settings/users': 'Manage workspace users',
         '/settings/roles': 'Manage roles and permissions',
         '/settings/security': 'Authentication and MFA preferences',
