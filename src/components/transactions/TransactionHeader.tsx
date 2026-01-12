@@ -27,6 +27,7 @@ interface TransactionHeaderProps {
     selectedAccountId?: string;
     onAccountSelect?: (accountId: string) => void;
     transactions?: HeaderTransaction[];
+    onStatusSelect?: (status: 'pending' | 'posted' | 'voided' | 'reversed') => void;
 }
 
 function hashStringToHue(input: string) {
@@ -51,6 +52,7 @@ export function TransactionHeader({
     selectedAccountId,
     onAccountSelect,
     transactions = [],
+    onStatusSelect,
 }: TransactionHeaderProps) {
     const [isImportModalOpen, setIsImportModalOpen] = useState(false);
     const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -266,6 +268,15 @@ export function TransactionHeader({
                             const pendingCount = accountTransactions.filter(
                                 (t) => t.status === 'pending'
                             ).length;
+                            const postedCount = accountTransactions.filter(
+                                (t) => t.status === 'posted'
+                            ).length;
+                            const voidedCount = accountTransactions.filter(
+                                (t) => t.status === 'voided'
+                            ).length;
+                            const reversedCount = accountTransactions.filter(
+                                (t) => t.status === 'reversed'
+                            ).length;
 
                             const hue = hashStringToHue(
                                 `${account.id}-${account.accountNumber}-${account.accountName}`
@@ -310,9 +321,13 @@ export function TransactionHeader({
                                     hue={hue}
                                     isSelected={isSelected}
                                     pendingCount={pendingCount}
+                                    postedCount={postedCount}
+                                    voidedCount={voidedCount}
+                                    reversedCount={reversedCount}
                                     onClick={() =>
                                         onAccountSelect?.(account.id)
                                     }
+                                    onStatusClick={onStatusSelect}
                                 />
                             );
                         })}

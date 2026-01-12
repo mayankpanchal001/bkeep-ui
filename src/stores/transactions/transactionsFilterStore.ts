@@ -58,7 +58,7 @@ const initialState = {
     filterEndDate: '',
     filterMinAmount: '',
     filterMaxAmount: '',
-    sort: 'date' as string | null,
+    sort: 'date' as string | null, // UI sort key, will be mapped to API sort key
     order: 'asc' as SortDirection,
 };
 

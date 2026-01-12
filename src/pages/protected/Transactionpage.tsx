@@ -31,8 +31,9 @@ import {
     TableSelectAllCheckbox,
     TableSelectionToolbar,
 } from '@/components/ui/table';
+import { cn } from '@/utils/cn';
 import { Filter, Search, X } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useContacts } from '../../services/apis/contactsApi';
 import { useTaxes } from '../../services/apis/taxApi';
 import {
@@ -43,8 +44,8 @@ import {
     useTransactions,
     useVoidTransaction,
 } from '../../services/apis/transactions';
-import { showErrorToast, showSuccessToast } from '../../utills/toast';
 import { useTransactionsFilterStore } from '../../stores/transactions/transactionsFilterStore';
+import { showErrorToast, showSuccessToast } from '../../utills/toast';
 
 const Transactionpage = () => {
     type TxStatus = 'pending' | 'posted' | 'voided' | 'reversed';
@@ -158,8 +159,27 @@ const Transactionpage = () => {
             if (!isNaN(maxAmount)) filters.maxAmount = maxAmount;
         }
         if (sort) {
-            filters.sort = sort;
-            filters.order = order;
+            // Map UI sort keys to API sort keys
+            const sortKeyMap: Record<string, string> = {
+                date: 'paidAt',
+                spent: 'amount',
+                received: 'amount',
+                tax: 'amount', // Tax is not directly sortable, use amount as fallback
+            };
+            const apiSortKey = sortKeyMap[sort] || sort;
+            // Only include sort if it's a valid API sort key
+            const validApiSortKeys = [
+                'paidAt',
+                'amount',
+                'type',
+                'reconciled',
+                'createdAt',
+                'updatedAt',
+            ];
+            if (validApiSortKeys.includes(apiSortKey)) {
+                filters.sort = apiSortKey;
+                filters.order = order;
+            }
         }
 
         return filters;
@@ -183,8 +203,35 @@ const Transactionpage = () => {
 
     const [transactions, setTransactions] = useState<BankTransaction[]>([]);
     const { data: apiResponse, isLoading, error } = useTransactions(apiFilters);
-    const apiTransactions = apiResponse?.items || [];
+    const apiTransactions = useMemo(
+        () => apiResponse?.items || [],
+        [apiResponse?.items]
+    );
     const pagination = apiResponse?.pagination;
+
+    // Helper function to get transaction status (consistent mapping)
+    const getTransactionStatus = useCallback(
+        (tx: { reconciled?: boolean; status?: string }): TxStatus => {
+            if (!tx) return 'pending';
+            return (
+                ((tx as unknown as { status?: string }).status as TxStatus) ||
+                (tx.reconciled ? 'posted' : 'pending')
+            );
+        },
+        []
+    );
+
+    // Fetch all transactions (without status filter) for accurate counts on bank cards
+    const countFilters = useMemo(() => {
+        const filters: Record<string, unknown> = {
+            limit: 1000, // Get a large number to count all
+        };
+        if (selectedAccountId) filters.accountId = selectedAccountId;
+        // Don't include status filter - we want all statuses for counting
+        return filters;
+    }, [selectedAccountId]);
+    const { data: allTransactionsResponse } = useTransactions(countFilters);
+    const allTransactions = allTransactionsResponse?.items || [];
     const [isFilterDrawerOpen, setIsFilterDrawerOpen] = useState(false);
     const [isBulkProcessing, setIsBulkProcessing] = useState(false);
     const { mutate: postTransaction, mutateAsync: postTransactionAsync } =
@@ -254,9 +301,7 @@ const Transactionpage = () => {
             // Map reconciled: false -> 'pending' (waiting for reconciliation/review)
             // Map reconciled: true -> 'posted' (finalized)
             // If API returns explicit status, use it
-            const status: TxStatus =
-                ((tx as unknown as { status?: string }).status as TxStatus) ||
-                (tx.reconciled ? 'posted' : 'pending');
+            const status: TxStatus = getTransactionStatus(tx);
 
             return {
                 id: tx.id,
@@ -277,6 +322,7 @@ const Transactionpage = () => {
         });
 
         setTransactions(mapped);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [apiTransactions, isLoading, error]);
 
     const SUPPLIER_OPTIONS: ComboboxOption[] = useMemo(() => {
@@ -336,21 +382,14 @@ const Transactionpage = () => {
     // Use API data directly - all filtering is handled by the API
     const filtered = transactions;
 
-    // Calculate counts from current page transactions (for status tabs)
-    // Note: These counts reflect only the current page, not the total filtered results
-    // For accurate counts, the API would need to return status counts separately
-    const pendingCount = transactions.filter(
-        (t) => t.status === 'pending'
+    // Calculate counts from all transactions (not filtered) for accurate status tab counts
+    const pendingCount = allTransactions.filter(
+        (tx) => getTransactionStatus(tx) === 'pending'
     ).length;
-    const postedCount = transactions.filter(
-        (t) => t.status === 'posted'
+    const postedCount = allTransactions.filter(
+        (tx) => getTransactionStatus(tx) === 'posted'
     ).length;
-    const voidedCount = transactions.filter(
-        (t) => t.status === 'voided'
-    ).length;
-    const reversedCount = transactions.filter(
-        (t) => t.status === 'reversed'
-    ).length;
+    const allCount = allTransactions.length;
 
     const { data: taxesResponse } = useTaxes({ isActive: true, limit: 100 });
     const TAX_OPTIONS: ComboboxOption[] = useMemo(() => {
@@ -413,50 +452,52 @@ const Transactionpage = () => {
             <TransactionHeader
                 selectedAccountId={filterStore.selectedAccountId}
                 onAccountSelect={(id) => filterStore.setSelectedAccountId(id)}
-                transactions={transactions}
+                transactions={allTransactions.map((tx) => {
+                    const date = tx.paidAt || tx.createdAt;
+                    const status: TxStatus = getTransactionStatus(tx);
+                    return {
+                        accountId: tx.accountId,
+                        status,
+                        date,
+                    };
+                })}
+                onStatusSelect={(status) => filterStore.setStatus(status)}
             />
 
             <div className="p-4 border-b border-primary/10">
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2 flex-wrap">
                     <button
-                        className={`px-3 py-1.5 rounded-2 text-sm ${
+                        className={cn(
+                            'px-4 py-2 rounded-lg text-sm font-medium transition-all',
+                            filterStore.status === 'all'
+                                ? 'bg-primary text-white shadow-sm'
+                                : 'bg-white border border-primary/10 text-primary hover:bg-primary/5 hover:border-primary/20'
+                        )}
+                        onClick={() => filterStore.setStatus('all')}
+                    >
+                        All ({allCount})
+                    </button>
+                    <button
+                        className={cn(
+                            'px-4 py-2 rounded-lg text-sm font-medium transition-all',
                             filterStore.status === 'pending'
-                                ? 'bg-primary text-white'
-                                : 'bg-white border border-primary/10 text-primary'
-                        }`}
+                                ? 'bg-orange-500 text-white shadow-sm'
+                                : 'bg-white border border-primary/10 text-primary hover:bg-orange-50 hover:border-orange-200'
+                        )}
                         onClick={() => filterStore.setStatus('pending')}
                     >
                         Pending ({pendingCount})
                     </button>
                     <button
-                        className={`px-3 py-1.5 rounded-2 text-sm ${
+                        className={cn(
+                            'px-4 py-2 rounded-lg text-sm font-medium transition-all',
                             filterStore.status === 'posted'
-                                ? 'bg-primary text-white'
-                                : 'bg-white border border-primary/10 text-primary'
-                        }`}
+                                ? 'bg-green-600 text-white shadow-sm'
+                                : 'bg-white border border-primary/10 text-primary hover:bg-green-50 hover:border-green-200'
+                        )}
                         onClick={() => filterStore.setStatus('posted')}
                     >
                         Posted ({postedCount})
-                    </button>
-                    <button
-                        className={`px-3 py-1.5 rounded-2 text-sm ${
-                            filterStore.status === 'voided'
-                                ? 'bg-primary text-white'
-                                : 'bg-white border border-primary/10 text-primary'
-                        }`}
-                        onClick={() => filterStore.setStatus('voided')}
-                    >
-                        Voided ({voidedCount})
-                    </button>
-                    <button
-                        className={`px-3 py-1.5 rounded-2 text-sm ${
-                            filterStore.status === 'reversed'
-                                ? 'bg-primary text-white'
-                                : 'bg-white border border-primary/10 text-primary'
-                        }`}
-                        onClick={() => filterStore.setStatus('reversed')}
-                    >
-                        Reversed ({reversedCount})
                     </button>
                     <div className="ml-auto flex items-center gap-3">
                         <div className="relative w-[260px]">
