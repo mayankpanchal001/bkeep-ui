@@ -316,7 +316,7 @@ export function JournalEntryForm({
     };
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6 ">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <InputField
                     label="Entry date"

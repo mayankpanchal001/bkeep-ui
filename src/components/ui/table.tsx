@@ -424,7 +424,7 @@ function Table({
                     >
                         <div
                             ref={scrollRef}
-                            className="relative overflow-x-auto"
+                            className="relative overflow-auto h-full"
                         >
                             {hasResizableColumns && computedLayout && (
                                 <div
@@ -519,7 +519,7 @@ function TableHeader({ className, sticky = true, ...props }: TableHeaderProps) {
             data-slot="table-header"
             className={cn(
                 sticky && 'sticky top-0 z-10',
-                'bg-primary/10 backdrop-blur',
+                'bg-white dark:bg-card backdrop-blur',
                 'border-b border-border',
                 className
             )}
