@@ -467,7 +467,8 @@ const ChartOfAccountspage = () => {
                 importFields.forEach((field) => {
                     const match = headers.find(
                         (header) =>
-                            header.toLowerCase() === field.label.toLowerCase() ||
+                            header.toLowerCase() ===
+                                field.label.toLowerCase() ||
                             header.toLowerCase() === field.key.toLowerCase()
                     );
                     if (match) {

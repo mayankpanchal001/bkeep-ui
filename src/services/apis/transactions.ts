@@ -35,7 +35,9 @@ export type TransactionsListResponse = {
     pagination?: PaginationInfo;
 };
 
-const getTransactions = async (filters?: TransactionFilters): Promise<TransactionsListResponse> => {
+const getTransactions = async (
+    filters?: TransactionFilters
+): Promise<TransactionsListResponse> => {
     const params = new URLSearchParams();
     if (filters?.page) params.append('page', filters.page.toString());
     if (filters?.limit) params.append('limit', filters.limit.toString());
@@ -47,15 +49,17 @@ const getTransactions = async (filters?: TransactionFilters): Promise<Transactio
     if (filters?.contactId) params.append('contactId', filters.contactId);
     if (filters?.category) params.append('category', filters.category);
     if (filters?.taxId) params.append('taxId', filters.taxId);
-    if (filters?.minAmount !== undefined) params.append('minAmount', filters.minAmount.toString());
-    if (filters?.maxAmount !== undefined) params.append('maxAmount', filters.maxAmount.toString());
+    if (filters?.minAmount !== undefined)
+        params.append('minAmount', filters.minAmount.toString());
+    if (filters?.maxAmount !== undefined)
+        params.append('maxAmount', filters.maxAmount.toString());
     if (filters?.sort) params.append('sort', filters.sort);
     if (filters?.order) params.append('order', filters.order);
 
     const response = await axiosInstance.get(
         `/transactions${params.toString() ? `?${params.toString()}` : ''}`
     );
-    
+
     // Extract items and pagination from the response if it follows the standard pattern
     if (response.data?.data?.items && Array.isArray(response.data.data.items)) {
         return {
@@ -96,7 +100,7 @@ export const useTransactions = (filters?: TransactionFilters) => {
         filters?.sort,
         filters?.order,
     ];
-    
+
     return useQuery<TransactionsListResponse>({
         queryKey,
         queryFn: () => getTransactions(filters),
@@ -242,7 +246,9 @@ export const useVoidTransaction = () => {
     return useMutation({
         mutationFn: (id: string) => voidTransaction(id),
         onSuccess: (data) => {
-            showSuccessToast(data?.message || 'Transaction voided successfully');
+            showSuccessToast(
+                data?.message || 'Transaction voided successfully'
+            );
             queryClient.invalidateQueries({ queryKey: ['transactions'] });
         },
         onError: (error) => {
@@ -270,7 +276,9 @@ export const usePostTransaction = () => {
     return useMutation({
         mutationFn: (id: string) => postTransaction(id),
         onSuccess: (data) => {
-            showSuccessToast(data?.message || 'Transaction posted successfully');
+            showSuccessToast(
+                data?.message || 'Transaction posted successfully'
+            );
             queryClient.invalidateQueries({ queryKey: ['transactions'] });
         },
         onError: (error) => {

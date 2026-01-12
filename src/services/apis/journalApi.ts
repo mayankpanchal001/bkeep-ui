@@ -80,8 +80,10 @@ export async function getJournalEntries(
         params.append('isAdjusting', filters.isAdjusting.toString());
     if (filters?.contactId) params.append('contactId', filters.contactId);
     if (filters?.accountId) params.append('accountId', filters.accountId);
-    if (filters?.minAmount !== undefined) params.append('minAmount', filters.minAmount.toString());
-    if (filters?.maxAmount !== undefined) params.append('maxAmount', filters.maxAmount.toString());
+    if (filters?.minAmount !== undefined)
+        params.append('minAmount', filters.minAmount.toString());
+    if (filters?.maxAmount !== undefined)
+        params.append('maxAmount', filters.maxAmount.toString());
     if (filters?.sort) params.append('sort', filters.sort);
     if (filters?.order) params.append('order', filters.order);
 
@@ -227,7 +229,7 @@ export const useJournalEntries = (filters?: JournalEntryFilters) => {
         filters?.sort,
         filters?.order,
     ];
-    
+
     return useQuery<JournalEntriesListResponse, Error>({
         queryKey,
         queryFn: () => getJournalEntries(filters),

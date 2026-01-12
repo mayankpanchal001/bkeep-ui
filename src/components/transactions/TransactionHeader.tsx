@@ -251,67 +251,71 @@ export function TransactionHeader({
                     className="flex overflow-x-auto p-4 gap-4 scrollbar-hide relative"
                 >
                     {displayAccounts
-                    .sort((a, b) => {
-                        // Put selected account first
-                        if (selectedAccountId === a.id) return -1;
-                        if (selectedAccountId === b.id) return 1;
-                        return 0;
-                    })
-                    .map((account) => {
-                        const isSelected = selectedAccountId === account.id;
+                        .sort((a, b) => {
+                            // Put selected account first
+                            if (selectedAccountId === a.id) return -1;
+                            if (selectedAccountId === b.id) return 1;
+                            return 0;
+                        })
+                        .map((account) => {
+                            const isSelected = selectedAccountId === account.id;
 
-                        const accountTransactions = transactions.filter(
-                            (t) => t.accountId === account.id
-                        );
-                        const pendingCount = accountTransactions.filter(
-                            (t) => t.status === 'pending'
-                        ).length;
+                            const accountTransactions = transactions.filter(
+                                (t) => t.accountId === account.id
+                            );
+                            const pendingCount = accountTransactions.filter(
+                                (t) => t.status === 'pending'
+                            ).length;
 
-                        const hue = hashStringToHue(
-                            `${account.id}-${account.accountNumber}-${account.accountName}`
-                        );
-                        const createdAt = new Date(account.createdAt);
-                        const valid = Number.isNaN(createdAt.getTime())
-                            ? '--/--'
-                            : formatMMYY(createdAt);
-                        const expiryDate = new Date(
-                            Number.isNaN(createdAt.getTime())
-                                ? Date.now()
-                                : createdAt.getTime()
-                        );
-                        expiryDate.setFullYear(expiryDate.getFullYear() + 3);
-                        const expiry = formatMMYY(expiryDate);
+                            const hue = hashStringToHue(
+                                `${account.id}-${account.accountNumber}-${account.accountName}`
+                            );
+                            const createdAt = new Date(account.createdAt);
+                            const valid = Number.isNaN(createdAt.getTime())
+                                ? '--/--'
+                                : formatMMYY(createdAt);
+                            const expiryDate = new Date(
+                                Number.isNaN(createdAt.getTime())
+                                    ? Date.now()
+                                    : createdAt.getTime()
+                            );
+                            expiryDate.setFullYear(
+                                expiryDate.getFullYear() + 3
+                            );
+                            const expiry = formatMMYY(expiryDate);
 
-                        const digits = (account.accountNumber || '')
-                            .replace(/\D/g, '')
-                            .slice(-4)
-                            .padStart(4, '0');
-                        const seedHue = hue + 1;
-                        const group1 = (seedHue * 73 + 4642) % 10000;
-                        const group2 = (seedHue * 97 + 3489) % 10000;
-                        const group3 = (seedHue * 53 + 9867) % 10000;
-                        const group4 = Number(digits);
-                        const cardNumber = formatCardNumber([
-                            group1,
-                            group2,
-                            group3,
-                            group4,
-                        ]);
+                            const digits = (account.accountNumber || '')
+                                .replace(/\D/g, '')
+                                .slice(-4)
+                                .padStart(4, '0');
+                            const seedHue = hue + 1;
+                            const group1 = (seedHue * 73 + 4642) % 10000;
+                            const group2 = (seedHue * 97 + 3489) % 10000;
+                            const group3 = (seedHue * 53 + 9867) % 10000;
+                            const group4 = Number(digits);
+                            const cardNumber = formatCardNumber([
+                                group1,
+                                group2,
+                                group3,
+                                group4,
+                            ]);
 
-                        return (
-                            <BankCard
-                                key={account.id}
-                                accountName={account.accountName}
-                                cardNumber={cardNumber}
-                                valid={valid}
-                                expiry={expiry}
-                                hue={hue}
-                                isSelected={isSelected}
-                                pendingCount={pendingCount}
-                                onClick={() => onAccountSelect?.(account.id)}
-                            />
-                        );
-                    })}
+                            return (
+                                <BankCard
+                                    key={account.id}
+                                    accountName={account.accountName}
+                                    cardNumber={cardNumber}
+                                    valid={valid}
+                                    expiry={expiry}
+                                    hue={hue}
+                                    isSelected={isSelected}
+                                    pendingCount={pendingCount}
+                                    onClick={() =>
+                                        onAccountSelect?.(account.id)
+                                    }
+                                />
+                            );
+                        })}
                 </div>
             </div>
 

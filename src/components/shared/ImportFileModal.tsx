@@ -250,7 +250,10 @@ const ImportFileModal = ({
                                                 Skipped
                                             </p>
                                             <p className="text-sm font-medium text-primary">
-                                                {preview.summary.skippedAccounts}
+                                                {
+                                                    preview.summary
+                                                        .skippedAccounts
+                                                }
                                             </p>
                                         </div>
                                     </div>

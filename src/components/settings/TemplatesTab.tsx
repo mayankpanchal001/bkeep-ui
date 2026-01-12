@@ -8,7 +8,11 @@ import {
     useTaxTemplatePreview,
 } from '../../services/apis/taxApi';
 import { useTemplates } from '../../services/apis/templatesApi';
-import type { Template, TemplateListType, TemplateType } from '../../types/templates';
+import type {
+    Template,
+    TemplateListType,
+    TemplateType,
+} from '../../types/templates';
 import { useAuth } from '../../stores/auth/authSelectore';
 import Button from '../typography/Button';
 import { InputField, SelectField } from '../typography/InputFields';
@@ -16,7 +20,8 @@ import { InputField, SelectField } from '../typography/InputFields';
 const TemplatesTab = () => {
     const { user } = useAuth();
     const [search, setSearch] = useState('');
-    const [templateType, setTemplateType] = useState<TemplateListType>('accounts');
+    const [templateType, setTemplateType] =
+        useState<TemplateListType>('accounts');
     const [isActiveFilter, setIsActiveFilter] = useState<
         'all' | 'active' | 'inactive'
     >('active');
@@ -53,7 +58,9 @@ const TemplatesTab = () => {
         isLoading: isAccountsPreviewLoading,
         error: accountsPreviewError,
     } = useAccountsTemplatePreview(
-        templateType === 'accounts' ? selectedTemplateId || undefined : undefined
+        templateType === 'accounts'
+            ? selectedTemplateId || undefined
+            : undefined
     );
 
     const accountsPreview = accountsPreviewData?.data;
@@ -166,7 +173,8 @@ const TemplatesTab = () => {
                         ) : templates.length ? (
                             <div className="divide-y divide-primary/10">
                                 {templates.map((t) => {
-                                    const isSelected = t.id === selectedTemplateId;
+                                    const isSelected =
+                                        t.id === selectedTemplateId;
                                     return (
                                         <button
                                             key={t.id}
@@ -227,7 +235,9 @@ const TemplatesTab = () => {
                             <Button
                                 variant="primary"
                                 onClick={() =>
-                                    applyAccountsTemplate.mutate(selectedTemplateId)
+                                    applyAccountsTemplate.mutate(
+                                        selectedTemplateId
+                                    )
                                 }
                                 loading={applyAccountsTemplate.isPending}
                                 disabled={isAccountsPreviewLoading}
@@ -263,8 +273,8 @@ const TemplatesTab = () => {
                                     <div className="flex items-start justify-between gap-3">
                                         <div>
                                             <p className="text-base font-medium text-primary">
-                                                {accountsPreview.template.name ||
-                                                    'Template'}
+                                                {accountsPreview.template
+                                                    .name || 'Template'}
                                             </p>
                                             <p className="text-sm text-primary/50">
                                                 {accountsPreview.template
@@ -363,8 +373,8 @@ const TemplatesTab = () => {
                                 <div className="flex items-start justify-between gap-3">
                                     <div>
                                         <p className="text-base font-medium text-primary">
-                                            {taxPreviewData.data.template.name ||
-                                                'Template'}
+                                            {taxPreviewData.data.template
+                                                .name || 'Template'}
                                         </p>
                                         <p className="text-sm text-primary/50">
                                             {taxPreviewData.data.template
@@ -379,7 +389,10 @@ const TemplatesTab = () => {
                                             Total
                                         </p>
                                         <p className="text-sm font-medium text-primary">
-                                            {taxPreviewData.data.summary.totalTaxes}
+                                            {
+                                                taxPreviewData.data.summary
+                                                    .totalTaxes
+                                            }
                                         </p>
                                     </div>
                                     <div className="rounded border border-primary/10 p-2">
@@ -387,7 +400,10 @@ const TemplatesTab = () => {
                                             New
                                         </p>
                                         <p className="text-sm font-medium text-primary">
-                                            {taxPreviewData.data.summary.newTaxes}
+                                            {
+                                                taxPreviewData.data.summary
+                                                    .newTaxes
+                                            }
                                         </p>
                                     </div>
                                     <div className="rounded border border-primary/10 p-2">
@@ -395,7 +411,10 @@ const TemplatesTab = () => {
                                             Skipped
                                         </p>
                                         <p className="text-sm font-medium text-primary">
-                                            {taxPreviewData.data.summary.skippedTaxes}
+                                            {
+                                                taxPreviewData.data.summary
+                                                    .skippedTaxes
+                                            }
                                         </p>
                                     </div>
                                 </div>

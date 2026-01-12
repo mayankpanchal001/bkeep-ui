@@ -50,7 +50,9 @@ const TaxDetailDrawer = ({
                                 <h3 className="text-sm font-medium text-muted-foreground">
                                     Name
                                 </h3>
-                                <p className="text-lg font-medium">{tax.name}</p>
+                                <p className="text-lg font-medium">
+                                    {tax.name}
+                                </p>
                             </div>
 
                             <div className="space-y-1">

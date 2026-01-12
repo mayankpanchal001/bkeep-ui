@@ -67,23 +67,37 @@ const Transactionpage = () => {
 
     const filterStore = useTransactionsFilterStore();
     const [selectedItems, setSelectedItems] = useState<(string | number)[]>([]);
-    
+
     // Select individual filter values to make them reactive
     const page = useTransactionsFilterStore((state) => state.page);
     const limit = useTransactionsFilterStore((state) => state.limit);
     const search = useTransactionsFilterStore((state) => state.search);
     const status = useTransactionsFilterStore((state) => state.status);
-    const selectedAccountId = useTransactionsFilterStore((state) => state.selectedAccountId);
-    const filterStartDate = useTransactionsFilterStore((state) => state.filterStartDate);
-    const filterEndDate = useTransactionsFilterStore((state) => state.filterEndDate);
-    const filterSupplier = useTransactionsFilterStore((state) => state.filterSupplier);
-    const filterCategory = useTransactionsFilterStore((state) => state.filterCategory);
+    const selectedAccountId = useTransactionsFilterStore(
+        (state) => state.selectedAccountId
+    );
+    const filterStartDate = useTransactionsFilterStore(
+        (state) => state.filterStartDate
+    );
+    const filterEndDate = useTransactionsFilterStore(
+        (state) => state.filterEndDate
+    );
+    const filterSupplier = useTransactionsFilterStore(
+        (state) => state.filterSupplier
+    );
+    const filterCategory = useTransactionsFilterStore(
+        (state) => state.filterCategory
+    );
     const filterTax = useTransactionsFilterStore((state) => state.filterTax);
-    const filterMinAmount = useTransactionsFilterStore((state) => state.filterMinAmount);
-    const filterMaxAmount = useTransactionsFilterStore((state) => state.filterMaxAmount);
+    const filterMinAmount = useTransactionsFilterStore(
+        (state) => state.filterMinAmount
+    );
+    const filterMaxAmount = useTransactionsFilterStore(
+        (state) => state.filterMaxAmount
+    );
     const sort = useTransactionsFilterStore((state) => state.sort);
     const order = useTransactionsFilterStore((state) => state.order);
-    
+
     const itemsPerPage = limit;
 
     // Fetch contacts data first (needed for supplier filter conversion)
@@ -91,7 +105,7 @@ const Transactionpage = () => {
         isActive: true,
         limit: 1000,
     });
-    
+
     // Create a map of contactId -> displayName (needed for supplier filter conversion)
     const contactNameById = useMemo(() => {
         const items = contactsData?.data?.items || [];
@@ -110,13 +124,13 @@ const Transactionpage = () => {
             page,
             limit,
         };
-        
+
         if (search) filters.search = search;
         if (status !== 'all') filters.status = status;
         if (selectedAccountId) filters.accountId = selectedAccountId;
         if (filterStartDate) filters.startDate = filterStartDate;
         if (filterEndDate) filters.endDate = filterEndDate;
-        
+
         // Convert supplier display name to contactId
         if (filterSupplier) {
             // First, try to find contactId by displayName
@@ -132,7 +146,7 @@ const Transactionpage = () => {
             }
             // If neither, we might need to handle it differently or skip it
         }
-        
+
         if (filterCategory) filters.category = filterCategory;
         if (filterTax) filters.taxId = filterTax;
         if (filterMinAmount) {
@@ -147,7 +161,7 @@ const Transactionpage = () => {
             filters.sort = sort;
             filters.order = order;
         }
-        
+
         return filters;
     }, [
         page,
@@ -321,14 +335,22 @@ const Transactionpage = () => {
 
     // Use API data directly - all filtering is handled by the API
     const filtered = transactions;
-    
+
     // Calculate counts from current page transactions (for status tabs)
     // Note: These counts reflect only the current page, not the total filtered results
     // For accurate counts, the API would need to return status counts separately
-    const pendingCount = transactions.filter((t) => t.status === 'pending').length;
-    const postedCount = transactions.filter((t) => t.status === 'posted').length;
-    const voidedCount = transactions.filter((t) => t.status === 'voided').length;
-    const reversedCount = transactions.filter((t) => t.status === 'reversed').length;
+    const pendingCount = transactions.filter(
+        (t) => t.status === 'pending'
+    ).length;
+    const postedCount = transactions.filter(
+        (t) => t.status === 'posted'
+    ).length;
+    const voidedCount = transactions.filter(
+        (t) => t.status === 'voided'
+    ).length;
+    const reversedCount = transactions.filter(
+        (t) => t.status === 'reversed'
+    ).length;
 
     const { data: taxesResponse } = useTaxes({ isActive: true, limit: 100 });
     const TAX_OPTIONS: ComboboxOption[] = useMemo(() => {
@@ -371,9 +393,12 @@ const Transactionpage = () => {
     // No client-side sorting or pagination - API handles it
     // API returns paginated results, so use them directly
     const pageData = filtered;
-    
+
     // Calculate total pages from API pagination metadata if available
-    const totalPages = pagination?.totalPages || Math.ceil((pagination?.total || filtered.length) / itemsPerPage) || 1;
+    const totalPages =
+        pagination?.totalPages ||
+        Math.ceil((pagination?.total || filtered.length) / itemsPerPage) ||
+        1;
     const totalItems = pagination?.total || filtered.length;
 
     const currency = (n?: number) =>
@@ -438,7 +463,9 @@ const Transactionpage = () => {
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-primary/50 w-4 h-4" />
                             <input
                                 value={filterStore.search}
-                                onChange={(e) => filterStore.setSearch(e.target.value)}
+                                onChange={(e) =>
+                                    filterStore.setSearch(e.target.value)
+                                }
                                 placeholder="Search"
                                 className="w-full pl-10 pr-4 py-2 border border-primary/10 rounded-2 text-sm focus:outline-none focus:border-primary"
                             />
@@ -466,7 +493,9 @@ const Transactionpage = () => {
                             <DrawerContent className="h-full w-full sm:w-[400px]">
                                 <DrawerHeader className="border-b border-primary/10">
                                     <div className="flex items-center justify-between">
-                                        <DrawerTitle>Filter Transactions</DrawerTitle>
+                                        <DrawerTitle>
+                                            Filter Transactions
+                                        </DrawerTitle>
                                         <DrawerClose asChild>
                                             <button className="p-2 hover:bg-primary/5 rounded-full transition-colors">
                                                 <X className="h-4 w-4 text-primary/70" />
@@ -483,7 +512,9 @@ const Transactionpage = () => {
                                             <Input
                                                 type="date"
                                                 placeholder="Start Date"
-                                                value={filterStore.filterStartDate}
+                                                value={
+                                                    filterStore.filterStartDate
+                                                }
                                                 onChange={(e) =>
                                                     filterStore.setFilterStartDate(
                                                         e.target.value
@@ -493,7 +524,9 @@ const Transactionpage = () => {
                                             <Input
                                                 type="date"
                                                 placeholder="End Date"
-                                                value={filterStore.filterEndDate}
+                                                value={
+                                                    filterStore.filterEndDate
+                                                }
                                                 onChange={(e) =>
                                                     filterStore.setFilterEndDate(
                                                         e.target.value
@@ -565,7 +598,9 @@ const Transactionpage = () => {
                                             <Input
                                                 type="number"
                                                 placeholder="Min"
-                                                value={filterStore.filterMinAmount}
+                                                value={
+                                                    filterStore.filterMinAmount
+                                                }
                                                 onChange={(e) =>
                                                     filterStore.setFilterMinAmount(
                                                         e.target.value
@@ -575,7 +610,9 @@ const Transactionpage = () => {
                                             <Input
                                                 type="number"
                                                 placeholder="Max"
-                                                value={filterStore.filterMaxAmount}
+                                                value={
+                                                    filterStore.filterMaxAmount
+                                                }
                                                 onChange={(e) =>
                                                     filterStore.setFilterMaxAmount(
                                                         e.target.value
@@ -590,7 +627,9 @@ const Transactionpage = () => {
                                         <Button
                                             variant="outline"
                                             className="w-full"
-                                            onClick={() => filterStore.resetFilters()}
+                                            onClick={() =>
+                                                filterStore.resetFilters()
+                                            }
                                         >
                                             Clear All Filters
                                         </Button>

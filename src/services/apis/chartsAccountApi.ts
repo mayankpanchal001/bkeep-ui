@@ -391,7 +391,8 @@ export const useApplyAccountsTemplate = () => {
         mutationFn: (templateId: string) => applyAccountsTemplate(templateId),
         onSuccess: (data) => {
             showSuccessToast(
-                data?.message || 'Chart of accounts template applied successfully'
+                data?.message ||
+                    'Chart of accounts template applied successfully'
             );
             queryClient.invalidateQueries({ queryKey: ['accounts'] });
         },
