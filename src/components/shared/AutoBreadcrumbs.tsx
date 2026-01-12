@@ -1,5 +1,3 @@
-import { useMemo } from 'react';
-import { Link, useLocation } from 'react-router';
 import {
     Breadcrumb,
     BreadcrumbEllipsis,
@@ -10,6 +8,9 @@ import {
     BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
 import { SIDEBAR_ITEMS } from '@/constants';
+import { useJournalEntry } from '@/services/apis/journalApi';
+import { useMemo } from 'react';
+import { Link, useLocation } from 'react-router';
 
 type FlatItem = {
     path: string;
@@ -51,6 +52,44 @@ export default function AutoBreadcrumbs({ className }: { className?: string }) {
 
     const segments = location.pathname.split('/').filter(Boolean).slice(0, 6); // safety cap
 
+    // Check if we're on a journal entry view page and get the entry number
+    const journalEntryId = useMemo(() => {
+        const lastSegment = segments[segments.length - 1];
+        const prevSegment = segments[segments.length - 2];
+        if (
+            prevSegment === 'journal-entries' &&
+            lastSegment?.match(
+                /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+            )
+        ) {
+            return lastSegment;
+        }
+        return null;
+    }, [segments]);
+
+    const { data: journalEntryData } = useJournalEntry(journalEntryId ?? '');
+
+    // Extract journal entry number
+    const journalEntryNumber = useMemo(() => {
+        if (!journalEntryData) return null;
+        const root = journalEntryData as unknown as
+            | Record<string, unknown>
+            | undefined;
+        const firstData = root?.data as Record<string, unknown> | undefined;
+        const candidates = [
+            firstData?.journalEntry,
+            firstData?.data,
+            firstData,
+            root?.journalEntry,
+        ];
+        const entry = candidates.find(
+            (v) => typeof v === 'object' && v !== null
+        ) as Record<string, unknown> | undefined;
+        if (!entry) return null;
+        const entryNumber = entry.entryNumber;
+        return typeof entryNumber === 'string' ? entryNumber : null;
+    }, [journalEntryData]);
+
     const parts = useMemo(() => {
         const acc: { path: string; label: string; isMatch: boolean }[] = [];
         let currentPath = '';
@@ -58,13 +97,44 @@ export default function AutoBreadcrumbs({ className }: { className?: string }) {
         // Always begin with Home
         acc.push({ path: '/', label: 'Home', isMatch: true });
 
-        segments.forEach((seg) => {
+        segments.forEach((seg, index) => {
             currentPath = currentPath + '/' + seg;
             const match =
                 flat.find((f) => f.path === currentPath) ||
                 flat.find((f) => currentPath.startsWith(f.path));
 
-            const label = match?.label ?? titleize(seg);
+            let label = match?.label ?? titleize(seg);
+
+            // Check if this is the last segment and needs special handling
+            const isLastSegment = index === segments.length - 1;
+
+            // Handle journal entry routes
+            if (isLastSegment) {
+                // Check if we're on an edit page
+                if (seg === 'edit') {
+                    label = 'Edit';
+                }
+                // Check if we're on a view page (UUID pattern)
+                else if (
+                    seg.match(
+                        /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+                    )
+                ) {
+                    // Check if the previous segment was 'journal-entries'
+                    const prevSeg = segments[index - 1];
+                    if (prevSeg === 'journal-entries') {
+                        // Append journal entry number if available
+                        label = journalEntryNumber
+                            ? `${journalEntryNumber}`
+                            : 'View';
+                    }
+                }
+                // Check if we're on a create/new page
+                else if (seg === 'new') {
+                    label = 'Create';
+                }
+            }
+
             acc.push({
                 path: currentPath,
                 label,
@@ -72,7 +142,7 @@ export default function AutoBreadcrumbs({ className }: { className?: string }) {
             });
         });
         return acc;
-    }, [segments, flat]);
+    }, [segments, flat, journalEntryNumber]);
 
     const MAX_VISIBLE = 4;
     const needsEllipsis = parts.length > MAX_VISIBLE;

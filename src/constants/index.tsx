@@ -47,6 +47,12 @@ export const SIDEBAR_ITEMS: SidebarItemProps[] = [
         label: 'Journal Entries',
         icon: <Icons.JournalEntries />,
         path: '/journal-entries',
+        children: [
+            {
+                label: 'All Journal Entries',
+                path: '/:id',
+            },
+        ],
     },
     {
         label: 'Invoices',
@@ -112,6 +118,11 @@ export const SIDEBAR_ITEMS: SidebarItemProps[] = [
                 label: 'Taxes',
                 icon: <Icons.Expenses />,
                 path: '/settings/taxes',
+            },
+            {
+                label: 'Templates',
+                icon: <Icons.ChartOfAccounts />,
+                path: '/settings/templates',
             },
             {
                 label: 'Data Privacy',

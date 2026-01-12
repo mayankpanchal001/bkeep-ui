@@ -71,12 +71,13 @@ const TaxForm = ({ onClose, initialData }: TaxFormProps) => {
         if (!validateForm()) return;
 
         try {
+            const ratePercentNum = Number(formData.ratePercent);
             const payload: CreateTaxPayload = {
                 name: formData.name.trim(),
                 code: formData.code?.trim() || undefined,
                 description: formData.description?.trim() || undefined,
                 isActive: formData.isActive,
-                rate: Number(formData.ratePercent) / 100,
+                rate: ratePercentNum / 100,
             };
 
             if (isEditMode && initialData) {

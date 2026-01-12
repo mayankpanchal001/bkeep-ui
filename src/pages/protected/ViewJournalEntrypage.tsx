@@ -1,22 +1,16 @@
-import ConfirmationDialog from '@/components/shared/ConfirmationDialog';
 import { Column, DataTable } from '@/components/shared/DataTable';
-import { Icons } from '@/components/shared/Icons';
 import Loading from '@/components/shared/Loading';
 import PageHeader from '@/components/shared/PageHeader';
-import Button from '@/components/typography/Button';
-import { useContacts } from '@/services/apis/contactsApi';
-import { showErrorToast, showSuccessToast } from '@/utills/toast';
-import { Redo2, Undo2 } from 'lucide-react';
-import { useMemo, useState } from 'react';
-import { useNavigate, useParams } from 'react-router';
 import {
-    useDeleteJournalEntry,
-    useJournalEntry,
-    usePostJournalEntry,
-    useRestoreJournalEntry,
-    useReverseJournalEntry,
-    useVoidJournalEntry,
-} from '../../services/apis/journalApi';
+    Collapsible,
+    CollapsibleContent,
+    CollapsibleTrigger,
+} from '@/components/ui/collapsible';
+import { useContacts } from '@/services/apis/contactsApi';
+import { ChevronDown } from 'lucide-react';
+import { useMemo, useState } from 'react';
+import { useParams } from 'react-router';
+import { useJournalEntry } from '../../services/apis/journalApi';
 import type { JournalEntry, JournalEntryLine } from '../../types/journal';
 
 const toNumber = (v: unknown) => {
@@ -56,19 +50,8 @@ const formatBoolean = (value: unknown) => {
 
 export default function ViewJournalEntrypage() {
     const { id } = useParams<{ id: string }>();
-    const navigate = useNavigate();
     const { data, isLoading } = useJournalEntry(id!);
-
-    const postMutation = usePostJournalEntry();
-    const voidMutation = useVoidJournalEntry();
-    const reverseMutation = useReverseJournalEntry();
-    const restoreMutation = useRestoreJournalEntry();
-    const deleteMutation = useDeleteJournalEntry();
-
-    const [postDialog, setPostDialog] = useState(false);
-    const [voidDialog, setVoidDialog] = useState(false);
-    const [reverseDialog, setReverseDialog] = useState(false);
-    const [deleteDialog, setDeleteDialog] = useState(false);
+    const [isDetailsOpen, setIsDetailsOpen] = useState(false);
 
     const journalEntry = useMemo<JournalEntry | undefined>(() => {
         const root = data as unknown as Record<string, unknown> | undefined;
@@ -195,78 +178,15 @@ export default function ViewJournalEntrypage() {
         return (
             <div className="text-center py-12">
                 <p className="text-sm text-red-600">Journal entry not found</p>
-                <Button
-                    variant="outline"
-                    onClick={() => navigate('/journal-entries')}
-                >
-                    Back to List
-                </Button>
             </div>
         );
     }
 
-    const { status } = journalEntry;
-
-    // Actions Handlers
-    const handleEdit = () => {
-        navigate(`/journal-entries/${journalEntry.id}/edit`);
-    };
-
-    const handleConfirmPost = () => {
-        postMutation.mutate(journalEntry.id, {
-            onSuccess: () => {
-                setPostDialog(false);
-                showSuccessToast('Journal entry posted');
-            },
-            onError: () => showErrorToast('Failed to post entry'),
-        });
-    };
-
-    const handleConfirmVoid = () => {
-        voidMutation.mutate(journalEntry.id, {
-            onSuccess: () => {
-                setVoidDialog(false);
-                showSuccessToast('Journal entry voided');
-            },
-            onError: () => showErrorToast('Failed to void entry'),
-        });
-    };
-
-    const handleConfirmReverse = () => {
-        reverseMutation.mutate(journalEntry.id, {
-            onSuccess: () => {
-                setReverseDialog(false);
-                showSuccessToast('Journal entry reversed');
-            },
-            onError: () => showErrorToast('Failed to reverse entry'),
-        });
-    };
-
-    const handleConfirmDelete = () => {
-        deleteMutation.mutate(journalEntry.id, {
-            onSuccess: () => {
-                setDeleteDialog(false);
-                showSuccessToast('Journal entry deleted');
-                navigate('/journal-entries');
-            },
-            onError: () => showErrorToast('Failed to delete entry'),
-        });
-    };
-
-    const handleRestore = () => {
-        restoreMutation.mutate(journalEntry.id, {
-            onSuccess: () => {
-                showSuccessToast('Journal entry restored');
-            },
-            onError: () => showErrorToast('Failed to restore entry'),
-        });
-    };
-
     const getStatusBadge = (status: string) => {
         const statusConfig = {
             draft: {
-                bg: 'bg-gray-100 dark:bg-gray-500',
-                text: 'text-primary/70 dark:text-white',
+                bg: 'bg-gray-100',
+                text: 'text-primary/70',
                 label: 'Draft',
             },
             posted: {
@@ -292,72 +212,12 @@ export default function ViewJournalEntrypage() {
 
     return (
         <div className="space-y-4">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                <div className="flex-1">
-                    <PageHeader
-                        title={`Journal Entry ${formatText(journalEntry.entryNumber)}`}
-                        subtitle={formatDateOnly(journalEntry.entryDate)}
-                    />
-                </div>
+            <PageHeader
+                title={`Journal Entry ${formatText(journalEntry.entryNumber)}`}
+                subtitle={formatDateOnly(journalEntry.entryDate)}
+            />
 
-                {/* Action Buttons */}
-                <div className="flex items-center gap-2">
-                    {status === 'draft' && (
-                        <>
-                            <Button
-                                variant="outline"
-                                onClick={handleEdit}
-                                icon={<Icons.Edit className="w-4 h-4" />}
-                            >
-                                Edit
-                            </Button>
-                            <Button
-                                variant="outline"
-                                onClick={() => setPostDialog(true)}
-                                className="text-green-600 hover:text-green-700 hover:bg-green-50"
-                            >
-                                Post
-                            </Button>
-                            <Button
-                                variant="outline"
-                                onClick={() => setVoidDialog(true)}
-                                className="text-yellow-600 hover:text-yellow-700 hover:bg-yellow-50"
-                            >
-                                Void
-                            </Button>
-                            <Button
-                                variant="outline"
-                                onClick={() => setDeleteDialog(true)}
-                                className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                                icon={<Icons.Trash className="w-4 h-4" />}
-                            >
-                                Delete
-                            </Button>
-                        </>
-                    )}
-                    {status === 'posted' && (
-                        <Button
-                            variant="outline"
-                            onClick={() => setReverseDialog(true)}
-                            className="text-purple-600 hover:text-purple-700 hover:bg-purple-50"
-                            icon={<Undo2 className="w-4 h-4" />}
-                        >
-                            Reverse
-                        </Button>
-                    )}
-                    {status === 'voided' && (
-                        <Button
-                            variant="outline"
-                            onClick={handleRestore}
-                            className="text-green-600 hover:text-green-700 hover:bg-green-50"
-                            icon={<Redo2 className="w-4 h-4" />}
-                        >
-                            Restore
-                        </Button>
-                    )}
-                </div>
-            </div>
-
+            {/* Essential Details - Always Visible */}
             <div className="bg-white rounded-lg border border-primary/10 p-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
                     <div>
@@ -388,148 +248,6 @@ export default function ViewJournalEntrypage() {
                         </label>
                         <p className="text-primary font-medium capitalize">
                             {formatText(journalEntry.entryType)}
-                        </p>
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium text-primary/50 mb-1">
-                            ID
-                        </label>
-                        <p className="text-primary font-medium break-all">
-                            {formatText(journalEntry.id)}
-                        </p>
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium text-primary/50 mb-1">
-                            Reference
-                        </label>
-                        <p className="text-primary font-medium">
-                            {formatText(journalEntry.reference)}
-                        </p>
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium text-primary/50 mb-1">
-                            Source Module
-                        </label>
-                        <p className="text-primary font-medium">
-                            {formatText(journalEntry.sourceModule)}
-                        </p>
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium text-primary/50 mb-1">
-                            Source ID
-                        </label>
-                        <p className="text-primary font-medium break-all">
-                            {formatText(journalEntry.sourceId)}
-                        </p>
-                    </div>
-                </div>
-
-                <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div>
-                        <label className="block text-sm font-medium text-primary/50 mb-1">
-                            Adjusting
-                        </label>
-                        <p className="text-primary font-medium">
-                            {formatBoolean(journalEntry.isAdjusting)}
-                        </p>
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium text-primary/50 mb-1">
-                            Closing
-                        </label>
-                        <p className="text-primary font-medium">
-                            {formatBoolean(journalEntry.isClosing)}
-                        </p>
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium text-primary/50 mb-1">
-                            Reversing
-                        </label>
-                        <p className="text-primary font-medium">
-                            {formatBoolean(journalEntry.isReversing)}
-                        </p>
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium text-primary/50 mb-1">
-                            Reversal Date
-                        </label>
-                        <p className="text-primary font-medium">
-                            {formatDateOnly(journalEntry.reversalDate)}
-                        </p>
-                    </div>
-                    <div className="md:col-span-2">
-                        <label className="block text-sm font-medium text-primary/50 mb-1">
-                            Memo
-                        </label>
-                        <p className="text-primary font-medium whitespace-pre-wrap">
-                            {formatText(journalEntry.memo)}
-                        </p>
-                    </div>
-                </div>
-
-                <div className="mt-4 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
-                    <div>
-                        <label className="block text-sm font-medium text-primary/50 mb-1">
-                            Approved By
-                        </label>
-                        <p className="text-primary font-medium">
-                            {formatText(journalEntry.approvedBy)}
-                        </p>
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium text-primary/50 mb-1">
-                            Approved At
-                        </label>
-                        <p className="text-primary font-medium">
-                            {formatDateTime(journalEntry.approvedAt)}
-                        </p>
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium text-primary/50 mb-1">
-                            Posted By
-                        </label>
-                        <p className="text-primary font-medium">
-                            {formatText(journalEntry.postedBy)}
-                        </p>
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium text-primary/50 mb-1">
-                            Posted At
-                        </label>
-                        <p className="text-primary font-medium">
-                            {formatDateTime(journalEntry.postedAt)}
-                        </p>
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium text-primary/50 mb-1">
-                            Created At
-                        </label>
-                        <p className="text-primary font-medium">
-                            {formatDateTime(journalEntry.createdAt)}
-                        </p>
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium text-primary/50 mb-1">
-                            Updated At
-                        </label>
-                        <p className="text-primary font-medium">
-                            {formatDateTime(journalEntry.updatedAt)}
-                        </p>
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium text-primary/50 mb-1">
-                            Total Debit
-                        </label>
-                        <p className="text-primary font-semibold">
-                            ${toNumber(journalEntry.totalDebit).toFixed(2)}
-                        </p>
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium text-primary/50 mb-1">
-                            Total Credit
-                        </label>
-                        <p className="text-primary font-semibold">
-                            ${toNumber(journalEntry.totalCredit).toFixed(2)}
                         </p>
                     </div>
                 </div>
@@ -565,6 +283,184 @@ export default function ViewJournalEntrypage() {
                 />
             </div>
 
+            {/* Additional Details - Collapsible */}
+            <Collapsible open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
+                <div className="bg-white rounded-lg border border-primary/10 overflow-hidden">
+                    <CollapsibleTrigger className="w-full px-4 py-3 flex items-center justify-between hover:bg-primary/5 transition-colors">
+                        <h3 className="text-base font-semibold text-primary">
+                            Additional Details
+                        </h3>
+                        <ChevronDown
+                            className={`w-4 h-4 text-primary/50 transition-transform duration-200 ${
+                                isDetailsOpen ? 'rotate-180' : ''
+                            }`}
+                        />
+                    </CollapsibleTrigger>
+                    <CollapsibleContent>
+                        <div className="px-4 pb-4 space-y-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 pt-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-primary/50 mb-1">
+                                        ID
+                                    </label>
+                                    <p className="text-primary font-medium break-all text-sm">
+                                        {formatText(journalEntry.id)}
+                                    </p>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-primary/50 mb-1">
+                                        Reference
+                                    </label>
+                                    <p className="text-primary font-medium text-sm">
+                                        {formatText(journalEntry.reference)}
+                                    </p>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-primary/50 mb-1">
+                                        Source Module
+                                    </label>
+                                    <p className="text-primary font-medium text-sm">
+                                        {formatText(journalEntry.sourceModule)}
+                                    </p>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-primary/50 mb-1">
+                                        Source ID
+                                    </label>
+                                    <p className="text-primary font-medium break-all text-sm">
+                                        {formatText(journalEntry.sourceId)}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-primary/50 mb-1">
+                                        Adjusting
+                                    </label>
+                                    <p className="text-primary font-medium text-sm">
+                                        {formatBoolean(
+                                            journalEntry.isAdjusting
+                                        )}
+                                    </p>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-primary/50 mb-1">
+                                        Closing
+                                    </label>
+                                    <p className="text-primary font-medium text-sm">
+                                        {formatBoolean(journalEntry.isClosing)}
+                                    </p>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-primary/50 mb-1">
+                                        Reversing
+                                    </label>
+                                    <p className="text-primary font-medium text-sm">
+                                        {formatBoolean(
+                                            journalEntry.isReversing
+                                        )}
+                                    </p>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-primary/50 mb-1">
+                                        Reversal Date
+                                    </label>
+                                    <p className="text-primary font-medium text-sm">
+                                        {formatDateOnly(
+                                            journalEntry.reversalDate
+                                        )}
+                                    </p>
+                                </div>
+                                <div className="md:col-span-2">
+                                    <label className="block text-sm font-medium text-primary/50 mb-1">
+                                        Memo
+                                    </label>
+                                    <p className="text-primary font-medium whitespace-pre-wrap text-sm">
+                                        {formatText(journalEntry.memo)}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-primary/50 mb-1">
+                                        Approved By
+                                    </label>
+                                    <p className="text-primary font-medium text-sm">
+                                        {formatText(journalEntry.approvedBy)}
+                                    </p>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-primary/50 mb-1">
+                                        Approved At
+                                    </label>
+                                    <p className="text-primary font-medium text-sm">
+                                        {formatDateTime(
+                                            journalEntry.approvedAt
+                                        )}
+                                    </p>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-primary/50 mb-1">
+                                        Posted By
+                                    </label>
+                                    <p className="text-primary font-medium text-sm">
+                                        {formatText(journalEntry.postedBy)}
+                                    </p>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-primary/50 mb-1">
+                                        Posted At
+                                    </label>
+                                    <p className="text-primary font-medium text-sm">
+                                        {formatDateTime(journalEntry.postedAt)}
+                                    </p>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-primary/50 mb-1">
+                                        Created At
+                                    </label>
+                                    <p className="text-primary font-medium text-sm">
+                                        {formatDateTime(journalEntry.createdAt)}
+                                    </p>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-primary/50 mb-1">
+                                        Updated At
+                                    </label>
+                                    <p className="text-primary font-medium text-sm">
+                                        {formatDateTime(journalEntry.updatedAt)}
+                                    </p>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-primary/50 mb-1">
+                                        Total Debit
+                                    </label>
+                                    <p className="text-primary font-semibold text-sm">
+                                        $
+                                        {toNumber(
+                                            journalEntry.totalDebit
+                                        ).toFixed(2)}
+                                    </p>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-primary/50 mb-1">
+                                        Total Credit
+                                    </label>
+                                    <p className="text-primary font-semibold text-sm">
+                                        $
+                                        {toNumber(
+                                            journalEntry.totalCredit
+                                        ).toFixed(2)}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </CollapsibleContent>
+                </div>
+            </Collapsible>
+
             {(() => {
                 const attachments = journalEntry.attachments || [];
                 if (attachments.length === 0) return null;
@@ -596,53 +492,6 @@ export default function ViewJournalEntrypage() {
                     </div>
                 );
             })()}
-
-            {/* Confirmation Dialogs */}
-            <ConfirmationDialog
-                isOpen={postDialog}
-                onClose={() => setPostDialog(false)}
-                onConfirm={handleConfirmPost}
-                title="Post Journal Entry"
-                message={`Are you sure you want to post journal entry "${formatText(journalEntry.entryNumber)}"? Posted entries cannot be edited.`}
-                confirmText="Post"
-                cancelText="Cancel"
-                loading={postMutation.isPending}
-            />
-
-            <ConfirmationDialog
-                isOpen={voidDialog}
-                onClose={() => setVoidDialog(false)}
-                onConfirm={handleConfirmVoid}
-                title="Void Journal Entry"
-                message={`Are you sure you want to void journal entry "${formatText(journalEntry.entryNumber)}"? This will mark it as voided.`}
-                confirmText="Void"
-                cancelText="Cancel"
-                confirmVariant="danger"
-                loading={voidMutation.isPending}
-            />
-
-            <ConfirmationDialog
-                isOpen={deleteDialog}
-                onClose={() => setDeleteDialog(false)}
-                onConfirm={handleConfirmDelete}
-                title="Delete Journal Entry"
-                message={`Are you sure you want to delete journal entry "${formatText(journalEntry.entryNumber)}"? This action cannot be undone.`}
-                confirmText="Delete"
-                cancelText="Cancel"
-                confirmVariant="danger"
-                loading={deleteMutation.isPending}
-            />
-
-            <ConfirmationDialog
-                isOpen={reverseDialog}
-                onClose={() => setReverseDialog(false)}
-                onConfirm={handleConfirmReverse}
-                title="Reverse Journal Entry"
-                message={`Are you sure you want to reverse journal entry "${formatText(journalEntry.entryNumber)}"? This will create a new reversing entry.`}
-                confirmText="Reverse"
-                cancelText="Cancel"
-                loading={reverseMutation.isPending}
-            />
         </div>
     );
 }

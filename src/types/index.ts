@@ -195,6 +195,39 @@ export type TransactionType = {
     complexTransaction: boolean;
 };
 
+export type TransactionItem = {
+    id: string;
+    type: 'income' | 'expense' | 'transfer';
+    number: string | null;
+    accountId: string;
+    account: {
+        id: string;
+        accountNumber: string;
+        accountName: string;
+        accountType: string;
+        currencyCode: string;
+    };
+    contactId: string | null;
+    amount: string;
+    currencyCode: string;
+    currencyRate: string;
+    paidAt: string;
+    paymentMethod: string;
+    reference: string | null;
+    description: string | null;
+    reconciled: boolean;
+    status?: 'pending' | 'posted' | 'voided' | 'reversed';
+    itemType?: string;
+    totalAmount?: string;
+    currency?: string;
+    latestPostedDate?: string;
+    pending?: boolean;
+    matchedReceiptDocs?: number[];
+    splits?: TransactionSplit[];
+    createdAt: string;
+    updatedAt: string;
+};
+
 export type TransactionType2 = {
     businessId: number;
     contextRequested: boolean;

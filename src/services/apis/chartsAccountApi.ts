@@ -115,6 +115,85 @@ export type ImportFieldsResponse = {
     data: ImportField[];
 };
 
+export type AccountsTemplatePreviewAccount = {
+    accountNumber: string;
+    accountName: string;
+    accountType: AccountType;
+    accountSubtype: string | null;
+    accountDetailType: AccountDetailType | null;
+    description: string | null;
+    openingBalance: number;
+    currencyCode: string;
+    isSystemAccount: boolean;
+    willBeSkipped: boolean;
+    skipReason: string | null;
+};
+
+export type AccountsTemplatePreviewResponse = {
+    success: boolean;
+    statusCode: number;
+    message: string;
+    data: {
+        template: {
+            id: string;
+            name: string;
+            description: string | null;
+            templateType: 'chart_of_accounts';
+            isActive: boolean;
+            createdAt: string;
+            updatedAt: string;
+        };
+        accounts: AccountsTemplatePreviewAccount[];
+        summary: {
+            totalAccounts: number;
+            newAccounts: number;
+            skippedAccounts: number;
+            byType: Record<string, number>;
+        };
+    };
+};
+
+export type AccountsTemplateApplyResponse = {
+    success: boolean;
+    statusCode: number;
+    message: string;
+    data: {
+        template: {
+            id: string;
+            name: string;
+            templateType: 'chart_of_accounts';
+        };
+        usageId: string;
+        status: 'success' | 'partial' | 'failed';
+        accounts: {
+            created: Array<{
+                id: string;
+                accountNumber: string;
+                accountName: string;
+                accountType: AccountType;
+            }>;
+            skipped: Array<{
+                accountNumber: string;
+                accountName: string;
+                accountType: AccountType;
+                reason: string;
+            }>;
+            failed: Array<{
+                accountNumber?: string;
+                accountName?: string;
+                accountType?: AccountType;
+                error: string;
+            }>;
+        };
+        summary: {
+            totalProcessed: number;
+            created: number;
+            skipped: number;
+            failed: number;
+        };
+    };
+};
+
 export type ChartOfAccountsQueryParams = {
     page?: number;
     limit?: number;
@@ -231,6 +310,25 @@ export async function getImportFields(): Promise<ImportFieldsResponse> {
     return response.data;
 }
 
+export async function getAccountsTemplatePreview(
+    templateId: string
+): Promise<AccountsTemplatePreviewResponse> {
+    const response = await axiosInstance.get(
+        `/accounts/template/${templateId}/preview`
+    );
+    return response.data;
+}
+
+export async function applyAccountsTemplate(
+    templateId: string
+): Promise<AccountsTemplateApplyResponse> {
+    const response = await axiosInstance.post(
+        `/accounts/template/${templateId}/apply`,
+        {}
+    );
+    return response.data;
+}
+
 /**
  * Download sample data for import
  */
@@ -275,6 +373,39 @@ export const useImportFields = () => {
         queryKey: ['accounts-import-fields'],
         queryFn: getImportFields,
         staleTime: Infinity, // Fields config unlikely to change often
+    });
+};
+
+export const useAccountsTemplatePreview = (templateId?: string) => {
+    return useQuery<AccountsTemplatePreviewResponse, Error>({
+        queryKey: ['accounts-template-preview', templateId],
+        queryFn: () => getAccountsTemplatePreview(String(templateId)),
+        enabled: !!templateId,
+    });
+};
+
+export const useApplyAccountsTemplate = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: (templateId: string) => applyAccountsTemplate(templateId),
+        onSuccess: (data) => {
+            showSuccessToast(
+                data?.message ||
+                    'Chart of accounts template applied successfully'
+            );
+            queryClient.invalidateQueries({ queryKey: ['accounts'] });
+        },
+        onError: (error) => {
+            console.error('Apply accounts template failed:', error);
+            const maybeAxiosError = error as {
+                response?: { data?: { message?: string } };
+            };
+            const message =
+                maybeAxiosError.response?.data?.message ||
+                'Failed to apply chart of accounts template';
+            showErrorToast(message);
+        },
     });
 };
 

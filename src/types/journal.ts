@@ -78,6 +78,16 @@ export type CreateJournalEntryPayload = {
 
 export type UpdateJournalEntryPayload = Partial<CreateJournalEntryPayload>;
 
+export type PaginationInfo = {
+    page: number;
+    limit: number;
+    offset: number;
+    total: number;
+    totalPages: number;
+    hasNextPage: boolean;
+    hasPreviousPage: boolean;
+};
+
 export type JournalEntriesListResponse = {
     success: boolean;
     statusCode: number;
@@ -87,6 +97,7 @@ export type JournalEntriesListResponse = {
         total: number;
         page: number;
         limit: number;
+        pagination?: PaginationInfo;
     };
 };
 
@@ -107,4 +118,10 @@ export type JournalEntryFilters = {
     startDate?: string;
     endDate?: string;
     isAdjusting?: boolean;
+    contactId?: string; // For contact/supplier filter
+    accountId?: string; // For account filter
+    minAmount?: number; // For amount range filter
+    maxAmount?: number; // For amount range filter
+    sort?: string;
+    order?: 'asc' | 'desc';
 };

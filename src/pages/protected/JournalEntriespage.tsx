@@ -2,12 +2,16 @@ import ConfirmationDialog from '@/components/shared/ConfirmationDialog';
 import { Icons } from '@/components/shared/Icons';
 import PageHeader from '@/components/shared/PageHeader';
 import { Button } from '@/components/ui/button';
+import { Combobox, type ComboboxOption } from '@/components/ui/combobox';
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+    Drawer,
+    DrawerClose,
+    DrawerContent,
+    DrawerFooter,
+    DrawerHeader,
+    DrawerTitle,
+    DrawerTrigger,
+} from '@/components/ui/drawer';
 import {
     Table,
     TableBody,
@@ -23,11 +27,37 @@ import {
     type SortDirection,
 } from '@/components/ui/table';
 import { showErrorToast, showSuccessToast } from '@/utills/toast.tsx';
-import { FileText, MoreHorizontal } from 'lucide-react';
+import { cn } from '@/utils/cn';
+import {
+    ArrowUpDown,
+    ChevronUp,
+    FileText,
+    Filter,
+    Redo2,
+    Search,
+    Undo2,
+    X,
+} from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuRadioGroup,
+    DropdownMenuRadioItem,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from '../../components/ui/dropdown-menu';
 import Input from '../../components/ui/input';
-import { Select } from '../../components/ui/select';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '../../components/ui/select';
+import { useChartOfAccounts } from '../../services/apis/chartsAccountApi';
 import { useContacts } from '../../services/apis/contactsApi';
 import {
     useDeleteJournalEntry,
@@ -37,18 +67,37 @@ import {
     useReverseJournalEntry,
     useVoidJournalEntry,
 } from '../../services/apis/journalApi';
-import type { JournalEntry, JournalEntryFilters } from '../../types/journal';
+import { useJournalEntriesFilterStore } from '../../stores/journalEntries/journalEntriesFilterStore';
+import type { JournalEntry } from '../../types/journal';
 
 export default function JournalEntriespage() {
     const navigate = useNavigate();
-    const [filters, setFilters] = useState<JournalEntryFilters>({
-        page: 1,
-        limit: 20,
-    });
+    const filterStore = useJournalEntriesFilterStore();
+
+    // Select individual filter values to make them reactive
+    const page = useJournalEntriesFilterStore((state) => state.page);
+    const limit = useJournalEntriesFilterStore((state) => state.limit);
+    const search = useJournalEntriesFilterStore((state) => state.search);
+    const status = useJournalEntriesFilterStore((state) => state.status);
+    const startDate = useJournalEntriesFilterStore((state) => state.startDate);
+    const endDate = useJournalEntriesFilterStore((state) => state.endDate);
+    const filterContact = useJournalEntriesFilterStore(
+        (state) => state.filterContact
+    );
+    const filterAccountId = useJournalEntriesFilterStore(
+        (state) => state.filterAccountId
+    );
+    const filterMinAmount = useJournalEntriesFilterStore(
+        (state) => state.filterMinAmount
+    );
+    const filterMaxAmount = useJournalEntriesFilterStore(
+        (state) => state.filterMaxAmount
+    );
+    const sort = useJournalEntriesFilterStore((state) => state.sort);
+    const order = useJournalEntriesFilterStore((state) => state.order);
+
     const [searchInput, setSearchInput] = useState('');
     const [selectedItems, setSelectedItems] = useState<(string | number)[]>([]);
-    const [sortKey, setSortKey] = useState<string | null>('entryDate');
-    const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
     const [deleteDialog, setDeleteDialog] = useState<{
         isOpen: boolean;
         entry: JournalEntry | null;
@@ -61,34 +110,98 @@ export default function JournalEntriespage() {
         isOpen: boolean;
         entry: JournalEntry | null;
     }>({ isOpen: false, entry: null });
-    const [reverseDialog, setReverseDialog] = useState<{
-        isOpen: boolean;
-        entry: JournalEntry | null;
-    }>({ isOpen: false, entry: null });
+    const [isFilterDrawerOpen, setIsFilterDrawerOpen] = useState(false);
 
-    const { data, isLoading, isFetching, error } = useJournalEntries(filters);
-    const deleteMutation = useDeleteJournalEntry();
-    const postMutation = usePostJournalEntry();
-    const voidMutation = useVoidJournalEntry();
-    const reverseMutation = useReverseJournalEntry();
-    const restoreMutation = useRestoreJournalEntry();
-
+    // Fetch contacts and accounts data first (needed for filter conversion)
     const { data: contactsData } = useContacts({
         page: 1,
-        limit: 200,
+        limit: 1000,
         isActive: true,
         sort: 'displayName',
         order: 'asc',
     });
 
+    const { data: accountsData } = useChartOfAccounts({
+        isActive: true,
+        limit: 1000,
+    });
+
+    // Create a map of contactId -> displayName (needed for contact filter conversion)
     const contactNameById = useMemo(() => {
         const items = contactsData?.data?.items || [];
         const map = new Map<string, string>();
         for (const c of items) {
-            map.set(c.id, c.displayName);
+            if (c?.id && c?.displayName) {
+                map.set(c.id, c.displayName);
+            }
         }
         return map;
     }, [contactsData]);
+
+    // Build API filters reactively from store values
+    const apiFilters = useMemo(() => {
+        const filters: Record<string, unknown> = {
+            page,
+            limit,
+        };
+
+        if (search) filters.search = search;
+        if (status !== 'all') filters.status = status;
+        if (startDate) filters.startDate = startDate;
+        if (endDate) filters.endDate = endDate;
+
+        // Convert contact display name to contactId
+        if (filterContact) {
+            // First, try to find contactId by displayName
+            const contactId = Array.from(contactNameById.entries()).find(
+                ([, name]) => name === filterContact
+            )?.[0];
+            // If found, use contactId; otherwise, check if it's already an ID
+            if (contactId) {
+                filters.contactId = contactId;
+            } else if (contactNameById.has(filterContact)) {
+                // It's already a contactId
+                filters.contactId = filterContact;
+            }
+        }
+
+        if (filterAccountId) filters.accountId = filterAccountId;
+        if (filterMinAmount) {
+            const minAmount = parseFloat(filterMinAmount);
+            if (!isNaN(minAmount)) filters.minAmount = minAmount;
+        }
+        if (filterMaxAmount) {
+            const maxAmount = parseFloat(filterMaxAmount);
+            if (!isNaN(maxAmount)) filters.maxAmount = maxAmount;
+        }
+        if (sort) {
+            filters.sort = sort;
+            filters.order = order;
+        }
+
+        return filters;
+    }, [
+        page,
+        limit,
+        search,
+        status,
+        startDate,
+        endDate,
+        filterContact,
+        filterAccountId,
+        filterMinAmount,
+        filterMaxAmount,
+        sort,
+        order,
+        contactNameById,
+    ]);
+
+    const { data, error } = useJournalEntries(apiFilters);
+    const deleteMutation = useDeleteJournalEntry();
+    const postMutation = usePostJournalEntry();
+    const voidMutation = useVoidJournalEntry();
+    const reverseMutation = useReverseJournalEntry();
+    const restoreMutation = useRestoreJournalEntry();
 
     const [bulkDialog, setBulkDialog] = useState<{
         isOpen: boolean;
@@ -135,14 +248,27 @@ export default function JournalEntriespage() {
 
     useEffect(() => {
         const handle = window.setTimeout(() => {
-            setFilters((prev) => ({
-                ...prev,
-                search: searchInput.trim() || undefined,
-                page: 1,
-            }));
+            filterStore.setSearch(searchInput.trim());
         }, 300);
         return () => window.clearTimeout(handle);
-    }, [searchInput]);
+    }, [searchInput, filterStore]);
+
+    // Create filter options
+    const CONTACT_OPTIONS: ComboboxOption[] = useMemo(() => {
+        const items = contactsData?.data?.items || [];
+        return items.map((contact) => ({
+            value: contact.displayName,
+            label: contact.displayName,
+        }));
+    }, [contactsData]);
+
+    const ACCOUNT_OPTIONS: ComboboxOption[] = useMemo(() => {
+        const items = accountsData?.data?.items || [];
+        return items.map((account) => ({
+            value: account.id,
+            label: `${account.accountNumber || ''} - ${account.accountName}`.trim(),
+        }));
+    }, [accountsData]);
 
     const handleCreateNew = () => {
         navigate('/journal-entries/new');
@@ -202,16 +328,8 @@ export default function JournalEntriespage() {
     };
 
     const handleReverse = (entry: JournalEntry) => {
-        setReverseDialog({ isOpen: true, entry });
-    };
-
-    const handleConfirmReverse = () => {
-        if (!reverseDialog.entry) return;
-        reverseMutation.mutate(reverseDialog.entry.id, {
-            onSuccess: () => {
-                showSuccessToast('Journal entry reversed');
-                setReverseDialog({ isOpen: false, entry: null });
-            },
+        reverseMutation.mutate(entry.id, {
+            onSuccess: () => showSuccessToast('Journal entry reversed'),
             onError: () => showErrorToast('Failed to reverse entry'),
         });
     };
@@ -224,8 +342,7 @@ export default function JournalEntriespage() {
     };
 
     const handleSortChange = (key: string, direction: SortDirection) => {
-        setSortKey(direction ? key : null);
-        setSortDirection(direction);
+        filterStore.setSort(direction ? key : null, direction || undefined);
     };
 
     const handleBulkPost = () => {
@@ -277,8 +394,8 @@ export default function JournalEntriespage() {
     const getStatusBadge = (status: string) => {
         const statusConfig = {
             draft: {
-                bg: 'bg-gray-100 dark:bg-gray-500',
-                text: 'text-primary/70 dark:text-white',
+                bg: 'bg-gray-100',
+                text: 'text-primary/70',
                 label: 'Draft',
             },
             posted: {
@@ -302,42 +419,14 @@ export default function JournalEntriespage() {
         );
     };
 
-    const totalPages = Math.ceil(total / (filters.limit || 20));
+    // Calculate total pages from API response
+    const pagination = data?.data?.pagination;
+    const totalPages =
+        pagination?.totalPages || Math.ceil(total / (filterStore.limit || 20));
+    const totalItems = pagination?.total || total;
 
-    const displayedEntries = useMemo(() => {
-        const next = [...journalEntries];
-        if (!sortKey || !sortDirection) return next;
-
-        const direction = sortDirection === 'asc' ? 1 : -1;
-
-        next.sort((a, b) => {
-            if (sortKey === 'entryDate') {
-                return (
-                    (new Date(a.entryDate).getTime() -
-                        new Date(b.entryDate).getTime()) *
-                    direction
-                );
-            }
-            if (sortKey === 'entryNumber') {
-                return a.entryNumber.localeCompare(b.entryNumber) * direction;
-            }
-            if (sortKey === 'totalDebit') {
-                return (
-                    (Number(a.totalDebit || 0) - Number(b.totalDebit || 0)) *
-                    direction
-                );
-            }
-            if (sortKey === 'totalCredit') {
-                return (
-                    (Number(a.totalCredit || 0) - Number(b.totalCredit || 0)) *
-                    direction
-                );
-            }
-            return 0;
-        });
-
-        return next;
-    }, [journalEntries, sortKey, sortDirection]);
+    // No client-side sorting - API handles it
+    const displayedEntries = journalEntries;
 
     const rowIds = useMemo(
         () => displayedEntries.map((e) => e.id),
@@ -350,78 +439,331 @@ export default function JournalEntriespage() {
         );
     }, [rowIds]);
 
+    const getSortLabel = (sortKey: string | null): string => {
+        if (!sortKey) return 'Sort by';
+        const labels: Record<string, string> = {
+            entryNumber: 'Entry Number',
+            entryDate: 'Entry Date',
+            entryType: 'Entry Type',
+            status: 'Status',
+            totalDebit: 'Total Debit',
+            totalCredit: 'Total Credit',
+            createdAt: 'Created At',
+            updatedAt: 'Updated At',
+        };
+        return labels[sortKey] || 'Sort by';
+    };
+
     return (
-        <div className="flex flex-col h-[calc(100vh-6rem)] gap-4 overflow-hidden">
+        <div className="space-y-4">
             <PageHeader
                 title="Journal Entries"
                 subtitle={`${total} total entries`}
             />
 
             {/* Filters */}
-
-            <div className="flex flex-col md:flex-row gap-3 md:items-end">
-                <div className="flex-1 grid grid-cols-1 md:grid-cols-4 gap-2">
-                    <Input
-                        type="text"
-                        placeholder="Search..."
-                        value={searchInput}
-                        onChange={(e) => setSearchInput(e.target.value)}
-                        className="px-2 py-1.5 text-sm border border-primary/10 rounded focus:ring-1 focus:ring-primary focus:border-transparent"
-                    />
-
-                    <Select
-                        value={filters.status || ''}
-                        onValueChange={(value) =>
-                            setFilters((prev) => ({
-                                ...prev,
-                                status: (value || undefined) as
-                                    | 'draft'
-                                    | 'posted'
-                                    | 'voided'
-                                    | undefined,
-                                page: 1,
-                            }))
-                        }
+            <div className="p-4 border-b border-primary/10">
+                <div className="flex items-center gap-3">
+                    <div className="w-[260px]">
+                        <Input
+                            type="text"
+                            value={searchInput}
+                            onChange={(e) => setSearchInput(e.target.value)}
+                            placeholder="Search..."
+                            startIcon={<Search className="w-4 h-4" />}
+                        />
+                    </div>
+                    <Button size="sm" onClick={handleCreateNew}>
+                        <Icons.Plus className="w-2 h-2 mr-1" />
+                        New
+                    </Button>
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                className={cn(
+                                    'gap-2',
+                                    filterStore.sort &&
+                                        'border-primary/30 bg-primary/5'
+                                )}
+                            >
+                                <ArrowUpDown className="h-4 w-4" />
+                                <span>{getSortLabel(filterStore.sort)}</span>
+                                <ChevronUp className="h-3 w-3" />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-56">
+                            <DropdownMenuRadioGroup
+                                value={filterStore.sort || 'none'}
+                                onValueChange={(value) => {
+                                    if (value === 'none') {
+                                        filterStore.setSort(null);
+                                    } else {
+                                        filterStore.setSort(value);
+                                    }
+                                }}
+                            >
+                                <DropdownMenuRadioItem value="none">
+                                    <span>No sorting</span>
+                                </DropdownMenuRadioItem>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuRadioItem value="entryNumber">
+                                    <span>Entry Number</span>
+                                    <span className="ml-auto text-xs text-muted-foreground">
+                                        {filterStore.order === 'asc'
+                                            ? 'A → Z'
+                                            : 'Z → A'}
+                                    </span>
+                                </DropdownMenuRadioItem>
+                                <DropdownMenuRadioItem value="entryDate">
+                                    <span>Entry Date</span>
+                                    <span className="ml-auto text-xs text-muted-foreground">
+                                        {filterStore.order === 'asc'
+                                            ? '1 → 9'
+                                            : '9 → 1'}
+                                    </span>
+                                </DropdownMenuRadioItem>
+                                <DropdownMenuRadioItem value="status">
+                                    <span>Status</span>
+                                    <span className="ml-auto text-xs text-muted-foreground">
+                                        {filterStore.order === 'asc'
+                                            ? 'A → Z'
+                                            : 'Z → A'}
+                                    </span>
+                                </DropdownMenuRadioItem>
+                                <DropdownMenuRadioItem value="totalDebit">
+                                    <span>Total Debit</span>
+                                    <span className="ml-auto text-xs text-muted-foreground">
+                                        {filterStore.order === 'asc'
+                                            ? 'Low → High'
+                                            : 'High → Low'}
+                                    </span>
+                                </DropdownMenuRadioItem>
+                                <DropdownMenuRadioItem value="totalCredit">
+                                    <span>Total Credit</span>
+                                    <span className="ml-auto text-xs text-muted-foreground">
+                                        {filterStore.order === 'asc'
+                                            ? 'Low → High'
+                                            : 'High → Low'}
+                                    </span>
+                                </DropdownMenuRadioItem>
+                                <DropdownMenuRadioItem value="createdAt">
+                                    <span>Created At</span>
+                                    <span className="ml-auto text-xs text-muted-foreground">
+                                        {filterStore.order === 'asc'
+                                            ? '1 → 9'
+                                            : '9 → 1'}
+                                    </span>
+                                </DropdownMenuRadioItem>
+                                <DropdownMenuRadioItem value="updatedAt">
+                                    <span>Updated At</span>
+                                    <span className="ml-auto text-xs text-muted-foreground">
+                                        {filterStore.order === 'asc'
+                                            ? '1 → 9'
+                                            : '9 → 1'}
+                                    </span>
+                                </DropdownMenuRadioItem>
+                            </DropdownMenuRadioGroup>
+                            {filterStore.sort && (
+                                <>
+                                    <DropdownMenuSeparator />
+                                    <div className="px-2 py-1.5">
+                                        <button
+                                            onClick={() => {
+                                                filterStore.setSortOrder(
+                                                    filterStore.order === 'asc'
+                                                        ? 'desc'
+                                                        : 'asc'
+                                                );
+                                            }}
+                                            className="w-full text-left text-xs text-muted-foreground hover:text-foreground transition-colors"
+                                        >
+                                            {filterStore.order === 'asc'
+                                                ? 'Switch to Descending'
+                                                : 'Switch to Ascending'}
+                                        </button>
+                                    </div>
+                                </>
+                            )}
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                    <Drawer
+                        open={isFilterDrawerOpen}
+                        onOpenChange={setIsFilterDrawerOpen}
+                        direction="right"
                     >
-                        <option value="">All</option>
-                        <option value="draft">Draft</option>
-                        <option value="posted">Posted</option>
-                        <option value="voided">Voided</option>
-                    </Select>
+                        <DrawerTrigger asChild>
+                            <Button variant="outline" size="sm">
+                                <Filter className="mr-2 h-4 w-4" /> Filters
+                                {(filterStore.filterContact ||
+                                    filterStore.filterAccountId ||
+                                    filterStore.filterMinAmount ||
+                                    filterStore.filterMaxAmount ||
+                                    filterStore.startDate ||
+                                    filterStore.endDate) && (
+                                    <span className="ml-2 h-2 w-2 rounded-full bg-accent" />
+                                )}
+                            </Button>
+                        </DrawerTrigger>
+                        <DrawerContent className="h-full w-full sm:w-[400px]">
+                            <DrawerHeader className="border-b border-primary/10">
+                                <div className="flex items-center justify-between">
+                                    <DrawerTitle>
+                                        Filter Journal Entries
+                                    </DrawerTitle>
+                                    <DrawerClose asChild>
+                                        <button className="p-2 hover:bg-primary/5 rounded-full transition-colors">
+                                            <X className="h-4 w-4 text-primary/70" />
+                                        </button>
+                                    </DrawerClose>
+                                </div>
+                            </DrawerHeader>
+                            <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                                <div>
+                                    <label className="text-sm font-medium text-primary/70 mb-2 block">
+                                        Status
+                                    </label>
+                                    <Select
+                                        value={filterStore.status}
+                                        onValueChange={(value) =>
+                                            filterStore.setStatus(
+                                                value as
+                                                    | 'draft'
+                                                    | 'posted'
+                                                    | 'voided'
+                                                    | 'all'
+                                            )
+                                        }
+                                    >
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="All" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="all">
+                                                All
+                                            </SelectItem>
+                                            <SelectItem value="draft">
+                                                Draft
+                                            </SelectItem>
+                                            <SelectItem value="posted">
+                                                Posted
+                                            </SelectItem>
+                                            <SelectItem value="voided">
+                                                Voided
+                                            </SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
 
-                    <Input
-                        type="date"
-                        value={filters.startDate || ''}
-                        onChange={(e) =>
-                            setFilters((prev) => ({
-                                ...prev,
-                                startDate: e.target.value || undefined,
-                                page: 1,
-                            }))
-                        }
-                        className="px-2 py-1.5 text-sm border border-primary/10 rounded focus:ring-1 focus:ring-primary focus:border-transparent"
-                        placeholder="Start Date"
-                    />
+                                <div>
+                                    <label className="text-sm font-medium text-primary/70 mb-2 block">
+                                        Date Range
+                                    </label>
+                                    <div className="grid grid-cols-2 gap-2">
+                                        <Input
+                                            type="date"
+                                            placeholder="Start Date"
+                                            value={filterStore.startDate}
+                                            onChange={(e) =>
+                                                filterStore.setStartDate(
+                                                    e.target.value
+                                                )
+                                            }
+                                        />
+                                        <Input
+                                            type="date"
+                                            placeholder="End Date"
+                                            value={filterStore.endDate}
+                                            onChange={(e) =>
+                                                filterStore.setEndDate(
+                                                    e.target.value
+                                                )
+                                            }
+                                        />
+                                    </div>
+                                </div>
 
-                    <Input
-                        type="date"
-                        value={filters.endDate || ''}
-                        onChange={(e) =>
-                            setFilters((prev) => ({
-                                ...prev,
-                                endDate: e.target.value || undefined,
-                                page: 1,
-                            }))
-                        }
-                        className="px-2 py-1.5 text-sm border border-primary/10 rounded focus:ring-1 focus:ring-primary focus:border-transparent"
-                        placeholder="End Date"
-                    />
+                                <div>
+                                    <label className="text-sm font-medium text-primary/70 mb-2 block">
+                                        Contact
+                                    </label>
+                                    <Combobox
+                                        options={CONTACT_OPTIONS}
+                                        value={filterStore.filterContact}
+                                        onChange={(value) =>
+                                            filterStore.setFilterContact(
+                                                value || ''
+                                            )
+                                        }
+                                        placeholder="All contacts"
+                                        searchPlaceholder="Search contact..."
+                                        className="h-9"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="text-sm font-medium text-primary/70 mb-2 block">
+                                        Account
+                                    </label>
+                                    <Combobox
+                                        options={ACCOUNT_OPTIONS}
+                                        value={filterStore.filterAccountId}
+                                        onChange={(value) =>
+                                            filterStore.setFilterAccountId(
+                                                value || ''
+                                            )
+                                        }
+                                        placeholder="All accounts"
+                                        searchPlaceholder="Search account..."
+                                        className="h-9"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="text-sm font-medium text-primary/70 mb-2 block">
+                                        Amount Range
+                                    </label>
+                                    <div className="grid grid-cols-2 gap-2">
+                                        <Input
+                                            type="number"
+                                            placeholder="Min"
+                                            value={filterStore.filterMinAmount}
+                                            onChange={(e) =>
+                                                filterStore.setFilterMinAmount(
+                                                    e.target.value
+                                                )
+                                            }
+                                        />
+                                        <Input
+                                            type="number"
+                                            placeholder="Max"
+                                            value={filterStore.filterMaxAmount}
+                                            onChange={(e) =>
+                                                filterStore.setFilterMaxAmount(
+                                                    e.target.value
+                                                )
+                                            }
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                            <DrawerFooter className="border-t border-primary/10">
+                                <DrawerClose asChild>
+                                    <Button
+                                        variant="outline"
+                                        className="w-full"
+                                        onClick={() =>
+                                            filterStore.resetFilters()
+                                        }
+                                    >
+                                        Clear All Filters
+                                    </Button>
+                                </DrawerClose>
+                            </DrawerFooter>
+                        </DrawerContent>
+                    </Drawer>
                 </div>
-
-                <Button size="sm" onClick={handleCreateNew}>
-                    <Icons.Plus className="w-4 h-4 mr-2" />
-                    New
-                </Button>
             </div>
 
             {/* Journal Entries Table */}
@@ -431,17 +773,18 @@ export default function JournalEntriespage() {
                 </div>
             )}
             <Table
-                containerClassName="flex-1 min-h-0 border rounded-lg bg-white"
                 enableSelection
                 rowIds={rowIds}
                 selectedIds={selectedItems}
                 onSelectionChange={setSelectedItems}
-                sortKey={sortKey}
-                sortDirection={sortDirection}
+                sortKey={filterStore.sort}
+                sortDirection={filterStore.order}
                 onSortChange={handleSortChange}
             >
                 <TableSelectionToolbar>
-                    <button
+                    <Button
+                        variant="outline"
+                        size="sm"
                         onClick={handleBulkPost}
                         disabled={
                             selectedItems.length === 0 ||
@@ -449,11 +792,12 @@ export default function JournalEntriespage() {
                             postMutation.isPending ||
                             deleteMutation.isPending
                         }
-                        className="px-3 py-1.5 text-xs font-medium text-green-700 bg-green-100 hover:bg-green-200 rounded-md transition-colors disabled:opacity-50"
                     >
                         Post Selected
-                    </button>
-                    <button
+                    </Button>
+                    <Button
+                        variant="destructive"
+                        size="sm"
                         onClick={handleBulkDelete}
                         disabled={
                             selectedItems.length === 0 ||
@@ -461,15 +805,9 @@ export default function JournalEntriespage() {
                             postMutation.isPending ||
                             deleteMutation.isPending
                         }
-                        className="px-3 py-1.5 text-xs font-medium text-red-700 bg-red-100 hover:bg-red-200 rounded-md transition-colors disabled:opacity-50"
                     >
                         Delete Selected
-                    </button>
-                    {(isLoading || isFetching) && (
-                        <span className="ml-auto text-xs text-primary/50">
-                            Loading...
-                        </span>
-                    )}
+                    </Button>
                 </TableSelectionToolbar>
 
                 <TableHeader>
@@ -505,7 +843,11 @@ export default function JournalEntriespage() {
                                 <FileText className="w-12 h-12 text-primary/20" />
                             }
                             action={
-                                <Button size="sm" onClick={handleCreateNew}>
+                                <Button
+                                    variant="default"
+                                    size="sm"
+                                    onClick={handleCreateNew}
+                                >
                                     <Icons.Plus className="w-4 h-4 mr-2" />
                                     Create Journal Entry
                                 </Button>
@@ -518,7 +860,7 @@ export default function JournalEntriespage() {
                                 rowId={entry.id}
                                 onClick={() => handleView(entry.id)}
                             >
-                                <TableCell>
+                                <TableCell onClick={(e) => e.stopPropagation()}>
                                     <TableRowCheckbox rowId={entry.id} />
                                 </TableCell>
                                 <TableCell>
@@ -601,17 +943,31 @@ export default function JournalEntriespage() {
                                     {getStatusBadge(entry.status)}
                                 </TableCell>
                                 <TableCell>
-                                    <div onClick={(e) => e.stopPropagation()}>
+                                    <div
+                                        className="flex items-center gap-2"
+                                        onClick={(e) => e.stopPropagation()}
+                                    >
+                                        {entry.status === 'draft' && (
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                onClick={() =>
+                                                    handlePost(entry)
+                                                }
+                                                disabled={
+                                                    postMutation.isPending
+                                                }
+                                            >
+                                                Post
+                                            </Button>
+                                        )}
                                         <DropdownMenu>
                                             <DropdownMenuTrigger asChild>
                                                 <Button
                                                     variant="outline"
-                                                    className="h-8 w-8 p-0"
+                                                    size="sm"
                                                 >
-                                                    <span className="sr-only">
-                                                        Open menu
-                                                    </span>
-                                                    <MoreHorizontal className="h-4 w-4" />
+                                                    ⋯
                                                 </Button>
                                             </DropdownMenuTrigger>
                                             <DropdownMenuContent align="end">
@@ -623,7 +979,12 @@ export default function JournalEntriespage() {
                                                                     entry.id
                                                                 )
                                                             }
+                                                            disabled={
+                                                                deleteMutation.isPending ||
+                                                                postMutation.isPending
+                                                            }
                                                         >
+                                                            <Icons.Edit className="mr-2 h-4 w-4" />
                                                             Edit
                                                         </DropdownMenuItem>
                                                         <DropdownMenuItem
@@ -632,17 +993,11 @@ export default function JournalEntriespage() {
                                                                     entry
                                                                 )
                                                             }
-                                                        >
-                                                            Post
-                                                        </DropdownMenuItem>
-                                                        <DropdownMenuItem
-                                                            onClick={() =>
-                                                                handleVoid(
-                                                                    entry
-                                                                )
+                                                            disabled={
+                                                                postMutation.isPending
                                                             }
                                                         >
-                                                            Void
+                                                            Post
                                                         </DropdownMenuItem>
                                                         <DropdownMenuItem
                                                             onClick={() =>
@@ -650,27 +1005,55 @@ export default function JournalEntriespage() {
                                                                     entry
                                                                 )
                                                             }
+                                                            disabled={
+                                                                deleteMutation.isPending
+                                                            }
                                                             className="text-red-600 focus:text-red-600"
                                                         >
+                                                            <Icons.Trash className="mr-2 h-4 w-4" />
                                                             Delete
                                                         </DropdownMenuItem>
                                                     </>
                                                 )}
                                                 {entry.status === 'posted' && (
-                                                    <DropdownMenuItem
-                                                        onClick={() =>
-                                                            handleReverse(entry)
-                                                        }
-                                                    >
-                                                        Reverse
-                                                    </DropdownMenuItem>
+                                                    <>
+                                                        <DropdownMenuItem
+                                                            onClick={() =>
+                                                                handleVoid(
+                                                                    entry
+                                                                )
+                                                            }
+                                                            disabled={
+                                                                voidMutation.isPending
+                                                            }
+                                                        >
+                                                            Void
+                                                        </DropdownMenuItem>
+                                                        <DropdownMenuItem
+                                                            onClick={() =>
+                                                                handleReverse(
+                                                                    entry
+                                                                )
+                                                            }
+                                                            disabled={
+                                                                reverseMutation.isPending
+                                                            }
+                                                        >
+                                                            <Undo2 className="mr-2 h-4 w-4" />
+                                                            Reverse
+                                                        </DropdownMenuItem>
+                                                    </>
                                                 )}
                                                 {entry.status === 'voided' && (
                                                     <DropdownMenuItem
                                                         onClick={() =>
                                                             handleRestore(entry)
                                                         }
+                                                        disabled={
+                                                            restoreMutation.isPending
+                                                        }
                                                     >
+                                                        <Redo2 className="mr-2 h-4 w-4" />
                                                         Restore
                                                     </DropdownMenuItem>
                                                 )}
@@ -686,11 +1069,11 @@ export default function JournalEntriespage() {
 
             {/* Pagination */}
             <TablePagination
-                page={filters.page || 1}
+                page={filterStore.page}
                 totalPages={totalPages}
-                totalItems={total}
-                itemsPerPage={filters.limit || 20}
-                onPageChange={(page) => setFilters({ ...filters, page })}
+                totalItems={totalItems}
+                itemsPerPage={filterStore.limit}
+                onPageChange={(page) => filterStore.setPage(page)}
             />
 
             {/* Delete Confirmation Dialog */}
@@ -729,18 +1112,6 @@ export default function JournalEntriespage() {
                 cancelText="Cancel"
                 confirmVariant="danger"
                 loading={voidMutation.isPending}
-            />
-
-            {/* Reverse Confirmation Dialog */}
-            <ConfirmationDialog
-                isOpen={reverseDialog.isOpen}
-                onClose={() => setReverseDialog({ isOpen: false, entry: null })}
-                onConfirm={handleConfirmReverse}
-                title="Reverse Journal Entry"
-                message={`Are you sure you want to reverse journal entry "${reverseDialog.entry?.entryNumber}"? This will create a new reversing entry.`}
-                confirmText="Reverse"
-                cancelText="Cancel"
-                loading={reverseMutation.isPending}
             />
 
             <ConfirmationDialog

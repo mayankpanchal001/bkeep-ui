@@ -1,9 +1,25 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
 @import 'tailwindcss';
 @plugin 'tailwindcss-animate';
 @import './styles/styles.css';
 
 @custom-variant dark (&:is(.dark *));
+
+/* Font Face Declarations */
+@font-face {
+    font-family: 'Frutiger';
+    src: url('/fonts/Frutiger.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Frutiger';
+    src: url('/fonts/Frutiger_bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
 
 * {
     letter-spacing: 0.25px;
