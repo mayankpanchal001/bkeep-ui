@@ -27,7 +27,9 @@ interface TransactionHeaderProps {
     selectedAccountId?: string;
     onAccountSelect?: (accountId: string) => void;
     transactions?: HeaderTransaction[];
-    onStatusSelect?: (status: 'pending' | 'posted' | 'voided' | 'reversed') => void;
+    onStatusSelect?: (
+        status: 'pending' | 'posted' | 'voided' | 'reversed'
+    ) => void;
 }
 
 function hashStringToHue(input: string) {
