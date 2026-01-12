@@ -22,21 +22,23 @@ echo "----------------------------------------"
 KEY_NAME="github_deploy"
 KEY_PATH="$HOME/.ssh/$KEY_NAME"
 
-if [ -f "$KEY_PATH" ]; then
-    echo -e "${YELLOW}⚠️  Key $KEY_PATH already exists${NC}"
-    read -p "Do you want to overwrite it? (y/N): " -n 1 -r
-    echo
-    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-        echo "Using existing key..."
+    if [ -f "$KEY_PATH" ]; then
+        echo -e "${YELLOW}⚠️  Key $KEY_PATH already exists${NC}"
+        read -p "Do you want to overwrite it? (y/N): " -n 1 -r
+        echo
+        if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+            echo "Using existing key..."
+        else
+            rm -f "$KEY_PATH" "$KEY_PATH.pub"
+            # CRITICAL: Use -N "" to create key WITHOUT passphrase (required for GitHub Actions)
+            ssh-keygen -t ed25519 -C "github-actions-deploy" -f "$KEY_PATH" -N ""
+            echo -e "${GREEN}✅ New SSH key generated (no passphrase)${NC}"
+        fi
     else
-        rm -f "$KEY_PATH" "$KEY_PATH.pub"
+        # CRITICAL: Use -N "" to create key WITHOUT passphrase (required for GitHub Actions)
         ssh-keygen -t ed25519 -C "github-actions-deploy" -f "$KEY_PATH" -N ""
-        echo -e "${GREEN}✅ New SSH key generated${NC}"
+        echo -e "${GREEN}✅ SSH key generated (no passphrase)${NC}"
     fi
-else
-    ssh-keygen -t ed25519 -C "github-actions-deploy" -f "$KEY_PATH" -N ""
-    echo -e "${GREEN}✅ SSH key generated${NC}"
-fi
 
 # Step 2: Display Public Key
 echo ""

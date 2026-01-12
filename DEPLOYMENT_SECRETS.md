@@ -101,15 +101,18 @@ This guide explains how to find and configure the deployment secrets for automat
 
 #### Option B: Create a new SSH key pair (Recommended)
 
-1. **Generate a new SSH key pair:**
+1. **Generate a new SSH key pair (WITHOUT passphrase - required for GitHub Actions):**
 
     ```bash
     # On your local machine:
-    ssh-keygen -t ed25519 -C "github-actions-deploy" -f ~/.ssh/github_deploy
+    # IMPORTANT: Use -N "" to create key WITHOUT passphrase
+    ssh-keygen -t ed25519 -C "github-actions-deploy" -f ~/.ssh/github_deploy -N ""
 
     # Or if ed25519 is not supported:
-    ssh-keygen -t rsa -b 4096 -C "github-actions-deploy" -f ~/.ssh/github_deploy
+    ssh-keygen -t rsa -b 4096 -C "github-actions-deploy" -f ~/.ssh/github_deploy -N ""
     ```
+
+    **⚠️ CRITICAL:** You MUST use `-N ""` to create a key without a passphrase. GitHub Actions cannot handle passphrase-protected keys.
 
 2. **Copy the private key:**
 
@@ -140,6 +143,8 @@ This guide explains how to find and configure the deployment secrets for automat
 - ⚠️ **NEVER** commit the private key to your repository
 - ⚠️ The private key should start with `-----BEGIN` and end with `-----END`
 - ✅ Use the **private key** (not the `.pub` file) for the secret
+- ⚠️ **CRITICAL:** The key must be generated WITHOUT a passphrase (`-N ""`)
+- ⚠️ Copy the ENTIRE key including BEGIN/END markers - no extra whitespace
 
 **Example format:**
 
@@ -315,6 +320,18 @@ ssh -i ~/.ssh/github_deploy deploy@your-server-ip
 - Verify public key is in `~/.ssh/authorized_keys`
 - Check file permissions: `chmod 600 ~/.ssh/authorized_keys`
 - Verify user has Docker permissions: `sudo usermod -aG docker username`
+- **Check if key has passphrase** - GitHub Actions cannot use keys with passphrases
+
+### SSH Key Format Error (`ssh: no key found`)
+
+- **Most common cause:** Key has a passphrase
+    - Fix: Regenerate key with `-N ""` flag (no passphrase)
+- **Second most common:** Extra whitespace in GitHub secret
+    - Fix: Copy key again, ensure no leading/trailing spaces
+- **Third:** Missing BEGIN/END markers
+    - Fix: Copy entire key including `-----BEGIN` and `-----END` lines
+- **Fourth:** Wrong key format
+    - Fix: Use ed25519 or RSA 4096 format
 
 ### Docker Permission Denied
 
