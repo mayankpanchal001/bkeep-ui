@@ -61,7 +61,7 @@ This guide explains how to find and configure the deployment secrets for automat
 
 **Example values:**
 
-- `root`
+- hd `root`
 - `ubuntu`
 - `deploy`
 - `admin`
