@@ -112,6 +112,9 @@ jobs:
                       VITE_ENVIRONMENT=${{ steps.env.outputs.env }}
                       VITE_BUILD_DATE=${{ steps.date.outputs.date }}
                       VITE_GIT_COMMIT=${{ steps.commit.outputs.sha }}
+                  env: |
+                      VITE_API_ENDPOINT=${{ steps.api.outputs.endpoint }}
+                      VITE_ENVIRONMENT=${{ steps.env.outputs.env }}
 
             - name: Generate build summary
               if: github.event_name != 'pull_request'

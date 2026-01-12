@@ -99,10 +99,16 @@ docker run -d \
 
 The Dockerfile accepts these build arguments:
 
-- `VITE_API_ENDPOINT`: API endpoint URL
+- `VITE_API_ENDPOINT`: API endpoint URL (default: `http://72.62.161.70:4000/api/v1` for production)
 - `VITE_ENVIRONMENT`: Environment (production/staging/development)
 - `VITE_BUILD_DATE`: Build timestamp (auto-set)
 - `VITE_GIT_COMMIT`: Git commit SHA (auto-set)
+
+**Important:** The API endpoint is baked into the build at build time. Make sure to:
+
+- Set `VITE_API_ENDPOINT` when building for production
+- Use the correct endpoint for your environment
+- The default production endpoint is `http://72.62.161.70:4000/api/v1`
 
 ### 6. Deployment
 

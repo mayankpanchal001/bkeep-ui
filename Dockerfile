@@ -24,12 +24,12 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 # Build arguments for environment variables
-ARG VITE_API_ENDPOINT
+ARG VITE_API_ENDPOINT=http://72.62.161.70:4000/api/v1
 ARG VITE_ENVIRONMENT=production
 ARG VITE_BUILD_DATE
 ARG VITE_GIT_COMMIT
 
-# Set environment variables
+# Set environment variables (Vite requires these at build time)
 ENV NODE_ENV=production
 ENV VITE_API_ENDPOINT=$VITE_API_ENDPOINT
 ENV VITE_ENVIRONMENT=$VITE_ENVIRONMENT
