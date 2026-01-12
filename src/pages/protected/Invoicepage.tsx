@@ -2,6 +2,13 @@ import CreateInvoiceModal from '@/components/invoice/CreateInvoiceModal';
 import Button from '@/components/typography/Button';
 import { InputField } from '@/components/typography/InputFields';
 import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
+import {
     Table,
     TableBody,
     TableCell,
@@ -191,17 +198,21 @@ const Invoicepage = () => {
                     </div>
                     <div className="flex items-center gap-2">
                         <FaFilter className="text-primary/50" />
-                        <select
+                        <Select
                             value={statusFilter}
-                            onChange={(e) => setStatusFilter(e.target.value)}
-                            className="px-4 py-2 border border-primary/10 rounded-2 text-sm text-primary focus:outline-none focus:border-primary dark:bg-black white:text-white"
+                            onValueChange={setStatusFilter}
                         >
-                            <option value="all">All</option>
-                            <option value="draft">Draft</option>
-                            <option value="sent">Sent</option>
-                            <option value="paid">Paid</option>
-                            <option value="overdue">Overdue</option>
-                        </select>
+                            <SelectTrigger className="w-[180px]">
+                                <SelectValue placeholder="All" />
+                            </SelectTrigger>
+                            <SelectContent >
+                                <SelectItem value="all">All</SelectItem>
+                                <SelectItem value="draft">Draft</SelectItem>
+                                <SelectItem value="sent">Sent</SelectItem>
+                                <SelectItem value="paid">Paid</SelectItem>
+                                <SelectItem value="overdue">Overdue</SelectItem>
+                            </SelectContent>
+                        </Select>
                     </div>
                 </div>
 

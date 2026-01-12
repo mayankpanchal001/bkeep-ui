@@ -536,8 +536,8 @@ const ChartOfAccountspage = () => {
         <div className="h-full flex flex-col gap-4">
             {/* Filters and Search */}
             <div className="flex flex-col sm:flex-row gap-4">
-                <div className="flex-1">
-                    <div className="relative">
+                <div className="flex-1 flex gap-2">
+                    <div className="relative flex-1">
                         <Input
                             id="search-accounts"
                             placeholder="Search accounts..."
@@ -546,6 +546,29 @@ const ChartOfAccountspage = () => {
                             startIcon={<Search size={16} />}
                         />
                     </div>
+                    <Select
+                        value={
+                            selectedTypes.length === 1
+                                ? selectedTypes[0]
+                                : 'all'
+                        }
+                        onValueChange={(val) => {
+                            if (val === 'all') setSelectedTypes([]);
+                            else setSelectedTypes([val as AccountType]);
+                        }}
+                    >
+                        <SelectTrigger className="w-[180px]">
+                            <SelectValue placeholder="All Types" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="all">All Types</SelectItem>
+                            {ACCOUNT_TYPE_OPTIONS.map((opt) => (
+                                <SelectItem key={opt.value} value={opt.value}>
+                                    {opt.label}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
                 </div>
                 <div className="flex items-center gap-3">
                     <Button

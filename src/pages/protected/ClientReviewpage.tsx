@@ -1,3 +1,13 @@
+import { SINGLE_TENANT_PREFIX } from '@/components/homepage/constants';
+import Button from '@/components/typography/Button';
+import { InputField, TextareaField } from '@/components/typography/InputFields';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 import { useState } from 'react';
 import {
     FaCheckCircle,
@@ -9,9 +19,6 @@ import {
     FaSearch,
     FaTimes,
 } from 'react-icons/fa';
-import Button from '@/components/typography/Button';
-import { InputField, TextareaField } from '@/components/typography/InputFields';
-import { SINGLE_TENANT_PREFIX } from '@/components/homepage/constants';
 
 const CAP_SINGULAR =
     SINGLE_TENANT_PREFIX.charAt(0).toUpperCase() +
@@ -233,16 +240,24 @@ const ClientReviewpage = () => {
                     </div>
                     <div className="flex items-center gap-2">
                         <FaFilter className="text-primary/50" />
-                        <select
+                        <Select
                             value={statusFilter}
-                            onChange={(e) => setStatusFilter(e.target.value)}
-                            className="px-4 py-2 border border-primary/10 rounded-2 text-sm text-primary focus:outline-none focus:border-primary"
+                            onValueChange={setStatusFilter}
                         >
-                            <option value="all">All Status</option>
-                            <option value="pending">Pending</option>
-                            <option value="reviewed">Reviewed</option>
-                            <option value="approved">Approved</option>
-                        </select>
+                            <SelectTrigger className="w-[180px]">
+                                <SelectValue placeholder="All Status" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="all">All Status</SelectItem>
+                                <SelectItem value="pending">Pending</SelectItem>
+                                <SelectItem value="reviewed">
+                                    Reviewed
+                                </SelectItem>
+                                <SelectItem value="approved">
+                                    Approved
+                                </SelectItem>
+                            </SelectContent>
+                        </Select>
                     </div>
                 </div>
             </div>
