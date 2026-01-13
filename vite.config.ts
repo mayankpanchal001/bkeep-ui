@@ -18,6 +18,8 @@ export default defineConfig(({ mode }) => {
             },
         },
         server: {
+            port: 80,
+            host: true, // Listen on all addresses
             proxy: {
                 '/api': {
                     // Use the same API endpoint for both local and production

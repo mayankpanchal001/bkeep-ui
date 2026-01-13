@@ -6,14 +6,19 @@ services:
             context: .
             dockerfile: Dockerfile
             args:
-                # Use the same API endpoint for both local and production
+                # API endpoint - same for both local and production
+                # Can be overridden with: VITE_API_ENDPOINT=<url> docker-compose build
                 VITE_API_ENDPOINT: ${VITE_API_ENDPOINT:-http://72.62.161.70:4000/api/v1}
+                # Environment type
                 VITE_ENVIRONMENT: ${VITE_ENVIRONMENT:-production}
+                # Optional: Build metadata
                 VITE_BUILD_DATE: ${VITE_BUILD_DATE:-}
                 VITE_GIT_COMMIT: ${VITE_GIT_COMMIT:-local}
         image: bkeep-frontend:latest
         container_name: bkeep-frontend
         ports:
+            # Map host port to container port 80
+            # Override with: PORT=3000 docker-compose up
             - '${PORT:-80}:80'
         restart: unless-stopped
         healthcheck:
@@ -24,7 +29,7 @@ services:
                     '--quiet',
                     '--tries=1',
                     '--spider',
-                    'http://localhost/',
+                    'http://localhost/health',
                 ]
             interval: 30s
             timeout: 3s
@@ -32,6 +37,15 @@ services:
             start_period: 5s
         networks:
             - bkeep-network
+        # Resource limits (optional, uncomment if needed)
+        # deploy:
+        #     resources:
+        #         limits:
+        #             cpus: '1'
+        #             memory: 512M
+        #         reservations:
+        #             cpus: '0.5'
+        #             memory: 256M
 
 networks:
     bkeep-network:
