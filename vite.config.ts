@@ -18,7 +18,7 @@ export default defineConfig(({ mode }) => {
             },
         },
         server: {
-            port: 80,
+            port: 5173, // Development port
             host: true, // Listen on all addresses
             proxy: {
                 '/api': {
