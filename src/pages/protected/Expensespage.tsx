@@ -1,6 +1,13 @@
 import Button from '@/components/typography/Button';
 import { InputField } from '@/components/typography/InputFields';
 import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
+import {
     Table,
     TableBody,
     TableCell,
@@ -170,18 +177,22 @@ const Expensespage = () => {
                 </div>
                 <div className="flex items-center gap-2">
                     <Filter className="text-primary/50 h-4 w-4" />
-                    <select
+                    <Select
                         value={categoryFilter}
-                        onChange={(e) => setCategoryFilter(e.target.value)}
-                        className="px-4 py-2 border border-primary/10 rounded-2 text-sm text-primary focus:outline-none focus:border-primary"
+                        onValueChange={setCategoryFilter}
                     >
-                        <option value="all">All Categories</option>
-                        {CATEGORIES.map((category) => (
-                            <option key={category} value={category}>
-                                {category}
-                            </option>
-                        ))}
-                    </select>
+                        <SelectTrigger className="w-[180px] shadow-xs dark:bg-input/30 dark:hover:bg-input/50 bg-background">
+                            <SelectValue placeholder="All Categories" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="all">All Categories</SelectItem>
+                            {CATEGORIES.map((category) => (
+                                <SelectItem key={category} value={category}>
+                                    {category}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
                 </div>
             </div>
 
@@ -334,16 +345,21 @@ const Expensespage = () => {
                                     <label className="block text-sm font-medium text-primary mb-2">
                                         Category
                                     </label>
-                                    <select className="w-full px-4 py-2 border border-primary/10 rounded-2 text-sm text-primary focus:outline-none focus:border-primary">
-                                        {CATEGORIES.map((category) => (
-                                            <option
-                                                key={category}
-                                                value={category}
-                                            >
-                                                {category}
-                                            </option>
-                                        ))}
-                                    </select>
+                                    <Select>
+                                        <SelectTrigger className="w-full">
+                                            <SelectValue placeholder="Select Category" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {CATEGORIES.map((category) => (
+                                                <SelectItem
+                                                    key={category}
+                                                    value={category}
+                                                >
+                                                    {category}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
                                 </div>
                                 <InputField
                                     id="amount"
@@ -364,12 +380,25 @@ const Expensespage = () => {
                                 <label className="block text-sm font-medium text-primary mb-2">
                                     Payment Method
                                 </label>
-                                <select className="w-full px-4 py-2 border border-primary/10 rounded-2 text-sm text-primary focus:outline-none focus:border-primary">
-                                    <option>Credit Card</option>
-                                    <option>Bank Transfer</option>
-                                    <option>Check</option>
-                                    <option>Cash</option>
-                                </select>
+                                <Select>
+                                    <SelectTrigger className="w-full">
+                                        <SelectValue placeholder="Select Payment Method" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="credit-card">
+                                            Credit Card
+                                        </SelectItem>
+                                        <SelectItem value="bank-transfer">
+                                            Bank Transfer
+                                        </SelectItem>
+                                        <SelectItem value="check">
+                                            Check
+                                        </SelectItem>
+                                        <SelectItem value="cash">
+                                            Cash
+                                        </SelectItem>
+                                    </SelectContent>
+                                </Select>
                             </div>
                             <div className="flex gap-3 pt-4">
                                 <Button

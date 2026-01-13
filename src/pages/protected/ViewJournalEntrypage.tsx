@@ -185,16 +185,20 @@ export default function ViewJournalEntrypage() {
     const getStatusBadge = (status: string) => {
         const statusConfig = {
             draft: {
-                bg: 'bg-gray-100',
+                bg: 'bg-gray-100 dark:bg-primary/10',
                 text: 'text-primary/70',
                 label: 'Draft',
             },
             posted: {
-                bg: 'bg-green-100',
-                text: 'text-green-700',
+                bg: 'bg-green-100 dark:bg-green-500/20',
+                text: 'text-green-700 dark:text-green-400',
                 label: 'Posted',
             },
-            voided: { bg: 'bg-red-100', text: 'text-red-700', label: 'Voided' },
+            voided: {
+                bg: 'bg-red-100 dark:bg-red-500/20',
+                text: 'text-red-700 dark:text-red-400',
+                label: 'Voided',
+            },
         };
 
         const config =
@@ -216,6 +220,36 @@ export default function ViewJournalEntrypage() {
                 title={`Journal Entry ${formatText(journalEntry.entryNumber)}`}
                 subtitle={formatDateOnly(journalEntry.entryDate)}
             />
+
+            <div className="bg-white rounded-lg border border-primary/10 overflow-hidden">
+                <div className="px-4 py-2 border-b border-primary/10">
+                    <h3 className="text-base font-semibold text-primary">
+                        Journal Lines
+                    </h3>
+                </div>
+                <DataTable
+                    data={journalEntry.lines}
+                    columns={columns}
+                    containerClassName="border-none rounded-none"
+                    tableClassName="w-full"
+                    footerContent={
+                        <tr className="bg-white border-t border-primary/10">
+                            <td
+                                colSpan={4}
+                                className="px-3 py-2 text-right font-semibold text-sm text-primary"
+                            >
+                                Total
+                            </td>
+                            <td className="px-3 py-2 text-right font-semibold text-sm text-primary">
+                                ${toNumber(journalEntry.totalDebit).toFixed(2)}
+                            </td>
+                            <td className="px-3 py-2 text-right font-semibold text-sm text-primary">
+                                ${toNumber(journalEntry.totalCredit).toFixed(2)}
+                            </td>
+                        </tr>
+                    }
+                />
+            </div>
 
             {/* Essential Details - Always Visible */}
             <div className="bg-white rounded-lg border border-primary/10 p-4">
@@ -251,36 +285,6 @@ export default function ViewJournalEntrypage() {
                         </p>
                     </div>
                 </div>
-            </div>
-
-            <div className="bg-white rounded-lg border border-primary/10 overflow-hidden">
-                <div className="px-4 py-2 border-b border-primary/10">
-                    <h3 className="text-base font-semibold text-primary">
-                        Journal Lines
-                    </h3>
-                </div>
-                <DataTable
-                    data={journalEntry.lines}
-                    columns={columns}
-                    containerClassName="border-none rounded-none"
-                    tableClassName="w-full"
-                    footerContent={
-                        <tr className="bg-white border-t border-primary/10">
-                            <td
-                                colSpan={4}
-                                className="px-3 py-2 text-right font-semibold text-sm text-primary"
-                            >
-                                Total
-                            </td>
-                            <td className="px-3 py-2 text-right font-semibold text-sm text-primary">
-                                ${toNumber(journalEntry.totalDebit).toFixed(2)}
-                            </td>
-                            <td className="px-3 py-2 text-right font-semibold text-sm text-primary">
-                                ${toNumber(journalEntry.totalCredit).toFixed(2)}
-                            </td>
-                        </tr>
-                    }
-                />
             </div>
 
             {/* Additional Details - Collapsible */}

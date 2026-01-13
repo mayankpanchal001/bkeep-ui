@@ -394,16 +394,20 @@ export default function JournalEntriespage() {
     const getStatusBadge = (status: string) => {
         const statusConfig = {
             draft: {
-                bg: 'bg-gray-100',
+                bg: 'bg-gray-100 dark:bg-primary/10',
                 text: 'text-primary/70',
                 label: 'Draft',
             },
             posted: {
-                bg: 'bg-green-100',
-                text: 'text-green-700',
+                bg: 'bg-green-100 dark:bg-green-500/20',
+                text: 'text-green-700 dark:text-green-400',
                 label: 'Posted',
             },
-            voided: { bg: 'bg-red-100', text: 'text-red-700', label: 'Voided' },
+            voided: {
+                bg: 'bg-red-100 dark:bg-red-500/20',
+                text: 'text-red-700 dark:text-red-400',
+                label: 'Voided',
+            },
         };
 
         const config =
@@ -773,6 +777,7 @@ export default function JournalEntriespage() {
                 </div>
             )}
             <Table
+                containerClassName="h-[calc(100vh-250px)]"
                 enableSelection
                 rowIds={rowIds}
                 selectedIds={selectedItems}

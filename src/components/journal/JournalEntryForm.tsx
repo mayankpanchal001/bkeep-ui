@@ -351,7 +351,11 @@ export function JournalEntryForm({
                 </div>
             )}
 
-            <Table borderStyle="default" className="w-full">
+            <Table
+                borderStyle="default"
+                className="w-full"
+                containerClassName="max-h-[60vh]"
+            >
                 <TableHeader sticky>
                     <tr>
                         <TableHead className="w-12">#</TableHead>

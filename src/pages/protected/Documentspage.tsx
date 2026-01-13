@@ -1,3 +1,12 @@
+import ConfirmationDialog from '@/components/shared/ConfirmationDialog';
+import { InputField } from '@/components/typography/InputFields';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 import { useRef, useState } from 'react';
 import {
     FaDownload,
@@ -13,8 +22,6 @@ import {
     FaTrash,
     FaUpload,
 } from 'react-icons/fa';
-import ConfirmationDialog from '@/components/shared/ConfirmationDialog';
-import { InputField } from '@/components/typography/InputFields';
 
 type Document = {
     id: string;
@@ -282,17 +289,21 @@ const Documentspage = () => {
                     </div>
                     <div className="flex items-center gap-2">
                         <FaFilter className="text-primary/50" />
-                        <select
+                        <Select
                             value={categoryFilter}
-                            onChange={(e) => setCategoryFilter(e.target.value)}
-                            className="px-4 py-2 border border-primary/10 rounded-2 text-sm text-primary focus:outline-none focus:border-primary"
+                            onValueChange={setCategoryFilter}
                         >
-                            {CATEGORIES.map((category) => (
-                                <option key={category} value={category}>
-                                    {category}
-                                </option>
-                            ))}
-                        </select>
+                            <SelectTrigger className="w-[180px] shadow-xs dark:bg-input/30 dark:hover:bg-input/50 bg-background">
+                                <SelectValue placeholder="All Categories" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {CATEGORIES.map((category) => (
+                                    <SelectItem key={category} value={category}>
+                                        {category}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
                     </div>
                 </div>
             </div>

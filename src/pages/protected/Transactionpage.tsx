@@ -43,8 +43,8 @@ import {
     useTransactions,
     useVoidTransaction,
 } from '../../services/apis/transactions';
-import { showErrorToast, showSuccessToast } from '../../utills/toast';
 import { useTransactionsFilterStore } from '../../stores/transactions/transactionsFilterStore';
+import { showErrorToast, showSuccessToast } from '../../utills/toast';
 
 const Transactionpage = () => {
     type TxStatus = 'pending' | 'posted' | 'voided' | 'reversed';
@@ -125,11 +125,26 @@ const Transactionpage = () => {
             limit,
         };
 
-        if (search) filters.search = search;
-        if (status !== 'all') filters.status = status;
-        if (selectedAccountId) filters.accountId = selectedAccountId;
+        // Check if search term is a date (YYYY-MM-DD)
+        const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+        const isDateSearch = search && dateRegex.test(search);
+
         if (filterStartDate) filters.startDate = filterStartDate;
         if (filterEndDate) filters.endDate = filterEndDate;
+
+        if (search) {
+            // If search is a valid date and no explicit date filters are set, use it as a date filter
+            // This fixes issues with potential timezone mismatches in backend text search
+            if (isDateSearch && !filterStartDate && !filterEndDate) {
+                filters.startDate = search;
+                filters.endDate = search;
+            } else {
+                filters.search = search;
+            }
+        }
+
+        if (status !== 'all') filters.status = status;
+        if (selectedAccountId) filters.accountId = selectedAccountId;
 
         // Convert supplier display name to contactId
         if (filterSupplier) {
@@ -642,6 +657,7 @@ const Transactionpage = () => {
             </div>
             <div className="p-4">
                 <Table
+                    containerClassName="h-[calc(100vh-240px)]"
                     enableSelection={true}
                     onSelectionChange={setSelectedItems}
                     rowIds={pageData.map((t) => t.id)}
