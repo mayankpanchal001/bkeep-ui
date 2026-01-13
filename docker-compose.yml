@@ -8,18 +8,16 @@ services:
             args:
                 # API endpoint - same for both local and production
                 # Can be overridden with: VITE_API_ENDPOINT=<url> docker-compose build
-                VITE_API_ENDPOINT: ${VITE_API_ENDPOINT:-http://72.62.161.70:4000/api/v1}
+                VITE_API_ENDPOINT: http://72.62.161.70:4000/api/v1
                 # Environment type
-                VITE_ENVIRONMENT: ${VITE_ENVIRONMENT:-production}
-                # Optional: Build metadata
-                VITE_BUILD_DATE: ${VITE_BUILD_DATE:-}
-                VITE_GIT_COMMIT: ${VITE_GIT_COMMIT:-local}
+                VITE_ENVIRONMENT: production
+
         image: bkeep-frontend:latest
         container_name: bkeep-frontend
         ports:
             # Map host port to container port 80
             # Override with: PORT=3000 docker-compose up
-            - '${PORT:-80}:80'
+            - '80:80'
         restart: unless-stopped
         healthcheck:
             test:
