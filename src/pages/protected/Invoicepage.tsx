@@ -205,7 +205,7 @@ const Invoicepage = () => {
                             <SelectTrigger className="w-[180px]">
                                 <SelectValue placeholder="All" />
                             </SelectTrigger>
-                            <SelectContent >
+                            <SelectContent>
                                 <SelectItem value="all">All</SelectItem>
                                 <SelectItem value="draft">Draft</SelectItem>
                                 <SelectItem value="sent">Sent</SelectItem>
