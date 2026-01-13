@@ -6,8 +6,9 @@ services:
             context: .
             dockerfile: Dockerfile
             args:
-                VITE_ENVIRONMENT: ${VITE_ENVIRONMENT:-production}
+                # Use the same API endpoint for both local and production
                 VITE_API_ENDPOINT: ${VITE_API_ENDPOINT:-http://72.62.161.70:4000/api/v1}
+                VITE_ENVIRONMENT: ${VITE_ENVIRONMENT:-production}
                 VITE_BUILD_DATE: ${VITE_BUILD_DATE:-}
                 VITE_GIT_COMMIT: ${VITE_GIT_COMMIT:-local}
         image: bkeep-frontend:latest

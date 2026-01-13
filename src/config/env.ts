@@ -8,19 +8,8 @@ const getApiEndpoint = () => {
         return import.meta.env.VITE_API_ENDPOINT;
     }
 
-    // Default based on environment mode
-    const mode =
-        import.meta.env.MODE ||
-        import.meta.env.VITE_ENVIRONMENT ||
-        'development';
-
-    if (mode === 'production') {
-        // Production default - should be overridden by build args
-        return 'http://72.62.161.70:4000/api/v1';
-    }
-
-    // Development default
-    return 'http://localhost:4000/api/v1';
+    // Default endpoint for both development and production
+    return 'http://72.62.161.70:4000/api/v1';
 };
 
 export const API_ENDPOINT = getApiEndpoint();

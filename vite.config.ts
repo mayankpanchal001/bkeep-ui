@@ -20,8 +20,10 @@ export default defineConfig(({ mode }) => {
         server: {
             proxy: {
                 '/api': {
+                    // Use the same API endpoint for both local and production
                     target:
-                        env.VITE_API_ENDPOINT || 'http://localhost:4000/api/v1',
+                        env.VITE_API_ENDPOINT ||
+                        'http://72.62.161.70:4000/api/v1',
                     changeOrigin: true,
                     secure: false,
                     rewrite: (path) => path.replace(/^\/api/, ''),
