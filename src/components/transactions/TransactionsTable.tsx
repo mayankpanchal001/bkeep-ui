@@ -1,6 +1,7 @@
-import { useState } from 'react';
 import { ArrowDown, ArrowUp, Filter, Search } from 'lucide-react';
+import { useState } from 'react';
 import { useTransactions } from '../../services/apis/transactions';
+import type { TransactionItem } from '../../types';
 import {
     Table,
     TableBody,
@@ -22,38 +23,39 @@ const TransactionsTable = () => {
     const [selectedItems, setSelectedItems] = useState<(string | number)[]>([]);
     const itemsPerPage = 20;
 
-    const filteredTransactions = data?.filter((transaction) => {
-        if (!searchTerm) return true;
-        const searchLower = searchTerm.toLowerCase();
-        const firstSplit = transaction.splits?.[0];
-        const description =
-            firstSplit?.senderDescription?.toLowerCase() ||
-            firstSplit?.recipientDescription?.toLowerCase() ||
-            '';
-        const categoryName =
-            firstSplit?.categoryAndGifi?.[0]?.displayLabel?.toLowerCase() ||
-            firstSplit?.categoryAndGifi?.[0]?.name?.toLowerCase() ||
-            '';
-        const itemType = transaction.itemType?.toLowerCase() || '';
+    const transactions = data?.items || [];
 
-        return (
-            description.includes(searchLower) ||
-            categoryName.includes(searchLower) ||
-            itemType.includes(searchLower) ||
-            transaction.totalAmount?.includes(searchLower)
-        );
-    });
+    const filteredTransactions = transactions.filter(
+        (transaction: TransactionItem) => {
+            if (!searchTerm) return true;
+            const searchLower = searchTerm.toLowerCase();
+            const firstSplit = transaction.splits?.[0];
+            const description =
+                firstSplit?.senderDescription?.toLowerCase() ||
+                firstSplit?.recipientDescription?.toLowerCase() ||
+                '';
+            const categoryName =
+                firstSplit?.categoryAndGifi?.[0]?.displayLabel?.toLowerCase() ||
+                firstSplit?.categoryAndGifi?.[0]?.name?.toLowerCase() ||
+                '';
+            const itemType = transaction.itemType?.toLowerCase() || '';
 
-    const totalPages = Math.ceil(
-        (filteredTransactions?.length || 0) / itemsPerPage
+            return (
+                description.includes(searchLower) ||
+                categoryName.includes(searchLower) ||
+                itemType.includes(searchLower) ||
+                transaction.totalAmount?.includes(searchLower)
+            );
+        }
     );
-    const paginatedTransactions =
-        filteredTransactions?.slice(
-            (currentPage - 1) * itemsPerPage,
-            currentPage * itemsPerPage
-        ) || [];
 
-    const rowIds = paginatedTransactions.map((t) => t.id);
+    const totalPages = Math.ceil(filteredTransactions.length / itemsPerPage);
+    const paginatedTransactions = filteredTransactions.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+    );
+
+    const rowIds = paginatedTransactions.map((t: TransactionItem) => t.id);
 
     if (isLoading) {
         return (
@@ -151,135 +153,145 @@ const TransactionsTable = () => {
                             }
                         />
                     ) : (
-                        paginatedTransactions.map((transaction) => {
-                            const firstSplit = transaction.splits?.[0];
-                            const description =
-                                firstSplit?.senderDescription ||
-                                firstSplit?.recipientDescription ||
-                                transaction.itemType ||
-                                'N/A';
-                            const displayLabel =
-                                firstSplit?.categoryAndGifi?.[0]?.displayLabel;
-                            const amount = parseFloat(
-                                transaction.totalAmount || '0'
-                            );
-                            const isCredit = amount >= 0;
-                            const formattedAmount = new Intl.NumberFormat(
-                                'en-US',
-                                {
-                                    style: 'currency',
-                                    currency:
-                                        transaction.currency?.toUpperCase() ||
-                                        'USD',
-                                }
-                            ).format(Math.abs(amount));
+                        paginatedTransactions.map(
+                            (transaction: TransactionItem) => {
+                                const firstSplit = transaction.splits?.[0];
+                                const description =
+                                    firstSplit?.senderDescription ||
+                                    firstSplit?.recipientDescription ||
+                                    transaction.itemType ||
+                                    'N/A';
+                                const displayLabel =
+                                    firstSplit?.categoryAndGifi?.[0]
+                                        ?.displayLabel;
+                                const amount = parseFloat(
+                                    transaction.totalAmount || '0'
+                                );
+                                const isCredit = amount >= 0;
+                                const formattedAmount = new Intl.NumberFormat(
+                                    'en-US',
+                                    {
+                                        style: 'currency',
+                                        currency:
+                                            transaction.currency?.toUpperCase() ||
+                                            'USD',
+                                    }
+                                ).format(Math.abs(amount));
 
-                            return (
-                                <TableRow
-                                    key={transaction.id}
-                                    rowId={transaction.id}
-                                >
-                                    <TableCell>
-                                        <TableRowCheckbox
-                                            rowId={transaction.id}
-                                        />
-                                    </TableCell>
-                                    <TableCell>
-                                        <div className="flex items-center gap-2">
-                                            <div
-                                                className={`w-2 h-2 rounded-full ${
-                                                    isCredit
-                                                        ? 'bg-green-500'
-                                                        : 'bg-red-500'
-                                                }`}
-                                            ></div>
-                                            <span className="text-sm font-medium text-primary">
-                                                {new Date(
-                                                    transaction.latestPostedDate ||
-                                                        transaction.createdAt
-                                                ).toLocaleDateString('en-US', {
-                                                    year: 'numeric',
-                                                    month: 'short',
-                                                    day: 'numeric',
-                                                })}
-                                            </span>
-                                        </div>
-                                    </TableCell>
-                                    <TableCell>
-                                        <div className="flex flex-col">
-                                            <span className="text-sm font-medium text-primary">
-                                                {description}
-                                            </span>
-                                            {displayLabel && (
-                                                <span className="text-xs text-primary/50">
-                                                    {displayLabel}
+                                return (
+                                    <TableRow
+                                        key={transaction.id}
+                                        rowId={transaction.id}
+                                    >
+                                        <TableCell>
+                                            <TableRowCheckbox
+                                                rowId={transaction.id}
+                                            />
+                                        </TableCell>
+                                        <TableCell>
+                                            <div className="flex items-center gap-2">
+                                                <div
+                                                    className={`w-2 h-2 rounded-full ${
+                                                        isCredit
+                                                            ? 'bg-green-500'
+                                                            : 'bg-red-500'
+                                                    }`}
+                                                ></div>
+                                                <span className="text-sm font-medium text-primary">
+                                                    {new Date(
+                                                        transaction.latestPostedDate ||
+                                                            transaction.createdAt
+                                                    ).toLocaleDateString(
+                                                        'en-US',
+                                                        {
+                                                            year: 'numeric',
+                                                            month: 'short',
+                                                            day: 'numeric',
+                                                        }
+                                                    )}
                                                 </span>
-                                            )}
-                                        </div>
-                                    </TableCell>
-                                    <TableCell>
-                                        <span className="text-xs text-primary/50 bg-primary/10 px-2 py-1 rounded">
-                                            {transaction.itemType || 'N/A'}
-                                        </span>
-                                    </TableCell>
-                                    <TableCell align="right">
-                                        <div
-                                            className={`flex items-center justify-end gap-1 font-semibold ${
-                                                isCredit
-                                                    ? 'text-green-600'
-                                                    : 'text-red-600'
-                                            }`}
-                                        >
-                                            {isCredit ? (
-                                                <ArrowUp className="w-3 h-3" />
-                                            ) : (
-                                                <ArrowDown className="w-3 h-3" />
-                                            )}
-                                            <span>
-                                                {isCredit ? '+' : '-'}
-                                                {formattedAmount}
-                                            </span>
-                                        </div>
-                                    </TableCell>
-                                    <TableCell align="right">
-                                        <span className="text-sm text-primary/75">
-                                            {new Intl.NumberFormat('en-US', {
-                                                style: 'currency',
-                                                currency:
-                                                    transaction.currency?.toUpperCase() ||
-                                                    'USD',
-                                            }).format(0)}
-                                        </span>
-                                    </TableCell>
-                                    <TableCell>
-                                        <div className="flex items-center gap-2">
-                                            {transaction.pending && (
-                                                <span className="text-xs text-primary/50 bg-primary/10 px-2 py-1 rounded">
-                                                    Pending
+                                            </div>
+                                        </TableCell>
+                                        <TableCell>
+                                            <div className="flex flex-col">
+                                                <span className="text-sm font-medium text-primary">
+                                                    {description}
                                                 </span>
-                                            )}
-                                            {firstSplit?.pendingTransfer && (
-                                                <span className="text-xs text-primary/50 bg-primary/10 px-2 py-1 rounded">
-                                                    Transfer
-                                                </span>
-                                            )}
-                                            {transaction.matchedReceiptDocs &&
-                                                transaction.matchedReceiptDocs
-                                                    .length > 0 && (
-                                                    <span className="text-xs text-primary/50 bg-primary/10 px-2 py-1 rounded">
-                                                        Receipt
+                                                {displayLabel && (
+                                                    <span className="text-xs text-primary/50">
+                                                        {displayLabel}
                                                     </span>
                                                 )}
-                                        </div>
-                                    </TableCell>
-                                    <TableCell>
-                                        <button className="text-primary hover:text-primary/75 text-sm font-medium">
-                                            View
-                                        </button>
-                                    </TableCell>
-                                </TableRow>
-                            );
-                        })
+                                            </div>
+                                        </TableCell>
+                                        <TableCell>
+                                            <span className="text-xs text-primary/50 bg-primary/10 px-2 py-1 rounded">
+                                                {transaction.itemType || 'N/A'}
+                                            </span>
+                                        </TableCell>
+                                        <TableCell align="right">
+                                            <div
+                                                className={`flex items-center justify-end gap-1 font-semibold ${
+                                                    isCredit
+                                                        ? 'text-green-600'
+                                                        : 'text-red-600'
+                                                }`}
+                                            >
+                                                {isCredit ? (
+                                                    <ArrowUp className="w-3 h-3" />
+                                                ) : (
+                                                    <ArrowDown className="w-3 h-3" />
+                                                )}
+                                                <span>
+                                                    {isCredit ? '+' : '-'}
+                                                    {formattedAmount}
+                                                </span>
+                                            </div>
+                                        </TableCell>
+                                        <TableCell align="right">
+                                            <span className="text-sm text-primary/75">
+                                                {new Intl.NumberFormat(
+                                                    'en-US',
+                                                    {
+                                                        style: 'currency',
+                                                        currency:
+                                                            transaction.currency?.toUpperCase() ||
+                                                            'USD',
+                                                    }
+                                                ).format(0)}
+                                            </span>
+                                        </TableCell>
+                                        <TableCell>
+                                            <div className="flex items-center gap-2">
+                                                {transaction.pending && (
+                                                    <span className="text-xs text-primary/50 bg-primary/10 px-2 py-1 rounded">
+                                                        Pending
+                                                    </span>
+                                                )}
+                                                {firstSplit?.pendingTransfer && (
+                                                    <span className="text-xs text-primary/50 bg-primary/10 px-2 py-1 rounded">
+                                                        Transfer
+                                                    </span>
+                                                )}
+                                                {transaction.matchedReceiptDocs &&
+                                                    transaction
+                                                        .matchedReceiptDocs
+                                                        .length > 0 && (
+                                                        <span className="text-xs text-primary/50 bg-primary/10 px-2 py-1 rounded">
+                                                            Receipt
+                                                        </span>
+                                                    )}
+                                            </div>
+                                        </TableCell>
+                                        <TableCell>
+                                            <button className="text-primary hover:text-primary/75 text-sm font-medium">
+                                                View
+                                            </button>
+                                        </TableCell>
+                                    </TableRow>
+                                );
+                            }
+                        )
                     )}
                 </TableBody>
             </Table>
@@ -289,7 +301,7 @@ const TransactionsTable = () => {
                 <TablePagination
                     page={currentPage}
                     totalPages={totalPages}
-                    totalItems={filteredTransactions?.length || 0}
+                    totalItems={filteredTransactions.length}
                     itemsPerPage={itemsPerPage}
                     onPageChange={setCurrentPage}
                 />

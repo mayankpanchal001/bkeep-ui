@@ -318,18 +318,18 @@ const Reportpage = () => {
         return (
             <div
                 onClick={() => goToReport(categoryKey, report.key)}
-                className="group flex items-center gap-4 p-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 cursor-pointer transition-colors "
+                className="group flex items-center gap-4 p-4 bg-white rounded-lg border border-primary/10 hover:border-primary/20 hover:shadow-sm cursor-pointer transition-all"
             >
-                <div className="shrink-0 text-slate-400 group-hover:text-primary transition-colors">
+                <div className="shrink-0 text-primary/40 group-hover:text-primary transition-colors">
                     <FileText className="w-5 h-5" />
                 </div>
 
                 <div className="flex-1 min-w-0">
-                    <h3 className="text-sm font-medium text-slate-900 dark:text-slate-100 truncate">
+                    <h3 className="text-sm font-medium text-primary truncate">
                         {report.title}
                     </h3>
                     {report.description && (
-                        <p className="text-xs text-slate-500 dark:text-slate-400 truncate mt-0.5">
+                        <p className="text-xs text-primary/60 truncate mt-0.5">
                             {report.description}
                         </p>
                     )}
@@ -344,8 +344,8 @@ const Reportpage = () => {
                         className={cn(
                             'p-2 rounded-full transition-all',
                             isFav
-                                ? 'text-amber-500 bg-amber-50 dark:bg-amber-500/10'
-                                : 'text-slate-300 hover:text-amber-500 hover:bg-slate-100 dark:hover:bg-slate-800'
+                                ? 'text-amber-500 bg-amber-50 hover:bg-amber-100'
+                                : 'text-primary/30 hover:text-amber-500 hover:bg-primary/5'
                         )}
                         title={
                             isFav
@@ -359,19 +359,17 @@ const Reportpage = () => {
                             <Star className="w-4 h-4" />
                         )}
                     </button>
-                    <ChevronRight className="w-5 h-5 text-slate-300 group-hover:text-primary transition-colors" />
+                    <ChevronRight className="w-5 h-5 text-primary/30 group-hover:text-primary transition-colors" />
                 </div>
             </div>
         );
     };
 
     return (
-        <div className="w-full mx-auto flex flex-col gap-8 pb-12">
+        <div className="w-full mx-auto flex flex-col gap-6 pb-12">
             <div className="flex flex-col gap-1">
-                <h1 className="text-xl font-semibold text-foreground">
-                    Reports
-                </h1>
-                <p className="text-sm text-muted-foreground">
+                <h1 className="text-2xl font-bold text-primary">Reports</h1>
+                <p className="text-sm text-primary/60">
                     Access financial statements and business analytics
                 </p>
             </div>
@@ -379,7 +377,7 @@ const Reportpage = () => {
             {/* Search */}
             <div className="relative">
                 <div className="relative">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary/40" />
                     <input
                         value={query}
                         onChange={(e) => {
@@ -391,29 +389,29 @@ const Reportpage = () => {
                             setTimeout(() => setSuggestOpen(false), 200)
                         }
                         placeholder="Search for reports..."
-                        className="w-full pl-12 pr-4 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
+                        className="w-full pl-12 pr-4 py-3 bg-white border border-primary/10 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all text-primary placeholder:text-primary/40"
                     />
                 </div>
 
                 {suggestOpen && suggestions.length > 0 && (
-                    <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-slate-900 rounded-lg border border-slate-100 dark:border-slate-800 z-50 overflow-hidden">
+                    <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-lg border border-primary/10 shadow-lg z-50 overflow-hidden">
                         {suggestions.map((s, idx) => (
                             <div
                                 key={s.id}
                                 onClick={() => handleSelectSuggestion(s)}
                                 onMouseEnter={() => setSuggestIndex(idx)}
                                 className={cn(
-                                    'px-4 py-3 flex items-center justify-between cursor-pointer border-b last:border-0 border-slate-50 dark:border-slate-800/50',
+                                    'px-4 py-3 flex items-center justify-between cursor-pointer border-b last:border-0 border-primary/5 transition-colors',
                                     idx === suggestIndex
-                                        ? 'bg-slate-50 dark:bg-slate-800/50'
-                                        : ''
+                                        ? 'bg-primary/5'
+                                        : 'hover:bg-primary/5'
                                 )}
                             >
                                 <div>
-                                    <div className="text-sm font-medium text-slate-900 dark:text-slate-100">
+                                    <div className="text-sm font-medium text-primary">
                                         {s.title}
                                     </div>
-                                    <div className="text-xs text-slate-500">
+                                    <div className="text-xs text-primary/60">
                                         {s.categoryTitle}
                                     </div>
                                 </div>
@@ -437,11 +435,11 @@ const Reportpage = () => {
             {/* Favourites Section */}
             {favouriteItems.length > 0 && (
                 <div className="space-y-4">
-                    <h2 className="text-sm font-semibold text-slate-500 uppercase tracking-wider flex items-center gap-2">
+                    <h2 className="text-sm font-semibold text-primary/70 uppercase tracking-wider flex items-center gap-2">
                         <Star className="w-4 h-4 text-amber-500 fill-current" />
                         Favourites
                     </h2>
-                    <div className="grid sm:grid-cols-2  gap-4">
+                    <div className="grid sm:grid-cols-2 gap-4">
                         {favouriteItems.map(({ category, report }) => (
                             <ReportRow
                                 key={report.key}
@@ -461,11 +459,11 @@ const Reportpage = () => {
             <div className="space-y-8">
                 {filteredCategories.map((category) => (
                     <div key={category.key} className="space-y-4">
-                        <div className="flex items-center gap-2 px-1">
-                            <div className="p-1.5 bg-primary/10 rounded-md text-primary">
+                        <div className="flex items-center gap-3 px-1">
+                            <div className="p-2 bg-primary/10 rounded-lg text-primary">
                                 {category.icon}
                             </div>
-                            <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
+                            <h2 className="text-lg font-semibold text-primary">
                                 {category.title}
                             </h2>
                         </div>
@@ -492,14 +490,14 @@ const Reportpage = () => {
                 ))}
 
                 {filteredCategories.length === 0 && (
-                    <div className="text-center py-12">
-                        <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-800 mb-4">
-                            <Search className="w-6 h-6 text-slate-400" />
+                    <div className="text-center py-16">
+                        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/5 mb-4">
+                            <Search className="w-8 h-8 text-primary/40" />
                         </div>
-                        <h3 className="text-lg font-medium text-slate-900 dark:text-slate-100">
+                        <h3 className="text-lg font-semibold text-primary mb-2">
                             No reports found
                         </h3>
-                        <p className="text-slate-500 mt-1">
+                        <p className="text-sm text-primary/60">
                             Try adjusting your search query
                         </p>
                     </div>

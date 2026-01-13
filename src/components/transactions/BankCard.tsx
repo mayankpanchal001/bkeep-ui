@@ -8,7 +8,13 @@ interface BankCardProps {
     hue: number;
     isSelected?: boolean;
     pendingCount?: number;
+    postedCount?: number;
+    voidedCount?: number;
+    reversedCount?: number;
     onClick?: () => void;
+    onStatusClick?: (
+        status: 'pending' | 'posted' | 'voided' | 'reversed'
+    ) => void;
 }
 
 export function BankCard({
@@ -19,7 +25,11 @@ export function BankCard({
     hue,
     isSelected = false,
     pendingCount = 0,
+    postedCount = 0,
+    voidedCount = 0,
+    reversedCount = 0,
     onClick,
+    onStatusClick,
 }: BankCardProps) {
     return (
         <button
@@ -52,11 +62,104 @@ export function BankCard({
                         </p>
                     </div>
                     <div className="flex items-center gap-2">
-                        {pendingCount > 0 && (
-                            <div className="rounded-full bg-white/20 text-white text-xs h-max font-semibold px-2 py-0.5">
-                                {pendingCount}
-                            </div>
-                        )}
+                        <div className="flex items-center gap-1.5">
+                            {pendingCount > 0 && (
+                                <div
+                                    role="button"
+                                    tabIndex={0}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        onStatusClick?.('pending');
+                                    }}
+                                    onKeyDown={(e) => {
+                                        if (
+                                            e.key === 'Enter' ||
+                                            e.key === ' '
+                                        ) {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                            onStatusClick?.('pending');
+                                        }
+                                    }}
+                                    className="rounded-full bg-orange-500/80 hover:bg-orange-500 text-white text-xs h-max font-semibold px-2 py-0.5 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-white/50"
+                                    title="Pending"
+                                >
+                                    {pendingCount}
+                                </div>
+                            )}
+                            {postedCount > 0 && (
+                                <div
+                                    role="button"
+                                    tabIndex={0}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        onStatusClick?.('posted');
+                                    }}
+                                    onKeyDown={(e) => {
+                                        if (
+                                            e.key === 'Enter' ||
+                                            e.key === ' '
+                                        ) {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                            onStatusClick?.('posted');
+                                        }
+                                    }}
+                                    className="rounded-full bg-green-500/80 hover:bg-green-500 text-white text-xs h-max font-semibold px-2 py-0.5 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-white/50"
+                                    title="Posted"
+                                >
+                                    {postedCount}
+                                </div>
+                            )}
+                            {voidedCount > 0 && (
+                                <div
+                                    role="button"
+                                    tabIndex={0}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        onStatusClick?.('voided');
+                                    }}
+                                    onKeyDown={(e) => {
+                                        if (
+                                            e.key === 'Enter' ||
+                                            e.key === ' '
+                                        ) {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                            onStatusClick?.('voided');
+                                        }
+                                    }}
+                                    className="rounded-full bg-red-500/80 hover:bg-red-500 text-white text-xs h-max font-semibold px-2 py-0.5 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-white/50"
+                                    title="Voided"
+                                >
+                                    {voidedCount}
+                                </div>
+                            )}
+                            {reversedCount > 0 && (
+                                <div
+                                    role="button"
+                                    tabIndex={0}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        onStatusClick?.('reversed');
+                                    }}
+                                    onKeyDown={(e) => {
+                                        if (
+                                            e.key === 'Enter' ||
+                                            e.key === ' '
+                                        ) {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                            onStatusClick?.('reversed');
+                                        }
+                                    }}
+                                    className="rounded-full bg-blue-500/80 hover:bg-blue-500 text-white text-xs h-max font-semibold px-2 py-0.5 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-white/50"
+                                    title="Reversed"
+                                >
+                                    {reversedCount}
+                                </div>
+                            )}
+                        </div>
                         <img
                             className="w-14 h-14"
                             src="https://i.imgur.com/bbPHJVe.png"
