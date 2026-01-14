@@ -302,7 +302,7 @@ export default function ViewJournalEntrypage() {
                     </CollapsibleTrigger>
                     <CollapsibleContent>
                         <div className="px-4 pb-4 space-y-4">
-                            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 pt-4">
+                            {/*                             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 pt-4">
                                 <div>
                                     <label className="block text-sm font-medium text-primary/50 mb-1">
                                         ID
@@ -335,7 +335,7 @@ export default function ViewJournalEntrypage() {
                                         {formatText(journalEntry.sourceId)}
                                     </p>
                                 </div>
-                            </div>
+                            </div> */}
 
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <div>

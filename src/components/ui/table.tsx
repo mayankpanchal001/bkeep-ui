@@ -519,7 +519,7 @@ function TableHeader({ className, sticky = true, ...props }: TableHeaderProps) {
             data-slot="table-header"
             className={cn(
                 sticky && 'sticky top-0 z-10',
-                'bg-white dark:bg-card backdrop-blur',
+                'bg-muted/10 backdrop-blur',
                 'border-b border-border',
                 className
             )}

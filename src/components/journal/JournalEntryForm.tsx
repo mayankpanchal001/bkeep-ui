@@ -1,5 +1,7 @@
 import Button from '@/components/typography/Button';
 import { InputField } from '@/components/typography/InputFields';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Label } from '@/components/ui/label';
 import {
     Select,
     SelectContent,
@@ -332,16 +334,25 @@ export function JournalEntryForm({
                     onChange={(e) => setEntryNumber(e.target.value)}
                     placeholder="Optional"
                 />
-                <div className="flex items-end">
-                    <label className="flex items-center gap-3 text-sm text-primary/70 select-none">
-                        <input
-                            type="checkbox"
+                <div className="flex flex-col">
+                    <span className="input-label invisible select-none">
+                        Spacer
+                    </span>
+                    <div className="flex items-center space-x-2 h-[38px]">
+                        <Checkbox
+                            id="adjusting"
                             checked={isAdjusting}
-                            onChange={(e) => setIsAdjusting(e.target.checked)}
-                            className="h-4 w-4 rounded border-primary/20 text-primary"
+                            onCheckedChange={(checked) =>
+                                setIsAdjusting(checked as boolean)
+                            }
                         />
-                        Adjusting entry
-                    </label>
+                        <Label
+                            htmlFor="adjusting"
+                            className="text-sm text-primary/70 font-normal cursor-pointer"
+                        >
+                            Adjusting entry
+                        </Label>
+                    </div>
                 </div>
             </div>
 

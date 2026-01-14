@@ -9,13 +9,6 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui/select';
-import {
     Table,
     TableBody,
     TableCell,
@@ -205,7 +198,6 @@ const Invoicepage = () => {
                     </div>
                     <div className="flex items-center gap-2">
                         <FaFilter className="text-primary/50" />
-                        <Select
                         <Select
                             value={statusFilter}
                             onValueChange={setStatusFilter}
