@@ -185,7 +185,7 @@ const ImportFileModal = ({
                                     className={`px-3 py-1.5 rounded-2 text-sm border ${
                                         selectedTemplateId === t.id
                                             ? 'bg-primary text-white border-primary'
-                                            : 'bg-white border-primary/10 text-primary hover:bg-primary/5'
+                                            : 'bg-card border-primary/10 text-primary hover:bg-primary/5'
                                     }`}
                                 >
                                     {t.name || 'Template'}
@@ -199,7 +199,7 @@ const ImportFileModal = ({
                     )}
 
                     {selectedTemplateId && (
-                        <div className="rounded-2 border border-primary/10 bg-white p-3">
+                        <div className="rounded-2 border border-primary/10 bg-card p-3">
                             {isTemplatePreviewLoading ? (
                                 <p className="text-xs text-primary/50">
                                     Loading template preview...
@@ -315,7 +315,7 @@ const ImportFileModal = ({
                         ${
                             dragActive
                                 ? 'border-primary bg-primary/50/10'
-                                : 'border-primary/25 hover:border-primary/50 hover:bg-white'
+                                : 'border-primary/25 hover:border-primary/50 hover:bg-card'
                         }
                         ${selectedFile ? 'bg-primary/50/20 border-primary' : ''}
                     `}
@@ -335,7 +335,7 @@ const ImportFileModal = ({
 
                     {selectedFile ? (
                         <div className="text-center">
-                            <FaFileExcel className="w-10 h-10 text-green-600 mx-auto mb-2" />
+                            <FaFileExcel className="w-10 h-10 text-secondary mx-auto mb-2" />
                             <p className="text-sm font-medium text-primary">
                                 {selectedFile.name}
                             </p>

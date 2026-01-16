@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useAuth } from '../../stores/auth/authSelectore';
 import { Icons } from '../shared/Icons';
 import Button from '../typography/Button';
@@ -14,20 +14,37 @@ interface ProfileTabProps {
     formData: SettingsFormData;
     onFormDataChange: (data: SettingsFormData) => void;
     onSubmit: (e: React.FormEvent) => void;
+    isLoading?: boolean;
 }
 
 const ProfileTab = ({
     formData,
     onFormDataChange,
     onSubmit,
+    isLoading = false,
 }: ProfileTabProps) => {
     const { user } = useAuth();
     const [isEditing, setIsEditing] = useState(false);
+    const formRef = useRef<HTMLFormElement>(null);
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!isEditing) return;
-        onSubmit(e);
+        if (!isEditing || isLoading) return;
+        try {
+            await Promise.resolve(onSubmit(e));
+            // Reset editing state after successful submission
+            setIsEditing(false);
+        } catch (error) {
+            // Error handling is done in the parent component
+            // Keep editing state true so user can fix errors
+            console.error('Form submission error:', error);
+        }
+    };
+
+    const handleSaveClick = () => {
+        if (formRef.current) {
+            formRef.current.requestSubmit();
+        }
     };
 
     // Get user initials for avatar
@@ -73,10 +90,18 @@ const ProfileTab = ({
                                 type="button"
                                 variant="outline"
                                 onClick={() => setIsEditing(false)}
+                                disabled={isLoading}
                             >
                                 Cancel
                             </Button>
-                            <Button size="sm" type="submit" variant="primary">
+                            <Button
+                                size="sm"
+                                type="button"
+                                variant="primary"
+                                onClick={handleSaveClick}
+                                loading={isLoading}
+                                disabled={isLoading}
+                            >
                                 Save changes
                             </Button>
                         </div>
@@ -85,7 +110,7 @@ const ProfileTab = ({
             </div>
 
             {/* Profile Form */}
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
                 <div className="flex flex-col gap-4">
                     <div>
                         <Input
@@ -203,18 +228,6 @@ const ProfileTab = ({
                         </Button>
                     </div>
                 </div>
-
-                {!isEditing && (
-                    <div className="flex justify-end">
-                        <Button
-                            type="button"
-                            variant="primary"
-                            onClick={() => setIsEditing(true)}
-                        >
-                            Edit profile
-                        </Button>
-                    </div>
-                )}
             </form>
         </div>
     );

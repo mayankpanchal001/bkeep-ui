@@ -341,7 +341,7 @@ const ImportTransactionsModal = ({
 
                         {selectedFile ? (
                             <div className="text-center">
-                                <FaFileExcel className="w-8 h-8 text-green-600 mx-auto mb-2" />
+                                <FaFileExcel className="w-8 h-8 text-secondary mx-auto mb-2" />
                                 <p className="text-sm font-medium text-gray-900">
                                     {selectedFile.name}
                                 </p>

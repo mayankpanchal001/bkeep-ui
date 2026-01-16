@@ -198,7 +198,7 @@ export default function AdminDashboardKit() {
                             <div className="text-2xl font-bold text-primary">
                                 +2350
                             </div>
-                            <div className="text-xs text-green-600">
+                            <div className="text-xs text-secondary">
                                 +180.1% from last month
                             </div>
                             <div className="mt-3">

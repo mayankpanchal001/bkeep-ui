@@ -1,39 +1,39 @@
+import { Loader2 } from 'lucide-react';
 import React, { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router';
-import {
-    useContact,
-    useCreateContact,
-    useUpdateContact,
-    useEnableContact,
-    useDisableContact,
-} from '../../services/apis/contactsApi';
-import {
-    ContactType,
-    CreateContactPayload,
-    UpdateContactPayload,
-} from '../../types/contact';
-import { Loader2 } from 'lucide-react';
+import { Icons } from '../../components/shared/Icons';
 import Button from '../../components/typography/Button';
 import {
     InputField,
     SelectField,
 } from '../../components/typography/InputFields';
-import { showErrorToast, showSuccessToast } from '../../utills/toast';
+import { Badge } from '../../components/ui/badge';
 import {
     Card,
     CardContent,
     CardHeader,
     CardTitle,
 } from '../../components/ui/card';
+import { Switch } from '../../components/ui/switch';
 import {
     Tabs,
     TabsContent,
     TabsList,
     TabsTrigger,
 } from '../../components/ui/tabs';
-import { Switch } from '../../components/ui/switch';
-import Chips from '../../components/typography/Chips';
-import { Icons } from '../../components/shared/Icons';
+import {
+    useContact,
+    useCreateContact,
+    useDisableContact,
+    useEnableContact,
+    useUpdateContact,
+} from '../../services/apis/contactsApi';
+import {
+    ContactType,
+    CreateContactPayload,
+    UpdateContactPayload,
+} from '../../types/contact';
+import { showErrorToast, showSuccessToast } from '../../utills/toast';
 
 const contactTypeOptions = [
     { value: 'customer', label: 'Customer' },
@@ -212,12 +212,13 @@ const ContactDetailPage = () => {
                                 : contact?.displayName || 'Edit Contact'}
                         </h1>
                         {!isNew && contact && (
-                            <Chips
-                                label={contact.isActive ? 'Active' : 'Inactive'}
+                            <Badge
                                 variant={
-                                    contact.isActive ? 'success' : 'danger'
+                                    contact.isActive ? 'success' : 'destructive'
                                 }
-                            />
+                            >
+                                {contact.isActive ? 'Active' : 'Inactive'}
+                            </Badge>
                         )}
                     </div>
                     <div className="text-sm text-primary/60 font-medium">

@@ -10,7 +10,7 @@ import {
     type SortingState,
     type VisibilityState,
 } from '@tanstack/react-table';
-import { ArrowUp, ChevronDown, MoreHorizontal, Plus } from 'lucide-react';
+import { ArrowUp, ChevronDown, Plus } from 'lucide-react';
 import * as React from 'react';
 
 import {
@@ -25,7 +25,8 @@ import {
     type TenantsQueryParams,
 } from '../../services/apis/tenantApi';
 import { Tenant } from '../../types';
-import Chips from '../typography/Chips';
+import ActionMenu, { type ActionMenuItem } from '../shared/ActionMenu';
+import { Icons } from '../shared/Icons';
 import { InputField, TextareaField } from '../typography/InputFields';
 import {
     AlertDialog,
@@ -33,15 +34,13 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from '../ui/alert-dialog';
+import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import { Checkbox } from '../ui/checkbox';
 import {
     DropdownMenu,
     DropdownMenuCheckboxItem,
     DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
 import Input from '../ui/input';
@@ -278,7 +277,7 @@ export default function TenantsTab() {
                                     column.getIsSorted() === 'asc'
                                 )
                             }
-                            className="!pl-0 hover:bg-transparent"
+                            className="pl-0! hover:bg-transparent"
                         >
                             Name
                             {column.getIsSorted() ? (
@@ -313,12 +312,13 @@ export default function TenantsTab() {
                 accessorKey: 'isActive',
                 header: 'Status',
                 cell: ({ row }) => (
-                    <Chips
-                        label={row.getValue('isActive') ? 'Active' : 'Inactive'}
+                    <Badge
                         variant={
-                            row.getValue('isActive') ? 'success' : 'danger'
+                            row.getValue('isActive') ? 'success' : 'destructive'
                         }
-                    />
+                    >
+                        {row.getValue('isActive') ? 'Active' : 'Inactive'}
+                    </Badge>
                 ),
             },
             {
@@ -343,39 +343,26 @@ export default function TenantsTab() {
                 cell: ({ row }) => {
                     const tenant = row.original;
 
-                    return (
-                        <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" className="h-8 w-8 p-0">
-                                    <span className="sr-only">Open menu</span>
-                                    <MoreHorizontal className="h-4 w-4" />
-                                </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                                <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                <DropdownMenuItem
-                                    onClick={() =>
-                                        navigator.clipboard.writeText(tenant.id)
-                                    }
-                                >
-                                    Copy {SINGLE_TENANT_PREFIX} ID
-                                </DropdownMenuItem>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem
-                                    onClick={() =>
-                                        handleViewDetailsClick(tenant)
-                                    }
-                                >
-                                    View details
-                                </DropdownMenuItem>
-                                <DropdownMenuItem
-                                    onClick={() => handleEditClick(tenant)}
-                                >
-                                    Edit {SINGLE_TENANT_PREFIX}
-                                </DropdownMenuItem>
-                            </DropdownMenuContent>
-                        </DropdownMenu>
-                    );
+                    const actionItems: ActionMenuItem[] = [
+                        {
+                            label: `Copy ${SINGLE_TENANT_PREFIX} ID`,
+                            onClick: () =>
+                                navigator.clipboard.writeText(tenant.id),
+                        },
+                        {
+                            label: 'View details',
+                            icon: <Icons.Eye className="mr-2 w-4 h-4" />,
+                            onClick: () => handleViewDetailsClick(tenant),
+                            separator: true,
+                        },
+                        {
+                            label: `Edit ${SINGLE_TENANT_PREFIX}`,
+                            icon: <Icons.Edit className="mr-2 w-4 h-4" />,
+                            onClick: () => handleEditClick(tenant),
+                        },
+                    ];
+
+                    return <ActionMenu items={actionItems} />;
                 },
             },
         ],
@@ -642,7 +629,7 @@ export default function TenantsTab() {
                                 required
                             />
                             {editErrors.name && (
-                                <p className="text-red-500 text-xs mt-1 pl-1">
+                                <p className="text-destructive text-xs mt-1 pl-1">
                                     {editErrors.name}
                                 </p>
                             )}

@@ -1,6 +1,6 @@
+import { ArrowLeft, Calendar, FileText, Star } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
-import { ArrowLeft, Calendar, FileText, Star } from 'lucide-react';
 
 const LS_FAV_KEY = 'bkeep-report-favourites';
 const LS_FAV_LABEL_KEY = 'bkeep-report-favourites-labels';
@@ -98,7 +98,7 @@ const ReportDetailpage = () => {
             <div className="flex items-center justify-between">
                 <button
                     onClick={() => navigate('/reports')}
-                    className="inline-flex items-center gap-2 px-3 py-2 rounded-2 bg-white border border-primary/10 text-primary hover:bg-primary/5"
+                    className="inline-flex items-center gap-2 px-3 py-2 rounded-2 bg-card border border-primary/10 text-primary hover:bg-primary/5"
                 >
                     <ArrowLeft className="w-4 h-4" />
                     <span className="text-sm">Back to Reports</span>
@@ -108,7 +108,7 @@ const ReportDetailpage = () => {
                     aria-label={
                         isFav ? 'Remove from favourites' : 'Add to favourites'
                     }
-                    className="inline-flex items-center gap-2 px-3 py-2 rounded-2 bg-white border border-primary/10 text-primary hover:bg-primary/5"
+                    className="inline-flex items-center gap-2 px-3 py-2 rounded-2 bg-card border border-primary/10 text-primary hover:bg-primary/5"
                 >
                     {isFav ? (
                         <Star className="w-4 h-4 text-green-600 fill-current" />
@@ -121,7 +121,7 @@ const ReportDetailpage = () => {
                 </button>
             </div>
 
-            <div className="bg-white border border-primary/10 rounded-2 p-4 flex flex-col gap-4">
+            <div className="bg-card border border-primary/10 rounded-2 p-4 flex flex-col gap-4">
                 <div className="flex items-center gap-2">
                     <FileText className="w-4 h-4 text-primary/60" />
                     <span className="text-sm text-primary/70">
@@ -133,7 +133,7 @@ const ReportDetailpage = () => {
                         <Calendar className="w-4 h-4 text-primary/60" />
                         <input
                             type="date"
-                            className="w-full bg-white border border-primary/10 rounded-2 px-2 py-1 text-sm"
+                            className="w-full bg-card border border-primary/10 rounded-2 px-2 py-1 text-sm"
                             aria-label="Start date"
                         />
                     </div>
@@ -141,7 +141,7 @@ const ReportDetailpage = () => {
                         <Calendar className="w-4 h-4 text-primary/60" />
                         <input
                             type="date"
-                            className="w-full bg-white border border-primary/10 rounded-2 px-2 py-1 text-sm"
+                            className="w-full bg-card border border-primary/10 rounded-2 px-2 py-1 text-sm"
                             aria-label="End date"
                         />
                     </div>

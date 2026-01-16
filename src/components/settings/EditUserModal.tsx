@@ -123,7 +123,7 @@ const EditUserModal = ({ isOpen, onClose, user }: EditUserModalProps) => {
             className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4"
             onClick={handleBackdropClick}
         >
-            <div className="w-full max-w-2xl rounded-2 bg-white p-4 shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div className="w-full max-w-2xl rounded-2 bg-card p-4 shadow-2xl max-h-[90vh] overflow-y-auto">
                 <div className="flex items-center justify-between mb-6">
                     <h2 className="text-2xl font-semibold text-primary">
                         Edit User
@@ -166,7 +166,7 @@ const EditUserModal = ({ isOpen, onClose, user }: EditUserModalProps) => {
                                     placeholder="Enter full name"
                                 />
                                 {errors.name && (
-                                    <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
+                                    <p className="text-destructive text-xs mt-1 flex items-center gap-1">
                                         <FaExclamationTriangle className="w-3 h-3" />
                                         {errors.name}
                                     </p>
@@ -195,7 +195,7 @@ const EditUserModal = ({ isOpen, onClose, user }: EditUserModalProps) => {
                                     placeholder="user@example.com"
                                 />
                                 {errors.email && (
-                                    <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
+                                    <p className="text-destructive text-xs mt-1 flex items-center gap-1">
                                         <FaExclamationTriangle className="w-3 h-3" />
                                         {errors.email}
                                     </p>
@@ -242,7 +242,7 @@ const EditUserModal = ({ isOpen, onClose, user }: EditUserModalProps) => {
                                     }))}
                                 />
                                 {errors.roleId && (
-                                    <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
+                                    <p className="text-destructive text-xs mt-1 flex items-center gap-1">
                                         <FaExclamationTriangle className="w-3 h-3" />
                                         {errors.roleId}
                                     </p>

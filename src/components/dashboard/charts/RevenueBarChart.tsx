@@ -1,12 +1,10 @@
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts';
+import { getThemeColor } from '../../../utils/themeColors';
 import {
-    Bar,
-    BarChart,
-    CartesianGrid,
-    ResponsiveContainer,
-    Tooltip,
-    XAxis,
-    YAxis,
-} from 'recharts';
+    ChartContainer,
+    ChartTooltip,
+    type TooltipPayloadItem,
+} from '../../ui/chart';
 
 type RevenueBarChartProps = {
     data: { name: string; revenue: number; percentage: number }[];
@@ -18,42 +16,92 @@ const RevenueBarChart = ({ data }: RevenueBarChartProps) => {
         revenue: item.revenue,
     }));
 
+    const accentColor = getThemeColor('--color-accent');
+    const borderColor = getThemeColor('--color-border');
+    const textColor = getThemeColor('--color-foreground');
+
+    const chartConfig = {
+        revenue: {
+            label: 'Revenue',
+            color: accentColor,
+        },
+    };
+
     return (
-        <ResponsiveContainer width="100%" height={300}>
+        <ChartContainer config={chartConfig} className="h-[300px] w-full">
             <BarChart
                 data={chartData}
                 margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
             >
-                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                <CartesianGrid
+                    strokeDasharray="3 3"
+                    stroke={borderColor}
+                    vertical={false}
+                />
                 <XAxis
                     dataKey="name"
-                    tick={{ fontSize: 12, fill: '#000' }}
-                    stroke="#000"
+                    tick={{ fontSize: 12, fill: textColor }}
+                    stroke={textColor}
+                    tickLine={false}
+                    axisLine={false}
                 />
                 <YAxis
-                    tick={{ fontSize: 12, fill: '#000' }}
-                    stroke="#000"
+                    tick={{ fontSize: 12, fill: textColor }}
+                    stroke={textColor}
+                    tickLine={false}
+                    axisLine={false}
                     tickFormatter={(value) => `$${value / 1000}k`}
                 />
-                <Tooltip
-                    contentStyle={{
-                        backgroundColor: '#fff',
-                        border: '1px solid #C56211',
-                        borderRadius: '8px',
+                <ChartTooltip
+                    content={({
+                        active,
+                        payload,
+                    }: {
+                        active?: boolean;
+                        payload?: Array<TooltipPayloadItem>;
+                    }) => {
+                        if (active && payload && payload.length) {
+                            const nameData = payload[0].payload as {
+                                name?: string;
+                            };
+                            return (
+                                <div className="rounded-lg border border-border/50 bg-card p-2 shadow-sm">
+                                    <div className="grid gap-2">
+                                        <div className="flex items-center justify-between gap-4">
+                                            <span className="text-muted-foreground">
+                                                {nameData?.name as string}
+                                            </span>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <div
+                                                className="h-2.5 w-2.5 rounded-full"
+                                                style={{
+                                                    backgroundColor:
+                                                        accentColor,
+                                                }}
+                                            />
+                                            <span className="text-muted-foreground">
+                                                Revenue:
+                                            </span>
+                                            <span className="font-mono font-medium tabular-nums">
+                                                $
+                                                {payload[0].value?.toLocaleString()}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            );
+                        }
+                        return null;
                     }}
-                    formatter={(value: number) => [
-                        `$${value.toLocaleString()}`,
-                        'Revenue',
-                    ]}
                 />
                 <Bar
                     dataKey="revenue"
-                    fill="#C56211"
+                    fill={accentColor}
                     radius={[8, 8, 0, 0]}
-                    name="Revenue"
                 />
             </BarChart>
-        </ResponsiveContainer>
+        </ChartContainer>
     );
 };
 

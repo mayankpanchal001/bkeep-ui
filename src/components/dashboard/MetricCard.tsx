@@ -22,9 +22,9 @@ export default function MetricCard({
 }: MetricCardProps) {
     const trendColor =
         trend === 'up'
-            ? 'text-green-600'
+            ? 'text-secondary'
             : trend === 'down'
-              ? 'text-red-600'
+              ? 'text-destructive'
               : 'text-primary/50';
 
     return (

@@ -64,7 +64,7 @@ const ConfirmationDialog = ({
             className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4"
             onClick={handleBackdropClick}
         >
-            <div className="w-full max-w-sm rounded-2 bg-white p-4 shadow-2xl border border-primary/10">
+            <div className="w-full max-w-sm rounded-2 bg-card p-4 shadow-2xl border border-primary/10">
                 <div className="flex items-start justify-between mb-4">
                     <h3 className="text-lg font-semibold text-primary">
                         {title}

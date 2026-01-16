@@ -1,17 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
-import {
-    useContacts,
-    useDeleteContact,
-    useDisableContact,
-    useEnableContact,
-    useRestoreContact,
-} from '../../services/apis/contactsApi';
-import { Contact, ContactsQueryParams } from '../../types/contact';
 import { Icons } from '../../components/shared/Icons';
 import Button from '../../components/typography/Button';
-import Chips from '../../components/typography/Chips';
 import { InputField } from '../../components/typography/InputFields';
+import { Badge } from '../../components/ui/badge';
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -34,6 +26,14 @@ import {
     TableSelectionToolbar,
     type SortDirection,
 } from '../../components/ui/table';
+import {
+    useContacts,
+    useDeleteContact,
+    useDisableContact,
+    useEnableContact,
+    useRestoreContact,
+} from '../../services/apis/contactsApi';
+import { Contact, ContactsQueryParams } from '../../types/contact';
 
 const ContactsPage = () => {
     const [search, setSearch] = useState('');
@@ -250,18 +250,17 @@ const ContactsPage = () => {
                                     </span>
                                 </TableCell>
                                 <TableCell className="py-3">
-                                    <Chips
-                                        label={
-                                            contact.isActive
-                                                ? 'Active'
-                                                : 'Inactive'
-                                        }
+                                    <Badge
                                         variant={
                                             contact.isActive
                                                 ? 'success'
-                                                : 'danger'
+                                                : 'destructive'
                                         }
-                                    />
+                                    >
+                                        {contact.isActive
+                                            ? 'Active'
+                                            : 'Inactive'}
+                                    </Badge>
                                 </TableCell>
                                 <TableCell className="py-3">
                                     <span className="whitespace-nowrap text-primary/70 text-sm">

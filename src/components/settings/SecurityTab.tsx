@@ -58,8 +58,8 @@ const SecurityTab = () => {
     const statusClass = isStatusLoading
         ? 'text-primary/50'
         : mfaEnabled
-          ? 'text-green-600'
-          : 'text-red-500';
+          ? 'text-secondary'
+          : 'text-destructive';
 
     const totpStatusLabel = isTotpStatusLoading
         ? 'Checking...'
@@ -70,8 +70,8 @@ const SecurityTab = () => {
     const totpStatusClass = isTotpStatusLoading
         ? 'text-primary/50'
         : totpEnabled
-          ? 'text-green-600'
-          : 'text-red-500';
+          ? 'text-secondary'
+          : 'text-destructive';
 
     const handleMfaToggle = () => {
         if (mfaEnabled) {

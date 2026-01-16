@@ -6,19 +6,25 @@ export interface ExportData {
     [key: string]: string | number;
 }
 
-// Theme colors - Primary: RGB(197, 90, 17)
+// Theme colors - Matching theme.css values (light mode for Excel export)
+// These match the CSS variables defined in src/styles/theme.css
 const THEME_COLORS = {
-    primary: 'C55A11', // RGB(197, 90, 17) in hex
-    primaryLight: 'E8A87A', // Lighter version
-    primaryVeryLight: 'F5E6D9', // Very light version
+    primary: '1C1C1C', // --color-primary: #1c1c1c
+    accent: 'C55A11', // --color-accent: #c55a11 (was primary in old code)
+    secondary: '5E17EB', // --color-secondary: #5e17eb
+    surface: 'FFFFFF', // --color-surface: #ffffff
+    surfaceMuted: 'F6F7FB', // --color-surface-muted: #f6f7fb
+    // Derived colors for styling
+    primaryLight: 'E8A87A', // Lighter version of accent
+    primaryVeryLight: 'F5E6D9', // Very light version of accent
     primaryLighter: 'FFB366', // Even lighter for header banner
-    text: '2C2C2C', // Dark text
+    text: '1C1C1C', // Same as primary
     textLight: '666666', // Light text
-    border: 'E0E0E0', // Light border
-    background: 'FFFFFF', // White background
-    sectionBg: 'F9F9F9', // Section background
-    blue: '5E9BFF', // Blue accent color
-    white: 'FFFFFF', // White
+    border: 'E0E0E0', // Light border (approximation of rgba(28, 28, 28, 0.1))
+    background: 'FFFFFF', // Same as surface
+    sectionBg: 'F6F7FB', // Same as surface-muted
+    blue: '5E17EB', // Use secondary color
+    white: 'FFFFFF', // Same as surface
 };
 
 /**
@@ -177,7 +183,7 @@ export const exportToExcel = (
             name: 'Nunito',
             sz: 18,
             bold: true,
-            color: { rgb: THEME_COLORS.white },
+            color: { rgb: THEME_COLORS.surface },
         },
         fill: {
             fgColor: { rgb: THEME_COLORS.primaryLighter },
@@ -193,7 +199,7 @@ export const exportToExcel = (
             name: 'Nunito',
             sz: 11,
             bold: false,
-            color: { rgb: THEME_COLORS.white },
+            color: { rgb: THEME_COLORS.surface },
         },
         fill: {
             fgColor: { rgb: THEME_COLORS.primaryLighter },
@@ -209,7 +215,7 @@ export const exportToExcel = (
             fgColor: { rgb: THEME_COLORS.primaryLighter },
         },
         border: {
-            bottom: { style: 'medium', color: { rgb: THEME_COLORS.blue } },
+            bottom: { style: 'medium', color: { rgb: THEME_COLORS.secondary } },
         },
     };
 
@@ -218,7 +224,7 @@ export const exportToExcel = (
             name: 'Nunito',
             sz: 10,
             bold: true,
-            color: { rgb: THEME_COLORS.white },
+            color: { rgb: THEME_COLORS.surface },
         },
         fill: {
             fgColor: { rgb: THEME_COLORS.primary },
@@ -237,7 +243,7 @@ export const exportToExcel = (
             name: 'Nunito',
             sz: 10,
             bold: false,
-            color: { rgb: THEME_COLORS.white },
+            color: { rgb: THEME_COLORS.surface },
         },
         fill: {
             fgColor: { rgb: THEME_COLORS.primary },
@@ -254,7 +260,7 @@ export const exportToExcel = (
             name: 'Nunito',
             sz: 12,
             bold: true,
-            color: { rgb: THEME_COLORS.background },
+            color: { rgb: THEME_COLORS.surface },
         },
         fill: {
             fgColor: { rgb: THEME_COLORS.primary },

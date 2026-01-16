@@ -113,7 +113,7 @@ const PageHeaderMenu = () => {
                 </button>
                 {/* Dropdown Menu */}
                 {isMenuOpen && (
-                    <div className="absolute right-0 mt-2 w-64 bg-white rounded-2 shadow-lg border border-primary/10 py-2 z-50 dropdown-animate">
+                    <div className="absolute right-0 mt-2 w-64 bg-card rounded-2 shadow-lg border border-primary/10 py-2 z-50 dropdown-animate">
                         {/* User Info Header */}
                         <div className="px-4 py-3 border-b border-primary/10">
                             <div className="flex items-center gap-3">
@@ -162,7 +162,7 @@ const PageHeaderMenu = () => {
 
             {showLogoutConfirm && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4">
-                    <div className="w-full max-w-sm rounded-2 bg-white p-4 shadow-2xl">
+                    <div className="w-full max-w-sm rounded-2 bg-card p-4 shadow-2xl">
                         <h3 className="text-lg font-semibold text-primary">
                             Sign out?
                         </h3>

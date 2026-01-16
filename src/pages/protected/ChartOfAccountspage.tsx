@@ -31,6 +31,11 @@ import {
     TableSelectAllCheckbox,
     TableSelectionToolbar,
 } from '@/components/ui/table';
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { FileUp, Filter, Pencil, Plus, Search, Trash2, X } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import * as XLSX from 'xlsx';
@@ -536,8 +541,8 @@ const ChartOfAccountspage = () => {
         <div className="h-full flex flex-col gap-4">
             {/* Filters and Search */}
             <div className="flex flex-col sm:flex-row gap-4">
-                <div className="flex-1">
-                    <div className="relative">
+                <div className="flex-1 flex gap-2">
+                    <div className="relative flex-1">
                         <Input
                             id="search-accounts"
                             placeholder="Search accounts..."
@@ -546,6 +551,29 @@ const ChartOfAccountspage = () => {
                             startIcon={<Search size={16} />}
                         />
                     </div>
+                    <Select
+                        value={
+                            selectedTypes.length === 1
+                                ? selectedTypes[0]
+                                : 'all'
+                        }
+                        onValueChange={(val) => {
+                            if (val === 'all') setSelectedTypes([]);
+                            else setSelectedTypes([val as AccountType]);
+                        }}
+                    >
+                        <SelectTrigger className="w-[180px]">
+                            <SelectValue placeholder="All Types" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="all">All Types</SelectItem>
+                            {ACCOUNT_TYPE_OPTIONS.map((opt) => (
+                                <SelectItem key={opt.value} value={opt.value}>
+                                    {opt.label}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
                 </div>
                 <div className="flex items-center gap-3">
                     <Button
@@ -678,24 +706,40 @@ const ChartOfAccountspage = () => {
                                 </TableCell>
                                 <TableCell align="center">
                                     <div className="flex items-center justify-center gap-2">
-                                        <button
-                                            onClick={() =>
-                                                handleOpenEditModal(account)
-                                            }
-                                            className="p-2 text-primary/50 hover:text-primary hover:bg-primary/10 rounded transition-colors"
-                                            title="Edit"
-                                        >
-                                            <Pencil className="w-4 h-4" />
-                                        </button>
-                                        <button
-                                            onClick={() =>
-                                                setDeleteAccount(account)
-                                            }
-                                            className="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
-                                            title="Delete"
-                                        >
-                                            <Trash2 className="w-4 h-4" />
-                                        </button>
+                                        <Tooltip>
+                                            <TooltipTrigger asChild>
+                                                <button
+                                                    onClick={() =>
+                                                        handleOpenEditModal(
+                                                            account
+                                                        )
+                                                    }
+                                                    className="p-2 text-primary/50 hover:text-primary hover:bg-primary/10 rounded transition-colors"
+                                                >
+                                                    <Pencil className="w-4 h-4" />
+                                                </button>
+                                            </TooltipTrigger>
+                                            <TooltipContent>
+                                                Edit
+                                            </TooltipContent>
+                                        </Tooltip>
+                                        <Tooltip>
+                                            <TooltipTrigger asChild>
+                                                <button
+                                                    onClick={() =>
+                                                        setDeleteAccount(
+                                                            account
+                                                        )
+                                                    }
+                                                    className="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
+                                                >
+                                                    <Trash2 className="w-4 h-4" />
+                                                </button>
+                                            </TooltipTrigger>
+                                            <TooltipContent>
+                                                Delete
+                                            </TooltipContent>
+                                        </Tooltip>
                                     </div>
                                 </TableCell>
                             </TableRow>
@@ -710,7 +754,7 @@ const ChartOfAccountspage = () => {
                 onOpenChange={(open) => setIsFilterOpen(open)}
                 direction="right"
             >
-                <DrawerContent className="data-[vaul-drawer-direction=right]:w-[420px] data-[vaul-drawer-direction=right]:sm:max-w-[420px] bg-white dark:bg-lightBg">
+                <DrawerContent className="data-[vaul-drawer-direction=right]:w-[420px] data-[vaul-drawer-direction=right]:sm:max-w-[420px] bg-card dark:bg-surface-muted">
                     <DrawerHeader className="flex flex-row items-center justify-between px-6 py-4 border-b border-primary/10">
                         <DrawerTitle className="text-xl font-semibold text-primary">
                             Filters
@@ -911,7 +955,7 @@ const ChartOfAccountspage = () => {
                 }}
                 direction="right"
             >
-                <DrawerContent className="data-[vaul-drawer-direction=right]:w-[480px] data-[vaul-drawer-direction=right]:sm:max-w-[480px] bg-white dark:bg-lightBg">
+                <DrawerContent className="data-[vaul-drawer-direction=right]:w-[480px] data-[vaul-drawer-direction=right]:sm:max-w-[480px] bg-card dark:bg-surface-muted">
                     <DrawerHeader className="flex flex-row items-center justify-between px-6 py-4 border-b border-primary/10">
                         <DrawerTitle className="text-xl font-semibold text-primary">
                             {editingAccount ? 'Edit Account' : 'New Account'}

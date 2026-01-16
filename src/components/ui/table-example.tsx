@@ -21,6 +21,7 @@ import {
     TableSelectionToolbar,
     type SortDirection,
 } from './table';
+import { Tooltip, TooltipContent, TooltipTrigger } from './tooltip';
 
 // ============================================================================
 // Example 1: Basic Table with Selection
@@ -149,7 +150,7 @@ export function BasicTableExample() {
             </Table>
 
             {selectedIds.length > 0 && (
-                <div className="mt-4 p-3 bg-blue-50 rounded-lg text-sm">
+                <div className="mt-4 p-3 bg-secondary/20 rounded-lg text-sm">
                     Selected: {selectedIds.join(', ')}
                 </div>
             )}
@@ -215,7 +216,7 @@ export function FullFeaturedTableExample() {
                             setIsLoading(true);
                             setTimeout(() => setIsLoading(false), 1500);
                         }}
-                        className="px-4 py-2 text-sm bg-slate-100 hover:bg-slate-200 rounded-lg"
+                        className="px-4 py-2 text-sm bg-primary/10 hover:bg-primary/20 rounded-lg"
                     >
                         Toggle Loading
                     </button>
@@ -280,7 +281,7 @@ export function FullFeaturedTableExample() {
                             message="No users found"
                             description="Try adjusting your filters or add new users."
                             action={
-                                <button className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg">
+                                <button className="px-4 py-2 text-sm font-medium text-surface bg-secondary hover:bg-secondary/90 rounded-lg">
                                     Add User
                                 </button>
                             }
@@ -300,7 +301,7 @@ export function FullFeaturedTableExample() {
                                     </div>
                                 </TableCell>
                                 <TableCell>
-                                    <span className="text-slate-500">
+                                    <span className="text-primary/60">
                                         {user.email}
                                     </span>
                                 </TableCell>
@@ -393,7 +394,7 @@ function Avatar({ name }: { name: string }) {
         .map((n) => n[0])
         .join('');
     return (
-        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-xs font-semibold">
+        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-secondary to-accent flex items-center justify-center text-surface text-xs font-semibold">
             {initials}
         </div>
     );
@@ -401,10 +402,9 @@ function Avatar({ name }: { name: string }) {
 
 function RoleBadge({ role }: { role: User['role'] }) {
     const styles = {
-        Admin: 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300',
-        Manager:
-            'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300',
-        User: 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300',
+        Admin: 'bg-secondary/20 text-secondary',
+        Manager: 'bg-secondary/20 text-secondary',
+        User: 'bg-primary/10 text-primary',
     };
 
     return (
@@ -421,7 +421,7 @@ function StatusBadge({ status }: { status: User['status'] }) {
         <div className="flex items-center gap-2">
             <div
                 className={`w-2 h-2 rounded-full ${
-                    status === 'active' ? 'bg-green-500' : 'bg-slate-400'
+                    status === 'active' ? 'bg-secondary' : 'bg-primary/40'
                 }`}
             />
             <span className="capitalize text-sm">{status}</span>
@@ -432,44 +432,52 @@ function StatusBadge({ status }: { status: User['status'] }) {
 function ActionButtons({ userId }: { userId: string }) {
     return (
         <div className="flex items-center justify-end gap-1">
-            <button
-                onClick={() => alert(`Edit user ${userId}`)}
-                className="p-1.5 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
-                title="Edit"
-            >
-                <svg
-                    className="w-4 h-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                >
-                    <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                    />
-                </svg>
-            </button>
-            <button
-                onClick={() => alert(`Delete user ${userId}`)}
-                className="p-1.5 text-slate-500 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
-                title="Delete"
-            >
-                <svg
-                    className="w-4 h-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                >
-                    <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                    />
-                </svg>
-            </button>
+            <Tooltip>
+                <TooltipTrigger asChild>
+                    <button
+                        onClick={() => alert(`Edit user ${userId}`)}
+                        className="p-1.5 text-primary/60 hover:text-secondary hover:bg-secondary/20 rounded transition-colors"
+                    >
+                        <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                            />
+                        </svg>
+                    </button>
+                </TooltipTrigger>
+                <TooltipContent>Edit</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+                <TooltipTrigger asChild>
+                    <button
+                        onClick={() => alert(`Delete user ${userId}`)}
+                        className="p-1.5 text-primary/60 hover:text-destructive hover:bg-destructive/20 rounded transition-colors"
+                    >
+                        <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                            />
+                        </svg>
+                    </button>
+                </TooltipTrigger>
+                <TooltipContent>Delete</TooltipContent>
+            </Tooltip>
         </div>
     );
 }
@@ -480,28 +488,28 @@ function ActionButtons({ userId }: { userId: string }) {
 
 export default function TableExample() {
     return (
-        <div className="min-h-screen bg-slate-50 dark:bg-slate-950 py-8">
+        <div className="min-h-screen bg-surface-muted py-8">
             <div className="max-w-7xl mx-auto space-y-12">
                 <div className="text-center">
-                    <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                    <h1 className="text-3xl font-bold bg-gradient-to-r from-secondary to-accent bg-clip-text text-transparent">
                         Modern Table Component
                     </h1>
-                    <p className="mt-2 text-slate-600 dark:text-slate-400">
+                    <p className="mt-2 text-primary/70">
                         Reusable table with bulk selection, sorting, pagination,
                         and more
                     </p>
                 </div>
 
                 <div className="space-y-8">
-                    <section className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
+                    <section className="bg-card dark:bg-surface-muted rounded-xl shadow-sm border border-primary/10 dark:border-primary/20 overflow-hidden">
                         <FullFeaturedTableExample />
                     </section>
 
-                    <section className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
+                    <section className="bg-card dark:bg-surface-muted rounded-xl shadow-sm border border-primary/10 dark:border-primary/20 overflow-hidden">
                         <BasicTableExample />
                     </section>
 
-                    <section className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
+                    <section className="bg-card dark:bg-surface-muted rounded-xl shadow-sm border border-primary/10 dark:border-primary/20 overflow-hidden">
                         <MinimalTableExample />
                     </section>
                 </div>

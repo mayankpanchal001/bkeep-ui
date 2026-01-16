@@ -17,8 +17,8 @@ import {
 } from '../../types/contact';
 import { Icons } from '../shared/Icons';
 import Button from '../typography/Button';
-import Chips from '../typography/Chips';
 import { InputField, SelectField } from '../typography/InputFields';
+import { Badge } from '../ui/badge';
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -550,7 +550,7 @@ const ContactsTab = () => {
                     {isError ? (
                         <TableRow>
                             <TableCell colSpan={8}>
-                                <div className="text-sm text-red-600">
+                                <div className="text-sm text-destructive">
                                     Failed to load contacts
                                 </div>
                             </TableCell>
@@ -600,18 +600,17 @@ const ContactsTab = () => {
                                     </span>
                                 </TableCell>
                                 <TableCell className="py-3">
-                                    <Chips
-                                        label={
-                                            contact.isActive
-                                                ? 'Active'
-                                                : 'Inactive'
-                                        }
+                                    <Badge
                                         variant={
                                             contact.isActive
                                                 ? 'success'
-                                                : 'danger'
+                                                : 'destructive'
                                         }
-                                    />
+                                    >
+                                        {contact.isActive
+                                            ? 'Active'
+                                            : 'Inactive'}
+                                    </Badge>
                                 </TableCell>
                                 <TableCell className="py-3">
                                     <span className="whitespace-nowrap text-primary/70 text-sm">

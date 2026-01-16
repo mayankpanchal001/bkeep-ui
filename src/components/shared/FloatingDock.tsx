@@ -15,7 +15,7 @@ const FloatingDock = () => {
 
     return (
         <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50">
-            <div className="flex items-end gap-2 px-4 py-2 bg-white/80 backdrop-blur-md border border-primary/10 rounded-2xl shadow-2xl transition-all duration-300">
+            <div className="flex items-end gap-2 px-4 py-2 bg-card/80 backdrop-blur-md border border-primary/10 rounded-2xl shadow-2xl transition-all duration-300">
                 {SIDEBAR_ITEMS.map((item, index) => {
                     const isActive = isItemActive(item.path);
                     const isHovered = hoveredIndex === index;

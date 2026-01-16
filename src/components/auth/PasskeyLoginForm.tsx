@@ -260,7 +260,7 @@ export function PasskeyLoginForm() {
             )}
 
             {/* User ID Section */}
-            <div className="border border-primary/10 bg-white rounded-lg p-4 mb-4">
+            <div className="border border-primary/10 bg-card rounded-lg p-4 mb-4">
                 <div className="flex items-center gap-3">
                     <div className="shrink-0 w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
                         <FaUser className="w-5 h-5 text-primary/60" />
@@ -322,7 +322,7 @@ export function PasskeyLoginForm() {
                 <div className="space-y-2">
                     <button
                         onClick={handleUseDifferentAccount}
-                        className="w-full flex items-center gap-3 px-4 py-3 rounded-lg border border-primary/10 bg-white hover:bg-primary/5 transition-colors text-left"
+                        className="w-full flex items-center gap-3 px-4 py-3 rounded-lg border border-primary/10 bg-card hover:bg-primary/5 transition-colors text-left"
                     >
                         <div className="shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
                             <FaUser className="w-4 h-4 text-primary" />
@@ -333,7 +333,7 @@ export function PasskeyLoginForm() {
                     </button>
                     <button
                         onClick={handleRemoveUserID}
-                        className="w-full flex items-center gap-3 px-4 py-3 rounded-lg border border-primary/10 bg-white hover:bg-primary/5 transition-colors text-left"
+                        className="w-full flex items-center gap-3 px-4 py-3 rounded-lg border border-primary/10 bg-card hover:bg-primary/5 transition-colors text-left"
                     >
                         <div className="shrink-0 w-8 h-8 rounded-full bg-red-10 flex items-center justify-center">
                             <FaTimes className="w-4 h-4 text-red-600" />

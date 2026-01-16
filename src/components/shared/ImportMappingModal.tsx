@@ -63,7 +63,7 @@ const ImportMappingModal = ({
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-            <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl flex flex-col max-h-[90vh]">
+            <div className="bg-card rounded-lg shadow-xl w-full max-w-2xl flex flex-col max-h-[90vh]">
                 {/* Header */}
                 <div className="flex items-center justify-between p-4 border-b border-primary/10">
                     <div>
@@ -143,7 +143,7 @@ const ImportMappingModal = ({
                 </div>
 
                 {/* Footer */}
-                <div className="p-4 border-t border-primary/10 flex justify-end gap-3 bg-white">
+                <div className="p-4 border-t border-primary/10 flex justify-end gap-3 bg-card">
                     <Button
                         variant="outline"
                         onClick={onClose}

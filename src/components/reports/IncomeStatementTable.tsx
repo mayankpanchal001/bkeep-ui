@@ -79,11 +79,11 @@ const IncomeStatementTable = () => {
 
     const getRowBackground = (row: IncomeStatementRow) => {
         if (row.type === 'section') {
-            if (row.sectionType === 'calculated') return 'bg-white';
+            if (row.sectionType === 'calculated') return 'bg-card';
             if (row.sectionType === 'final') return 'bg-primary/10';
-            return 'bg-white';
+            return 'bg-card';
         }
-        return 'bg-white';
+        return 'bg-card';
     };
 
     const columns: Column<IncomeStatementRow>[] = useMemo(
@@ -122,7 +122,7 @@ const IncomeStatementTable = () => {
                         row.type === 'item' ||
                         (row.type === 'section' && !row.sectionType)
                     ) {
-                        classes += ' hover:bg-white';
+                        classes += ' hover:bg-card';
                     }
                     return classes;
                 },
@@ -132,7 +132,7 @@ const IncomeStatementTable = () => {
                 cell: (row: IncomeStatementRow) => (
                     <div
                         className={cn(
-                            row.sectionType === 'final' && 'text-green-600'
+                            row.sectionType === 'final' && 'text-accent'
                         )}
                     >
                         {formatNumber(row.values[index])}
@@ -147,17 +147,17 @@ const IncomeStatementTable = () => {
     const getRowClassName = (row: IncomeStatementRow) => {
         if (row.type === 'section') {
             if (row.sectionType === 'calculated') {
-                return 'border-b border-primary/25 bg-white font-bold text-primary';
+                return 'border-b border-primary/25 bg-card font-bold text-primary';
             }
             if (row.sectionType === 'final') {
                 return 'border-t-2 border-primary bg-primary/10 font-bold text-primary text-base';
             }
             let classes =
                 'border-b border-primary/10 font-semibold text-primary';
-            if (row.collapsible) classes += ' cursor-pointer hover:bg-white';
+            if (row.collapsible) classes += ' cursor-pointer hover:bg-card';
             return classes;
         }
-        return 'border-b border-primary/10 hover:bg-white text-primary';
+        return 'border-b border-primary/10 hover:bg-card text-primary';
     };
 
     return (

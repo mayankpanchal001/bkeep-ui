@@ -1,8 +1,8 @@
+import { JournalEntryForm } from '@/components/journal/JournalEntryForm';
+import PageHeader from '@/components/shared/PageHeader';
 import { useNavigate } from 'react-router';
 import { useCreateJournalEntry } from '../../services/apis/journalApi';
 import type { CreateJournalEntryPayload } from '../../types/journal';
-import { JournalEntryForm } from '@/components/journal/JournalEntryForm';
-import PageHeader from '@/components/shared/PageHeader';
 
 export default function CreateJournalEntrypage() {
     const navigate = useNavigate();
@@ -27,7 +27,7 @@ export default function CreateJournalEntrypage() {
                 subtitle="Create a new journal entry"
             />
 
-            <div className="bg-white rounded-lg border border-primary/10 p-4">
+            <div className="bg-card rounded-lg border border-primary/10 p-4">
                 <JournalEntryForm
                     onSubmit={handleSubmit}
                     onCancel={handleCancel}

@@ -221,6 +221,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                                         )}
                                     </DropdownMenuItem>
                                 ))}
+                                {/*
                                 <DropdownMenuSeparator />
                                 <DropdownMenuItem className="gap-2 p-2">
                                     <div className="flex size-6 items-center justify-center rounded-md border bg-background">
@@ -235,6 +236,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                                         }`}
                                     </div>
                                 </DropdownMenuItem>
+                                */}
                             </DropdownMenuContent>
                         </DropdownMenu>
                     </SidebarMenuItem>
