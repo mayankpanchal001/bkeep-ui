@@ -318,7 +318,7 @@ const Reportpage = () => {
         return (
             <div
                 onClick={() => goToReport(categoryKey, report.key)}
-                className="group flex items-center gap-4 p-4 bg-white rounded-lg border border-primary/10 hover:border-primary/20 hover:shadow-sm cursor-pointer transition-all"
+                className="group flex items-center gap-4 p-4 bg-card rounded-lg border border-primary/10 hover:border-primary/20 hover:shadow-sm cursor-pointer transition-all"
             >
                 <div className="shrink-0 text-primary/40 group-hover:text-primary transition-colors">
                     <FileText className="w-5 h-5" />
@@ -389,12 +389,12 @@ const Reportpage = () => {
                             setTimeout(() => setSuggestOpen(false), 200)
                         }
                         placeholder="Search for reports..."
-                        className="w-full pl-12 pr-4 py-3 bg-white border border-primary/10 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all text-primary placeholder:text-primary/40"
+                        className="w-full pl-12 pr-4 py-3 bg-card border border-primary/10 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all text-primary placeholder:text-primary/40"
                     />
                 </div>
 
                 {suggestOpen && suggestions.length > 0 && (
-                    <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-lg border border-primary/10 shadow-lg z-50 overflow-hidden">
+                    <div className="absolute top-full left-0 right-0 mt-2 bg-card rounded-lg border border-primary/10 shadow-lg z-50 overflow-hidden">
                         {suggestions.map((s, idx) => (
                             <div
                                 key={s.id}

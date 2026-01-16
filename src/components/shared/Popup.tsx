@@ -114,7 +114,7 @@ const Popup = ({
             aria-labelledby={title ? 'popup-title' : undefined}
         >
             <div
-                className={`w-full ${sizeClass} rounded-2 bg-white shadow-2xl border border-primary/10 ${className}`}
+                className={`w-full ${sizeClass} rounded-2 bg-card shadow-2xl border border-primary/10 ${className}`}
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* Header */}

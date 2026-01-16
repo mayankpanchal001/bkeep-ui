@@ -41,7 +41,7 @@ const TaxDetailDrawer = ({
                             <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
                         </div>
                     ) : error ? (
-                        <div className="flex h-full items-center justify-center text-red-500">
+                        <div className="flex h-full items-center justify-center text-destructive">
                             Failed to load tax details
                         </div>
                     ) : tax ? (
@@ -87,8 +87,8 @@ const TaxDetailDrawer = ({
                                 <span
                                     className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
                                         tax.isActive
-                                            ? 'bg-green-100 text-green-800'
-                                            : 'bg-red-100 text-red-800'
+                                            ? 'bg-secondary/20 text-secondary'
+                                            : 'bg-destructive/10 text-destructive'
                                     }`}
                                 >
                                     {tax.isActive ? 'Active' : 'Inactive'}

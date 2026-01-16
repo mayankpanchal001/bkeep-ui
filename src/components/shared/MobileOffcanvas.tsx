@@ -145,7 +145,7 @@ const MobileOffcanvas = ({ isOpen, onClose }: MobileOffcanvasProps) => {
             {/* Offcanvas Panel (Right Side) */}
             <div
                 className={`
-                    fixed inset-y-0 right-0 z-50 w-80 bg-white shadow-2xl transform transition-transform duration-300 ease-in-out flex flex-col
+                    fixed inset-y-0 right-0 z-50 w-80 bg-card shadow-2xl transform transition-transform duration-300 ease-in-out flex flex-col
                     ${isOpen ? 'translate-x-0' : 'translate-x-full'}
                 `}
             >
@@ -195,7 +195,7 @@ const MobileOffcanvas = ({ isOpen, onClose }: MobileOffcanvasProps) => {
                                         <div
                                             className={`
                                                 flex items-center justify-between px-3 py-2.5 rounded-lg transition-colors
-                                                ${isActive ? 'bg-primary/5 text-primary' : 'text-primary/60 hover:bg-white'}
+                                                ${isActive ? 'bg-primary/5 text-primary' : 'text-primary/60 hover:bg-card'}
                                             `}
                                         >
                                             <Link
@@ -249,7 +249,7 @@ const MobileOffcanvas = ({ isOpen, onClose }: MobileOffcanvasProps) => {
                                                                     child.path
                                                                 )
                                                                     ? 'text-primary font-medium bg-primary/5'
-                                                                    : 'text-primary/50 hover:text-primary hover:bg-white'
+                                                                    : 'text-primary/50 hover:text-primary hover:bg-card'
                                                             }
                                                         `}
                                                         >
@@ -273,7 +273,7 @@ const MobileOffcanvas = ({ isOpen, onClose }: MobileOffcanvasProps) => {
                                         ${
                                             isActive
                                                 ? 'bg-primary/5 text-primary font-medium'
-                                                : 'text-primary/60 hover:bg-white hover:text-primary'
+                                                : 'text-primary/60 hover:bg-card hover:text-primary'
                                         }
                                     `}
                                 >
@@ -288,7 +288,7 @@ const MobileOffcanvas = ({ isOpen, onClose }: MobileOffcanvasProps) => {
                 </div>
 
                 {/* Footer / User Profile */}
-                <div className="p-4 border-t border-primary/10 bg-white">
+                <div className="p-4 border-t border-primary/10 bg-card">
                     <div className="flex items-center gap-3 mb-4">
                         <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary font-bold shrink-0">
                             {user?.name?.charAt(0) || 'U'}
@@ -307,14 +307,14 @@ const MobileOffcanvas = ({ isOpen, onClose }: MobileOffcanvasProps) => {
                         <Link
                             to="/settings/profile"
                             onClick={onClose}
-                            className="flex items-center justify-center gap-2 px-3 py-2 text-sm font-medium text-primary/70 bg-white border border-primary/10 rounded-md hover:bg-white transition-colors"
+                            className="flex items-center justify-center gap-2 px-3 py-2 text-sm font-medium text-primary/70 bg-card border border-primary/10 rounded-md hover:bg-card transition-colors"
                         >
                             <Icons.Profile className="w-4 h-4" />
                             Profile
                         </Link>
                         <button
                             onClick={() => setShowLogoutConfirm(true)}
-                            className="flex items-center justify-center gap-2 px-3 py-2 text-sm font-medium text-red-600 bg-white border border-primary/10 rounded-md hover:bg-red-50 transition-colors"
+                            className="flex items-center justify-center gap-2 px-3 py-2 text-sm font-medium text-red-600 bg-card border border-primary/10 rounded-md hover:bg-red-50 transition-colors"
                         >
                             <Icons.Logout className="w-4 h-4" />
                             Logout

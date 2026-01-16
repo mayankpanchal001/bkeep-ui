@@ -245,7 +245,7 @@ const AcceptInvitationForm = () => {
                         </h3>
                     </div>
                     <div className="space-y-4">
-                        <div className="flex items-start gap-4 p-3 bg-white/60 rounded-lg backdrop-blur-sm">
+                        <div className="flex items-start gap-4 p-3 bg-card/60 rounded-lg backdrop-blur-sm">
                             <div className="w-12 h-12 rounded-2 bg-primary/10 flex items-center justify-center shrink-0">
                                 <FaUser className="w-5 h-5 text-primary" />
                             </div>
@@ -258,7 +258,7 @@ const AcceptInvitationForm = () => {
                                 </p>
                             </div>
                         </div>
-                        <div className="flex items-start gap-4 p-3 bg-white/60 rounded-lg backdrop-blur-sm">
+                        <div className="flex items-start gap-4 p-3 bg-card/60 rounded-lg backdrop-blur-sm">
                             <div className="w-12 h-12 rounded-2 bg-primary/10 flex items-center justify-center shrink-0">
                                 <FaEnvelope className="w-5 h-5 text-primary" />
                             </div>
@@ -272,7 +272,7 @@ const AcceptInvitationForm = () => {
                             </div>
                         </div>
                         {invitationData.role && (
-                            <div className="flex items-start gap-4 p-3 bg-white/60 rounded-lg backdrop-blur-sm">
+                            <div className="flex items-start gap-4 p-3 bg-card/60 rounded-lg backdrop-blur-sm">
                                 <div className="w-12 h-12 rounded-2 bg-primary/10 flex items-center justify-center shrink-0">
                                     <FaCheckCircle className="w-5 h-5 text-primary" />
                                 </div>
@@ -288,7 +288,7 @@ const AcceptInvitationForm = () => {
                         )}
                         {(invitationData.tenantName ||
                             invitationData.tenant) && (
-                            <div className="flex items-start gap-4 p-3 bg-white/60 rounded-lg backdrop-blur-sm">
+                            <div className="flex items-start gap-4 p-3 bg-card/60 rounded-lg backdrop-blur-sm">
                                 <div className="w-12 h-12 rounded-2 bg-primary/10 flex items-center justify-center shrink-0">
                                     <FaBuilding className="w-5 h-5 text-primary" />
                                 </div>

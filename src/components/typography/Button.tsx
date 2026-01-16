@@ -1,4 +1,9 @@
 import React from 'react';
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipTrigger,
+} from '../ui/tooltip';
 
 type ButtonProps = {
     variant?: 'primary' | 'outline';
@@ -10,6 +15,7 @@ type ButtonProps = {
     children: React.ReactNode;
     className?: string;
     isRounded?: boolean;
+    tooltip?: string | React.ComponentProps<typeof TooltipContent>;
 } & React.ButtonHTMLAttributes<HTMLButtonElement>;
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
@@ -24,6 +30,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
             children,
             className,
             isRounded = false,
+            tooltip,
             ...rest
         },
         ref
@@ -35,17 +42,17 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
         // Define size-specific classes
         const sizeClasses = {
-            sm: 'h-7 px-3 text-[10px]',
+            sm: 'h-8 px-3 text-[10px]',
             md: 'h-10 px-4 py-1 text-sm',
             lg: 'h-12 px-6 py-2 text-base',
         };
 
         // Define variant-specific classes
         const variantClasses = {
-            primary: 'bg-primary hover:bg-primary/90 text-white',
+            primary: 'bg-primary hover:bg-primary/90 text-surface',
 
             outline:
-                'bg-white text-primary shadow-sm shadow-primary/20 hover:bg-primary hover:text-white  active:bg-primary',
+                'bg-card text-primary shadow-sm shadow-primary/20 hover:bg-primary hover:text-surface  active:bg-primary',
         };
 
         // Combine all classes
@@ -62,7 +69,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
         const isDisabled = disabled || loading;
 
-        return (
+        const button = (
             <button
                 ref={ref}
                 className={buttonClasses}
@@ -96,6 +103,23 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
                 {icon && icon}
                 {children}
             </button>
+        );
+
+        if (!tooltip) {
+            return button;
+        }
+
+        if (typeof tooltip === 'string') {
+            tooltip = {
+                children: tooltip,
+            };
+        }
+
+        return (
+            <Tooltip>
+                <TooltipTrigger asChild>{button}</TooltipTrigger>
+                <TooltipContent {...tooltip} />
+            </Tooltip>
         );
     }
 );

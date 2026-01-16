@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useGetRoles } from '../../services/apis/roleApi';
 import { Icons } from '../shared/Icons';
 import Button from '../typography/Button';
-import Chips from '../typography/Chips';
+import { Badge } from '../ui/badge';
 import {
     Table,
     TableBody,
@@ -36,7 +36,7 @@ const RolesTab = () => {
 
     if (isError) {
         return (
-            <div className="text-center py-8 text-red-500">
+            <div className="text-center py-8 text-destructive">
                 Failed to load roles. Please try again.
             </div>
         );
@@ -119,16 +119,15 @@ const RolesTab = () => {
                                     </span>
                                 </TableCell>
                                 <TableCell>
-                                    <Chips
-                                        label={
-                                            role.isActive
-                                                ? 'Active'
-                                                : 'Inactive'
-                                        }
+                                    <Badge
                                         variant={
-                                            role.isActive ? 'success' : 'danger'
+                                            role.isActive
+                                                ? 'success'
+                                                : 'destructive'
                                         }
-                                    />
+                                    >
+                                        {role.isActive ? 'Active' : 'Inactive'}
+                                    </Badge>
                                 </TableCell>
                             </TableRow>
                         ))

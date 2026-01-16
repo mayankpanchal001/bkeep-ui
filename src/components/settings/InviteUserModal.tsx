@@ -137,7 +137,7 @@ const InviteUserModal = ({
                                 placeholder="John Doe"
                             />
                             {errors.name && (
-                                <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
+                                <p className="text-destructive text-xs mt-1 flex items-center gap-1">
                                     <FaExclamationTriangle className="w-3 h-3" />
                                     {errors.name}
                                 </p>
@@ -167,7 +167,7 @@ const InviteUserModal = ({
                                 placeholder="user@example.com"
                             />
                             {errors.email && (
-                                <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
+                                <p className="text-destructive text-xs mt-1 flex items-center gap-1">
                                     <FaExclamationTriangle className="w-3 h-3" />
                                     {errors.email}
                                 </p>
@@ -203,7 +203,7 @@ const InviteUserModal = ({
                         }))}
                     />
                     {errors.roleId && (
-                        <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
+                        <p className="text-destructive text-xs mt-1 flex items-center gap-1">
                             <FaExclamationTriangle className="w-3 h-3" />
                             {errors.roleId}
                         </p>

@@ -21,9 +21,9 @@ const AIInsightCard = ({
     const [isDismissed, setIsDismissed] = useState(false);
 
     const typeStyles = {
-        alert: 'border-yellow-300 bg-yellow-50',
-        suggestion: 'border-blue-300 bg-blue-50',
-        warning: 'border-red-300 bg-red-50',
+        alert: 'border-accent/30 bg-accent/10',
+        suggestion: 'border-secondary/30 bg-secondary/10',
+        warning: 'border-destructive/30 bg-destructive/10',
     };
 
     const handleDismiss = () => {
@@ -45,7 +45,7 @@ const AIInsightCard = ({
                 {onAccept && (
                     <button
                         onClick={onAccept}
-                        className="flex items-center gap-1 px-3 py-1.5 text-xs font-medium bg-primary text-white rounded-md hover:bg-primary/75 transition-colors"
+                        className="flex items-center gap-1 px-3 py-1.5 text-xs font-medium bg-primary text-surface rounded-md hover:bg-primary/75 transition-colors"
                     >
                         <FaCheck className="w-3 h-3" />
                         Accept
@@ -54,7 +54,7 @@ const AIInsightCard = ({
                 {onSnooze && (
                     <button
                         onClick={onSnooze}
-                        className="flex items-center gap-1 px-3 py-1.5 text-xs font-medium bg-white text-primary border border-primary/25 rounded-md hover:bg-primary/10 transition-colors"
+                        className="flex items-center gap-1 px-3 py-1.5 text-xs font-medium bg-card text-primary border border-primary/25 rounded-md hover:bg-primary/10 transition-colors"
                     >
                         <FaClock className="w-3 h-3" />
                         Snooze
@@ -63,7 +63,7 @@ const AIInsightCard = ({
                 {onDismiss && (
                     <button
                         onClick={handleDismiss}
-                        className="flex items-center gap-1 px-3 py-1.5 text-xs font-medium bg-white text-primary/50 border border-primary/10 rounded-md hover:bg-primary/10 transition-colors ml-auto"
+                        className="flex items-center gap-1 px-3 py-1.5 text-xs font-medium bg-card text-primary/50 border border-primary/10 rounded-md hover:bg-primary/10 transition-colors ml-auto"
                     >
                         <FaTimes className="w-3 h-3" />
                         Dismiss

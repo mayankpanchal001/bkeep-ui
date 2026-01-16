@@ -141,7 +141,7 @@ export function TransactionHeader({
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <button className="flex items-center gap-2 text-xl font-semibold text-foreground hover:opacity-80 transition-opacity">
-                                <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white">
+                                <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center text-white">
                                     <svg
                                         viewBox="0 0 24 24"
                                         fill="none"
@@ -232,7 +232,7 @@ export function TransactionHeader({
                 {canScrollLeft && (
                     <button
                         onClick={scrollLeft}
-                        className="absolute left-2 top-1/2 -translate-y-1/2 z-30 bg-white/90 hover:bg-white shadow-lg rounded-full p-2 transition-all duration-200 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-green-600"
+                        className="absolute left-2 top-1/2 -translate-y-1/2 z-30 bg-card/90 hover:bg-card shadow-lg rounded-full p-2 transition-all duration-200 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-green-600"
                         aria-label="Scroll left"
                     >
                         <ChevronLeft className="w-6 h-6 text-green-700" />
@@ -243,7 +243,7 @@ export function TransactionHeader({
                 {canScrollRight && (
                     <button
                         onClick={scrollRight}
-                        className="absolute right-2 top-1/2 -translate-y-1/2 z-30 bg-white/90 hover:bg-white shadow-lg rounded-full p-2 transition-all duration-200 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-green-600"
+                        className="absolute right-2 top-1/2 -translate-y-1/2 z-30 bg-card/90 hover:bg-card shadow-lg rounded-full p-2 transition-all duration-200 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-green-600"
                         aria-label="Scroll right"
                     >
                         <ChevronRight className="w-6 h-6 text-green-700" />

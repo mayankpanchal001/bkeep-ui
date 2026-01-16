@@ -1,7 +1,7 @@
+import { ResetPasswordForm } from '@/components/auth/ResetPasswordForm';
 import { Link } from 'react-router';
 import { APP_TITLE } from '../../constants';
 import { logo } from '../../utills/image';
-import { ResetPasswordForm } from '@/components/auth/ResetPasswordForm';
 
 const ResetPasswordpage = () => {
     return (
@@ -35,7 +35,7 @@ const ResetPasswordpage = () => {
                         <img
                             src={logo}
                             alt="BKeep Accounting Logo"
-                            className="h-20 aspect-[3/4] bg-lightBg p-4 rounded-sm mb-8 drop-shadow-lg object-contain"
+                            className="h-20 aspect-[3/4] bg-surface-muted p-4 rounded-sm mb-8 drop-shadow-lg object-contain"
                         />
                     </div>
                     <h1 className="text-5xl font-bold text-white mb-4">
@@ -47,15 +47,15 @@ const ResetPasswordpage = () => {
                     </p>
                     <div className="flex flex-col gap-4 text-white/80 text-sm">
                         <div className="flex items-center justify-center gap-3">
-                            <div className="w-2 h-2 rounded-full bg-white/60"></div>
+                            <div className="w-2 h-2 rounded-full bg-surface/60"></div>
                             <span>Secure & Encrypted</span>
                         </div>
                         <div className="flex items-center justify-center gap-3">
-                            <div className="w-2 h-2 rounded-full bg-white/60"></div>
+                            <div className="w-2 h-2 rounded-full bg-surface/60"></div>
                             <span>Password Reset Link</span>
                         </div>
                         <div className="flex items-center justify-center gap-3">
-                            <div className="w-2 h-2 rounded-full bg-white/60"></div>
+                            <div className="w-2 h-2 rounded-full bg-surface/60"></div>
                             <span>One-Time Use Token</span>
                         </div>
                     </div>
@@ -63,7 +63,7 @@ const ResetPasswordpage = () => {
             </div>
 
             {/* Right Side - Reset Password Form Section */}
-            <div className="w-full lg:w-1/2 flex items-center justify-center bg-lightBg p-4 lg:p-12 overflow-auto min-h-screen">
+            <div className="w-full lg:w-1/2 flex items-center justify-center bg-surface-muted p-4 lg:p-12 overflow-auto min-h-screen">
                 <div className="w-full max-w-md">
                     {/* Mobile Logo - Only visible on small screens */}
                     <div className="lg:hidden flex flex-col items-center mb-8">
@@ -83,7 +83,7 @@ const ResetPasswordpage = () => {
                     </div>
 
                     {/* Reset Password Form Card */}
-                    <div className="bg-white rounded-2 shadow-xl p-4 lg:p-8 border border-primary/10">
+                    <div className="bg-card rounded-2 shadow-xl p-4 lg:p-8 border border-primary/10">
                         <ResetPasswordForm />
                     </div>
 

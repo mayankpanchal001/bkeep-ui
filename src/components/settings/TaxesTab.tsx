@@ -10,9 +10,11 @@ import {
     type SortingState,
     type VisibilityState,
 } from '@tanstack/react-table';
-import { MoreHorizontal, Plus } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import * as React from 'react';
 
+import ActionMenu, { type ActionMenuItem } from '../shared/ActionMenu';
+import { Icons } from '../shared/Icons';
 import {
     useDeleteTax,
     useDisableTax,
@@ -27,14 +29,6 @@ import {
     AlertDialogTitle,
 } from '../ui/alert-dialog';
 import { Button } from '../ui/button';
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from '../ui/dropdown-menu';
 import Input from '../ui/input';
 import {
     Table,
@@ -143,57 +137,46 @@ const TaxesTab = () => {
                 header: 'Actions',
                 cell: ({ row }) => {
                     const tax = row.original;
-                    return (
-                        <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" className="h-8 w-8 p-0">
-                                    <MoreHorizontal className="h-4 w-4" />
-                                    <span className="sr-only">Open menu</span>
-                                </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                                <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                <DropdownMenuItem
-                                    onClick={() => {
-                                        setDetailTaxId(tax.id);
-                                        setDetailOpen(true);
-                                    }}
-                                >
-                                    View details
-                                </DropdownMenuItem>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem
-                                    onClick={() => {
-                                        setEditTax(tax);
-                                        setDialogOpen(true);
-                                    }}
-                                >
-                                    Edit
-                                </DropdownMenuItem>
-                                <DropdownMenuSeparator />
-                                {tax.isActive ? (
-                                    <DropdownMenuItem
-                                        onClick={() => handleDisable(tax.id)}
-                                    >
-                                        Disable
-                                    </DropdownMenuItem>
-                                ) : (
-                                    <DropdownMenuItem
-                                        onClick={() => handleEnable(tax.id)}
-                                    >
-                                        Enable
-                                    </DropdownMenuItem>
-                                )}
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem
-                                    className="text-red-600 focus:text-red-600"
-                                    onClick={() => handleDelete(tax.id)}
-                                >
-                                    Delete
-                                </DropdownMenuItem>
-                            </DropdownMenuContent>
-                        </DropdownMenu>
-                    );
+
+                    const actionItems: ActionMenuItem[] = [
+                        {
+                            label: 'View details',
+                            icon: <Icons.Eye className="mr-2 w-4 h-4" />,
+                            onClick: () => {
+                                setDetailTaxId(tax.id);
+                                setDetailOpen(true);
+                            },
+                        },
+                        {
+                            label: 'Edit',
+                            icon: <Icons.Edit className="mr-2 w-4 h-4" />,
+                            onClick: () => {
+                                setEditTax(tax);
+                                setDialogOpen(true);
+                            },
+                            separator: true,
+                        },
+                        tax.isActive
+                            ? {
+                                  label: 'Disable',
+                                  onClick: () => handleDisable(tax.id),
+                                  separator: true,
+                              }
+                            : {
+                                  label: 'Enable',
+                                  onClick: () => handleEnable(tax.id),
+                                  separator: true,
+                              },
+                        {
+                            label: 'Delete',
+                            icon: <Icons.Trash className="mr-2 w-4 h-4" />,
+                            onClick: () => handleDelete(tax.id),
+                            destructive: true,
+                            separator: true,
+                        },
+                    ];
+
+                    return <ActionMenu items={actionItems} />;
                 },
             },
         ];
@@ -247,20 +230,20 @@ const TaxesTab = () => {
             </div>
 
             {/* <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div className="bg-white rounded-2 shadow-sm border border-primary/10 p-4">
+                <div className="bg-card rounded-2 shadow-sm border border-primary/10 p-4">
                     <p className="text-xs text-primary/50 uppercase">Total</p>
                     <p className="text-lg font-bold text-primary">
                         {statsData?.data?.total ?? taxes.length}
                     </p>
                 </div>
-                <div className="bg-white rounded-2 shadow-sm border border-primary/10 p-4">
+                <div className="bg-card rounded-2 shadow-sm border border-primary/10 p-4">
                     <p className="text-xs text-primary/50 uppercase">Active</p>
                     <p className="text-lg font-bold text-primary">
                         {statsData?.data?.active ??
                             taxes.filter((t) => t.isActive).length}
                     </p>
                 </div>
-                <div className="bg-white rounded-2 shadow-sm border border-primary/10 p-4">
+                <div className="bg-card rounded-2 shadow-sm border border-primary/10 p-4">
                     <p className="text-xs text-primary/50 uppercase">
                         Inactive
                     </p>

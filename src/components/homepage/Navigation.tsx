@@ -4,6 +4,11 @@ import { Link } from 'react-router';
 import { APP_TITLE } from '../../constants';
 import { logo } from '../../utills/image';
 import Button from '../typography/Button';
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipTrigger,
+} from '../ui/tooltip';
 
 const NAV_LINKS = [
     { label: 'Features', href: '#features' },
@@ -47,33 +52,44 @@ export default function Navigation() {
 
                 <div className="hidden items-center gap-8 text-sm md:flex">
                     {NAV_LINKS.map((link) => (
-                        <a
-                            key={link.label}
-                            href={link.href}
-                            className="text-muted-foreground transition hover:text-foreground"
-                        >
-                            {link.label}
-                        </a>
+                        <Tooltip key={link.label}>
+                            <TooltipTrigger asChild>
+                                <a
+                                    href={link.href}
+                                    className="text-muted-foreground transition hover:text-foreground"
+                                >
+                                    {link.label}
+                                </a>
+                            </TooltipTrigger>
+                            <TooltipContent>{link.label}</TooltipContent>
+                        </Tooltip>
                     ))}
 
                     <Link to="/login">
-                        <Button variant="primary" size="md">
+                        <Button variant="primary" size="md" tooltip="Sign in to your account">
                             Sign in
                         </Button>
                     </Link>
                 </div>
 
-                <button
-                    onClick={() => setIsMobileMenuOpen((prev) => !prev)}
-                    className="rounded-lg p-2 text-foreground md:hidden"
-                    aria-label="Toggle navigation"
-                >
-                    {isMobileMenuOpen ? (
-                        <FaTimes className="h-6 w-6" />
-                    ) : (
-                        <FaBars className="h-6 w-6" />
-                    )}
-                </button>
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <button
+                            onClick={() => setIsMobileMenuOpen((prev) => !prev)}
+                            className="rounded-lg p-2 text-foreground md:hidden"
+                            aria-label="Toggle navigation"
+                        >
+                            {isMobileMenuOpen ? (
+                                <FaTimes className="h-6 w-6" />
+                            ) : (
+                                <FaBars className="h-6 w-6" />
+                            )}
+                        </button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                        {isMobileMenuOpen ? 'Close menu' : 'Open menu'}
+                    </TooltipContent>
+                </Tooltip>
             </div>
 
             {isMobileMenuOpen && (

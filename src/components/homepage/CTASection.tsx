@@ -24,7 +24,7 @@ export default function CTASection() {
                             <Link to="/register">
                                 <Button
                                     variant="primary"
-                                    className="bg-white text-black hover:bg-white/90"
+                                    className="bg-card text-foreground hover:bg-card/90"
                                 >
                                     Get started
                                 </Button>

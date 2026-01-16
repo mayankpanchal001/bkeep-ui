@@ -1,3 +1,5 @@
+import Button from '@/components/typography/Button';
+import { InputField } from '@/components/typography/InputFields';
 import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { useVerifyMfa } from '../../services/apis/authApi';
@@ -7,8 +9,6 @@ import { useTenant } from '../../stores/tenant/tenantSelectore';
 import { Tenant } from '../../types';
 import { storePasskeyUser } from '../../utills/passkey';
 import { showSuccessToast } from '../../utills/toast';
-import Button from '@/components/typography/Button';
-import { InputField } from '@/components/typography/InputFields';
 
 const OtpVerificationpage = () => {
     const location = useLocation();
@@ -168,8 +168,8 @@ const OtpVerificationpage = () => {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-lightBg px-4">
-            <div className="w-full max-w-md bg-white rounded-2 shadow-xl p-4 lg:p-8 border border-primary/10">
+        <div className="min-h-screen flex items-center justify-center bg-surface-muted px-4">
+            <div className="w-full max-w-md bg-card rounded-2 shadow-xl p-4 lg:p-8 border border-primary/10">
                 <h1 className="text-2xl font-bold text-primary mb-2">
                     {getTitle()}
                 </h1>

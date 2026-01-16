@@ -1,4 +1,5 @@
 import { CreateTransactionDrawer } from '@/components/transactions/CreateTransactionDrawer';
+import { PostTransactionModal } from '@/components/transactions/PostTransactionModal';
 import { TransactionHeader } from '@/components/transactions/TransactionHeader';
 import Button from '@/components/typography/Button';
 import { Combobox, type ComboboxOption } from '@/components/ui/combobox';
@@ -38,7 +39,6 @@ import { useContacts } from '../../services/apis/contactsApi';
 import { useTaxes } from '../../services/apis/taxApi';
 import {
     CreateTransactionResponse,
-    usePostTransaction,
     useReconcileTransaction,
     useReverseTransaction,
     useTransactions,
@@ -234,8 +234,9 @@ const Transactionpage = () => {
     const allTransactions = allTransactionsResponse?.items || [];
     const [isFilterDrawerOpen, setIsFilterDrawerOpen] = useState(false);
     const [isBulkProcessing, setIsBulkProcessing] = useState(false);
-    const { mutate: postTransaction, mutateAsync: postTransactionAsync } =
-        usePostTransaction();
+    const [postModalOpen, setPostModalOpen] = useState(false);
+    const [selectedTransactionForPost, setSelectedTransactionForPost] =
+        useState<string | null>(null);
     const {
         mutate: reconcileTransaction,
         mutateAsync: reconcileTransactionAsync,
@@ -264,6 +265,15 @@ const Transactionpage = () => {
         } finally {
             setIsBulkProcessing(false);
         }
+    };
+
+    const handleBulkPost = () => {
+        // For bulk post, show modal for first transaction
+        // User will need to post them individually or we can enhance this later
+        if (selectedItems.length === 0) return;
+        const firstTxId = selectedItems[0] as string;
+        setSelectedTransactionForPost(firstTxId);
+        setPostModalOpen(true);
     };
 
     useEffect(() => {
@@ -326,18 +336,7 @@ const Transactionpage = () => {
     }, [apiTransactions, isLoading, error]);
 
     const SUPPLIER_OPTIONS: ComboboxOption[] = useMemo(() => {
-        const uniqueSuppliers = new Set<string>([
-            'Canada Post',
-            'Office Depot',
-            'Stripe',
-            'Google Workspace',
-            'Amazon',
-            'Staples',
-            'Apple',
-            'Air Canada',
-            'Microsoft',
-            'Walmart',
-        ]);
+        const uniqueSuppliers = new Set<string>();
 
         // Add contact names to options
         contactNameById.forEach((name) => {
@@ -471,7 +470,7 @@ const Transactionpage = () => {
                             'px-4 py-2 rounded-lg text-sm font-medium transition-all',
                             filterStore.status === 'all'
                                 ? 'bg-primary text-white shadow-sm'
-                                : 'bg-white border border-primary/10 text-primary hover:bg-primary/5 hover:border-primary/20'
+                                : 'bg-card border border-primary/10 text-primary hover:bg-primary/5 hover:border-primary/20'
                         )}
                         onClick={() => filterStore.setStatus('all')}
                     >
@@ -482,7 +481,7 @@ const Transactionpage = () => {
                             'px-4 py-2 rounded-lg text-sm font-medium transition-all',
                             filterStore.status === 'pending'
                                 ? 'bg-orange-500 text-white shadow-sm'
-                                : 'bg-white border border-primary/10 text-primary hover:bg-orange-50 hover:border-orange-200'
+                                : 'bg-card border border-primary/10 text-primary hover:bg-orange-50 hover:border-orange-200'
                         )}
                         onClick={() => filterStore.setStatus('pending')}
                     >
@@ -493,7 +492,7 @@ const Transactionpage = () => {
                             'px-4 py-2 rounded-lg text-sm font-medium transition-all',
                             filterStore.status === 'posted'
                                 ? 'bg-green-600 text-white shadow-sm'
-                                : 'bg-white border border-primary/10 text-primary hover:bg-green-50 hover:border-green-200'
+                                : 'bg-card border border-primary/10 text-primary hover:bg-green-50 hover:border-green-200'
                         )}
                         onClick={() => filterStore.setStatus('posted')}
                     >
@@ -704,12 +703,7 @@ const Transactionpage = () => {
                                 size="sm"
                                 disabled={isBulkProcessing}
                                 className="border border-green-200 bg-green-50 text-green-700 hover:bg-green-100 hover:text-green-900 shadow-none"
-                                onClick={() =>
-                                    handleBulkAction(
-                                        'posted',
-                                        postTransactionAsync
-                                    )
-                                }
+                                onClick={handleBulkPost}
                             >
                                 Post ({selectedItems.length})
                             </Button>
@@ -986,9 +980,12 @@ const Transactionpage = () => {
                                                 <Button
                                                     variant="outline"
                                                     size="sm"
-                                                    onClick={() =>
-                                                        postTransaction(t.id)
-                                                    }
+                                                    onClick={() => {
+                                                        setSelectedTransactionForPost(
+                                                            t.id
+                                                        );
+                                                        setPostModalOpen(true);
+                                                    }}
                                                 >
                                                     Post
                                                 </Button>
@@ -1076,6 +1073,50 @@ const Transactionpage = () => {
                     onPageChange={(page) => filterStore.setPage(page)}
                 />
             </div>
+
+            {/* Post Transaction Modal */}
+            {selectedTransactionForPost && (
+                <PostTransactionModal
+                    open={postModalOpen}
+                    onOpenChange={(open) => {
+                        setPostModalOpen(open);
+                        if (!open) {
+                            // If there are more selected items, open modal for next one
+                            const remaining = selectedItems.filter(
+                                (id) => id !== selectedTransactionForPost
+                            );
+                            if (remaining.length > 0) {
+                                setSelectedTransactionForPost(
+                                    remaining[0] as string
+                                );
+                                setPostModalOpen(true);
+                            } else {
+                                setSelectedTransactionForPost(null);
+                                setSelectedItems([]);
+                            }
+                        }
+                    }}
+                    transactionId={selectedTransactionForPost}
+                    transactionDate={
+                        transactions.find(
+                            (t) => t.id === selectedTransactionForPost
+                        )?.date
+                    }
+                    defaultCounterAccountId={
+                        transactions.find(
+                            (t) => t.id === selectedTransactionForPost
+                        )?.accountId
+                    }
+                    onSuccess={() => {
+                        // Remove posted transaction from selected items
+                        setSelectedItems((prev) =>
+                            prev.filter(
+                                (id) => id !== selectedTransactionForPost
+                            )
+                        );
+                    }}
+                />
+            )}
         </div>
     );
 };

@@ -275,7 +275,7 @@ function SidebarTrigger({
     onClick,
     ...props
 }: React.ComponentProps<typeof Button>) {
-    const { toggleSidebar } = useSidebar();
+    const { toggleSidebar, state } = useSidebar();
 
     return (
         <Button
@@ -288,6 +288,9 @@ function SidebarTrigger({
                 onClick?.(event);
                 toggleSidebar();
             }}
+            tooltip={
+                state === 'collapsed' ? 'Expand sidebar' : 'Collapse sidebar'
+            }
             {...props}
         >
             <PanelLeftIcon className="size-5" />

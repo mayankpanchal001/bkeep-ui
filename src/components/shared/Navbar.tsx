@@ -31,6 +31,11 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import { ScrollArea } from '../ui/scroll-area';
 import { SidebarTrigger } from '../ui/sidebar';
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipTrigger,
+} from '../ui/tooltip';
 import AutoBreadcrumbs from './AutoBreadcrumbs';
 import ThemeSwitcher from './ThemeSwitcher';
 
@@ -59,12 +64,11 @@ const notificationIcons: Record<NotificationType, React.ReactNode> = {
 };
 
 const notificationColors: Record<NotificationType, string> = {
-    invoice: 'bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400',
-    payment:
-        'bg-green-100 dark:bg-green-500/20 text-green-600 dark:text-green-400',
-    report: 'bg-purple-100 dark:bg-purple-500/20 text-purple-600 dark:text-purple-400',
-    alert: 'bg-amber-100 dark:bg-amber-500/20 text-amber-600 dark:text-amber-400',
-    system: 'bg-slate-100 dark:bg-slate-500/20 text-slate-600 dark:text-slate-400',
+    invoice: 'bg-secondary/20 text-secondary',
+    payment: 'bg-secondary/20 text-secondary',
+    report: 'bg-secondary/20 text-secondary',
+    alert: 'bg-accent/20 text-accent',
+    system: 'bg-surface-muted text-primary/70',
 };
 
 const Navbar = ({ onSearchClick, onShortcutsClick }: NavbarProps) => {
@@ -163,7 +167,7 @@ const Navbar = ({ onSearchClick, onShortcutsClick }: NavbarProps) => {
     const isMac = navigator.userAgent.includes('Macintosh');
 
     return (
-        <nav className="flex items-center justify-between p-4 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-primary/10 sticky top-0 z-40 w-full">
+        <nav className="flex items-center justify-between p-4 bg-card/80 dark:bg-surface-muted/80 backdrop-blur-md border-b border-primary/10 sticky top-0 z-40 w-full">
             <div className="flex items-center gap-4">
                 <SidebarTrigger className="-ml-1" />
 
@@ -172,26 +176,36 @@ const Navbar = ({ onSearchClick, onShortcutsClick }: NavbarProps) => {
 
             {/* Right Actions */}
             <div className="flex items-center gap-3 min-w-fit">
-                <button
-                    onClick={onSearchClick}
-                    className="w-[min(150px,30vw)] hidden sm:flex items-center gap-2 px-3 py-1.5 bg-white dark:bg-slate-900 hover:bg-primary/10 rounded-md border border-primary/10 text-primary/50 transition-colors group"
-                >
-                    <Search className="w-3.5 h-3.5 group-hover:text-primary" />
-                    <span className="text-xs font-medium">Search</span>
-                    <kbd className="ml-auto inline-block px-1.5 py-0.5 text-[10px] font-bold text-primary/40 bg-white dark:bg-slate-800 border border-primary/10 rounded shadow-sm">
-                        {isMac ? '⌘' : 'Ctrl'}
-                    </kbd>
-                </button>
-                <button
-                    onClick={onShortcutsClick}
-                    className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-white dark:bg-slate-900 hover:bg-primary/10 rounded-md border border-primary/10 text-primary/50 transition-colors group"
-                >
-                    <Keyboard className="w-3.5 h-3.5 group-hover:text-primary" />
-                    <span className="text-xs font-medium">Shortcuts</span>
-                    <kbd className="ml-auto inline-block px-1.5 py-0.5 text-[10px] font-bold text-primary/40 bg-white dark:bg-slate-800 border border-primary/10 rounded shadow-sm">
-                        ?
-                    </kbd>
-                </button>
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <button
+                            onClick={onSearchClick}
+                            className="w-[min(150px,30vw)] hidden sm:flex items-center gap-2 px-3 py-1.5 bg-card dark:bg-surface-muted hover:bg-primary/10 rounded-md border border-primary/10 text-primary/50 transition-colors group"
+                        >
+                            <Search className="w-3.5 h-3.5 group-hover:text-primary" />
+                            <span className="text-xs font-medium">Search</span>
+                            <kbd className="ml-auto inline-block px-1.5 py-0.5 text-[10px] font-bold text-primary/40 bg-card dark:bg-surface-muted border border-primary/10 rounded shadow-sm">
+                                {isMac ? '⌘' : 'Ctrl'}
+                            </kbd>
+                        </button>
+                    </TooltipTrigger>
+                    <TooltipContent>Search ({isMac ? '⌘' : 'Ctrl'}+K)</TooltipContent>
+                </Tooltip>
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <button
+                            onClick={onShortcutsClick}
+                            className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-card dark:bg-surface-muted hover:bg-primary/10 rounded-md border border-primary/10 text-primary/50 transition-colors group"
+                        >
+                            <Keyboard className="w-3.5 h-3.5 group-hover:text-primary" />
+                            <span className="text-xs font-medium">Shortcuts</span>
+                            <kbd className="ml-auto inline-block px-1.5 py-0.5 text-[10px] font-bold text-primary/40 bg-card dark:bg-surface-muted border border-primary/10 rounded shadow-sm">
+                                ?
+                            </kbd>
+                        </button>
+                    </TooltipTrigger>
+                    <TooltipContent>Keyboard Shortcuts (?)</TooltipContent>
+                </Tooltip>
                 <ThemeSwitcher />
 
                 {/* Enhanced Notifications Popover */}
@@ -199,24 +213,31 @@ const Navbar = ({ onSearchClick, onShortcutsClick }: NavbarProps) => {
                     open={isNotificationsOpen}
                     onOpenChange={setIsNotificationsOpen}
                 >
-                    <PopoverTrigger asChild>
-                        <button
-                            className={cn(
-                                'relative p-2 rounded-lg transition-all duration-200',
-                                'hover:bg-primary/10 text-primary/70 hover:text-primary',
-                                isNotificationsOpen &&
-                                    'bg-primary/10 text-primary'
-                            )}
-                            aria-label="Notifications"
-                        >
-                            <Bell className="w-5 h-5" />
-                            {unreadCount > 0 && (
-                                <span className="absolute top-1 right-1 flex items-center justify-center rounded-full bg-red-500 text-white text-[10px] font-bold leading-none h-4 min-w-4 px-1 animate-in zoom-in duration-200 shadow-sm border border-white dark:border-slate-900">
-                                    {unreadCount > 9 ? '9+' : unreadCount}
-                                </span>
-                            )}
-                        </button>
-                    </PopoverTrigger>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <PopoverTrigger asChild>
+                                <button
+                                    className={cn(
+                                        'relative p-2 rounded-lg transition-all duration-200',
+                                        'hover:bg-primary/10 text-primary/70 hover:text-primary',
+                                        isNotificationsOpen &&
+                                            'bg-primary/10 text-primary'
+                                    )}
+                                    aria-label="Notifications"
+                                >
+                                    <Bell className="w-5 h-5" />
+                                    {unreadCount > 0 && (
+                                        <span className="absolute top-1 right-1 flex items-center justify-center rounded-full bg-red-500 text-white text-[10px] font-bold leading-none h-4 min-w-4 px-1 animate-in zoom-in duration-200 shadow-sm border border-white dark:border-slate-900">
+                                            {unreadCount > 9 ? '9+' : unreadCount}
+                                        </span>
+                                    )}
+                                </button>
+                            </PopoverTrigger>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            Notifications{unreadCount > 0 ? ` (${unreadCount} new)` : ''}
+                        </TooltipContent>
+                    </Tooltip>
 
                     <PopoverContent
                         className="w-[calc(100vw-32px)] sm:w-96 p-0 shadow-2xl border-slate-200/80 dark:border-slate-700/80 overflow-hidden"
@@ -224,11 +245,11 @@ const Navbar = ({ onSearchClick, onShortcutsClick }: NavbarProps) => {
                         sideOffset={8}
                     >
                         {/* Header */}
-                        <div className="px-4 py-3 border-b border-slate-200/80 dark:border-slate-700/80 bg-gradient-to-r from-slate-50 to-white dark:from-slate-800/50 dark:to-slate-900">
+                        <div className="px-4 py-3 border-b border-primary/10 dark:border-primary/20 bg-gradient-to-r from-surface-muted to-card dark:from-surface-muted/50 dark:to-surface-muted">
                             <div className="flex items-center justify-between gap-4">
                                 <div className="flex items-center gap-2 min-w-0">
                                     <Bell className="w-4 h-4 text-primary shrink-0" />
-                                    <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100 truncate">
+                                    <h3 className="text-sm font-semibold text-primary dark:text-primary truncate">
                                         Notifications
                                     </h3>
                                     {unreadCount > 0 && (
@@ -237,20 +258,25 @@ const Navbar = ({ onSearchClick, onShortcutsClick }: NavbarProps) => {
                                         </span>
                                     )}
                                 </div>
-                                <button
-                                    onClick={() =>
-                                        setIsNotificationsOpen(false)
-                                    }
-                                    className="p-1 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors shrink-0"
-                                >
-                                    <X className="w-4 h-4" />
-                                </button>
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <button
+                                            onClick={() =>
+                                                setIsNotificationsOpen(false)
+                                            }
+                                            className="p-1 rounded-md hover:bg-surface-muted dark:hover:bg-surface-muted/50 text-primary/40 hover:text-primary/70 dark:hover:text-primary/50 transition-colors shrink-0"
+                                        >
+                                            <X className="w-4 h-4" />
+                                        </button>
+                                    </TooltipTrigger>
+                                    <TooltipContent>Close</TooltipContent>
+                                </Tooltip>
                             </div>
                         </div>
 
                         {/* Quick Actions */}
                         {notifications.length > 0 && (
-                            <div className="px-4 py-2 border-b border-slate-100 dark:border-slate-800 flex items-center gap-2">
+                            <div className="px-4 py-2 border-b border-primary/10 dark:border-primary/20 flex items-center gap-2">
                                 <button
                                     onClick={markAllAsRead}
                                     disabled={unreadCount === 0}
@@ -258,7 +284,7 @@ const Navbar = ({ onSearchClick, onShortcutsClick }: NavbarProps) => {
                                         'flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium rounded-md transition-colors',
                                         unreadCount > 0
                                             ? 'text-primary hover:bg-primary/10'
-                                            : 'text-slate-400 cursor-not-allowed'
+                                            : 'text-primary/40 cursor-not-allowed'
                                     )}
                                 >
                                     <CheckCheck className="w-3.5 h-3.5" />
@@ -279,13 +305,13 @@ const Navbar = ({ onSearchClick, onShortcutsClick }: NavbarProps) => {
                             <div className="py-2">
                                 {notifications.length === 0 ? (
                                     <div className="flex flex-col items-center justify-center py-12 px-4">
-                                        <div className="flex items-center justify-center w-14 h-14 rounded-full bg-slate-100 dark:bg-slate-800 mb-4">
-                                            <Bell className="w-7 h-7 text-slate-400" />
+                                        <div className="flex items-center justify-center w-14 h-14 rounded-full bg-surface-muted dark:bg-surface-muted/50 mb-4">
+                                            <Bell className="w-7 h-7 text-primary/40" />
                                         </div>
-                                        <p className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+                                        <p className="text-sm font-medium text-primary dark:text-primary mb-1">
                                             All caught up!
                                         </p>
-                                        <p className="text-xs text-slate-500 dark:text-slate-400 text-center">
+                                        <p className="text-xs text-primary/60 dark:text-primary/50 text-center">
                                             You have no notifications at the
                                             moment.
                                         </p>
@@ -298,7 +324,7 @@ const Navbar = ({ onSearchClick, onShortcutsClick }: NavbarProps) => {
                                                 'group relative px-4 py-3 cursor-pointer transition-colors',
                                                 n.unread
                                                     ? 'bg-primary/5 dark:bg-primary/10 hover:bg-primary/10 dark:hover:bg-primary/15'
-                                                    : 'hover:bg-slate-50 dark:hover:bg-slate-800/50'
+                                                    : 'hover:bg-surface-muted dark:hover:bg-surface-muted/50'
                                             )}
                                             onClick={() =>
                                                 handleNotificationClick(n)
@@ -324,8 +350,8 @@ const Navbar = ({ onSearchClick, onShortcutsClick }: NavbarProps) => {
                                                             className={cn(
                                                                 'text-sm truncate',
                                                                 n.unread
-                                                                    ? 'font-semibold text-slate-900 dark:text-slate-100'
-                                                                    : 'font-medium text-slate-700 dark:text-slate-300'
+                                                                    ? 'font-semibold text-primary dark:text-primary'
+                                                                    : 'font-medium text-primary dark:text-primary/90'
                                                             )}
                                                         >
                                                             {n.title}
@@ -334,12 +360,12 @@ const Navbar = ({ onSearchClick, onShortcutsClick }: NavbarProps) => {
                                                             <span className="w-2 h-2 rounded-full bg-primary shrink-0 mt-1.5" />
                                                         )}
                                                     </div>
-                                                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 line-clamp-2">
+                                                    <p className="text-xs text-primary/60 dark:text-primary/50 mt-0.5 line-clamp-2">
                                                         {n.description}
                                                     </p>
                                                     <div className="flex items-center gap-2 mt-1.5">
-                                                        <Clock className="w-3 h-3 text-slate-400" />
-                                                        <span className="text-[11px] text-slate-400">
+                                                        <Clock className="w-3 h-3 text-primary/40" />
+                                                        <span className="text-[11px] text-primary/40">
                                                             {n.time}
                                                         </span>
                                                     </div>
@@ -348,31 +374,39 @@ const Navbar = ({ onSearchClick, onShortcutsClick }: NavbarProps) => {
                                                 {/* Actions */}
                                                 <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                                     {n.unread && (
-                                                        <button
-                                                            onClick={(e) => {
-                                                                e.stopPropagation();
-                                                                markAsRead(
-                                                                    n.id
-                                                                );
-                                                            }}
-                                                            className="p-1.5 rounded-md hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-500 hover:text-primary transition-colors"
-                                                            title="Mark as read"
-                                                        >
-                                                            <Check className="w-3.5 h-3.5" />
-                                                        </button>
+                                                        <Tooltip>
+                                                            <TooltipTrigger asChild>
+                                                                <button
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation();
+                                                                        markAsRead(
+                                                                            n.id
+                                                                        );
+                                                                    }}
+                                                                    className="p-1.5 rounded-md hover:bg-surface-muted dark:hover:bg-surface-muted/50 text-primary/50 hover:text-primary transition-colors"
+                                                                >
+                                                                    <Check className="w-3.5 h-3.5" />
+                                                                </button>
+                                                            </TooltipTrigger>
+                                                            <TooltipContent>Mark as read</TooltipContent>
+                                                        </Tooltip>
                                                     )}
-                                                    <button
-                                                        onClick={(e) =>
-                                                            deleteNotification(
-                                                                n.id,
-                                                                e
-                                                            )
-                                                        }
-                                                        className="p-1.5 rounded-md hover:bg-red-100 dark:hover:bg-red-500/20 text-slate-500 hover:text-red-600 transition-colors"
-                                                        title="Delete"
-                                                    >
-                                                        <Trash2 className="w-3.5 h-3.5" />
-                                                    </button>
+                                                    <Tooltip>
+                                                        <TooltipTrigger asChild>
+                                                            <button
+                                                                onClick={(e) =>
+                                                                    deleteNotification(
+                                                                        n.id,
+                                                                        e
+                                                                    )
+                                                                }
+                                                                className="p-1.5 rounded-md hover:bg-red-100 dark:hover:bg-red-500/20 text-primary/50 hover:text-red-600 transition-colors"
+                                                            >
+                                                                <Trash2 className="w-3.5 h-3.5" />
+                                                            </button>
+                                                        </TooltipTrigger>
+                                                        <TooltipContent>Delete</TooltipContent>
+                                                    </Tooltip>
                                                 </div>
                                             </div>
                                         </div>
@@ -396,14 +430,21 @@ const Navbar = ({ onSearchClick, onShortcutsClick }: NavbarProps) => {
 
                 {/* User Menu */}
                 <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <button
-                            className="w-8 h-8 p-1 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center text-xs text-primary font-semibold hover:from-primary/30 hover:to-primary/20 transition-colors"
-                            aria-label="User menu"
-                        >
-                            {initials}
-                        </button>
-                    </DropdownMenuTrigger>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <DropdownMenuTrigger asChild>
+                                <button
+                                    className="w-8 h-8 p-1 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center text-xs text-primary font-semibold hover:from-primary/30 hover:to-primary/20 transition-colors"
+                                    aria-label="User menu"
+                                >
+                                    {initials}
+                                </button>
+                            </DropdownMenuTrigger>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            {user?.name || 'User'} Menu
+                        </TooltipContent>
+                    </Tooltip>
                     <DropdownMenuContent className="w-72" align="end">
                         <DropdownMenuLabel>
                             <div className="flex items-center gap-3">

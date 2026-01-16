@@ -1,11 +1,11 @@
+import { Cell, Pie, PieChart } from 'recharts';
+import { getThemeColor } from '../../../utils/themeColors';
 import {
-    Cell,
-    Legend,
-    Pie,
-    PieChart,
-    ResponsiveContainer,
-    Tooltip,
-} from 'recharts';
+    ChartContainer,
+    ChartLegend,
+    ChartTooltip,
+    type TooltipPayloadItem,
+} from '../../ui/chart';
 
 type ExpensePieChartProps = {
     data: { category: string; amount: number; percentage: number }[];
@@ -18,30 +18,27 @@ const ExpensePieChart = ({ data }: ExpensePieChartProps) => {
         percentage: item.percentage,
     }));
 
-    const COLORS = ['#C56211', '#000', '#D4A574', '#F5E6D3', '#E8D5C4'];
+    const accent = getThemeColor('--color-accent');
+    const secondary = getThemeColor('--color-secondary');
+    const foreground = getThemeColor('--color-foreground');
+    const surfaceMuted = getThemeColor('--color-surface-muted');
+    const destructive = getThemeColor('--color-destructive');
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const CustomTooltip = ({ active, payload }: any) => {
-        if (active && payload && payload.length) {
-            return (
-                <div className="bg-white p-3 border border-primary/25 rounded-lg shadow-md">
-                    <p className="font-semibold text-primary">
-                        {payload[0].name}
-                    </p>
-                    <p className="text-sm text-primary/75">
-                        ${payload[0].value.toLocaleString()}
-                    </p>
-                    <p className="text-xs text-primary/50">
-                        {payload[0].payload.percentage}% of total
-                    </p>
-                </div>
-            );
-        }
-        return null;
-    };
+    const COLORS = [accent, secondary, foreground, surfaceMuted, destructive];
+
+    const chartConfig = chartData.reduce(
+        (acc, item, index) => ({
+            ...acc,
+            [item.name]: {
+                label: item.name,
+                color: COLORS[index % COLORS.length],
+            },
+        }),
+        {} as Record<string, { label: string; color: string }>
+    );
 
     return (
-        <ResponsiveContainer width="100%" height={300}>
+        <ChartContainer config={chartConfig} className="h-[300px] w-full">
             <PieChart>
                 <Pie
                     data={chartData}
@@ -50,7 +47,7 @@ const ExpensePieChart = ({ data }: ExpensePieChartProps) => {
                     labelLine={false}
                     label={({ name, percentage }) => `${name}: ${percentage}%`}
                     outerRadius={100}
-                    fill="#8884d8"
+                    fill={accent}
                     dataKey="value"
                 >
                     {chartData.map((_, index) => (
@@ -60,13 +57,70 @@ const ExpensePieChart = ({ data }: ExpensePieChartProps) => {
                         />
                     ))}
                 </Pie>
-                <Tooltip content={<CustomTooltip />} />
-                <Legend
-                    wrapperStyle={{ fontSize: '12px', paddingTop: '20px' }}
-                    iconType="circle"
+                <ChartTooltip
+                    content={({
+                        active,
+                        payload,
+                    }: {
+                        active?: boolean;
+                        payload?: Array<TooltipPayloadItem>;
+                    }) => {
+                        if (active && payload && payload.length) {
+                            const data = payload[0].payload as {
+                                name?: string;
+                                value?: number;
+                                percentage?: number;
+                            };
+                            if (!data) return null;
+                            return (
+                                <div className="rounded-lg border border-border/50 bg-card p-3 shadow-sm">
+                                    <div className="grid gap-2">
+                                        <div className="flex items-center justify-between gap-4">
+                                            <span className="font-semibold">
+                                                {data.name as string}
+                                            </span>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <div
+                                                className="h-2.5 w-2.5 rounded-full"
+                                                style={{
+                                                    backgroundColor:
+                                                        COLORS[
+                                                            chartData.findIndex(
+                                                                (d) =>
+                                                                    d.name ===
+                                                                    data.name
+                                                            ) % COLORS.length
+                                                        ],
+                                                }}
+                                            />
+                                            <span className="text-muted-foreground">
+                                                Amount:
+                                            </span>
+                                            <span className="font-mono font-medium tabular-nums">
+                                                ${(data.value as number || 0).toLocaleString()}
+                                            </span>
+                                        </div>
+                                        <div className="text-xs text-muted-foreground">
+                                            {data.percentage}% of total
+                                        </div>
+                                    </div>
+                                </div>
+                            );
+                        }
+                        return null;
+                    }}
+                />
+                <ChartLegend
+                    payload={chartData.map((item, index) => ({
+                        value: item.name,
+                        type: 'circle',
+                        id: item.name,
+                        color: COLORS[index % COLORS.length],
+                    }))}
                 />
             </PieChart>
-        </ResponsiveContainer>
+        </ChartContainer>
     );
 };
 

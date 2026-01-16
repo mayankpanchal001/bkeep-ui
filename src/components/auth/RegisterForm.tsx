@@ -99,7 +99,7 @@ export function RegisterForm() {
                 <Button
                     type="button"
                     variant="outline"
-                    className="w-full !rounded-md !normal-case h-9 text-[13px] border-primary/10 hover:bg-white bg-[#f8f9fa] text-primary/70 shadow-sm"
+                    className="w-full !rounded-md !normal-case h-9 text-[13px] border-primary/10 hover:bg-card bg-surface-muted text-primary/70 shadow-sm"
                     onClick={handleGoogleRegister}
                     loading={isOAuthLoading === 'google'}
                     disabled={isOAuthLoading !== null || isLoading}
@@ -129,7 +129,7 @@ export function RegisterForm() {
                 <Button
                     type="button"
                     variant="outline"
-                    className="w-full !rounded-md !normal-case h-9 text-[13px] border-primary/10 hover:bg-white bg-[#f8f9fa] text-primary/70 shadow-sm"
+                    className="w-full !rounded-md !normal-case h-9 text-[13px] border-primary/10 hover:bg-card bg-surface-muted text-primary/70 shadow-sm"
                     onClick={handleOutlookRegister}
                     loading={isOAuthLoading === 'outlook'}
                     disabled={isOAuthLoading !== null || isLoading}
@@ -152,7 +152,7 @@ export function RegisterForm() {
                     <span className="w-full border-t border-primary/10"></span>
                 </div>
                 <div className="relative flex justify-center text-[10px] uppercase tracking-wider font-bold">
-                    <span className="bg-white px-3 text-primary/40">
+                    <span className="bg-card px-3 text-primary/40">
                         Or continue with
                     </span>
                 </div>

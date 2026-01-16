@@ -183,7 +183,7 @@ const ClientReviewpage = () => {
 
             {/* Summary Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="bg-white rounded-2 shadow-sm border border-primary/10 p-4">
+                <div className="bg-card rounded-2 shadow-sm border border-primary/10 p-4">
                     <div className="flex items-center gap-3">
                         <FaExclamationTriangle className="w-8 h-8 text-orange-600" />
                         <div>
@@ -196,7 +196,7 @@ const ClientReviewpage = () => {
                         </div>
                     </div>
                 </div>
-                <div className="bg-white rounded-2 shadow-sm border border-primary/10 p-4">
+                <div className="bg-card rounded-2 shadow-sm border border-primary/10 p-4">
                     <div className="flex items-center gap-3">
                         <FaClock className="w-8 h-8 text-blue-600" />
                         <div>
@@ -209,7 +209,7 @@ const ClientReviewpage = () => {
                         </div>
                     </div>
                 </div>
-                <div className="bg-white rounded-2 shadow-sm border border-primary/10 p-4">
+                <div className="bg-card rounded-2 shadow-sm border border-primary/10 p-4">
                     <div className="flex items-center gap-3">
                         <FaCheckCircle className="w-8 h-8 text-green-600" />
                         <div>
@@ -225,7 +225,7 @@ const ClientReviewpage = () => {
             </div>
 
             {/* Filters */}
-            <div className="bg-white rounded-2 shadow-sm border border-primary/10 p-4">
+            <div className="bg-card rounded-2 shadow-sm border border-primary/10 p-4">
                 <div className="flex flex-col sm:flex-row gap-4">
                     <div className="flex-1">
                         <div className="relative">
@@ -263,7 +263,7 @@ const ClientReviewpage = () => {
             </div>
 
             {/* Transactions List */}
-            <div className="bg-white rounded-2 shadow-sm border border-primary/10 overflow-hidden">
+            <div className="bg-card rounded-2 shadow-sm border border-primary/10 overflow-hidden">
                 <div className="divide-y divide-primary/10">
                     {filteredTransactions.length === 0 ? (
                         <div className="px-4 py-8 text-center text-primary/50">
@@ -382,7 +382,7 @@ const ClientReviewpage = () => {
             {/* Review Modal */}
             {selectedTransaction && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4">
-                    <div className="w-full max-w-2xl rounded-2 bg-white p-4 shadow-2xl max-h-[90vh] overflow-y-auto">
+                    <div className="w-full max-w-2xl rounded-2 bg-card p-4 shadow-2xl max-h-[90vh] overflow-y-auto">
                         <div className="flex items-center justify-between mb-4">
                             <h3 className="text-xl font-semibold text-primary">
                                 Review Transaction

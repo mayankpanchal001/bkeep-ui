@@ -110,7 +110,7 @@ const TaxForm = ({ onClose, initialData }: TaxFormProps) => {
                         required
                     />
                     {errors.name && (
-                        <p className="text-red-500 text-xs mt-1 pl-1">
+                        <p className="text-destructive text-xs mt-1 pl-1">
                             {errors.name}
                         </p>
                     )}
@@ -145,7 +145,7 @@ const TaxForm = ({ onClose, initialData }: TaxFormProps) => {
                         required
                     />
                     {errors.ratePercent && (
-                        <p className="text-red-500 text-xs mt-1 pl-1">
+                        <p className="text-destructive text-xs mt-1 pl-1">
                             {errors.ratePercent}
                         </p>
                     )}

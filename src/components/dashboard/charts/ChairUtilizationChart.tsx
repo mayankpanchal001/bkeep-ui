@@ -1,13 +1,10 @@
+import { Bar, BarChart, CartesianGrid, Cell, XAxis, YAxis } from 'recharts';
+import { getThemeColor } from '../../../utils/themeColors';
 import {
-    Bar,
-    BarChart,
-    CartesianGrid,
-    Cell,
-    ResponsiveContainer,
-    Tooltip,
-    XAxis,
-    YAxis,
-} from 'recharts';
+    ChartContainer,
+    ChartTooltip,
+    type TooltipPayloadItem,
+} from '../../ui/chart';
 
 type ChairUtilizationChartProps = {
     data: {
@@ -25,39 +22,104 @@ const ChairUtilizationChart = ({ data }: ChairUtilizationChartProps) => {
     }));
 
     const getColor = (utilization: number) => {
-        if (utilization < 50) return '#EF4444'; // red
-        if (utilization < 70) return '#F59E0B'; // yellow
-        return '#10B981'; // green
+        if (utilization < 50) return getThemeColor('--color-destructive');
+        if (utilization < 70) return getThemeColor('--color-accent');
+        return getThemeColor('--color-secondary');
+    };
+
+    const borderColor = getThemeColor('--color-border');
+    const textColor = getThemeColor('--color-foreground');
+
+    const chartConfig = {
+        utilization: {
+            label: 'Utilization',
+            color: getThemeColor('--color-accent'),
+        },
     };
 
     return (
-        <ResponsiveContainer width="100%" height={200}>
+        <ChartContainer config={chartConfig} className="h-[200px] w-full">
             <BarChart
                 data={chartData}
                 margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
             >
-                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                <CartesianGrid
+                    strokeDasharray="3 3"
+                    stroke={borderColor}
+                    vertical={false}
+                />
                 <XAxis
                     dataKey="name"
-                    tick={{ fontSize: 11, fill: '#000' }}
-                    stroke="#000"
+                    tick={{ fontSize: 11, fill: textColor }}
+                    stroke={textColor}
+                    tickLine={false}
+                    axisLine={false}
                 />
                 <YAxis
-                    tick={{ fontSize: 12, fill: '#000' }}
-                    stroke="#000"
+                    tick={{ fontSize: 12, fill: textColor }}
+                    stroke={textColor}
+                    tickLine={false}
+                    axisLine={false}
                     tickFormatter={(value) => `${value}%`}
                 />
-                <Tooltip
-                    contentStyle={{
-                        backgroundColor: '#fff',
-                        border: '1px solid #C56211',
-                        borderRadius: '8px',
-                    }}
-                    formatter={(value: number, name: string) => {
-                        if (name === 'utilization') {
-                            return [`${value}%`, 'Utilization'];
+                <ChartTooltip
+                    content={({
+                        active,
+                        payload,
+                    }: {
+                        active?: boolean;
+                        payload?: Array<TooltipPayloadItem>;
+                    }) => {
+                        if (active && payload && payload.length) {
+                            const data = payload[0].payload as {
+                                name?: string;
+                                utilization?: number;
+                                revenue?: number;
+                            };
+                            if (!data) return null;
+                            return (
+                                <div className="rounded-lg border border-border/50 bg-card p-2 shadow-sm">
+                                    <div className="grid gap-2">
+                                        <div className="font-medium">
+                                            {data.name as string}
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <div
+                                                className="h-2.5 w-2.5 rounded-full"
+                                                style={{
+                                                    backgroundColor: getColor(
+                                                        (data.utilization as number) || 0
+                                                    ),
+                                                }}
+                                            />
+                                            <span className="text-muted-foreground">
+                                                Utilization:
+                                            </span>
+                                            <span className="font-mono font-medium tabular-nums">
+                                                {data.utilization}%
+                                            </span>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <div
+                                                className="h-2.5 w-2.5 rounded-full"
+                                                style={{
+                                                    backgroundColor: getColor(
+                                                        (data.utilization as number) || 0
+                                                    ),
+                                                }}
+                                            />
+                                            <span className="text-muted-foreground">
+                                                Revenue/Hour:
+                                            </span>
+                                            <span className="font-mono font-medium tabular-nums">
+                                                ${(data.revenue as number || 0).toLocaleString()}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            );
                         }
-                        return [`$${value.toLocaleString()}`, 'Revenue/Hour'];
+                        return null;
                     }}
                 />
                 <Bar dataKey="utilization" radius={[8, 8, 0, 0]}>
@@ -69,7 +131,7 @@ const ChairUtilizationChart = ({ data }: ChairUtilizationChartProps) => {
                     ))}
                 </Bar>
             </BarChart>
-        </ResponsiveContainer>
+        </ChartContainer>
     );
 };
 

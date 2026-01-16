@@ -25,7 +25,7 @@ export function SettingsSidebar({
 
     return (
         <nav className={navClasses} {...props}>
-            <div className="flex gap-4 sm:gap-0.5 sm:flex-col lg:bg-white lg:border lg:border-primary/10 lg:rounded-md lg:p-2">
+            <div className="flex gap-4 sm:gap-0.5 sm:flex-col lg:bg-card lg:border lg:border-primary/10 lg:rounded-md lg:p-2">
                 {items.map((item) => {
                     const isActive =
                         location.pathname === item.href ||
@@ -40,7 +40,7 @@ export function SettingsSidebar({
                                 ${
                                     isActive
                                         ? 'border-primary text-primary lg:bg-primary/5 lg:text-primary'
-                                        : 'border-transparent text-primary/50 hover:text-primary/70 hover:border-primary/25 lg:text-primary/60 lg:hover:bg-white lg:hover:text-primary'
+                                        : 'border-transparent text-primary/50 hover:text-primary/70 hover:border-primary/25 lg:text-primary/60 lg:hover:bg-card lg:hover:text-primary'
                                 }
                             `}
                         >

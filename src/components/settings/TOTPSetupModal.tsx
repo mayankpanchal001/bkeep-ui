@@ -145,7 +145,7 @@ const TOTPSetupModal = ({
                 onClose()
             }
         >
-            <div className="w-full max-w-2xl rounded-2 bg-white p-4 shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div className="w-full max-w-2xl rounded-2 bg-card p-4 shadow-2xl max-h-[90vh] overflow-y-auto">
                 <div className="flex items-center justify-between mb-6">
                     <h3 className="text-xl font-semibold text-primary">
                         {step === 'setup'
@@ -177,7 +177,7 @@ const TOTPSetupModal = ({
                         </div>
 
                         {/* QR Code */}
-                        <div className="flex justify-center p-4 bg-white border-2 border-primary/10 rounded-2">
+                        <div className="flex justify-center p-4 bg-card border-2 border-primary/10 rounded-2">
                             <img
                                 src={totpData.qrCode}
                                 alt="TOTP QR Code"
@@ -186,7 +186,7 @@ const TOTPSetupModal = ({
                         </div>
 
                         {/* Manual Setup */}
-                        <div className="bg-white border border-primary/10 rounded-2 p-4">
+                        <div className="bg-card border border-primary/10 rounded-2 p-4">
                             <h4 className="font-semibold text-primary mb-3 flex items-center gap-2">
                                 <FaKey className="w-4 h-4" />
                                 Can't scan? Enter manually
@@ -196,7 +196,7 @@ const TOTPSetupModal = ({
                                     Secret Key:
                                 </p>
                                 <div className="flex gap-2">
-                                    <div className="flex-1 bg-white border border-primary/10 rounded-lg p-3 font-mono text-sm break-all">
+                                    <div className="flex-1 bg-card border border-primary/10 rounded-lg p-3 font-mono text-sm break-all">
                                         {totpData.secret}
                                     </div>
                                     <Button
@@ -227,7 +227,7 @@ const TOTPSetupModal = ({
                                 them to access your account if you lose your
                                 authenticator device.
                             </p>
-                            <div className="bg-white border border-yellow-200 rounded-lg p-3 mb-3">
+                            <div className="bg-card border border-yellow-200 rounded-lg p-3 mb-3">
                                 <div className="grid grid-cols-2 gap-2 font-mono text-sm">
                                     {totpData.backupCodes.map((code, index) => (
                                         <div

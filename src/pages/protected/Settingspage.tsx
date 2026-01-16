@@ -101,15 +101,15 @@ const Settingspage = () => {
         'Manage your account settings';
 
     return (
-        <div className="flex flex-col gap-4 w-full max-w-6xl lg:mx-auto">
+        <div className="flex flex-col gap-4 w-full  lg:mx-auto">
             <PageHeader title={headerTitle} subtitle={headerSubtitle} />
             <div className="flex w-full flex-col gap-4 lg:flex-row min-h-0">
                 <aside className="w-full lg:w-1/5 shrink-0 overflow-hidden">
                     <SettingsSidebar items={sidebarNavItems} />
                 </aside>
-                <div className="flex-1 min-w-0">
+                <div className="flex-1 min-w-0 max-w-4xl">
                     {/* <div className="bg-white rounded-md border border-primary/10 p-4 overflow-hidden"> */}
-                    <div className="bg-white  px-4 overflow-hidden">
+                    <div className="bg-card  px-4 overflow-hidden">
                         <Outlet />
                     </div>
                 </div>
