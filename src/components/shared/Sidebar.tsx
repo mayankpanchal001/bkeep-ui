@@ -255,7 +255,7 @@ const Sidebar = ({ collapsed }: { collapsed: boolean }) => {
                             <div
                                 ref={menuContentRef}
                                 style={menuStyle}
-                                className="bg-white rounded-lg shadow-xl border border-primary/10 py-1"
+                                className="bg-card rounded-lg shadow-xl border border-primary/10 py-1"
                             >
                                 {/* User Info Header in Menu */}
                                 <div className="px-4 py-3 border-b border-primary/10 mb-1 flex items-center gap-3">

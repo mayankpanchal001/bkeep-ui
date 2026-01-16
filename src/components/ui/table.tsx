@@ -55,6 +55,8 @@ const TableColumnResizeContext = React.createContext<{
     setColumnLayout: (layout: number[]) => void;
 } | null>(null);
 
+const TableCompactContext = React.createContext<boolean>(false);
+
 // ============================================================================
 // Custom Hooks
 // ============================================================================
@@ -399,107 +401,125 @@ function Table({
             value={enableSelection ? selectionContextValue : null}
         >
             <TableSortContext.Provider value={sortContextValue}>
-                <TableColumnResizeContext.Provider
-                    value={
-                        hasResizableColumns
-                            ? {
-                                  columns,
-                                  registerColumn,
-                                  unregisterColumn,
-                                  columnLayout: computedLayout,
-                                  setColumnLayout,
-                              }
-                            : null
-                    }
-                >
-                    {/* Render toolbar OUTSIDE the table container */}
-                    {toolbarChildren}
-
-                    <div
-                        data-slot="table-container"
-                        data-compact={compact || undefined}
-                        data-striped={striped || undefined}
-                        data-hover={hoverStyle}
-                        className={containerClasses}
+                <TableCompactContext.Provider value={compact}>
+                    <TableColumnResizeContext.Provider
+                        value={
+                            hasResizableColumns
+                                ? {
+                                      columns,
+                                      registerColumn,
+                                      unregisterColumn,
+                                      columnLayout: computedLayout,
+                                      setColumnLayout,
+                                  }
+                                : null
+                        }
                     >
+                        {/* Render toolbar OUTSIDE the table container */}
+                        {toolbarChildren}
+
                         <div
-                            ref={scrollRef}
-                            className="relative overflow-auto h-full"
+                            data-slot="table-container"
+                            data-compact={compact || undefined}
+                            data-striped={striped || undefined}
+                            data-hover={hoverStyle}
+                            className={containerClasses}
                         >
-                            {hasResizableColumns && computedLayout && (
-                                <div
-                                    className="pointer-events-none absolute left-0 top-0 z-20 h-10"
-                                    style={{
-                                        width: overlayWidth,
-                                        transform: `translateX(-${scrollLeft}px)`,
-                                    }}
-                                >
-                                    <ResizablePanelGroup
-                                        orientation="horizontal"
-                                        onLayoutChange={(layout: Layout) => {
-                                            const next: number[] =
-                                                Array.isArray(layout)
-                                                    ? (layout as number[])
-                                                    : columns.map(
-                                                          (c) =>
-                                                              (
-                                                                  layout as Record<
-                                                                      string,
-                                                                      number
-                                                                  >
-                                                              )[c.id] ?? 0
-                                                      );
-                                            setColumnLayout(next);
-                                            updateOverlayWidth();
-                                        }}
-                                        className="h-full w-full pointer-events-none"
-                                    >
-                                        {columns.map((col, idx) => {
-                                            return (
-                                                <React.Fragment key={col.id}>
-                                                    <ResizablePanel
-                                                        id={col.id}
-                                                        defaultSize={
-                                                            computedLayout[idx]
-                                                        }
-                                                        minSize={col.minWidth}
-                                                        maxSize={col.maxWidth}
-                                                        className="pointer-events-none"
-                                                    />
-                                                    {idx <
-                                                        columns.length - 1 && (
-                                                        <ResizableHandle className="pointer-events-auto w-2 bg-transparent after:w-1 after:bg-border/40 hover:after:bg-border" />
-                                                    )}
-                                                </React.Fragment>
-                                            );
-                                        })}
-                                    </ResizablePanelGroup>
-                                </div>
-                            )}
-                            <table
-                                ref={tableRef}
-                                data-slot="table"
-                                className={cn(
-                                    'w-full caption-bottom text-sm table-auto',
-                                    className
-                                )}
-                                {...props}
+                            <div
+                                ref={scrollRef}
+                                className="relative overflow-auto h-full"
                             >
                                 {hasResizableColumns && computedLayout && (
-                                    <colgroup>
-                                        {computedLayout.map((size, idx) => (
-                                            <col
-                                                key={columns[idx]?.id ?? idx}
-                                                style={{ width: `${size}%` }}
-                                            />
-                                        ))}
-                                    </colgroup>
+                                    <div
+                                        className="pointer-events-none absolute left-0 top-0 z-20 h-10"
+                                        style={{
+                                            width: overlayWidth,
+                                            transform: `translateX(-${scrollLeft}px)`,
+                                        }}
+                                    >
+                                        <ResizablePanelGroup
+                                            orientation="horizontal"
+                                            onLayoutChange={(
+                                                layout: Layout
+                                            ) => {
+                                                const next: number[] =
+                                                    Array.isArray(layout)
+                                                        ? (layout as number[])
+                                                        : columns.map(
+                                                              (c) =>
+                                                                  (
+                                                                      layout as Record<
+                                                                          string,
+                                                                          number
+                                                                      >
+                                                                  )[c.id] ?? 0
+                                                          );
+                                                setColumnLayout(next);
+                                                updateOverlayWidth();
+                                            }}
+                                            className="h-full w-full pointer-events-none"
+                                        >
+                                            {columns.map((col, idx) => {
+                                                return (
+                                                    <React.Fragment
+                                                        key={col.id}
+                                                    >
+                                                        <ResizablePanel
+                                                            id={col.id}
+                                                            defaultSize={
+                                                                computedLayout[
+                                                                    idx
+                                                                ]
+                                                            }
+                                                            minSize={
+                                                                col.minWidth
+                                                            }
+                                                            maxSize={
+                                                                col.maxWidth
+                                                            }
+                                                            className="pointer-events-none"
+                                                        />
+                                                        {idx <
+                                                            columns.length -
+                                                                1 && (
+                                                            <ResizableHandle className="pointer-events-auto w-2 bg-transparent after:w-1 after:bg-border/40 hover:after:bg-border" />
+                                                        )}
+                                                    </React.Fragment>
+                                                );
+                                            })}
+                                        </ResizablePanelGroup>
+                                    </div>
                                 )}
-                                {tableChildren}
-                            </table>
+                                <table
+                                    ref={tableRef}
+                                    data-slot="table"
+                                    data-compact={compact || undefined}
+                                    className={cn(
+                                        'w-full caption-bottom text-sm table-auto',
+                                        className
+                                    )}
+                                    {...props}
+                                >
+                                    {hasResizableColumns && computedLayout && (
+                                        <colgroup>
+                                            {computedLayout.map((size, idx) => (
+                                                <col
+                                                    key={
+                                                        columns[idx]?.id ?? idx
+                                                    }
+                                                    style={{
+                                                        width: `${size}%`,
+                                                    }}
+                                                />
+                                            ))}
+                                        </colgroup>
+                                    )}
+                                    {tableChildren}
+                                </table>
+                            </div>
                         </div>
-                    </div>
-                </TableColumnResizeContext.Provider>
+                    </TableColumnResizeContext.Provider>
+                </TableCompactContext.Provider>
             </TableSortContext.Provider>
         </TableSelectionContext.Provider>
     );
@@ -519,8 +539,14 @@ function TableHeader({ className, sticky = true, ...props }: TableHeaderProps) {
             data-slot="table-header"
             className={cn(
                 sticky && 'sticky top-0 z-10',
-                'bg-white dark:bg-card backdrop-blur',
-                'border-b border-border',
+                // Modern gradient background using theme colors
+
+                'backdrop-blur-md backdrop-saturate-150',
+                // Enhanced border with subtle shadow using theme border color
+                'border-b-2',
+                'border-primary/10',
+                // Smooth transitions
+                'transition-all duration-200',
                 className
             )}
             {...props}
@@ -640,6 +666,7 @@ function TableHead({
 }: TableHeadProps) {
     const sortContext = useTableSort();
     const colResizeContext = React.useContext(TableColumnResizeContext);
+    const isCompact = React.useContext(TableCompactContext);
     const colId = React.useId();
     const sortKey =
         columnSortKey || (typeof children === 'string' ? children : '');
@@ -677,14 +704,30 @@ function TableHead({
             data-sortable={sortable || undefined}
             data-sorted={isCurrentSort || undefined}
             className={cn(
-                'relative h-10 px-2 py-1 align-middle',
-                'text-xs font-bold text-muted-foreground',
+                // Compact spacing and sizing
+                'relative align-middle',
+                isCompact ? 'h-8 px-1.5 py-1' : 'h-9 px-2 py-1.5',
+                // Modern typography with better hierarchy
+                'text-xs font-semibold uppercase tracking-wider',
+                'text-primary',
                 'whitespace-nowrap select-none',
                 alignClass,
-                '[&:has([role=checkbox])]:w-12 [&:has([role=checkbox])]:px-3 [&:has([role=checkbox])>div]:justify-center',
-                sortable && ['cursor-pointer', 'hover:text-foreground'],
-                isCurrentSort && 'text-foreground',
-                'transition-colors ',
+                // Checkbox column styling
+                isCompact
+                    ? '[&:has([role=checkbox])]:w-8 [&:has([role=checkbox])]:px-1.5 [&:has([role=checkbox])>div]:justify-center'
+                    : '[&:has([role=checkbox])]:w-10 [&:has([role=checkbox])]:px-2 [&:has([role=checkbox])>div]:justify-center',
+                // Interactive states
+                sortable && [
+                    'cursor-pointer',
+                    'hover:text-primary',
+                    'hover:bg-primary/10',
+                ],
+                // Active sort state using theme secondary color
+                isCurrentSort && ['text-secondary', 'bg-secondary/10'],
+                // Smooth transitions
+                'transition-all duration-200 ease-in-out',
+                // Subtle border between columns using theme border color
+                'border-r border-border/60 last:border-r-0',
                 className
             )}
             onClick={handleClick}
@@ -692,12 +735,13 @@ function TableHead({
         >
             <div
                 className={cn(
-                    'flex items-center ',
+                    'flex items-center',
+                    isCompact ? 'gap-1' : 'gap-1.5',
                     align === 'center' && 'justify-center',
                     align === 'right' && 'justify-end'
                 )}
             >
-                <span>{children}</span>
+                <span className="flex-1">{children}</span>
                 {sortable && <SortIndicator direction={currentSortDirection} />}
             </div>
         </th>
@@ -706,49 +750,64 @@ function TableHead({
 
 // Sort Indicator Component
 function SortIndicator({ direction }: { direction: SortDirection }) {
+    const isCompact = React.useContext(TableCompactContext);
     return (
-        <span className="inline-flex items-center w-4 h-4 ml-2">
+        <span
+            className={cn(
+                'inline-flex items-center justify-center rounded transition-all duration-200',
+                isCompact ? 'w-3.5 h-3.5' : 'w-4 h-4'
+            )}
+        >
             {direction === 'asc' && (
                 <svg
-                    className="w-4 h-4 text-blue-600 dark:text-blue-400"
+                    className={cn(
+                        'text-secondary',
+                        isCompact ? 'w-3 h-3' : 'w-3.5 h-3.5'
+                    )}
                     fill="none"
                     stroke="currentColor"
+                    strokeWidth={2.5}
                     viewBox="0 0 24 24"
                 >
                     <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        strokeWidth={2}
                         d="M5 15l7-7 7 7"
                     />
                 </svg>
             )}
             {direction === 'desc' && (
                 <svg
-                    className="w-4 h-4 text-blue-600 dark:text-blue-400"
+                    className={cn(
+                        'text-secondary',
+                        isCompact ? 'w-3 h-3' : 'w-3.5 h-3.5'
+                    )}
                     fill="none"
                     stroke="currentColor"
+                    strokeWidth={2.5}
                     viewBox="0 0 24 24"
                 >
                     <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        strokeWidth={2}
                         d="M19 9l-7 7-7-7"
                     />
                 </svg>
             )}
             {direction === null && (
                 <svg
-                    className="w-4 h-4 text-slate-400/50 group-hover:text-slate-400 transition-colors"
+                    className={cn(
+                        'text-primary/40 group-hover:text-primary/60 transition-colors',
+                        isCompact ? 'w-3 h-3' : 'w-3.5 h-3.5'
+                    )}
                     fill="none"
                     stroke="currentColor"
+                    strokeWidth={1.5}
                     viewBox="0 0 24 24"
                 >
                     <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        strokeWidth={1.5}
                         d="M8 9l4-4 4 4M16 15l-4 4-4-4"
                     />
                 </svg>
@@ -774,6 +833,7 @@ function TableCell({
     noTruncate,
     ...props
 }: TableCellProps) {
+    const isCompact = React.useContext(TableCompactContext);
     const alignClass = {
         left: 'text-left',
         center: 'text-center',
@@ -784,12 +844,16 @@ function TableCell({
         <td
             data-slot="table-cell"
             className={cn(
-                'px-3 py-2 align-middle text-sm text-foreground',
+                // Compact cell padding
+                'align-middle text-foreground',
+                isCompact ? 'px-1.5 py-1 text-xs' : 'px-2 py-1.5 text-sm',
                 noTruncate
                     ? 'whitespace-normal break-words'
                     : 'whitespace-nowrap',
                 alignClass,
-                '[&:has([role=checkbox])]:w-12 [&:has([role=checkbox])]:px-3',
+                isCompact
+                    ? '[&:has([role=checkbox])]:w-8 [&:has([role=checkbox])]:px-1.5'
+                    : '[&:has([role=checkbox])]:w-10 [&:has([role=checkbox])]:px-2',
                 className
             )}
             {...props}
@@ -808,10 +872,7 @@ function TableCaption({
     return (
         <caption
             data-slot="table-caption"
-            className={cn(
-                'mt-4 text-sm text-slate-600 dark:text-slate-400',
-                className
-            )}
+            className={cn('mt-4 text-sm text-primary/70', className)}
             {...props}
         />
     );
@@ -856,16 +917,15 @@ function TableCheckbox({
                 onChange={(e) => onChange?.(e.target.checked)}
                 className={cn(
                     'h-3 w-3 rounded border-2 transition-all duration-150',
-                    'border-slate-300 dark:border-slate-600',
-                    'bg-white dark:bg-slate-800',
-                    'focus:ring-2 focus:ring-blue-500/40 focus:ring-offset-0 focus:outline-none',
-                    'hover:border-blue-500 dark:hover:border-blue-400',
+                    'border-border',
+                    'bg-card',
+                    'focus:ring-2 focus:ring-ring/40 focus:ring-offset-0 focus:outline-none',
+                    'hover:border-secondary',
                     'cursor-pointer',
-                    'checked:bg-blue-600 checked:border-blue-600',
-                    'checked:hover:bg-blue-700 checked:hover:border-blue-700',
-                    'dark:checked:bg-blue-500 dark:checked:border-blue-500',
+                    'checked:bg-secondary checked:border-secondary',
+                    'checked:hover:bg-secondary/90 checked:hover:border-secondary/90',
                     'disabled:cursor-not-allowed disabled:opacity-50',
-                    'disabled:hover:border-slate-300 dark:disabled:hover:border-slate-600'
+                    'disabled:hover:border-border'
                 )}
             />
         </div>
@@ -1015,10 +1075,10 @@ function TableEmptyState({
         <tr>
             <td colSpan={colSpan} className="h-64">
                 <div className="flex flex-col items-center justify-center gap-4 py-8">
-                    <div className="flex items-center justify-center w-16 h-16 rounded-full bg-slate-100 dark:bg-slate-800">
+                    <div className="flex items-center justify-center w-16 h-16 rounded-full bg-primary/10">
                         {icon || (
                             <svg
-                                className="w-8 h-8 text-slate-400 dark:text-slate-500"
+                                className="w-8 h-8 text-primary/50"
                                 fill="none"
                                 stroke="currentColor"
                                 viewBox="0 0 24 24"
@@ -1033,11 +1093,11 @@ function TableEmptyState({
                         )}
                     </div>
                     <div className="text-center">
-                        <p className="text-base font-medium text-slate-700 dark:text-slate-300">
+                        <p className="text-base font-medium text-primary">
                             {message}
                         </p>
                         {description && (
-                            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                            <p className="mt-1 text-sm text-primary/60">
                                 {description}
                             </p>
                         )}
@@ -1065,10 +1125,10 @@ function TableLoadingState({ colSpan, rows = 5 }: TableLoadingStateProps) {
                 <tr key={index} className="animate-pulse">
                     <td colSpan={colSpan} className="px-3 py-3">
                         <div className="flex items-center gap-3">
-                            <div className="h-4 w-4 rounded bg-slate-200 dark:bg-slate-700" />
+                            <div className="h-4 w-4 rounded bg-primary/10" />
                             <div className="flex-1 space-y-2">
                                 <div
-                                    className="h-4 rounded bg-slate-200 dark:bg-slate-700"
+                                    className="h-4 rounded bg-primary/10"
                                     style={{
                                         width: `${60 + Math.random() * 30}%`,
                                     }}
@@ -1136,23 +1196,15 @@ function TablePagination({
         <div
             className={cn(
                 'flex items-center justify-between px-2 py-3 mt-4',
-                'text-sm text-slate-600 dark:text-slate-400',
+                'text-sm text-primary/70',
                 className
             )}
         >
             <div>
                 Showing{' '}
-                <span className="font-medium text-slate-900 dark:text-slate-200">
-                    {startItem}
-                </span>{' '}
-                to{' '}
-                <span className="font-medium text-slate-900 dark:text-slate-200">
-                    {endItem}
-                </span>{' '}
-                of{' '}
-                <span className="font-medium text-slate-900 dark:text-slate-200">
-                    {totalItems}
-                </span>{' '}
+                <span className="font-medium text-primary">{startItem}</span> to{' '}
+                <span className="font-medium text-primary">{endItem}</span> of{' '}
+                <span className="font-medium text-primary">{totalItems}</span>{' '}
                 results
             </div>
             <div className="flex items-center gap-1">
@@ -1161,7 +1213,7 @@ function TablePagination({
                     disabled={page === 1}
                     className={cn(
                         'px-3 py-1.5 rounded-md text-sm font-medium transition-colors',
-                        'hover:bg-slate-100 dark:hover:bg-slate-800',
+                        'hover:bg-primary/10',
                         'disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent'
                     )}
                 >
@@ -1173,7 +1225,7 @@ function TablePagination({
                         p === 'ellipsis' ? (
                             <span
                                 key={`ellipsis-${i}`}
-                                className="px-2 text-slate-400"
+                                className="px-2 text-primary/50"
                             >
                                 ...
                             </span>
@@ -1184,8 +1236,8 @@ function TablePagination({
                                 className={cn(
                                     'w-8 h-8 rounded-md text-sm font-medium transition-colors',
                                     page === p
-                                        ? 'bg-blue-600 text-white'
-                                        : 'hover:bg-slate-100 dark:hover:bg-slate-800'
+                                        ? 'bg-secondary text-surface'
+                                        : 'hover:bg-primary/10'
                                 )}
                             >
                                 {p}
@@ -1199,7 +1251,7 @@ function TablePagination({
                     disabled={page === totalPages}
                     className={cn(
                         'px-3 py-1.5 rounded-md text-sm font-medium transition-colors',
-                        'hover:bg-slate-100 dark:hover:bg-slate-800',
+                        'hover:bg-primary/10',
                         'disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent'
                     )}
                 >

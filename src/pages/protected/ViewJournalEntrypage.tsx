@@ -218,7 +218,7 @@ export default function ViewJournalEntrypage() {
             />
 
             {/* Essential Details - Always Visible */}
-            <div className="bg-white rounded-lg border border-primary/10 p-4">
+            <div className="bg-card rounded-lg border border-primary/10 p-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
                     <div>
                         <label className="block text-sm font-medium text-primary/50 mb-1">
@@ -253,7 +253,7 @@ export default function ViewJournalEntrypage() {
                 </div>
             </div>
 
-            <div className="bg-white rounded-lg border border-primary/10 overflow-hidden">
+            <div className="bg-card rounded-lg border border-primary/10 overflow-hidden">
                 <div className="px-4 py-2 border-b border-primary/10">
                     <h3 className="text-base font-semibold text-primary">
                         Journal Lines
@@ -265,7 +265,7 @@ export default function ViewJournalEntrypage() {
                     containerClassName="border-none rounded-none"
                     tableClassName="w-full"
                     footerContent={
-                        <tr className="bg-white border-t border-primary/10">
+                        <tr className="bg-card border-t border-primary/10">
                             <td
                                 colSpan={4}
                                 className="px-3 py-2 text-right font-semibold text-sm text-primary"
@@ -285,7 +285,7 @@ export default function ViewJournalEntrypage() {
 
             {/* Additional Details - Collapsible */}
             <Collapsible open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
-                <div className="bg-white rounded-lg border border-primary/10 overflow-hidden">
+                <div className="bg-card rounded-lg border border-primary/10 overflow-hidden">
                     <CollapsibleTrigger className="w-full px-4 py-3 flex items-center justify-between hover:bg-primary/5 transition-colors">
                         <h3 className="text-base font-semibold text-primary">
                             Additional Details
@@ -465,7 +465,7 @@ export default function ViewJournalEntrypage() {
                 const attachments = journalEntry.attachments || [];
                 if (attachments.length === 0) return null;
                 return (
-                    <div className="bg-white rounded-lg border border-primary/10 p-3">
+                    <div className="bg-card rounded-lg border border-primary/10 p-3">
                         <h3 className="text-sm font-medium text-primary mb-2">
                             Attachments
                         </h3>

@@ -5,9 +5,9 @@ export const buttonVariants = cva(
     {
         variants: {
             variant: {
-                primary: 'bg-primary hover:bg-primary/90 text-white',
+                primary: 'bg-primary hover:bg-primary/90 text-surface',
                 outline:
-                    'bg-white text-primary shadow-sm shadow-primary/20 hover:bg-primary hover:text-white active:bg-primary',
+                    'bg-card text-primary shadow-sm shadow-primary/20 hover:bg-primary hover:text-surface active:bg-primary',
                 ghost: 'hover:bg-primary/10 text-primary',
             },
             size: {

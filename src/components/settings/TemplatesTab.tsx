@@ -90,7 +90,7 @@ const TemplatesTab = () => {
     if (!isSuperAdmin) {
         return (
             <div className="py-8">
-                <div className="rounded-md border border-primary/10 bg-white p-6">
+                <div className="rounded-md border border-primary/10 bg-card p-6">
                     <div className="text-sm font-medium text-primary">
                         Access denied
                     </div>
@@ -151,7 +151,7 @@ const TemplatesTab = () => {
             </div>
 
             <div className="grid grid-cols-1 gap-4 lg:grid-cols-12">
-                <div className="lg:col-span-5 rounded-md border border-primary/10 bg-white">
+                <div className="lg:col-span-5 rounded-md border border-primary/10 bg-card">
                     <div className="px-4 py-3 border-b border-primary/10 flex items-center justify-between">
                         <div>
                             <p className="text-sm font-medium text-primary">
@@ -201,7 +201,7 @@ const TemplatesTab = () => {
                                                     className={`shrink-0 text-[10px] px-2 py-1 rounded-full border ${
                                                         t.isActive
                                                             ? 'border-green-600/20 bg-green-600/10 text-green-700'
-                                                            : 'border-primary/10 bg-white text-primary/60'
+                                                            : 'border-primary/10 bg-card text-primary/60'
                                                     }`}
                                                 >
                                                     {t.isActive
@@ -221,7 +221,7 @@ const TemplatesTab = () => {
                     </div>
                 </div>
 
-                <div className="lg:col-span-7 rounded-md border border-primary/10 bg-white">
+                <div className="lg:col-span-7 rounded-md border border-primary/10 bg-card">
                     <div className="px-4 py-3 border-b border-primary/10 flex items-center justify-between">
                         <div>
                             <p className="text-sm font-medium text-primary">

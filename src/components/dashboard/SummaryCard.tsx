@@ -55,8 +55,8 @@ const SummaryCard = ({
                     <div
                         className={`flex items-center gap-2 text-sm ${
                             trend.direction === 'up'
-                                ? 'text-green-600'
-                                : 'text-red-600'
+                                ? 'text-secondary'
+                                : 'text-destructive'
                         }`}
                     >
                         {trend.direction === 'up' ? (

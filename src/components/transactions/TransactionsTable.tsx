@@ -59,7 +59,7 @@ const TransactionsTable = () => {
 
     if (isLoading) {
         return (
-            <div className="bg-white rounded-2 shadow-sm border border-primary/10 p-12">
+            <div className="bg-card rounded-2 shadow-sm border border-primary/10 p-12">
                 <div className="flex flex-col items-center justify-center gap-4">
                     <div className="w-12 h-12 border-4 border-primary/25 border-t-primary rounded-full animate-spin"></div>
                     <p className="text-sm text-primary/50">
@@ -86,9 +86,9 @@ const TransactionsTable = () => {
     };
 
     return (
-        <div className="bg-white max-h-[calc(100vh-100px)] rounded-2 shadow-sm border border-primary/10 overflow-y-auto">
+        <div className="bg-card max-h-[calc(100vh-100px)] rounded-2 shadow-sm border border-primary/10 overflow-y-auto">
             {/* Table Header with Search */}
-            <div className="p-4 border-b border-primary/10 sticky top-0 bg-white z-10">
+            <div className="p-4 border-b border-primary/10 sticky top-0 bg-card z-10">
                 <div className="flex items-center justify-between gap-4">
                     <div className="flex-1 relative">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-primary/50 w-4 h-4" />
@@ -233,8 +233,8 @@ const TransactionsTable = () => {
                                             <div
                                                 className={`flex items-center justify-end gap-1 font-semibold ${
                                                     isCredit
-                                                        ? 'text-green-600'
-                                                        : 'text-red-600'
+                                                        ? 'text-secondary'
+                                                        : 'text-destructive'
                                                 }`}
                                             >
                                                 {isCredit ? (

@@ -315,7 +315,7 @@ const PasskeyManagementModal = ({
                     handleClose()
                 }
             >
-                <div className="w-full max-w-2xl rounded-2 bg-white p-4 shadow-2xl max-h-[90vh] overflow-y-auto">
+                <div className="w-full max-w-2xl rounded-2 bg-card p-4 shadow-2xl max-h-[90vh] overflow-y-auto">
                     {/* Header */}
                     <div className="flex items-center justify-between mb-6">
                         <h3 className="text-xl font-semibold text-primary">
@@ -337,8 +337,8 @@ const PasskeyManagementModal = ({
                     <div className="space-y-6">
                         {/* WebAuthn Not Supported */}
                         {!webAuthnSupported && (
-                            <div className="bg-red-50 border border-red-200 rounded-2 p-4">
-                                <p className="text-sm text-red-800">
+                            <div className="bg-destructive/10 border border-destructive/20 rounded-2 p-4">
+                                <p className="text-sm text-destructive">
                                     Your browser doesn't support passkeys.
                                     Please use a modern browser like Chrome,
                                     Edge, Safari, or Firefox.
@@ -379,7 +379,7 @@ const PasskeyManagementModal = ({
                                         </p>
                                     </div>
                                 ) : passkeys.length === 0 ? (
-                                    <div className="bg-white border border-primary/10 rounded-2 p-8 text-center">
+                                    <div className="bg-card border border-primary/10 rounded-2 p-8 text-center">
                                         <FaFingerprint className="w-12 h-12 text-primary/20 mx-auto mb-3" />
                                         <p className="text-sm font-medium text-primary mb-1">
                                             No passkeys registered yet
@@ -396,8 +396,8 @@ const PasskeyManagementModal = ({
                                                 key={passkey.id}
                                                 className={`border rounded-2 p-4 transition-colors ${
                                                     passkey.isActive
-                                                        ? 'border-primary/10 bg-white'
-                                                        : 'border-primary/10 bg-white'
+                                                        ? 'border-primary/10 bg-card'
+                                                        : 'border-primary/10 bg-card'
                                                 }`}
                                             >
                                                 <div className="flex items-start justify-between">
@@ -497,7 +497,7 @@ const PasskeyManagementModal = ({
                                                                     passkey
                                                                 )
                                                             }
-                                                            className="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors"
+                                                            className="p-2 text-destructive hover:text-destructive/80 hover:bg-destructive/10 rounded-lg transition-colors"
                                                             title="Delete"
                                                         >
                                                             <FaTrash className="w-4 h-4" />
@@ -568,7 +568,7 @@ const PasskeyManagementModal = ({
                         {/* Rename View */}
                         {currentStep === 'rename' && selectedPasskey && (
                             <div className="space-y-6">
-                                <div className="bg-white border border-primary/10 rounded-2 p-4">
+                                <div className="bg-card border border-primary/10 rounded-2 p-4">
                                     <p className="text-sm text-primary/75">
                                         Update the name of this passkey to help
                                         you identify it more easily.

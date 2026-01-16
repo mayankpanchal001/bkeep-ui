@@ -8,6 +8,7 @@ import {
 import { Tenant } from '../../types';
 import Button from '../typography/Button';
 import { InputField, TextareaField } from '../typography/InputFields';
+import Input from '../ui/input';
 
 const CAP_SINGULAR =
     SINGLE_TENANT_PREFIX.charAt(0).toUpperCase() +
@@ -164,7 +165,7 @@ const TenantForm = ({ onClose, initialData }: TenantFormProps) => {
                     required
                 />
                 {errors.name && (
-                    <p className="text-red-500 text-xs mt-1 pl-1">
+                    <p className="text-destructive text-xs mt-1 pl-1">
                         {errors.name}
                     </p>
                 )}
@@ -186,7 +187,7 @@ const TenantForm = ({ onClose, initialData }: TenantFormProps) => {
                     readOnly={isEditMode}
                 />
                 {errors.schemaName && (
-                    <p className="text-red-500 text-xs mt-1 pl-1">
+                    <p className="text-destructive text-xs mt-1 pl-1">
                         {errors.schemaName}
                     </p>
                 )}
@@ -230,10 +231,16 @@ const TenantForm = ({ onClose, initialData }: TenantFormProps) => {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                    <InputField
+                    <label
+                        htmlFor="client-fiscal-year"
+                        className="input-label block mb-1.5"
+                    >
+                        {`${CAP_SINGULAR} Fiscal Year Start`}
+                    </label>
+                    <Input
                         id="client-fiscal-year"
-                        label={`${CAP_SINGULAR} Fiscal Year Start`}
-                        placeholder="YYYY-MM-DD"
+                        type="date"
+                        placeholder="Select fiscal year start date"
                         value={formData.fiscalYear || ''}
                         onChange={(e) =>
                             setFormData({
@@ -241,14 +248,19 @@ const TenantForm = ({ onClose, initialData }: TenantFormProps) => {
                                 fiscalYear: e.target.value,
                             })
                         }
-                        type="date"
                     />
                 </div>
                 <div>
-                    <InputField
+                    <label
+                        htmlFor="client-incorporation-date"
+                        className="input-label block mb-1.5"
+                    >
+                        {`${CAP_SINGULAR} Incorporation Date`}
+                    </label>
+                    <Input
                         id="client-incorporation-date"
-                        label={`${CAP_SINGULAR} Incorporation Date`}
-                        placeholder="YYYY-MM-DD"
+                        type="date"
+                        placeholder="Select incorporation date"
                         value={formData.dateOfIncorporation || ''}
                         onChange={(e) =>
                             setFormData({
@@ -256,7 +268,6 @@ const TenantForm = ({ onClose, initialData }: TenantFormProps) => {
                                 dateOfIncorporation: e.target.value,
                             })
                         }
-                        type="date"
                     />
                 </div>
             </div>

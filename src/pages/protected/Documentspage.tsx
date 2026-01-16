@@ -1,3 +1,10 @@
+import ConfirmationDialog from '@/components/shared/ConfirmationDialog';
+import { InputField } from '@/components/typography/InputFields';
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { useRef, useState } from 'react';
 import {
     FaDownload,
@@ -13,8 +20,6 @@ import {
     FaTrash,
     FaUpload,
 } from 'react-icons/fa';
-import ConfirmationDialog from '@/components/shared/ConfirmationDialog';
-import { InputField } from '@/components/typography/InputFields';
 
 type Document = {
     id: string;
@@ -267,7 +272,7 @@ const Documentspage = () => {
             </div>
 
             {/* Filters */}
-            <div className="bg-white rounded-2 shadow-sm border border-primary/10 p-4">
+            <div className="bg-card rounded-2 shadow-sm border border-primary/10 p-4">
                 <div className="flex flex-col sm:flex-row gap-4">
                     <div className="flex-1">
                         <div className="relative">
@@ -315,7 +320,7 @@ const Documentspage = () => {
                     filteredDocuments.map((doc) => (
                         <div
                             key={doc.id}
-                            className="bg-white rounded-2 shadow-sm border border-primary/10 p-4 hover:shadow-md transition-shadow"
+                            className="bg-card rounded-2 shadow-sm border border-primary/10 p-4 hover:shadow-md transition-shadow"
                         >
                             <div className="flex items-start justify-between mb-3">
                                 <div className="flex items-center gap-3 flex-1 min-w-0">
@@ -346,25 +351,35 @@ const Documentspage = () => {
                                 </div>
                             </div>
                             <div className="flex items-center gap-2 pt-3 border-t border-primary/10">
-                                <button
-                                    className="flex-1 px-3 py-2 text-xs font-medium text-primary bg-primary/10 rounded-lg hover:bg-primary/25 transition-colors"
-                                    title="View"
-                                >
-                                    <FaEye className="w-3 h-3 mx-auto" />
-                                </button>
-                                <button
-                                    className="flex-1 px-3 py-2 text-xs font-medium text-primary bg-primary/10 rounded-lg hover:bg-primary/25 transition-colors"
-                                    title="Download"
-                                >
-                                    <FaDownload className="w-3 h-3 mx-auto" />
-                                </button>
-                                <button
-                                    onClick={() => handleDeleteClick(doc.id)}
-                                    className="flex-1 px-3 py-2 text-xs font-medium text-red-600 bg-red-50 rounded-lg hover:bg-red-100 transition-colors"
-                                    title="Delete"
-                                >
-                                    <FaTrash className="w-3 h-3 mx-auto" />
-                                </button>
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <button className="flex-1 px-3 py-2 text-xs font-medium text-primary bg-primary/10 rounded-lg hover:bg-primary/25 transition-colors">
+                                            <FaEye className="w-3 h-3 mx-auto" />
+                                        </button>
+                                    </TooltipTrigger>
+                                    <TooltipContent>View</TooltipContent>
+                                </Tooltip>
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <button className="flex-1 px-3 py-2 text-xs font-medium text-primary bg-primary/10 rounded-lg hover:bg-primary/25 transition-colors">
+                                            <FaDownload className="w-3 h-3 mx-auto" />
+                                        </button>
+                                    </TooltipTrigger>
+                                    <TooltipContent>Download</TooltipContent>
+                                </Tooltip>
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <button
+                                            onClick={() =>
+                                                handleDeleteClick(doc.id)
+                                            }
+                                            className="flex-1 px-3 py-2 text-xs font-medium text-red-600 bg-red-50 rounded-lg hover:bg-red-100 transition-colors"
+                                        >
+                                            <FaTrash className="w-3 h-3 mx-auto" />
+                                        </button>
+                                    </TooltipTrigger>
+                                    <TooltipContent>Delete</TooltipContent>
+                                </Tooltip>
                             </div>
                         </div>
                     ))

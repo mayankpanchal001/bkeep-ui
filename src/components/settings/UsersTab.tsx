@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useGetRoles } from '../../services/apis/roleApi';
 import {
     useInvitations,
@@ -13,8 +13,16 @@ import {
 import { UserType } from '../../types';
 import { Icons } from '../shared/Icons';
 import Button from '../typography/Button';
-import Chips from '../typography/Chips';
-import { InputField } from '../typography/InputFields';
+import { Badge } from '../ui/badge';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from '../ui/dropdown-menu';
+import Input from '../ui/input';
 import {
     Table,
     TableBody,
@@ -33,8 +41,41 @@ import {
 import EditUserModal from './EditUserModal';
 import InviteUserModal from './InviteUserModal';
 
+// Helper function to get user initials
+const getUserInitials = (name: string): string => {
+    return name
+        .split(' ')
+        .map((n) => n[0])
+        .join('')
+        .toUpperCase()
+        .slice(0, 2);
+};
+
+// Helper function to format relative time
+const formatRelativeTime = (dateString: string): string => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+
+    if (diffInSeconds < 60) return 'Just now';
+    if (diffInSeconds < 3600) {
+        const mins = Math.floor(diffInSeconds / 60);
+        return `${mins}m ago`;
+    }
+    if (diffInSeconds < 86400) {
+        const hours = Math.floor(diffInSeconds / 3600);
+        return `${hours}h ago`;
+    }
+    if (diffInSeconds < 604800) {
+        const days = Math.floor(diffInSeconds / 86400);
+        return `${days}d ago`;
+    }
+    return date.toLocaleDateString();
+};
+
 const UsersTab = () => {
     const [search, setSearch] = useState('');
+    const [debouncedSearch, setDebouncedSearch] = useState('');
     const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [selectedUser, setSelectedUser] = useState<UserType | null>(null);
@@ -50,6 +91,24 @@ const UsersTab = () => {
         sort: 'createdAt',
         order: 'asc',
     });
+
+    // Debounce search input
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setDebouncedSearch(search.trim());
+        }, 300);
+
+        return () => clearTimeout(timer);
+    }, [search]);
+
+    // Update filters when debounced search changes
+    useEffect(() => {
+        setFilters((prev) => ({
+            ...prev,
+            search: debouncedSearch || undefined,
+            page: 1,
+        }));
+    }, [debouncedSearch]);
 
     const { data, isLoading, isError } = useUsers(filters);
 
@@ -75,13 +134,6 @@ const UsersTab = () => {
         isError: isInvitationsError,
     } = useInvitations(invitationFilters);
 
-    // Sync search input with filters.search
-    useEffect(() => {
-        if (filters.search !== undefined) {
-            setSearch(filters.search);
-        }
-    }, [filters.search]);
-
     const handleEditUser = (user: UserType) => {
         setSelectedUser(user);
         setIsEditModalOpen(true);
@@ -94,28 +146,27 @@ const UsersTab = () => {
 
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
-        setFilters((prev) => ({
-            ...prev,
-            search: search.trim() || undefined,
-            page: 1, // Reset to first page on new search
-        }));
+        setDebouncedSearch(search.trim());
     };
 
     const handleClearSearch = () => {
         setSearch('');
-        setFilters((prev) => ({
-            ...prev,
-            search: undefined,
-            page: 1,
-        }));
+        setDebouncedSearch('');
     };
 
-    const handleResendInvitation = async (userId: string) => {
+    const handleResendInvitation = async (invitationId: string) => {
         try {
-            await resendInvitation(userId);
+            await resendInvitation(invitationId);
         } catch (error) {
-            // Error is handled by the mutation's onError
             console.error('Resend invitation error:', error);
+        }
+    };
+
+    const handleRevokeInvitation = async (invitationId: string) => {
+        try {
+            await revokeInvitation(invitationId);
+        } catch (error) {
+            console.error('Revoke invitation error:', error);
         }
     };
 
@@ -140,7 +191,7 @@ const UsersTab = () => {
         setFilters((prev) => ({
             ...prev,
             [key]: value,
-            page: 1, // Reset to first page on filter change
+            page: 1,
         }));
     };
 
@@ -155,68 +206,174 @@ const UsersTab = () => {
         }));
     };
 
-    const users = data?.data?.items || [];
+    const users = useMemo(() => data?.data?.items || [], [data?.data?.items]);
     const pagination = data?.data?.pagination;
-    const pendingInvitations = invitationsData?.data?.items || [];
+    const pendingInvitations = useMemo(
+        () => invitationsData?.data?.items || [],
+        [invitationsData?.data?.items]
+    );
     const invitationsPagination = invitationsData?.data?.pagination;
     const userRowIds = users.map((u: UserType) => u.id);
     const invitationRowIds = pendingInvitations.map(
         (i: PendingInvitation) => i.id
     );
 
+    // Calculate stats
+    const stats = useMemo(() => {
+        const totalUsers = pagination?.total || 0;
+        const verifiedUsers = users.filter(
+            (u: UserType) => u.isVerified
+        ).length;
+        const activeUsers = users.filter(
+            (u: UserType) => u.isActive !== false
+        ).length;
+        const pendingCount =
+            invitationsPagination?.total || pendingInvitations.length || 0;
+
+        return {
+            total: totalUsers,
+            verified: verifiedUsers,
+            active: activeUsers,
+            pending: pendingCount,
+        };
+    }, [users, pagination, pendingInvitations, invitationsPagination]);
+
     const handleBulkExport = () => {
         console.log('Exporting users:', selectedItems);
         setSelectedItems([]);
     };
 
-    const handleBulkRevokeInvitations = () => {
-        console.log('Revoking invitations:', selectedInvitations);
-        setSelectedInvitations([]);
+    const handleBulkRevokeInvitations = async () => {
+        try {
+            await Promise.all(
+                selectedInvitations.map((id) => revokeInvitation(String(id)))
+            );
+            setSelectedInvitations([]);
+        } catch (error) {
+            console.error('Bulk revoke error:', error);
+        }
     };
 
     if (isError) {
         return (
-            <div className="text-center py-8 text-red-500">
-                Failed to load users. Please try again.
+            <div className="flex flex-col items-center justify-center py-16 px-4">
+                <div className="w-16 h-16 rounded-full bg-destructive/10 flex items-center justify-center mb-4">
+                    <Icons.Close className="w-8 h-8 text-destructive" />
+                </div>
+                <h3 className="text-lg font-semibold text-primary mb-2">
+                    Failed to load users
+                </h3>
+                <p className="text-sm text-primary/60 text-center max-w-md">
+                    There was an error loading the users. Please try refreshing
+                    the page.
+                </p>
             </div>
         );
     }
 
     return (
         <div className="space-y-6">
-            <div className="flex items-center justify-between">
-                <h3 className="text-lg font-semibold text-primary">
-                    Users Management
-                </h3>
-                <div className="flex items-center gap-4">
-                    <div className="flex items-center gap-2 text-sm text-primary/50">
-                        <Icons.Users className="w-4 h-4" />
-                        <span>
-                            {pagination?.total || 0} user
-                            {pagination?.total !== 1 ? 's' : ''}
-                        </span>
+            {/* Header Section */}
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
+                    <h2 className="text-2xl font-bold text-primary">
+                        Users Management
+                    </h2>
+                    <p className="text-sm text-primary/60 mt-1">
+                        Manage your team members and their access
+                    </p>
+                </div>
+                <Button
+                    variant="primary"
+                    size="sm"
+                    onClick={() => setIsInviteModalOpen(true)}
+                    className="w-full sm:w-auto"
+                >
+                    <Icons.Plus className="mr-2 w-4 h-4" />
+                    Invite User
+                </Button>
+            </div>
+
+            {/* Stats Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="bg-card border border-border rounded-lg p-4">
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <p className="text-xs font-medium text-primary/60 uppercase tracking-wide">
+                                Total Users
+                            </p>
+                            <p className="text-2xl font-bold text-primary mt-1">
+                                {stats.total}
+                            </p>
+                        </div>
+                        <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                            <Icons.Users className="w-5 h-5 text-primary" />
+                        </div>
                     </div>
-                    <Button
-                        variant="primary"
-                        size="sm"
-                        onClick={() => setIsInviteModalOpen(true)}
-                    >
-                        <Icons.Plus className="mr-2 w-4 h-4" />
-                        Invite User
-                    </Button>
+                </div>
+
+                <div className="bg-card border border-border rounded-lg p-4">
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <p className="text-xs font-medium text-primary/60 uppercase tracking-wide">
+                                Verified
+                            </p>
+                            <p className="text-2xl font-bold text-primary mt-1">
+                                {stats.verified}
+                            </p>
+                        </div>
+                        <div className="w-10 h-10 rounded-lg bg-green-500/10 flex items-center justify-center">
+                            <Icons.Check className="w-5 h-5 text-green-600" />
+                        </div>
+                    </div>
+                </div>
+
+                <div className="bg-card border border-border rounded-lg p-4">
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <p className="text-xs font-medium text-primary/60 uppercase tracking-wide">
+                                Active
+                            </p>
+                            <p className="text-2xl font-bold text-primary mt-1">
+                                {stats.active}
+                            </p>
+                        </div>
+                        <div className="w-10 h-10 rounded-lg bg-secondary/10 flex items-center justify-center">
+                            <Icons.UserCircle className="w-5 h-5 text-secondary" />
+                        </div>
+                    </div>
+                </div>
+
+                <div className="bg-card border border-border rounded-lg p-4">
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <p className="text-xs font-medium text-primary/60 uppercase tracking-wide">
+                                Pending
+                            </p>
+                            <p className="text-2xl font-bold text-primary mt-1">
+                                {stats.pending}
+                            </p>
+                        </div>
+                        <div className="w-10 h-10 rounded-lg bg-yellow-500/10 flex items-center justify-center">
+                            <Icons.Mail className="w-5 h-5 text-yellow-600" />
+                        </div>
+                    </div>
                 </div>
             </div>
 
             {/* Search and Filters */}
-            <div className="space-y-4">
-                <form onSubmit={handleSearch} className="flex gap-2">
+            <div className="flex flex-col gap-4">
+                <form
+                    onSubmit={handleSearch}
+                    className="flex items-center gap-2"
+                >
                     <div className="flex-1 relative">
-                        <InputField
+                        <Input
                             id="user-search"
                             placeholder="Search users by name or email..."
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
-                            icon={<Icons.Search className="w-4 h-4" />}
+                            startIcon={<Icons.Search className="w-4 h-4" />}
                         />
                         {search && (
                             <button
@@ -229,317 +386,484 @@ const UsersTab = () => {
                             </button>
                         )}
                     </div>
-                    <Button type="submit" variant="primary">
+                    <Button type="submit" size="sm" variant="primary">
                         Search
                     </Button>
                 </form>
 
-                {/* Filter Toggles */}
-                <div className="flex gap-4">
-                    <label className="flex items-center gap-2 cursor-pointer">
-                        <input
-                            type="checkbox"
-                            checked={filters.isVerified === true}
-                            onChange={(e) =>
-                                handleFilterChange(
-                                    'isVerified',
-                                    e.target.checked ? true : undefined
-                                )
-                            }
-                            className="w-4 h-4 text-primary border-primary/10 rounded focus:ring-primary"
-                        />
-                        <span className="text-sm text-primary">
-                            Verified Only
-                        </span>
-                    </label>
-                    <label className="flex items-center gap-2 cursor-pointer">
-                        <input
-                            type="checkbox"
-                            checked={filters.isActive === true}
-                            onChange={(e) =>
-                                handleFilterChange(
-                                    'isActive',
-                                    e.target.checked ? true : undefined
-                                )
-                            }
-                            className="w-4 h-4 text-primary border-primary/10 rounded focus:ring-primary"
-                        />
-                        <span className="text-sm text-primary">
-                            Active Only
-                        </span>
-                    </label>
+                {/* Filter Chips */}
+                <div className="flex flex-wrap items-center gap-2">
+                    <span className="text-xs font-medium text-primary/60 mr-1">
+                        Filters:
+                    </span>
+                    <button
+                        type="button"
+                        onClick={() =>
+                            handleFilterChange(
+                                'isVerified',
+                                filters.isVerified === true ? undefined : true
+                            )
+                        }
+                        className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
+                            filters.isVerified === true
+                                ? 'bg-secondary text-surface'
+                                : 'bg-primary/5 text-primary/70 hover:bg-primary/10'
+                        }`}
+                    >
+                        <Icons.Check className="inline w-3 h-3 mr-1" />
+                        Verified Only
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() =>
+                            handleFilterChange(
+                                'isActive',
+                                filters.isActive === true ? undefined : true
+                            )
+                        }
+                        className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
+                            filters.isActive === true
+                                ? 'bg-secondary text-surface'
+                                : 'bg-primary/5 text-primary/70 hover:bg-primary/10'
+                        }`}
+                    >
+                        <Icons.UserCircle className="inline w-3 h-3 mr-1" />
+                        Active Only
+                    </button>
+                    {(filters.isVerified === true ||
+                        filters.isActive === true) && (
+                        <button
+                            type="button"
+                            onClick={() => {
+                                setFilters((prev) => ({
+                                    ...prev,
+                                    isVerified: undefined,
+                                    isActive: undefined,
+                                    page: 1,
+                                }));
+                            }}
+                            className="px-3 py-1.5 text-xs font-medium rounded-md bg-primary/5 text-primary/70 hover:bg-primary/10 transition-colors"
+                        >
+                            <Icons.Close className="inline w-3 h-3 mr-1" />
+                            Clear All
+                        </button>
+                    )}
                 </div>
             </div>
 
             {/* Pending Invitations Section */}
-            <div className="space-y-3">
+            {pendingInvitations.length > 0 || isLoadingInvitations ? (
+                <div className="flex flex-col gap-4">
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <h3 className="text-lg font-semibold text-primary">
+                                Pending Invitations
+                            </h3>
+                            <p className="text-sm text-primary/60 mt-1">
+                                {invitationsPagination?.total ||
+                                    pendingInvitations.length ||
+                                    0}{' '}
+                                invitation
+                                {(invitationsPagination?.total ||
+                                    pendingInvitations.length ||
+                                    0) !== 1
+                                    ? 's'
+                                    : ''}{' '}
+                                awaiting acceptance
+                            </p>
+                        </div>
+                    </div>
+
+                    {isInvitationsError ? (
+                        <div className="text-center py-8 text-destructive">
+                            Failed to load invitations. Please try again.
+                        </div>
+                    ) : (
+                        <>
+                            <Table
+                                enableSelection
+                                rowIds={invitationRowIds}
+                                selectedIds={selectedInvitations}
+                                onSelectionChange={setSelectedInvitations}
+                            >
+                                <TableSelectionToolbar>
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={handleBulkRevokeInvitations}
+                                        disabled={isRevokingInvitation}
+                                    >
+                                        <Icons.Trash className="mr-2 w-4 h-4" />
+                                        Revoke Selected
+                                    </Button>
+                                </TableSelectionToolbar>
+
+                                <TableHeader>
+                                    <tr>
+                                        <TableHead>
+                                            <TableSelectAllCheckbox />
+                                        </TableHead>
+                                        <TableHead>Invitee</TableHead>
+                                        <TableHead>Email</TableHead>
+                                        <TableHead>Company</TableHead>
+                                        <TableHead sortable sortKey="createdAt">
+                                            Invited At
+                                        </TableHead>
+                                        <TableHead align="right">
+                                            Actions
+                                        </TableHead>
+                                    </tr>
+                                </TableHeader>
+                                <TableBody>
+                                    {isLoadingInvitations ? (
+                                        <TableLoadingState
+                                            colSpan={6}
+                                            rows={3}
+                                        />
+                                    ) : pendingInvitations.length === 0 ? (
+                                        <TableEmptyState
+                                            colSpan={6}
+                                            message="No pending invitations"
+                                            description="All invitations have been accepted or revoked"
+                                        />
+                                    ) : (
+                                        pendingInvitations.map(
+                                            (invitation: PendingInvitation) => (
+                                                <TableRow
+                                                    key={invitation.id}
+                                                    rowId={invitation.id}
+                                                >
+                                                    <TableCell>
+                                                        <TableRowCheckbox
+                                                            rowId={
+                                                                invitation.id
+                                                            }
+                                                        />
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <div className="flex items-center gap-3">
+                                                            <div className="w-8 h-8 rounded-full bg-secondary/20 flex items-center justify-center text-xs font-semibold text-secondary">
+                                                                {getUserInitials(
+                                                                    invitation.userName
+                                                                )}
+                                                            </div>
+                                                            <span className="font-medium text-primary">
+                                                                {
+                                                                    invitation.userName
+                                                                }
+                                                            </span>
+                                                        </div>
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <span className="text-primary/75">
+                                                            {invitation.email}
+                                                        </span>
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <span className="text-primary/75">
+                                                            {invitation.tenant
+                                                                ?.name || '—'}
+                                                        </span>
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <div className="flex flex-col">
+                                                            <span className="text-primary/75 text-sm">
+                                                                {new Date(
+                                                                    invitation.createdAt
+                                                                ).toLocaleDateString()}
+                                                            </span>
+                                                            <span className="text-primary/50 text-xs">
+                                                                {formatRelativeTime(
+                                                                    invitation.createdAt
+                                                                )}
+                                                            </span>
+                                                        </div>
+                                                    </TableCell>
+                                                    <TableCell align="right">
+                                                        <DropdownMenu>
+                                                            <DropdownMenuTrigger
+                                                                asChild
+                                                            >
+                                                                <Button
+                                                                    variant="outline"
+                                                                    size="sm"
+                                                                    className="h-8 w-8 p-0"
+                                                                >
+                                                                    <Icons.More className="w-4 shrink-0 h-4" />
+                                                                </Button>
+                                                            </DropdownMenuTrigger>
+                                                            <DropdownMenuContent align="end">
+                                                                <DropdownMenuLabel>
+                                                                    Actions
+                                                                </DropdownMenuLabel>
+                                                                <DropdownMenuSeparator />
+                                                                <DropdownMenuItem
+                                                                    onClick={() =>
+                                                                        handleResendInvitation(
+                                                                            invitation.id
+                                                                        )
+                                                                    }
+                                                                    disabled={
+                                                                        isResendingInvitation
+                                                                    }
+                                                                >
+                                                                    <Icons.Send className="mr-2 w-4 h-4" />
+                                                                    Resend
+                                                                    Invitation
+                                                                </DropdownMenuItem>
+                                                                <DropdownMenuSeparator />
+                                                                <DropdownMenuItem
+                                                                    onClick={() =>
+                                                                        handleRevokeInvitation(
+                                                                            invitation.id
+                                                                        )
+                                                                    }
+                                                                    disabled={
+                                                                        isRevokingInvitation
+                                                                    }
+                                                                    variant="destructive"
+                                                                >
+                                                                    <Icons.Trash className="mr-2 w-4 h-4" />
+                                                                    Revoke
+                                                                    Invitation
+                                                                </DropdownMenuItem>
+                                                            </DropdownMenuContent>
+                                                        </DropdownMenu>
+                                                    </TableCell>
+                                                </TableRow>
+                                            )
+                                        )
+                                    )}
+                                </TableBody>
+                            </Table>
+
+                            {invitationsPagination &&
+                                invitationsPagination.totalPages > 1 && (
+                                    <TablePagination
+                                        page={invitationsPagination.page}
+                                        totalPages={
+                                            invitationsPagination.totalPages
+                                        }
+                                        totalItems={invitationsPagination.total}
+                                        itemsPerPage={10}
+                                        onPageChange={
+                                            handleInvitationPageChange
+                                        }
+                                    />
+                                )}
+                        </>
+                    )}
+                </div>
+            ) : null}
+
+            {/* Users Table */}
+            <div className="flex flex-col gap-4">
                 <div className="flex items-center justify-between">
-                    <h4 className="text-base font-semibold text-primary">
-                        Pending Invitations
-                    </h4>
-                    <div className="flex items-center gap-2 text-sm text-primary/50">
-                        <Icons.Send className="w-4 h-4" />
-                        <span>
-                            {invitationsPagination?.total ||
-                                pendingInvitations.length ||
-                                0}{' '}
-                            invitation
-                            {(invitationsPagination?.total ||
-                                pendingInvitations.length ||
-                                0) !== 1
-                                ? 's'
-                                : ''}
-                        </span>
+                    <div>
+                        <h3 className="text-lg font-semibold text-primary">
+                            All Users
+                        </h3>
+                        <p className="text-sm text-primary/60 mt-1">
+                            {pagination?.total || 0} user
+                            {pagination?.total !== 1 ? 's' : ''} in total
+                        </p>
                     </div>
                 </div>
 
-                {isInvitationsError ? (
-                    <div className="text-center py-6 text-red-500">
-                        Failed to load invitations. Please try again.
-                    </div>
-                ) : (
-                    <>
-                        <Table
-                            enableSelection
-                            rowIds={invitationRowIds}
-                            selectedIds={selectedInvitations}
-                            onSelectionChange={setSelectedInvitations}
+                <Table
+                    enableSelection
+                    rowIds={userRowIds}
+                    selectedIds={selectedItems}
+                    onSelectionChange={setSelectedItems}
+                    sortKey={sortKey}
+                    sortDirection={sortDirection}
+                    onSortChange={handleSortChange}
+                >
+                    <TableSelectionToolbar>
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={handleBulkExport}
                         >
-                            <TableSelectionToolbar>
-                                <button
-                                    onClick={handleBulkRevokeInvitations}
-                                    className="px-3 py-1.5 text-xs font-medium text-red-700 bg-red-100 hover:bg-red-200 rounded-md transition-colors"
-                                >
-                                    Revoke Selected
-                                </button>
-                            </TableSelectionToolbar>
+                            <Icons.Download className="mr-2 w-4 h-4" />
+                            Export Selected
+                        </Button>
+                    </TableSelectionToolbar>
 
-                            <TableHeader>
-                                <tr>
-                                    <TableHead>
-                                        <TableSelectAllCheckbox />
-                                    </TableHead>
-                                    <TableHead>Name</TableHead>
-                                    <TableHead>Email</TableHead>
-                                    <TableHead>Company</TableHead>
-                                    <TableHead sortable sortKey="createdAt">
-                                        Invited At
-                                    </TableHead>
-                                    <TableHead align="right">Actions</TableHead>
-                                </tr>
-                            </TableHeader>
-                            <TableBody>
-                                {isLoadingInvitations ? (
-                                    <TableLoadingState colSpan={6} rows={3} />
-                                ) : pendingInvitations.length === 0 ? (
-                                    <TableEmptyState
-                                        colSpan={6}
-                                        message="No pending invitations"
-                                    />
-                                ) : (
-                                    pendingInvitations.map(
-                                        (invitation: PendingInvitation) => (
-                                            <TableRow
-                                                key={invitation.id}
-                                                rowId={invitation.id}
+                    <TableHeader>
+                        <tr>
+                            <TableHead>
+                                <TableSelectAllCheckbox />
+                            </TableHead>
+                            <TableHead sortable sortKey="name">
+                                User
+                            </TableHead>
+                            <TableHead>Email</TableHead>
+                            <TableHead>Role</TableHead>
+                            <TableHead>Status</TableHead>
+                            <TableHead sortable sortKey="createdAt">
+                                Joined
+                            </TableHead>
+                            <TableHead align="right">Actions</TableHead>
+                        </tr>
+                    </TableHeader>
+                    <TableBody>
+                        {isLoading ? (
+                            <TableLoadingState colSpan={7} rows={5} />
+                        ) : users.length === 0 ? (
+                            <TableEmptyState
+                                colSpan={7}
+                                message="No users found"
+                                description={
+                                    search ||
+                                    filters.isVerified ||
+                                    filters.isActive
+                                        ? 'Try adjusting your search or filters'
+                                        : 'Get started by inviting your first user'
+                                }
+                                action={
+                                    !search &&
+                                    !filters.isVerified &&
+                                    !filters.isActive ? (
+                                        <Button
+                                            variant="primary"
+                                            size="sm"
+                                            onClick={() =>
+                                                setIsInviteModalOpen(true)
+                                            }
+                                        >
+                                            <Icons.Plus className="mr-2 w-4 h-4" />
+                                            Invite User
+                                        </Button>
+                                    ) : null
+                                }
+                            />
+                        ) : (
+                            users.map((user: UserType) => (
+                                <TableRow key={user.id} rowId={user.id}>
+                                    <TableCell>
+                                        <TableRowCheckbox rowId={user.id} />
+                                    </TableCell>
+                                    <TableCell>
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-9 h-9 rounded-full bg-linear-to-br from-secondary/30 to-primary/30 flex items-center justify-center text-sm font-semibold text-primary">
+                                                {getUserInitials(user.name)}
+                                            </div>
+                                            <div className="flex flex-col">
+                                                <span className="font-medium text-primary">
+                                                    {user.name}
+                                                </span>
+                                                {user.lastLoggedInAt && (
+                                                    <span className="text-xs text-primary/50">
+                                                        Last seen{' '}
+                                                        {formatRelativeTime(
+                                                            user.lastLoggedInAt
+                                                        )}
+                                                    </span>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </TableCell>
+                                    <TableCell>
+                                        <span className="text-primary/75">
+                                            {user.email}
+                                        </span>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Badge variant="secondary">
+                                            {user.role?.displayName ||
+                                                user.role?.name ||
+                                                user.roles?.[0]?.displayName ||
+                                                user.roles?.[0]?.name ||
+                                                'N/A'}
+                                        </Badge>
+                                    </TableCell>
+                                    <TableCell>
+                                        <div className="flex flex-col gap-1">
+                                            <Badge
+                                                variant={
+                                                    user.isVerified
+                                                        ? 'success'
+                                                        : 'warning'
+                                                }
                                             >
-                                                <TableCell>
-                                                    <TableRowCheckbox
-                                                        rowId={invitation.id}
-                                                    />
-                                                </TableCell>
-                                                <TableCell>
-                                                    <span className="font-medium text-primary">
-                                                        {invitation.userName}
-                                                    </span>
-                                                </TableCell>
-                                                <TableCell>
-                                                    <span className="text-primary/75">
-                                                        {invitation.email}
-                                                    </span>
-                                                </TableCell>
-                                                <TableCell>
-                                                    <span className="text-primary/75">
-                                                        {invitation.tenant
-                                                            ?.name || '—'}
-                                                    </span>
-                                                </TableCell>
-                                                <TableCell>
-                                                    <span className="text-primary/75">
-                                                        {new Date(
-                                                            invitation.createdAt
-                                                        ).toLocaleDateString()}
-                                                    </span>
-                                                </TableCell>
-                                                <TableCell align="right">
-                                                    <div className="flex items-center justify-end gap-2">
-                                                        <Button
-                                                            variant="outline"
-                                                            size="sm"
-                                                            onClick={() =>
-                                                                handleResendInvitation(
-                                                                    invitation.id
-                                                                )
-                                                            }
-                                                            loading={
-                                                                isResendingInvitation
-                                                            }
-                                                            disabled={
-                                                                isResendingInvitation
-                                                            }
-                                                            title="Resend invitation email"
-                                                        >
-                                                            <Icons.Send className="mr-1 w-3 h-3" />
-                                                            Resend
-                                                        </Button>
-                                                        <Button
-                                                            variant="outline"
-                                                            size="sm"
-                                                            onClick={() =>
-                                                                revokeInvitation(
-                                                                    invitation.id
-                                                                )
-                                                            }
-                                                            loading={
-                                                                isRevokingInvitation
-                                                            }
-                                                            disabled={
-                                                                isRevokingInvitation
-                                                            }
-                                                            title="Revoke invitation"
-                                                        >
-                                                            <Icons.Close className="mr-1 w-3 h-3" />
-                                                            Revoke
-                                                        </Button>
-                                                    </div>
-                                                </TableCell>
-                                            </TableRow>
-                                        )
-                                    )
-                                )}
-                            </TableBody>
-                        </Table>
+                                                {user.isVerified
+                                                    ? 'Verified'
+                                                    : 'Unverified'}
+                                            </Badge>
+                                            {user.isActive === false && (
+                                                <Badge variant="destructive">
+                                                    Inactive
+                                                </Badge>
+                                            )}
+                                        </div>
+                                    </TableCell>
+                                    <TableCell>
+                                        <div className="flex flex-col">
+                                            <span className="text-primary/75 text-sm">
+                                                {user.createdAt
+                                                    ? new Date(
+                                                          user.createdAt
+                                                      ).toLocaleDateString()
+                                                    : '—'}
+                                            </span>
+                                            {user.createdAt && (
+                                                <span className="text-primary/50 text-xs">
+                                                    {formatRelativeTime(
+                                                        user.createdAt
+                                                    )}
+                                                </span>
+                                            )}
+                                        </div>
+                                    </TableCell>
+                                    <TableCell align="right">
+                                        <DropdownMenu>
+                                            <DropdownMenuTrigger asChild>
+                                                <Button
+                                                    variant="outline"
+                                                    size="sm"
+                                                    className="h-8 w-8 p-0"
+                                                >
+                                                    <Icons.More className="w-4 shrink-0 h-4" />
+                                                </Button>
+                                            </DropdownMenuTrigger>
+                                            <DropdownMenuContent align="end">
+                                                <DropdownMenuLabel>
+                                                    Actions
+                                                </DropdownMenuLabel>
+                                                <DropdownMenuSeparator />
+                                                <DropdownMenuItem
+                                                    onClick={() =>
+                                                        handleEditUser(user)
+                                                    }
+                                                >
+                                                    <Icons.Edit className="mr-2 w-4 h-4" />
+                                                    Edit User
+                                                </DropdownMenuItem>
+                                                <DropdownMenuSeparator />
+                                                <DropdownMenuItem>
+                                                    <Icons.Eye className="mr-2 w-4 h-4" />
+                                                    View Details
+                                                </DropdownMenuItem>
+                                            </DropdownMenuContent>
+                                        </DropdownMenu>
+                                    </TableCell>
+                                </TableRow>
+                            ))
+                        )}
+                    </TableBody>
+                </Table>
 
-                        {invitationsPagination &&
-                            invitationsPagination.totalPages > 1 && (
-                                <TablePagination
-                                    page={invitationsPagination.page}
-                                    totalPages={
-                                        invitationsPagination.totalPages
-                                    }
-                                    totalItems={invitationsPagination.total}
-                                    itemsPerPage={10}
-                                    onPageChange={handleInvitationPageChange}
-                                />
-                            )}
-                    </>
+                {pagination && pagination.totalPages > 1 && (
+                    <TablePagination
+                        page={pagination.page}
+                        totalPages={pagination.totalPages}
+                        totalItems={pagination.total}
+                        itemsPerPage={10}
+                        onPageChange={handlePageChange}
+                    />
                 )}
             </div>
-
-            {/* Users Table */}
-            <Table
-                enableSelection
-                rowIds={userRowIds}
-                selectedIds={selectedItems}
-                onSelectionChange={setSelectedItems}
-                sortKey={sortKey}
-                sortDirection={sortDirection}
-                onSortChange={handleSortChange}
-            >
-                <TableSelectionToolbar>
-                    <button
-                        onClick={handleBulkExport}
-                        className="px-3 py-1.5 text-xs font-medium text-blue-700 bg-blue-100 hover:bg-blue-200 rounded-md transition-colors"
-                    >
-                        Export Selected
-                    </button>
-                </TableSelectionToolbar>
-
-                <TableHeader>
-                    <tr>
-                        <TableHead>
-                            <TableSelectAllCheckbox />
-                        </TableHead>
-                        <TableHead sortable sortKey="name">
-                            Name
-                        </TableHead>
-                        <TableHead>Email</TableHead>
-                        <TableHead>Role</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead align="right">Actions</TableHead>
-                    </tr>
-                </TableHeader>
-                <TableBody>
-                    {isLoading ? (
-                        <TableLoadingState colSpan={6} rows={5} />
-                    ) : users.length === 0 ? (
-                        <TableEmptyState colSpan={6} message="No users found" />
-                    ) : (
-                        users.map((user: UserType) => (
-                            <TableRow key={user.id} rowId={user.id}>
-                                <TableCell>
-                                    <TableRowCheckbox rowId={user.id} />
-                                </TableCell>
-                                <TableCell>
-                                    <span className="font-medium text-primary">
-                                        {user.name}
-                                    </span>
-                                </TableCell>
-                                <TableCell>
-                                    <span className="text-primary/75">
-                                        {user.email}
-                                    </span>
-                                </TableCell>
-                                <TableCell>
-                                    <span className="text-primary/75">
-                                        {user.role?.displayName ||
-                                            user.role?.name ||
-                                            user.roles?.[0]?.displayName ||
-                                            user.roles?.[0]?.name ||
-                                            'N/A'}
-                                    </span>
-                                </TableCell>
-                                <TableCell>
-                                    <Chips
-                                        label={
-                                            user.isVerified
-                                                ? 'Verified'
-                                                : 'Unverified'
-                                        }
-                                        variant={
-                                            user.isVerified
-                                                ? 'success'
-                                                : 'danger'
-                                        }
-                                    />
-                                </TableCell>
-                                <TableCell align="right">
-                                    <div className="flex items-center justify-end gap-2">
-                                        <Button
-                                            variant="outline"
-                                            size="sm"
-                                            onClick={() => handleEditUser(user)}
-                                        >
-                                            <Icons.Edit className="mr-1 w-3 h-3" />
-                                            Edit
-                                        </Button>
-                                    </div>
-                                </TableCell>
-                            </TableRow>
-                        ))
-                    )}
-                </TableBody>
-            </Table>
-
-            {pagination && pagination.totalPages > 1 && (
-                <TablePagination
-                    page={pagination.page}
-                    totalPages={pagination.totalPages}
-                    totalItems={pagination.total}
-                    itemsPerPage={10}
-                    onPageChange={handlePageChange}
-                />
-            )}
 
             {/* Modals */}
             <InviteUserModal

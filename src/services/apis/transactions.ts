@@ -264,17 +264,34 @@ export const useVoidTransaction = () => {
 };
 
 // ========= Post Transaction =========
+export type PostTransactionPayload = {
+    counterAccountId: string;
+    entryDate: string; // ISO date string
+    reference?: string;
+    memo?: string;
+};
+
 export const postTransaction = async (
-    id: string
+    id: string,
+    payload: PostTransactionPayload
 ): Promise<CreateTransactionResponse> => {
-    const response = await axiosInstance.post(`/transactions/${id}/post`);
+    const response = await axiosInstance.post(
+        `/transactions/${id}/post`,
+        payload
+    );
     return response.data;
 };
 
 export const usePostTransaction = () => {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: (id: string) => postTransaction(id),
+        mutationFn: ({
+            id,
+            payload,
+        }: {
+            id: string;
+            payload: PostTransactionPayload;
+        }) => postTransaction(id, payload),
         onSuccess: (data) => {
             showSuccessToast(
                 data?.message || 'Transaction posted successfully'

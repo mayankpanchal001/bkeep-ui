@@ -7,7 +7,7 @@ import {
     FaTrash,
     FaUpload,
 } from 'react-icons/fa';
-import { DataTable, Column } from '../shared/DataTable';
+import { Column, DataTable } from '../shared/DataTable';
 
 type Customer = {
     id: string;
@@ -297,9 +297,9 @@ const CreateInvoiceModal = ({
     ];
 
     return (
-        <div className="absolute inset-0 z-40 bg-lightBg flex flex-col rounded-2 overflow-hidden">
+        <div className="absolute inset-0 z-40 bg-surface-muted flex flex-col rounded-2 overflow-hidden">
             {/* Header */}
-            <header className="flex items-center justify-between px-6 py-4 border-b border-primary/10 bg-white">
+            <header className="flex items-center justify-between px-6 py-4 border-b border-primary/10 bg-card">
                 <div className="flex items-center gap-4">
                     <button
                         onClick={onClose}
@@ -335,7 +335,7 @@ const CreateInvoiceModal = ({
             {/* Content */}
             <div className="flex-1 flex overflow-hidden">
                 {/* Left Side - Form */}
-                <div className="w-full md:w-[480px] border-r border-primary/10 overflow-y-auto bg-white flex flex-col">
+                <div className="w-full md:w-[480px] border-r border-primary/10 overflow-y-auto bg-card flex flex-col">
                     {/* Tabs */}
                     <div className="flex border-b border-primary/10">
                         <button
@@ -467,7 +467,7 @@ const CreateInvoiceModal = ({
 
                                         {/* Dropdown */}
                                         {showCustomerDropdown && (
-                                            <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-primary/10 rounded-2 shadow-lg z-10 max-h-80 overflow-hidden">
+                                            <div className="absolute top-full left-0 right-0 mt-1 bg-card border border-primary/10 rounded-2 shadow-lg z-10 max-h-80 overflow-hidden">
                                                 <div className="p-3 border-b border-primary/10">
                                                     <div className="input-wrap flex items-center gap-2 px-3">
                                                         <FaSearch className="w-3 h-3 text-primary/50" />
@@ -623,7 +623,7 @@ const CreateInvoiceModal = ({
                                             }`}
                                         >
                                             <span
-                                                className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform ${
+                                                className={`absolute top-0.5 left-0.5 w-4 h-4 bg-card rounded-full shadow transition-transform ${
                                                     formData.isRecurring
                                                         ? 'translate-x-5'
                                                         : 'translate-x-0'
@@ -1091,8 +1091,8 @@ const CreateInvoiceModal = ({
                 </div>
 
                 {/* Right Side - Invoice Preview */}
-                <div className="hidden md:flex flex-1 bg-lightBg items-center justify-center p-8 overflow-y-auto">
-                    <div className="w-full max-w-xl bg-white rounded-2 shadow-sm border border-primary/10 p-8">
+                <div className="hidden md:flex flex-1 bg-surface-muted items-center justify-center p-8 overflow-y-auto">
+                    <div className="w-full max-w-xl bg-card rounded-2 shadow-sm border border-primary/10 p-8">
                         {/* Logo and Invoice Header */}
                         <div className="flex justify-between items-start mb-6">
                             {companyInfo.logo ? (

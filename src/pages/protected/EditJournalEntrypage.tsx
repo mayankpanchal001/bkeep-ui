@@ -56,7 +56,7 @@ export default function EditJournalEntrypage() {
                 subtitle="Update journal entry details"
             />
 
-            <div className="bg-white rounded-lg border border-primary/10 p-4">
+            <div className="bg-card rounded-lg border border-primary/10 p-4">
                 <JournalEntryForm
                     initialData={{
                         entryNumber: journalEntry.entryNumber,
