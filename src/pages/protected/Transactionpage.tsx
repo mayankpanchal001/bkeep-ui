@@ -463,7 +463,7 @@ const Transactionpage = () => {
                 onStatusSelect={(status) => filterStore.setStatus(status)}
             />
 
-            <div className="p-4 border-b border-primary/10">
+            <div className="p-4 border-b border-primary/10 sticky -top-4 z-30 bg-background">
                 <div className="flex items-center gap-2 flex-wrap">
                     <button
                         className={cn(
