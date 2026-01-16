@@ -4,11 +4,7 @@ import { Link } from 'react-router';
 import { APP_TITLE } from '../../constants';
 import { logo } from '../../utills/image';
 import Button from '../typography/Button';
-import {
-    Tooltip,
-    TooltipContent,
-    TooltipTrigger,
-} from '../ui/tooltip';
+import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
 
 const NAV_LINKS = [
     { label: 'Features', href: '#features' },
@@ -66,7 +62,11 @@ export default function Navigation() {
                     ))}
 
                     <Link to="/login">
-                        <Button variant="primary" size="md" tooltip="Sign in to your account">
+                        <Button
+                            variant="primary"
+                            size="md"
+                            tooltip="Sign in to your account"
+                        >
                             Sign in
                         </Button>
                     </Link>

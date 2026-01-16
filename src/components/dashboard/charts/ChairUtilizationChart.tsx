@@ -88,7 +88,8 @@ const ChairUtilizationChart = ({ data }: ChairUtilizationChartProps) => {
                                                 className="h-2.5 w-2.5 rounded-full"
                                                 style={{
                                                     backgroundColor: getColor(
-                                                        (data.utilization as number) || 0
+                                                        (data.utilization as number) ||
+                                                            0
                                                     ),
                                                 }}
                                             />
@@ -104,7 +105,8 @@ const ChairUtilizationChart = ({ data }: ChairUtilizationChartProps) => {
                                                 className="h-2.5 w-2.5 rounded-full"
                                                 style={{
                                                     backgroundColor: getColor(
-                                                        (data.utilization as number) || 0
+                                                        (data.utilization as number) ||
+                                                            0
                                                     ),
                                                 }}
                                             />
@@ -112,7 +114,11 @@ const ChairUtilizationChart = ({ data }: ChairUtilizationChartProps) => {
                                                 Revenue/Hour:
                                             </span>
                                             <span className="font-mono font-medium tabular-nums">
-                                                ${(data.revenue as number || 0).toLocaleString()}
+                                                $
+                                                {(
+                                                    (data.revenue as number) ||
+                                                    0
+                                                ).toLocaleString()}
                                             </span>
                                         </div>
                                     </div>

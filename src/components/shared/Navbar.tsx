@@ -31,11 +31,7 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import { ScrollArea } from '../ui/scroll-area';
 import { SidebarTrigger } from '../ui/sidebar';
-import {
-    Tooltip,
-    TooltipContent,
-    TooltipTrigger,
-} from '../ui/tooltip';
+import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
 import AutoBreadcrumbs from './AutoBreadcrumbs';
 import ThemeSwitcher from './ThemeSwitcher';
 
@@ -189,7 +185,9 @@ const Navbar = ({ onSearchClick, onShortcutsClick }: NavbarProps) => {
                             </kbd>
                         </button>
                     </TooltipTrigger>
-                    <TooltipContent>Search ({isMac ? '⌘' : 'Ctrl'}+K)</TooltipContent>
+                    <TooltipContent>
+                        Search ({isMac ? '⌘' : 'Ctrl'}+K)
+                    </TooltipContent>
                 </Tooltip>
                 <Tooltip>
                     <TooltipTrigger asChild>
@@ -198,7 +196,9 @@ const Navbar = ({ onSearchClick, onShortcutsClick }: NavbarProps) => {
                             className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-card dark:bg-surface-muted hover:bg-primary/10 rounded-md border border-primary/10 text-primary/50 transition-colors group"
                         >
                             <Keyboard className="w-3.5 h-3.5 group-hover:text-primary" />
-                            <span className="text-xs font-medium">Shortcuts</span>
+                            <span className="text-xs font-medium">
+                                Shortcuts
+                            </span>
                             <kbd className="ml-auto inline-block px-1.5 py-0.5 text-[10px] font-bold text-primary/40 bg-card dark:bg-surface-muted border border-primary/10 rounded shadow-sm">
                                 ?
                             </kbd>
@@ -228,14 +228,17 @@ const Navbar = ({ onSearchClick, onShortcutsClick }: NavbarProps) => {
                                     <Bell className="w-5 h-5" />
                                     {unreadCount > 0 && (
                                         <span className="absolute top-1 right-1 flex items-center justify-center rounded-full bg-red-500 text-white text-[10px] font-bold leading-none h-4 min-w-4 px-1 animate-in zoom-in duration-200 shadow-sm border border-white dark:border-slate-900">
-                                            {unreadCount > 9 ? '9+' : unreadCount}
+                                            {unreadCount > 9
+                                                ? '9+'
+                                                : unreadCount}
                                         </span>
                                     )}
                                 </button>
                             </PopoverTrigger>
                         </TooltipTrigger>
                         <TooltipContent>
-                            Notifications{unreadCount > 0 ? ` (${unreadCount} new)` : ''}
+                            Notifications
+                            {unreadCount > 0 ? ` (${unreadCount} new)` : ''}
                         </TooltipContent>
                     </Tooltip>
 
@@ -375,9 +378,13 @@ const Navbar = ({ onSearchClick, onShortcutsClick }: NavbarProps) => {
                                                 <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                                     {n.unread && (
                                                         <Tooltip>
-                                                            <TooltipTrigger asChild>
+                                                            <TooltipTrigger
+                                                                asChild
+                                                            >
                                                                 <button
-                                                                    onClick={(e) => {
+                                                                    onClick={(
+                                                                        e
+                                                                    ) => {
                                                                         e.stopPropagation();
                                                                         markAsRead(
                                                                             n.id
@@ -388,7 +395,9 @@ const Navbar = ({ onSearchClick, onShortcutsClick }: NavbarProps) => {
                                                                     <Check className="w-3.5 h-3.5" />
                                                                 </button>
                                                             </TooltipTrigger>
-                                                            <TooltipContent>Mark as read</TooltipContent>
+                                                            <TooltipContent>
+                                                                Mark as read
+                                                            </TooltipContent>
                                                         </Tooltip>
                                                     )}
                                                     <Tooltip>
@@ -405,7 +414,9 @@ const Navbar = ({ onSearchClick, onShortcutsClick }: NavbarProps) => {
                                                                 <Trash2 className="w-3.5 h-3.5" />
                                                             </button>
                                                         </TooltipTrigger>
-                                                        <TooltipContent>Delete</TooltipContent>
+                                                        <TooltipContent>
+                                                            Delete
+                                                        </TooltipContent>
                                                     </Tooltip>
                                                 </div>
                                             </div>

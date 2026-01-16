@@ -61,7 +61,9 @@ const RevenueBarChart = ({ data }: RevenueBarChartProps) => {
                         payload?: Array<TooltipPayloadItem>;
                     }) => {
                         if (active && payload && payload.length) {
-                            const nameData = payload[0].payload as { name?: string };
+                            const nameData = payload[0].payload as {
+                                name?: string;
+                            };
                             return (
                                 <div className="rounded-lg border border-border/50 bg-card p-2 shadow-sm">
                                     <div className="grid gap-2">

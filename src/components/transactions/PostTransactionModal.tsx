@@ -122,7 +122,8 @@ export function PostTransactionModal({
                 <DialogHeader>
                     <DialogTitle>Post Transaction</DialogTitle>
                     <DialogDescription>
-                        Provide the required information to post this transaction.
+                        Provide the required information to post this
+                        transaction.
                     </DialogDescription>
                 </DialogHeader>
                 <Form {...form}>

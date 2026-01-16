@@ -89,7 +89,10 @@ const InsuranceChart = ({ data }: InsuranceChartProps) => {
                                                 Claim Volume:
                                             </span>
                                             <span className="font-mono font-medium tabular-nums">
-                                                ${(data.volume as number || 0).toLocaleString()}
+                                                $
+                                                {(
+                                                    (data.volume as number) || 0
+                                                ).toLocaleString()}
                                             </span>
                                         </div>
                                         <div className="flex items-center gap-2">

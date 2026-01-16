@@ -1,10 +1,6 @@
 import { Moon, Sun } from 'lucide-react';
 import { useTheme, useThemeActions } from '../../stores/theme/themeSelectors';
-import {
-    Tooltip,
-    TooltipContent,
-    TooltipTrigger,
-} from '../ui/tooltip';
+import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
 
 const ThemeSwitcher = () => {
     const theme = useTheme();

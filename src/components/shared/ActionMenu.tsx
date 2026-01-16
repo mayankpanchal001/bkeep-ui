@@ -9,11 +9,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
-import {
-    Tooltip,
-    TooltipContent,
-    TooltipTrigger,
-} from '../ui/tooltip';
+import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
 
 export interface ActionMenuItem {
     label: string;
@@ -104,7 +100,9 @@ export function ActionMenu({
     className,
     showLabel = true,
 }: ActionMenuProps) {
-    const filteredItems = items.filter((item) => item !== null && item !== undefined);
+    const filteredItems = items.filter(
+        (item) => item !== null && item !== undefined
+    );
 
     if (filteredItems.length === 0) {
         return null;

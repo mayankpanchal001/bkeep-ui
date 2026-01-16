@@ -98,7 +98,10 @@ const ExpensePieChart = ({ data }: ExpensePieChartProps) => {
                                                 Amount:
                                             </span>
                                             <span className="font-mono font-medium tabular-nums">
-                                                ${(data.value as number || 0).toLocaleString()}
+                                                $
+                                                {(
+                                                    (data.value as number) || 0
+                                                ).toLocaleString()}
                                             </span>
                                         </div>
                                         <div className="text-xs text-muted-foreground">

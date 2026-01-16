@@ -275,7 +275,10 @@ export const postTransaction = async (
     id: string,
     payload: PostTransactionPayload
 ): Promise<CreateTransactionResponse> => {
-    const response = await axiosInstance.post(`/transactions/${id}/post`, payload);
+    const response = await axiosInstance.post(
+        `/transactions/${id}/post`,
+        payload
+    );
     return response.data;
 };
 

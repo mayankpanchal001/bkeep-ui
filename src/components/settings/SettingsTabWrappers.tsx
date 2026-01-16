@@ -41,9 +41,9 @@ export const ProfileTabWrapper = () => {
             email: formData.email,
             phone: formData.phone,
         };
-        
+
         const response = await updateProfile(payload);
-        
+
         // Update auth store with new user data
         if (response.data && user && accessToken && refreshToken) {
             const updatedUser = {
