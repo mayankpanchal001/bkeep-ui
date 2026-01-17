@@ -15,7 +15,7 @@ const FAQSection = () => {
                 {FAQ_ITEMS.map((item) => (
                     <details
                         key={item.question}
-                        className="group rounded-2 border border-border bg-background p-5"
+                        className="group rounded border border-border bg-background p-5"
                     >
                         <summary className="flex cursor-pointer items-center justify-between text-left text-base font-semibold text-foreground">
                             {item.question}

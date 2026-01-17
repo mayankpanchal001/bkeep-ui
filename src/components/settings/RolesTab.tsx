@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useGetRoles } from '../../services/apis/roleApi';
 import { Icons } from '../shared/Icons';
-import Button from '../typography/Button';
 import { Badge } from '../ui/badge';
+import { Button } from '../ui/button';
 import {
     Table,
     TableBody,

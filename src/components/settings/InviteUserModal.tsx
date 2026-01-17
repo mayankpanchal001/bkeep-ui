@@ -3,8 +3,15 @@ import { FaExclamationTriangle } from 'react-icons/fa';
 import { useInviteUser } from '../../services/apis/usersApi';
 import { Role } from '../../types';
 import Popup from '../shared/Popup';
-import Button from '../typography/Button';
-import { InputField, SelectField } from '../typography/InputFields';
+import { Button } from '../ui/button';
+import Input from '../ui/input';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '../ui/select';
 
 interface InviteUserModalProps {
     isOpen: boolean;
@@ -92,7 +99,7 @@ const InviteUserModal = ({
                     </Button>
                     <Button
                         type="submit"
-                        variant="primary"
+                        variant="default"
                         size="sm"
                         loading={isPending}
                         disabled={isPending}
@@ -116,12 +123,13 @@ const InviteUserModal = ({
                     <div className="flex flex-col gap-4">
                         {/* Name Field */}
                         <div>
-                            <InputField
+                            <Input
                                 id="user-name"
-                                label="Full Name"
                                 type="text"
                                 value={formData.name}
-                                onChange={(e) => {
+                                onChange={(
+                                    e: React.ChangeEvent<HTMLInputElement>
+                                ) => {
                                     setFormData({
                                         ...formData,
                                         name: e.target.value,
@@ -146,12 +154,13 @@ const InviteUserModal = ({
 
                         {/* Email Field */}
                         <div>
-                            <InputField
+                            <Input
                                 id="user-email"
-                                label="Email"
                                 type="email"
                                 value={formData.email}
-                                onChange={(e) => {
+                                onChange={(
+                                    e: React.ChangeEvent<HTMLInputElement>
+                                ) => {
                                     setFormData({
                                         ...formData,
                                         email: e.target.value,
@@ -178,30 +187,23 @@ const InviteUserModal = ({
 
                 {/* Select a role */}
                 <div>
-                    <SelectField
-                        id="user-role"
-                        label="Select a role"
-                        labelShow={true}
-                        placeholder="Select a role"
+                    <Select
                         value={formData.roleId}
-                        onChange={(e) => {
-                            setFormData({
-                                ...formData,
-                                roleId: e.target.value,
-                            });
-                            if (errors.roleId) {
-                                setErrors((prev) => ({
-                                    ...prev,
-                                    roleId: '',
-                                }));
-                            }
+                        onValueChange={(value: string) => {
+                            setFormData({ ...formData, roleId: value });
                         }}
-                        required
-                        options={roles.map((role) => ({
-                            value: role.id,
-                            label: role.displayName,
-                        }))}
-                    />
+                    >
+                        <SelectTrigger>
+                            <SelectValue placeholder="Select a role" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {roles.map((role) => (
+                                <SelectItem key={role.id} value={role.id}>
+                                    {role.displayName}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
                     {errors.roleId && (
                         <p className="text-destructive text-xs mt-1 flex items-center gap-1">
                             <FaExclamationTriangle className="w-3 h-3" />

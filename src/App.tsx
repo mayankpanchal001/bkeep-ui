@@ -1,6 +1,7 @@
 import { QueryClientProvider } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { RouterProvider } from 'react-router';
+import { ThemeProvider } from './components/shared/ThemeProvider';
 import routes from './routes/routes';
 import { queryClient } from './services/queryClient';
 import { useAuth } from './stores/auth/authSelectore';
@@ -17,11 +18,13 @@ function App() {
     return (
         <>
             <QueryClientProvider client={queryClient}>
-                <RouterProvider router={routes} />
-                <Toaster
-                    position="top-center"
-                    toastOptions={{ duration: 4000 }}
-                />
+                <ThemeProvider>
+                    <RouterProvider router={routes} />
+                    <Toaster
+                        position="top-center"
+                        toastOptions={{ duration: 4000 }}
+                    />
+                </ThemeProvider>
             </QueryClientProvider>
         </>
     );

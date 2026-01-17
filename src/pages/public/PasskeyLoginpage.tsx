@@ -5,7 +5,7 @@ import { PasskeyLoginForm } from '@/components/auth/PasskeyLoginForm';
 
 const PasskeyLoginpage = () => {
     return (
-        <div className="min-h-screen flex items-center justify-center bg-surface-muted p-4">
+        <div className="min-h-screen flex items-center justify-center bg-muted p-4">
             <div className="w-full max-w-md">
                 {/* Logo and Title */}
                 <div className="text-center mb-8">

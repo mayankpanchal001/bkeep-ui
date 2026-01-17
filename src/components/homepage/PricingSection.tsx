@@ -45,13 +45,13 @@ const PricingSection = () => {
                             {plan.features.map((feature) => (
                                 <li
                                     key={feature}
-                                    className="rounded-2 border border-border bg-muted/30 px-4 py-2"
+                                    className="rounded border border-border bg-muted/30 px-4 py-2"
                                 >
                                     {feature}
                                 </li>
                             ))}
                         </ul>
-                        <button className="mt-6 w-full rounded-2 border border-border bg-muted py-3 text-sm font-semibold text-foreground transition hover:bg-muted/80">
+                        <button className="mt-6 w-full rounded border border-border bg-muted py-3 text-sm font-semibold text-foreground transition hover:bg-muted/80">
                             {plan.name === 'Core'
                                 ? 'Get started'
                                 : 'Upgrade now'}

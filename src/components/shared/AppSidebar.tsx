@@ -10,6 +10,7 @@ import { useAuth } from '../../stores/auth/authSelectore';
 import { useTenant } from '../../stores/tenant/tenantSelectore';
 import { showErrorToast } from '../../utills/toast';
 import { Icons } from '../shared/Icons';
+import { SidebarThemeSwitcher } from '../shared/SidebarThemeSwitcher';
 import {
     Collapsible,
     CollapsibleContent,
@@ -164,7 +165,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                                     size="lg"
                                     className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
                                 >
-                                    <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-foreground text-primary-foreground">
+                                    <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-background text-primary">
                                         <img
                                             src={LOGO_IMAGE}
                                             alt="logo"
@@ -429,6 +430,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             </SidebarContent>
 
             <SidebarFooter>
+                <SidebarSeparator className="mb-2" />
+                <SidebarThemeSwitcher />
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <DropdownMenu>

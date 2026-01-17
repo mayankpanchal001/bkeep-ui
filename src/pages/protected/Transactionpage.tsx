@@ -1,7 +1,7 @@
 import { CreateTransactionDrawer } from '@/components/transactions/CreateTransactionDrawer';
 import { PostTransactionModal } from '@/components/transactions/PostTransactionModal';
 import { TransactionHeader } from '@/components/transactions/TransactionHeader';
-import Button from '@/components/typography/Button';
+
 import { Combobox, type ComboboxOption } from '@/components/ui/combobox';
 import {
     Drawer,
@@ -34,6 +34,7 @@ import {
 } from '@/components/ui/table';
 import { Filter, Search, X } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Button } from '../../components/ui/button';
 import { useContacts } from '../../services/apis/contactsApi';
 import { useTaxes } from '../../services/apis/taxApi';
 import {

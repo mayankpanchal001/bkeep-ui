@@ -13,7 +13,7 @@ import { useChartOfAccounts } from '../../services/apis/chartsAccountApi';
 import { useCreateTransaction } from '../../services/apis/transactions';
 import { showErrorToast, showSuccessToast } from '../../utills/toast';
 import Popup from '../shared/Popup';
-import Button from '../typography/Button';
+import { Button } from '../ui/button';
 
 interface ImportTransactionsModalProps {
     isOpen: boolean;
@@ -267,7 +267,7 @@ const ImportTransactionsModal = ({
                         Cancel
                     </Button>
                     <Button
-                        variant="primary"
+                        variant="default"
                         onClick={processFile}
                         disabled={
                             !selectedFile || !targetAccountId || isProcessing

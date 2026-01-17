@@ -6,7 +6,7 @@ import {
     useApplyAccountsTemplate,
 } from '../../services/apis/chartsAccountApi';
 import { useTemplates } from '../../services/apis/templatesApi';
-import Button from '../typography/Button';
+import { Button } from '../ui/button';
 import Popup from './Popup';
 
 interface ImportFileModalProps {
@@ -138,8 +138,7 @@ const ImportFileModal = ({
                             <Button
                                 variant="outline"
                                 onClick={handleApplyTemplate}
-                                loading={applyTemplateMutation.isPending}
-                                disabled={isTemplatePreviewLoading}
+                                disabled={applyTemplateMutation.isPending}
                             >
                                 Apply Template
                             </Button>
@@ -150,7 +149,6 @@ const ImportFileModal = ({
                             Cancel
                         </Button>
                         <Button
-                            variant="primary"
                             onClick={handleConfirm}
                             disabled={!selectedFile}
                         >
@@ -182,7 +180,7 @@ const ImportFileModal = ({
                                     key={t.id}
                                     type="button"
                                     onClick={() => setSelectedTemplateId(t.id)}
-                                    className={`px-3 py-1.5 rounded-2 text-sm border ${
+                                    className={`px-3 py-1.5 rounded text-sm border ${
                                         selectedTemplateId === t.id
                                             ? 'bg-primary text-white border-primary'
                                             : 'bg-card border-primary/10 text-primary hover:bg-primary/5'
@@ -199,7 +197,7 @@ const ImportFileModal = ({
                     )}
 
                     {selectedTemplateId && (
-                        <div className="rounded-2 border border-primary/10 bg-card p-3">
+                        <div className="rounded border border-primary/10 bg-card p-3">
                             {isTemplatePreviewLoading ? (
                                 <p className="text-xs text-primary/50">
                                     Loading template preview...

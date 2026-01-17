@@ -1,13 +1,16 @@
 import React, { useRef, useState } from 'react';
 import { useAuth } from '../../stores/auth/authSelectore';
 import { Icons } from '../shared/Icons';
-import Button from '../typography/Button';
-import {
-    InputField,
-    SelectField,
-    TextareaField,
-} from '../typography/InputFields';
+import { Button } from '../ui/button';
 import Input from '../ui/input';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '../ui/select';
+import { Textarea } from '../ui/textarea';
 import { SettingsFormData } from './types';
 
 interface ProfileTabProps {
@@ -60,7 +63,7 @@ const ProfileTab = ({
     return (
         <div className="flex flex-col gap-4 max-w-2xl ">
             {/* Header: Avatar + Upload + Edit Toggle */}
-            <div className="bg-surface">
+            <div className="bg-card">
                 <div className="flex items-center justify-between gap-6">
                     <div className="flex items-center gap-6">
                         <div className="flex h-16 w-16 items-center justify-center rounded-full border border-primary/10 bg-primary/10 text-primary">
@@ -78,7 +81,7 @@ const ProfileTab = ({
                         <Button
                             size="sm"
                             type="button"
-                            variant="primary"
+                            variant="default"
                             onClick={() => setIsEditing(true)}
                         >
                             Edit profile
@@ -97,7 +100,7 @@ const ProfileTab = ({
                             <Button
                                 size="sm"
                                 type="button"
-                                variant="primary"
+                                variant="default"
                                 onClick={handleSaveClick}
                                 loading={isLoading}
                                 disabled={isLoading}
@@ -139,31 +142,24 @@ const ProfileTab = ({
                     </div>
 
                     <div>
-                        <SelectField
-                            id="email"
-                            label="Email"
-                            labelShow={true}
-                            placeholder="Select a verified email to display"
+                        <Select
                             value={formData.email}
-                            onChange={(e) =>
+                            onValueChange={(value: string) =>
                                 onFormDataChange({
                                     ...formData,
-                                    email: e.target.value,
+                                    email: value,
                                 })
                             }
-                            options={
-                                user?.email
-                                    ? [
-                                          {
-                                              value: user.email,
-                                              label: user.email,
-                                          },
-                                      ]
-                                    : []
-                            }
-                            required
-                            disabled={!isEditing}
-                        />
+                        >
+                            <SelectTrigger>
+                                <SelectValue placeholder="Select an email to display" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value={user?.email || ''}>
+                                    {user?.email || ''}
+                                </SelectItem>
+                            </SelectContent>
+                        </Select>
                         <p className="mt-2 text-xs text-primary/50">
                             You can manage verified email addresses in your
                             email settings.
@@ -171,11 +167,12 @@ const ProfileTab = ({
                     </div>
 
                     <div>
-                        <TextareaField
+                        <Textarea
                             id="bio"
-                            label="Bio"
                             value={formData.bio || ''}
-                            onChange={(e) =>
+                            onChange={(
+                                e: React.ChangeEvent<HTMLTextAreaElement>
+                            ) =>
                                 onFormDataChange({
                                     ...formData,
                                     bio: e.target.value,
@@ -198,12 +195,14 @@ const ProfileTab = ({
                         </p>
                         <div className="space-y-2">
                             {(formData.urls || []).map((url, idx) => (
-                                <InputField
+                                <Input
                                     key={idx}
                                     id={`url-${idx}`}
                                     type="url"
                                     value={url}
-                                    onChange={(e) => {
+                                    onChange={(
+                                        e: React.ChangeEvent<HTMLInputElement>
+                                    ) => {
                                         const next = [...(formData.urls || [])];
                                         next[idx] = e.target.value;
                                         onFormDataChange({

@@ -8,7 +8,7 @@ import { useDisableTOTP, useTOTPStatus } from '../../services/apis/mfaApi';
 import { usePasskeyStats } from '../../services/apis/passkeyApi';
 import { useAuth } from '../../stores/auth/authSelectore';
 import ConfirmationDialog from '../shared/ConfirmationDialog';
-import Button from '../typography/Button';
+import { Button } from '../ui/button';
 import ChangePasswordModal from './ChangePasswordModal';
 import PasskeyManagementModal from './PasskeyManagementModal';
 import TOTPSetupModal from './TOTPSetupModal';

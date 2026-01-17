@@ -1,6 +1,6 @@
+import { CircleUser, LogOut } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useEffect, useRef, useState } from 'react';
-import { CircleUser, LogOut } from 'lucide-react';
 import { Link } from 'react-router';
 import { LOGOUT_ITEM } from '../../constants';
 import { useLogout } from '../../services/apis/authApi';
@@ -113,7 +113,7 @@ const PageHeaderMenu = () => {
                 </button>
                 {/* Dropdown Menu */}
                 {isMenuOpen && (
-                    <div className="absolute right-0 mt-2 w-64 bg-card rounded-2 shadow-lg border border-primary/10 py-2 z-50 dropdown-animate">
+                    <div className="absolute right-0 mt-2 w-64 bg-card rounded shadow-lg border border-primary/10 py-2 z-50 dropdown-animate">
                         {/* User Info Header */}
                         <div className="px-4 py-3 border-b border-primary/10">
                             <div className="flex items-center gap-3">
@@ -162,7 +162,7 @@ const PageHeaderMenu = () => {
 
             {showLogoutConfirm && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4">
-                    <div className="w-full max-w-sm rounded-2 bg-card p-4 shadow-2xl">
+                    <div className="w-full max-w-sm rounded bg-card p-4 shadow-2xl">
                         <h3 className="text-lg font-semibold text-primary">
                             Sign out?
                         </h3>
@@ -172,14 +172,14 @@ const PageHeaderMenu = () => {
                         </p>
                         <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-end">
                             <button
-                                className="rounded-2 border border-primary/10 px-4 py-2 text-sm font-semibold text-primary transition hover:bg-primary/10"
+                                className="rounded border border-primary/10 px-4 py-2 text-sm font-semibold text-primary transition hover:bg-primary/10"
                                 onClick={handleCancelLogout}
                                 disabled={isLoggingOut}
                             >
                                 Cancel
                             </button>
                             <button
-                                className="rounded-2 bg-primary px-4 py-2 text-sm font-semibold text-white transition hover:bg-primary/75 disabled:cursor-not-allowed disabled:opacity-70"
+                                className="rounded bg-primary px-4 py-2 text-sm font-semibold text-white transition hover:bg-primary/75 disabled:cursor-not-allowed disabled:opacity-70"
                                 onClick={handleConfirmLogout}
                                 disabled={isLoggingOut}
                             >

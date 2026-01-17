@@ -257,7 +257,7 @@ const ChartTooltip = React.forwardRef<HTMLDivElement, ChartTooltipProps>(
                                         {!hideIndicator && (
                                             <div
                                                 className={cn(
-                                                    'shrink-0 rounded-2 border-[--color-border] bg-[--color-bg]',
+                                                    'shrink-0 rounded border-[--color-border] bg-[--color-bg]',
                                                     {
                                                         'h-2.5 w-2.5':
                                                             indicator === 'dot',
@@ -379,7 +379,7 @@ const ChartLegend = React.forwardRef<HTMLDivElement, ChartLegendProps>(
                             )}
                         >
                             <div
-                                className="h-2 w-2 shrink-0 rounded-2"
+                                className="h-2 w-2 shrink-0 rounded"
                                 style={{
                                     backgroundColor: item.color,
                                 }}

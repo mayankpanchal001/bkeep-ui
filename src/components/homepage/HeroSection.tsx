@@ -1,6 +1,7 @@
+import { Plus } from 'lucide-react';
 import { useEffect } from 'react';
 import { Link } from 'react-router';
-import Button from '../typography/Button';
+import { Button } from '../ui/button';
 import { HERO_METRICS, PLURAL_TENANT_PREFIX } from './constants.tsx';
 
 export default function HeroSection() {
@@ -39,7 +40,11 @@ export default function HeroSection() {
                     </div>
                     <div className="flex flex-wrap gap-4">
                         <Link to="/register">
-                            <Button variant="primary" className="px-8">
+                            <Button
+                                variant="default"
+                                className="px-8"
+                                startIcon={<Plus className="w-4 h-4" />}
+                            >
                                 Get started
                             </Button>
                         </Link>
@@ -47,7 +52,7 @@ export default function HeroSection() {
                             See how it works
                         </Button>
                     </div>
-                    <div className="grid gap-4 rounded-2 border border-border bg-muted p-4 backdrop-blur">
+                    <div className="grid gap-4 rounded border border-border bg-muted p-4 backdrop-blur">
                         <p className="text-xs uppercase tracking-[0.45em] text-muted-foreground">
                             Performance you can measure
                         </p>
@@ -79,7 +84,7 @@ export default function HeroSection() {
                             </div>
                         </div>
                         <div className="mt-6 space-y-4">
-                            <div className="rounded-2xl border border-border bg-muted/50 p-5 transition-colors hover:bg-muted/70">
+                            <div className="roundedxl border border-border bg-muted/50 p-5 transition-colors hover:bg-muted/70">
                                 <div className="flex items-start justify-between">
                                     <div>
                                         <p className="text-sm font-medium text-muted-foreground">
@@ -113,7 +118,7 @@ export default function HeroSection() {
                                 </div>
                             </div>
                             <div className="grid gap-4 sm:grid-cols-2">
-                                <div className="rounded-2xl border border-border bg-muted/50 p-5 transition-colors hover:bg-muted/70">
+                                <div className="roundedxl border border-border bg-muted/50 p-5 transition-colors hover:bg-muted/70">
                                     <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
                                         Pending Review
                                     </p>
@@ -124,7 +129,7 @@ export default function HeroSection() {
                                         Needs attention
                                     </p>
                                 </div>
-                                <div className="rounded-2xl border border-border bg-muted/50 p-5 transition-colors hover:bg-muted/70">
+                                <div className="roundedxl border border-border bg-muted/50 p-5 transition-colors hover:bg-muted/70">
                                     <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
                                         Cash on Hand
                                     </p>
@@ -138,7 +143,7 @@ export default function HeroSection() {
                             </div>
                         </div>
                     </div>
-                    <div className="absolute -bottom-6 -left-8 hidden w-48 rounded-2xl border border-border bg-background p-5 shadow-xl backdrop-blur lg:block">
+                    <div className="absolute -bottom-6 -left-8 hidden w-48 roundedxl border border-border bg-background p-5 shadow-xl backdrop-blur lg:block">
                         <div className="flex items-center gap-3">
                             <div className="flex -space-x-2">
                                 <div className="h-8 w-8 rounded-full border-2 border-background bg-gray-300"></div>

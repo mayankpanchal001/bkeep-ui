@@ -216,7 +216,7 @@ export function FullFeaturedTableExample() {
                             setIsLoading(true);
                             setTimeout(() => setIsLoading(false), 1500);
                         }}
-                        className="px-4 py-2 text-sm bg-primary/10 hover:bg-primary/20 rounded-lg"
+                        className="px-4 py-2 text-sm bg-muted hover:bg-accent/30 rounded-lg"
                     >
                         Toggle Loading
                     </button>
@@ -281,7 +281,7 @@ export function FullFeaturedTableExample() {
                             message="No users found"
                             description="Try adjusting your filters or add new users."
                             action={
-                                <button className="px-4 py-2 text-sm font-medium text-surface bg-secondary hover:bg-secondary/90 rounded-lg">
+                                <button className="px-4 py-2 text-sm font-medium text-foreground bg-secondary hover:bg-secondary/90 rounded-lg">
                                     Add User
                                 </button>
                             }
@@ -301,7 +301,7 @@ export function FullFeaturedTableExample() {
                                     </div>
                                 </TableCell>
                                 <TableCell>
-                                    <span className="text-primary/60">
+                                    <span className="text-muted-foreground">
                                         {user.email}
                                     </span>
                                 </TableCell>
@@ -394,7 +394,7 @@ function Avatar({ name }: { name: string }) {
         .map((n) => n[0])
         .join('');
     return (
-        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-secondary to-accent flex items-center justify-center text-surface text-xs font-semibold">
+        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-secondary to-accent flex items-center justify-center text-foreground text-xs font-semibold">
             {initials}
         </div>
     );
@@ -402,9 +402,9 @@ function Avatar({ name }: { name: string }) {
 
 function RoleBadge({ role }: { role: User['role'] }) {
     const styles = {
-        Admin: 'bg-secondary/20 text-secondary',
-        Manager: 'bg-secondary/20 text-secondary',
-        User: 'bg-primary/10 text-primary',
+        Admin: 'bg-secondary/20 text-secondary-foreground',
+        Manager: 'bg-secondary/20 text-secondary-foreground',
+        User: 'bg-muted text-muted-foreground',
     };
 
     return (
@@ -421,7 +421,9 @@ function StatusBadge({ status }: { status: User['status'] }) {
         <div className="flex items-center gap-2">
             <div
                 className={`w-2 h-2 rounded-full ${
-                    status === 'active' ? 'bg-secondary' : 'bg-primary/40'
+                    status === 'active'
+                        ? 'bg-green-500'
+                        : 'bg-muted-foreground/40'
                 }`}
             />
             <span className="capitalize text-sm">{status}</span>
@@ -436,7 +438,7 @@ function ActionButtons({ userId }: { userId: string }) {
                 <TooltipTrigger asChild>
                     <button
                         onClick={() => alert(`Edit user ${userId}`)}
-                        className="p-1.5 text-primary/60 hover:text-secondary hover:bg-secondary/20 rounded transition-colors"
+                        className="p-1.5 text-muted-foreground hover:text-primary hover:bg-accent rounded transition-colors"
                     >
                         <svg
                             className="w-4 h-4"
@@ -459,7 +461,7 @@ function ActionButtons({ userId }: { userId: string }) {
                 <TooltipTrigger asChild>
                     <button
                         onClick={() => alert(`Delete user ${userId}`)}
-                        className="p-1.5 text-primary/60 hover:text-destructive hover:bg-destructive/20 rounded transition-colors"
+                        className="p-1.5 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded transition-colors"
                     >
                         <svg
                             className="w-4 h-4"
@@ -488,28 +490,28 @@ function ActionButtons({ userId }: { userId: string }) {
 
 export default function TableExample() {
     return (
-        <div className="min-h-screen bg-surface-muted py-8">
+        <div className="min-h-screen bg-muted py-8">
             <div className="max-w-7xl mx-auto space-y-12">
                 <div className="text-center">
                     <h1 className="text-3xl font-bold bg-gradient-to-r from-secondary to-accent bg-clip-text text-transparent">
                         Modern Table Component
                     </h1>
-                    <p className="mt-2 text-primary/70">
+                    <p className="mt-2 text-muted-foreground">
                         Reusable table with bulk selection, sorting, pagination,
                         and more
                     </p>
                 </div>
 
                 <div className="space-y-8">
-                    <section className="bg-card dark:bg-surface-muted rounded-xl shadow-sm border border-primary/10 dark:border-primary/20 overflow-hidden">
+                    <section className="bg-card dark:bg-card rounded-xl shadow-sm border border-border overflow-hidden">
                         <FullFeaturedTableExample />
                     </section>
 
-                    <section className="bg-card dark:bg-surface-muted rounded-xl shadow-sm border border-primary/10 dark:border-primary/20 overflow-hidden">
+                    <section className="bg-card dark:bg-card rounded-xl shadow-sm border border-border overflow-hidden">
                         <BasicTableExample />
                     </section>
 
-                    <section className="bg-card dark:bg-surface-muted rounded-xl shadow-sm border border-primary/10 dark:border-primary/20 overflow-hidden">
+                    <section className="bg-card dark:bg-card rounded-xl shadow-sm border border-border overflow-hidden">
                         <MinimalTableExample />
                     </section>
                 </div>

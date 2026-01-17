@@ -1,9 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Icons } from '../../components/shared/Icons';
-import Button from '../../components/typography/Button';
-import { InputField } from '../../components/typography/InputFields';
 import { Badge } from '../../components/ui/badge';
+import { Button } from '../../components/ui/button';
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -11,6 +10,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '../../components/ui/dropdown-menu';
+import Input from '../../components/ui/input';
 import {
     Table,
     TableBody,
@@ -124,7 +124,7 @@ const ContactsPage = () => {
         <div className="space-y-4">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
                 <div className="w-full sm:min-w-[320px]">
-                    <InputField
+                    <Input
                         id="search"
                         type="search"
                         placeholder="Search contacts..."
@@ -134,7 +134,6 @@ const ContactsPage = () => {
                 </div>
                 <Button
                     type="button"
-                    variant="primary"
                     size="sm"
                     onClick={handleGoToCreate}
                     className="shrink-0"
@@ -210,11 +209,7 @@ const ContactsPage = () => {
                             message="No contacts found"
                             description="Add your first contact to get started"
                             action={
-                                <Button
-                                    variant="primary"
-                                    size="sm"
-                                    onClick={handleGoToCreate}
-                                >
+                                <Button size="sm" onClick={handleGoToCreate}>
                                     <Icons.Plus className="w-4 h-4 mr-2" />
                                     New Contact
                                 </Button>

@@ -13,8 +13,6 @@ import {
 import { Plus } from 'lucide-react';
 import * as React from 'react';
 
-import ActionMenu, { type ActionMenuItem } from '../shared/ActionMenu';
-import { Icons } from '../shared/Icons';
 import {
     useDeleteTax,
     useDisableTax,
@@ -22,6 +20,8 @@ import {
     useTaxes,
 } from '../../services/apis/taxApi';
 import { Tax, TaxFilters } from '../../types/tax';
+import ActionMenu, { type ActionMenuItem } from '../shared/ActionMenu';
+import { Icons } from '../shared/Icons';
 import {
     AlertDialog,
     AlertDialogContent,
@@ -230,20 +230,20 @@ const TaxesTab = () => {
             </div>
 
             {/* <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div className="bg-card rounded-2 shadow-sm border border-primary/10 p-4">
+                <div className="bg-card rounded shadow-sm border border-primary/10 p-4">
                     <p className="text-xs text-primary/50 uppercase">Total</p>
                     <p className="text-lg font-bold text-primary">
                         {statsData?.data?.total ?? taxes.length}
                     </p>
                 </div>
-                <div className="bg-card rounded-2 shadow-sm border border-primary/10 p-4">
+                <div className="bg-card rounded shadow-sm border border-primary/10 p-4">
                     <p className="text-xs text-primary/50 uppercase">Active</p>
                     <p className="text-lg font-bold text-primary">
                         {statsData?.data?.active ??
                             taxes.filter((t) => t.isActive).length}
                     </p>
                 </div>
-                <div className="bg-card rounded-2 shadow-sm border border-primary/10 p-4">
+                <div className="bg-card rounded shadow-sm border border-primary/10 p-4">
                     <p className="text-xs text-primary/50 uppercase">
                         Inactive
                     </p>

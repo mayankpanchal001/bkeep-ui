@@ -8,7 +8,7 @@ import {
 } from '@/components/ui/collapsible';
 import { useContacts } from '@/services/apis/contactsApi';
 import { ChevronDown, GripVertical } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { useParams } from 'react-router';
 import { Badge } from '../../components/ui/badge';
 import {
@@ -16,6 +16,7 @@ import {
     useReorderJournalEntryLines,
 } from '../../services/apis/journalApi';
 import type { JournalEntry, JournalEntryLine } from '../../types/journal';
+import { cn } from '../../utils/cn';
 
 const toNumber = (v: unknown) => {
     if (typeof v === 'number') return Number.isFinite(v) ? v : 0;
@@ -60,6 +61,9 @@ export default function ViewJournalEntrypage() {
     const [draggedLineId, setDraggedLineId] = useState<string | null>(null);
     const [dragOverLineId, setDragOverLineId] = useState<string | null>(null);
     const reorderMutation = useReorderJournalEntryLines();
+    const dragLeaveTimeoutRef = useRef<
+        Map<HTMLElement, ReturnType<typeof setTimeout>>
+    >(new Map());
 
     const journalEntry = useMemo<JournalEntry | undefined>(() => {
         const root = data as unknown as Record<string, unknown> | undefined;
@@ -113,25 +117,156 @@ export default function ViewJournalEntrypage() {
         return map;
     }, [contactsData]);
 
-    const handleDragStart = (lineId: string) => {
-        if (journalEntry?.status !== 'draft') return;
-        setDraggedLineId(lineId);
-    };
+    const handleDragStart = (e: React.DragEvent, lineId: string) => {
+        if (journalEntry?.status !== 'draft' || reorderMutation.isPending) {
+            e.preventDefault();
+            return;
+        }
 
-    const handleDragOver = (e: React.DragEvent, lineId: string) => {
-        if (journalEntry?.status !== 'draft' || !draggedLineId) return;
-        e.preventDefault();
-        e.stopPropagation();
-        if (lineId !== draggedLineId) {
-            setDragOverLineId(lineId);
+        // Find the line to get its number for the drag image
+        const line = journalEntry.lines.find((l) => l.id === lineId);
+        const lineNumber = line?.lineNumber || '';
+
+        setDraggedLineId(lineId);
+        setDragOverLineId(null);
+
+        // Data transfer is already set in onDragStart handler
+        // Just ensure drop effect is set
+        e.dataTransfer.dropEffect = 'move';
+
+        // Add visual feedback to the drag handle
+        const target = e.currentTarget as HTMLElement;
+        if (target) {
+            target.style.opacity = '0.5';
+            target.style.cursor = 'grabbing';
+        }
+
+        // Add body class to prevent text selection during drag
+        document.body.classList.add('dragging');
+
+        // Create a simple drag image for better UX
+        try {
+            const dragImage = document.createElement('div');
+            dragImage.style.position = 'absolute';
+            dragImage.style.top = '-1000px';
+            dragImage.style.padding = '8px 12px';
+            dragImage.style.background = 'rgba(0, 0, 0, 0.85)';
+            dragImage.style.color = 'white';
+            dragImage.style.borderRadius = '6px';
+            dragImage.style.fontSize = '13px';
+            dragImage.style.fontWeight = '500';
+            dragImage.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.1)';
+            dragImage.textContent = `Moving line ${lineNumber}`;
+            document.body.appendChild(dragImage);
+            e.dataTransfer.setDragImage(dragImage, 0, 0);
+            setTimeout(() => {
+                if (document.body.contains(dragImage)) {
+                    document.body.removeChild(dragImage);
+                }
+            }, 0);
+        } catch (err) {
+            // Fallback if drag image creation fails
+            console.debug('Could not create drag image:', err);
         }
     };
 
-    const handleDragLeave = () => {
-        setDragOverLineId(null);
+    const handleDragOver = (e: React.DragEvent, lineId: string) => {
+        // Always prevent default to allow drop
+        e.preventDefault();
+        e.stopPropagation();
+
+        if (
+            journalEntry?.status !== 'draft' ||
+            !draggedLineId ||
+            reorderMutation.isPending
+        ) {
+            e.dataTransfer.dropEffect = 'none';
+            setDragOverLineId(null);
+            return;
+        }
+
+        // Set drop effect to show move cursor
+        e.dataTransfer.dropEffect = 'move';
+
+        // Update drag over state - only if different from dragged line
+        // This ensures we can drop on the other line even with only 2 lines
+        if (lineId !== draggedLineId) {
+            // Clear any pending dragLeave timeouts from all rows
+            dragLeaveTimeoutRef.current.forEach((timeoutId, element) => {
+                clearTimeout(timeoutId);
+                dragLeaveTimeoutRef.current.delete(element);
+            });
+
+            // Immediately update state - critical for 2-line case
+            setDragOverLineId(lineId);
+
+            // Mark the row as drag over for dragLeave handler
+            const target = e.currentTarget as HTMLElement;
+            if (target) {
+                target.setAttribute('data-dragover', 'true');
+            }
+        } else {
+            // Can't drop on itself
+            setDragOverLineId(null);
+            const target = e.currentTarget as HTMLElement;
+            if (target) {
+                target.removeAttribute('data-dragover');
+            }
+        }
+    };
+
+    const handleDragLeave = (e: React.DragEvent) => {
+        // Only clear if we're actually leaving the row (not entering a child)
+        const relatedTarget = e.relatedTarget as HTMLElement | null;
+        const currentTarget = e.currentTarget as HTMLElement;
+
+        // Check if we're moving to a child element within the same row
+        if (
+            relatedTarget &&
+            currentTarget.contains(relatedTarget) &&
+            relatedTarget !== currentTarget
+        ) {
+            // Still within the row, don't clear
+            return;
+        }
+
+        // Check if we're moving to another table row
+        // This is critical for 2-line case - we need to detect row transitions
+        if (relatedTarget) {
+            const closestRow = relatedTarget.closest('tr[data-row-id]');
+            if (closestRow && closestRow !== currentTarget) {
+                // Moving to another row - don't clear, let dragOver handle it
+                // The dragOver event will fire on the new row and update the state
+                return;
+            }
+        }
+
+        // For 2-line case: be more lenient - only clear if we're really leaving
+        // Use a small timeout to allow dragOver to fire on the other row first
+        const timeoutId = setTimeout(() => {
+            // Only clear if we're still not over the other row
+            // Check if dragOverLineId is set (meaning we're over another row)
+            if (!dragOverLineId || dragOverLineId === draggedLineId) {
+                setDragOverLineId(null);
+            }
+            dragLeaveTimeoutRef.current.delete(currentTarget);
+        }, 100);
+
+        // Store timeout ID to clear if dragOver fires quickly
+        dragLeaveTimeoutRef.current.set(currentTarget, timeoutId);
     };
 
     const handleDrop = (e: React.DragEvent, dropLineId: string) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        // Clear drag over attribute
+        const target = e.currentTarget as HTMLElement;
+        if (target) {
+            target.removeAttribute('data-dragover');
+        }
+
+        // Validate conditions
         if (
             !journalEntry ||
             !id ||
@@ -143,34 +278,40 @@ export default function ViewJournalEntrypage() {
             return;
         }
 
-        e.preventDefault();
-        e.stopPropagation();
-
+        // Don't do anything if dropping on itself
         if (draggedLineId === dropLineId) {
             setDraggedLineId(null);
             setDragOverLineId(null);
             return;
         }
 
+        // Get current lines
         const lines = [...journalEntry.lines];
         const draggedIndex = lines.findIndex(
             (line) => line.id === draggedLineId
         );
         const dropIndex = lines.findIndex((line) => line.id === dropLineId);
 
+        // Validate indices
         if (draggedIndex === -1 || dropIndex === -1) {
             setDraggedLineId(null);
             setDragOverLineId(null);
             return;
         }
 
-        // Remove the dragged line from its current position
+        // Reorder: Remove dragged line and insert at new position
         const [draggedLine] = lines.splice(draggedIndex, 1);
-        // Insert it at the new position
         lines.splice(dropIndex, 0, draggedLine);
 
         // Extract all line IDs in the new order (API requires all lines)
         const lineIds = lines.map((line) => line.id);
+
+        // Prevent multiple simultaneous reorders
+        if (reorderMutation.isPending) {
+            setDraggedLineId(null);
+            setDragOverLineId(null);
+            return;
+        }
 
         // Call API with all line IDs in the new order
         reorderMutation.mutate(
@@ -182,6 +323,7 @@ export default function ViewJournalEntrypage() {
                     setDragOverLineId(null);
                 },
                 onError: () => {
+                    // Clear drag state on error
                     setDraggedLineId(null);
                     setDragOverLineId(null);
                 },
@@ -189,7 +331,25 @@ export default function ViewJournalEntrypage() {
         );
     };
 
-    const handleDragEnd = () => {
+    const handleDragEnd = (e: React.DragEvent) => {
+        // Reset visual state
+        const target = e.currentTarget as HTMLElement;
+        if (target) {
+            target.style.opacity = '1';
+            target.style.cursor = 'grab';
+        }
+
+        // Remove body dragging class
+        document.body.classList.remove('dragging');
+
+        // Clear all drag over attributes
+        document.querySelectorAll('tr[data-dragover="true"]').forEach((row) => {
+            row.removeAttribute('data-dragover');
+        });
+
+        // Clear drag state immediately
+        // The drop handler will have already cleared it if drop occurred
+        // But if drag ended without drop, clear it here
         setDraggedLineId(null);
         setDragOverLineId(null);
     };
@@ -211,18 +371,79 @@ export default function ViewJournalEntrypage() {
                         </span>
                         {canReorder && (
                             <div
-                                draggable
+                                data-drag-handle
+                                draggable={!reorderMutation.isPending}
                                 onDragStart={(e) => {
-                                    handleDragStart(line.id);
+                                    e.stopPropagation();
+
+                                    // Prevent drag if reordering is in progress
+                                    if (reorderMutation.isPending) {
+                                        e.preventDefault();
+                                        return;
+                                    }
+
+                                    // Set drag data immediately for better browser compatibility
                                     e.dataTransfer.effectAllowed = 'move';
+                                    e.dataTransfer.dropEffect = 'move';
+                                    e.dataTransfer.setData(
+                                        'text/plain',
+                                        line.id
+                                    );
+                                    e.dataTransfer.setData(
+                                        'application/x-line-id',
+                                        line.id
+                                    );
+
+                                    // Call handler for state management and visual feedback
+                                    handleDragStart(e, line.id);
                                 }}
-                                onDragEnd={handleDragEnd}
-                                className={`cursor-grab active:cursor-grabbing ${
-                                    isDragging ? 'opacity-50' : ''
-                                }`}
-                                title="Drag to reorder"
+                                onDrag={(e) => {
+                                    // Keep drag effect during drag
+                                    e.stopPropagation();
+                                    if (
+                                        !reorderMutation.isPending &&
+                                        draggedLineId
+                                    ) {
+                                        e.dataTransfer.dropEffect = 'move';
+                                    }
+                                }}
+                                onDragEnd={(e) => {
+                                    e.stopPropagation();
+                                    handleDragEnd(e);
+                                }}
+                                onMouseDown={(e) => {
+                                    // Prevent text selection and row interactions
+                                    e.stopPropagation();
+                                    // Don't prevent default - we need native drag behavior
+                                }}
+                                onClick={(e) => {
+                                    // Prevent row click when clicking drag handle
+                                    e.stopPropagation();
+                                    e.preventDefault();
+                                }}
+                                onPointerDown={(e) => {
+                                    // Prevent pointer events from interfering
+                                    e.stopPropagation();
+                                }}
+                                className={cn(
+                                    'touch-none select-none inline-flex items-center justify-center transition-all',
+                                    reorderMutation.isPending
+                                        ? 'cursor-not-allowed opacity-30'
+                                        : isDragging
+                                          ? 'cursor-grabbing opacity-50'
+                                          : 'cursor-grab opacity-100 hover:opacity-80'
+                                )}
+                                title={
+                                    reorderMutation.isPending
+                                        ? 'Reordering...'
+                                        : 'Drag to reorder'
+                                }
+                                role="button"
+                                tabIndex={-1}
+                                aria-label={`Drag line ${line.lineNumber} to reorder`}
+                                aria-disabled={reorderMutation.isPending}
                             >
-                                <GripVertical className="h-4 w-4 text-primary/50" />
+                                <GripVertical className="h-4 w-4 text-muted-foreground hover:text-primary transition-colors pointer-events-none" />
                             </div>
                         )}
                     </div>
@@ -322,7 +543,9 @@ export default function ViewJournalEntrypage() {
                     </h3>
                     {journalEntry.status === 'draft' && (
                         <span className="text-sm text-primary/70">
-                            Drag and drop lines to reorder
+                            {reorderMutation.isPending
+                                ? 'Reordering...'
+                                : 'Drag and drop lines to reorder'}
                         </span>
                     )}
                 </div>
@@ -342,17 +565,20 @@ export default function ViewJournalEntrypage() {
                             : undefined
                     }
                     onRowDragOver={
-                        journalEntry.status === 'draft'
+                        journalEntry.status === 'draft' &&
+                        !reorderMutation.isPending
                             ? (e, line) => handleDragOver(e, line.id)
                             : undefined
                     }
                     onRowDragLeave={
-                        journalEntry.status === 'draft'
+                        journalEntry.status === 'draft' &&
+                        !reorderMutation.isPending
                             ? handleDragLeave
                             : undefined
                     }
                     onRowDrop={
-                        journalEntry.status === 'draft'
+                        journalEntry.status === 'draft' &&
+                        !reorderMutation.isPending
                             ? (e, line) => handleDrop(e, line.id)
                             : undefined
                     }
@@ -362,15 +588,30 @@ export default function ViewJournalEntrypage() {
                             : undefined
                     }
                     rowClassName={(line) => {
-                        const baseClasses = '';
+                        const baseClasses = 'transition-all duration-200';
                         if (journalEntry.status !== 'draft') return baseClasses;
-                        if (draggedLineId === line.id) {
-                            return `${baseClasses} opacity-50`;
+
+                        const isDragged = draggedLineId === line.id;
+                        const isDragOver = dragOverLineId === line.id;
+                        const isReordering = reorderMutation.isPending;
+
+                        if (isReordering) {
+                            return `${baseClasses} opacity-60`;
                         }
-                        if (dragOverLineId === line.id) {
-                            return `${baseClasses} border-t-2 border-primary`;
+
+                        if (isDragged) {
+                            return `${baseClasses} opacity-40 bg-muted/20`;
                         }
-                        return baseClasses;
+
+                        if (isDragOver) {
+                            return `${baseClasses} border-t-2 border-primary bg-primary/10 shadow-sm`;
+                        }
+
+                        if (draggedLineId && !isDragged) {
+                            return `${baseClasses} hover:bg-accent/30`;
+                        }
+
+                        return `${baseClasses} hover:bg-muted/20`;
                     }}
                     footerContent={
                         <tr className="bg-card border-t border-primary/10">

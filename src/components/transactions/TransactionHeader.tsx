@@ -1,4 +1,3 @@
-import Button from '@/components/typography/Button';
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -14,6 +13,7 @@ import {
     MessageSquare,
 } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { Button } from '../ui/button';
 import { BankCard } from './BankCard';
 import ImportTransactionsModal from './ImportTransactionsModal';
 
@@ -190,10 +190,7 @@ export function TransactionHeader({
 
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <Button
-                                variant="outline"
-                                className="text-green-700 border-green-700 hover:bg-green-50"
-                            >
+                            <Button variant="outline">
                                 Requests
                                 <ChevronDown className="w-4 h-4 ml-2" />
                             </Button>

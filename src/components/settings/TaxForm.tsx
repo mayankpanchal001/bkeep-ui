@@ -6,10 +6,11 @@ import {
     type UpdateTaxPayload,
 } from '../../services/apis/taxApi';
 import { Tax } from '../../types/tax';
-import Button from '../typography/Button';
-import { InputField, TextareaField } from '../typography/InputFields';
+import { Icons } from '../shared/Icons';
+import { Button } from '../ui/button';
 import { Checkbox } from '../ui/checkbox';
-
+import Input from '../ui/input';
+import { Textarea } from '../ui/textarea';
 interface TaxFormProps {
     onClose: () => void;
     initialData?: Tax;
@@ -99,12 +100,11 @@ const TaxForm = ({ onClose, initialData }: TaxFormProps) => {
         <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                    <InputField
+                    <Input
                         id="tax-name"
-                        label="Tax Name"
                         placeholder="e.g., HST"
                         value={formData.name}
-                        onChange={(e) =>
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                             setFormData({ ...formData, name: e.target.value })
                         }
                         required
@@ -116,12 +116,11 @@ const TaxForm = ({ onClose, initialData }: TaxFormProps) => {
                     )}
                 </div>
                 <div>
-                    <InputField
+                    <Input
                         id="tax-code"
-                        label="Code"
                         placeholder="e.g., HST-ON"
                         value={formData.code || ''}
-                        onChange={(e) =>
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                             setFormData({ ...formData, code: e.target.value })
                         }
                     />
@@ -130,12 +129,11 @@ const TaxForm = ({ onClose, initialData }: TaxFormProps) => {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                    <InputField
+                    <Input
                         id="tax-rate"
-                        label="Rate (%)"
                         placeholder="e.g., 13"
                         value={formData.ratePercent}
-                        onChange={(e) =>
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                             setFormData({
                                 ...formData,
                                 ratePercent: e.target.value,
@@ -171,12 +169,11 @@ const TaxForm = ({ onClose, initialData }: TaxFormProps) => {
             </div>
 
             <div>
-                <TextareaField
+                <Textarea
                     id="tax-description"
-                    label="Description"
                     placeholder="Optional description"
                     value={formData.description || ''}
-                    onChange={(e) =>
+                    onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
                         setFormData({
                             ...formData,
                             description: e.target.value,
@@ -191,11 +188,18 @@ const TaxForm = ({ onClose, initialData }: TaxFormProps) => {
                     variant="outline"
                     onClick={onClose}
                     disabled={isPending}
+                    startIcon={<Icons.Close className="w-4 h-4" />}
                 >
                     Cancel
                 </Button>
-                <Button type="submit" disabled={isPending}>
-                    {isEditMode ? 'Save changes' : 'Create tax'}
+                <Button
+                    type="submit"
+                    disabled={isPending}
+                    loading={isPending}
+                    variant="default"
+                    startIcon={<Icons.Save className="w-4 h-4" />}
+                >
+                    Save
                 </Button>
             </div>
         </form>

@@ -73,7 +73,7 @@ const notificationColors: Record<NotificationType, string> = {
     payment: 'bg-secondary/20 text-secondary',
     report: 'bg-secondary/20 text-secondary',
     alert: 'bg-accent/20 text-accent',
-    system: 'bg-surface-muted text-primary/70',
+    system: 'bg-muted text-primary/70',
 };
 
 const Navbar = ({ onSearchClick, onShortcutsClick }: NavbarProps) => {
@@ -173,7 +173,7 @@ const Navbar = ({ onSearchClick, onShortcutsClick }: NavbarProps) => {
     const isMac = navigator.userAgent.includes('Macintosh');
 
     return (
-        <nav className="flex items-center justify-between p-4 bg-card/80 dark:bg-surface-muted/80 backdrop-blur-md border-b border-primary/10 sticky top-0 z-40 w-full">
+        <nav className="flex items-center justify-between p-4 bg-card/80 dark:bg-muted/80 backdrop-blur-md border-b border-primary/10 sticky top-0 z-40 w-full">
             <div className="flex items-center gap-4">
                 <SidebarTrigger className="-ml-1" />
 
@@ -186,11 +186,11 @@ const Navbar = ({ onSearchClick, onShortcutsClick }: NavbarProps) => {
                     <TooltipTrigger asChild>
                         <button
                             onClick={onSearchClick}
-                            className="w-[min(150px,30vw)] hidden sm:flex items-center gap-2 px-3 py-1.5 bg-card dark:bg-surface-muted hover:bg-primary/10 rounded-md border border-primary/10 text-primary/50 transition-colors group"
+                            className="w-[min(150px,30vw)] hidden sm:flex items-center gap-2 px-3 py-1.5 bg-card dark:bg-muted hover:bg-primary/10 rounded-md border border-primary/10 text-primary/50 transition-colors group"
                         >
                             <Search className="w-3.5 h-3.5 group-hover:text-primary" />
                             <span className="text-xs font-medium">Search</span>
-                            <kbd className="ml-auto inline-block px-1.5 py-0.5 text-[10px] font-bold text-primary/40 bg-card dark:bg-surface-muted border border-primary/10 rounded shadow-sm">
+                            <kbd className="ml-auto inline-block px-1.5 py-0.5 text-[10px] font-bold text-primary/40 bg-card dark:bg-muted border border-primary/10 rounded shadow-sm">
                                 {isMac ? '⌘' : 'Ctrl'}
                             </kbd>
                         </button>
@@ -203,13 +203,13 @@ const Navbar = ({ onSearchClick, onShortcutsClick }: NavbarProps) => {
                     <TooltipTrigger asChild>
                         <button
                             onClick={onShortcutsClick}
-                            className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-card dark:bg-surface-muted hover:bg-primary/10 rounded-md border border-primary/10 text-primary/50 transition-colors group"
+                            className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-card dark:bg-muted hover:bg-primary/10 rounded-md border border-primary/10 text-primary/50 transition-colors group"
                         >
                             <Keyboard className="w-3.5 h-3.5 group-hover:text-primary" />
                             <span className="text-xs font-medium">
                                 Shortcuts
                             </span>
-                            <kbd className="ml-auto inline-block px-1.5 py-0.5 text-[10px] font-bold text-primary/40 bg-card dark:bg-surface-muted border border-primary/10 rounded shadow-sm">
+                            <kbd className="ml-auto inline-block px-1.5 py-0.5 text-[10px] font-bold text-primary/40 bg-card dark:bg-muted border border-primary/10 rounded shadow-sm">
                                 ?
                             </kbd>
                         </button>
@@ -627,7 +627,7 @@ const Navbar = ({ onSearchClick, onShortcutsClick }: NavbarProps) => {
                         <TooltipTrigger asChild>
                             <DropdownMenuTrigger asChild>
                                 <button
-                                    className="w-8 h-8 p-1 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center text-xs text-primary font-semibold hover:from-primary/30 hover:to-primary/20 transition-colors"
+                                    className="w-8 h-8 p-1 rounded-full bg-linear-to-br from-primary/20 to-primary/10 flex items-center justify-center text-xs text-primary font-semibold hover:from-primary/30 hover:to-primary/20 transition-colors"
                                     aria-label="User menu"
                                 >
                                     {initials}
@@ -641,7 +641,7 @@ const Navbar = ({ onSearchClick, onShortcutsClick }: NavbarProps) => {
                     <DropdownMenuContent className="w-72" align="end">
                         <DropdownMenuLabel>
                             <div className="flex items-center gap-3">
-                                <div className="w-9 h-9 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center text-primary font-semibold">
+                                <div className="w-9 h-9 rounded-full bg-linear-to-br from-primary/20 to-primary/10 flex items-center justify-center text-primary font-semibold">
                                     {initials}
                                 </div>
                                 <div className="min-w-0">
