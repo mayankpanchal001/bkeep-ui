@@ -15,13 +15,13 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import { useChartOfAccounts } from '@/services/apis/chartsAccountApi';
 import { useContacts } from '@/services/apis/contactsApi';
 import { useTaxes } from '@/services/apis/taxApi';
 import type { CreateJournalEntryPayload } from '@/types/journal';
 import { useMemo, useState } from 'react';
 import { FaPlus, FaTrash } from 'react-icons/fa';
-import Input from '../ui/input';
+import { CurrencyInput } from '@/pages/protected/CreateJournalEntrypage';
+import { useChartOfAccounts } from '@/services/apis/chartsAccountApi';
 
 type JournalEntryFormProps = {
     initialData?: Partial<CreateJournalEntryPayload>;
@@ -330,7 +330,8 @@ export function JournalEntryForm({
                     type="text"
                     value={entryNumber}
                     onChange={(e) => setEntryNumber(e.target.value)}
-                    placeholder="Optional"
+                    placeholder="Required"
+                    required
                 />
                 <div className="flex items-end">
                     <label className="flex items-center gap-3 text-sm text-primary/70 select-none">
@@ -454,35 +455,27 @@ export function JournalEntryForm({
                                     </Select>
                                 </TableCell>
                                 <TableCell align="right">
-                                    <Input
-                                        type="number"
+                                    <CurrencyInput
                                         value={line.debit}
-                                        onChange={(e) => {
-                                            const next = e.target.value;
+                                        onValueChange={(val) => {
                                             updateLine(index, {
-                                                debit: next,
-                                                credit: next ? '' : line.credit,
+                                                debit: val,
+                                                credit: val ? '' : line.credit,
                                             });
                                         }}
-                                        placeholder="0.00"
-                                        step="0.01"
-                                        min="0"
+                                        placeholder="$0.00"
                                     />
                                 </TableCell>
                                 <TableCell align="right" noTruncate>
-                                    <Input
-                                        type="number"
+                                    <CurrencyInput
                                         value={line.credit}
-                                        onChange={(e) => {
-                                            const next = e.target.value;
+                                        onValueChange={(val) => {
                                             updateLine(index, {
-                                                credit: next,
-                                                debit: next ? '' : line.debit,
+                                                credit: val,
+                                                debit: val ? '' : line.debit,
                                             });
                                         }}
-                                        placeholder="0.00"
-                                        step="0.01"
-                                        min="0"
+                                        placeholder="$0.00"
                                     />
                                 </TableCell>
                                 <TableCell noTruncate>
@@ -553,13 +546,19 @@ export function JournalEntryForm({
                     <span className="text-primary/70">
                         Debit:{' '}
                         <span className="text-primary font-semibold">
-                            ${totals.totalDebit.toFixed(2)}
+                            {totals.totalDebit.toLocaleString('en-US', {
+                                style: 'currency',
+                                currency: 'USD',
+                            })}
                         </span>
                     </span>
                     <span className="text-primary/70">
                         Credit:{' '}
                         <span className="text-primary font-semibold">
-                            ${totals.totalCredit.toFixed(2)}
+                            {totals.totalCredit.toLocaleString('en-US', {
+                                style: 'currency',
+                                currency: 'USD',
+                            })}
                         </span>
                     </span>
                     <span

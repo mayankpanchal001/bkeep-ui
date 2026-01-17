@@ -278,13 +278,21 @@ export default function ViewJournalEntrypage() {
             header: 'Debit',
             accessorKey: 'debit',
             className: 'text-right font-medium text-primary',
-            cell: (line) => `$${toNumber(line.debit).toFixed(2)}`,
+            cell: (line) =>
+                toNumber(line.debit).toLocaleString('en-US', {
+                    style: 'currency',
+                    currency: 'USD',
+                }),
         },
         {
             header: 'Credit',
             accessorKey: 'credit',
             className: 'text-right font-medium text-primary',
-            cell: (line) => `$${toNumber(line.credit).toFixed(2)}`,
+            cell: (line) =>
+                toNumber(line.credit).toLocaleString('en-US', {
+                    style: 'currency',
+                    currency: 'USD',
+                }),
         },
     ];
 
@@ -375,10 +383,20 @@ export default function ViewJournalEntrypage() {
                                 Total
                             </td>
                             <td className="px-3 py-2 text-right font-semibold text-sm text-primary">
-                                ${toNumber(journalEntry.totalDebit).toFixed(2)}
+                                {toNumber(
+                                    journalEntry.totalDebit
+                                ).toLocaleString('en-US', {
+                                    style: 'currency',
+                                    currency: 'USD',
+                                })}
                             </td>
                             <td className="px-3 py-2 text-right font-semibold text-sm text-primary">
-                                ${toNumber(journalEntry.totalCredit).toFixed(2)}
+                                {toNumber(
+                                    journalEntry.totalCredit
+                                ).toLocaleString('en-US', {
+                                    style: 'currency',
+                                    currency: 'USD',
+                                })}
                             </td>
                         </tr>
                     }
@@ -587,10 +605,12 @@ export default function ViewJournalEntrypage() {
                                         Total Debit
                                     </label>
                                     <p className="text-primary font-semibold text-sm">
-                                        $
                                         {toNumber(
                                             journalEntry.totalDebit
-                                        ).toFixed(2)}
+                                        ).toLocaleString('en-US', {
+                                            style: 'currency',
+                                            currency: 'USD',
+                                        })}
                                     </p>
                                 </div>
                                 <div>
@@ -598,10 +618,12 @@ export default function ViewJournalEntrypage() {
                                         Total Credit
                                     </label>
                                     <p className="text-primary font-semibold text-sm">
-                                        $
                                         {toNumber(
                                             journalEntry.totalCredit
-                                        ).toFixed(2)}
+                                        ).toLocaleString('en-US', {
+                                            style: 'currency',
+                                            currency: 'USD',
+                                        })}
                                     </p>
                                 </div>
                             </div>

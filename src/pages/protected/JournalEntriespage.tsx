@@ -929,18 +929,22 @@ export default function JournalEntriespage() {
                                 </TableCell>
                                 <TableCell align="right">
                                     <span className="whitespace-nowrap text-primary">
-                                        $
-                                        {Number(entry.totalDebit || 0).toFixed(
-                                            2
-                                        )}
+                                        {Number(
+                                            entry.totalDebit || 0
+                                        ).toLocaleString('en-US', {
+                                            style: 'currency',
+                                            currency: 'USD',
+                                        })}
                                     </span>
                                 </TableCell>
                                 <TableCell align="right">
                                     <span className="whitespace-nowrap text-primary">
-                                        $
-                                        {Number(entry.totalCredit || 0).toFixed(
-                                            2
-                                        )}
+                                        {Number(
+                                            entry.totalCredit || 0
+                                        ).toLocaleString('en-US', {
+                                            style: 'currency',
+                                            currency: 'USD',
+                                        })}
                                     </span>
                                 </TableCell>
                                 <TableCell>
