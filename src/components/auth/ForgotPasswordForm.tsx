@@ -1,10 +1,12 @@
+import { LogIn } from 'lucide-react';
 import React, { useState } from 'react';
 import { FaUser } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router';
 import { useForgotPassword } from '../../services/apis/authApi';
 import { showErrorToast, showSuccessToast } from '../../utills/toast';
-import Button from '../typography/Button';
-import { InputField } from '../typography/InputFields';
+import { Icons } from '../shared/Icons';
+import { Button } from '../ui/button';
+import Input from '../ui/input';
 
 export function ForgotPasswordForm() {
     const [email, setEmail] = useState('');
@@ -61,15 +63,16 @@ export function ForgotPasswordForm() {
 
             <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="space-y-4">
-                    <InputField
+                    <Input
                         id="forgot-password-email"
-                        label="Email ID"
                         type="email"
                         placeholder="Enter your email address"
                         value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                            setEmail(e.target.value)
+                        }
                         required
-                        icon={<FaUser className="w-4 h-4" />}
+                        startIcon={<FaUser className="w-4 h-4" />}
                     />
                 </div>
 
@@ -84,10 +87,11 @@ export function ForgotPasswordForm() {
                 <div className="flex flex-col gap-4">
                     <Button
                         type="submit"
-                        variant="primary"
+                        variant="default"
                         className="w-full"
                         loading={isForgotPasswordLoading}
                         disabled={isForgotPasswordLoading}
+                        startIcon={<Icons.Send className="w-4 h-4" />}
                     >
                         Send Reset Link
                     </Button>
@@ -97,6 +101,7 @@ export function ForgotPasswordForm() {
                             variant="outline"
                             className="w-full"
                             disabled={isForgotPasswordLoading}
+                            startIcon={<LogIn className="w-4 h-4" />}
                         >
                             Back to Login
                         </Button>

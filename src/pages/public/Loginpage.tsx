@@ -5,7 +5,7 @@ import { logo } from '../../utills/image';
 
 const Loginpage = () => {
     return (
-        <div className="grid h-dvh justify-center p-2 lg:grid-cols-2 overflow-hidden relative bg-surface-muted">
+        <div className="grid h-dvh justify-center p-2 lg:grid-cols-2 overflow-hidden relative bg-muted">
             {/* Left Side - Login Form Section */}
             <div className="flex max-sm:w-screen items-center justify-center h-full relative z-10 bg-transparent">
                 <div className="absolute top-8 right-8 z-20">

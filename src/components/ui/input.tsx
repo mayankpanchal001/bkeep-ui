@@ -1,32 +1,117 @@
 import { cn } from '@/utils/cn';
 import { format } from 'date-fns';
-import { CalendarIcon } from 'lucide-react';
+import { CalendarIcon, Eye, EyeOff, Loader2, X } from 'lucide-react';
 import * as React from 'react';
 import { Calendar } from './calendar';
 import { Popover, PopoverContent, PopoverTrigger } from './popover';
 
-type InputProps = React.ComponentProps<'input'> & {
+export interface InputProps
+    extends Omit<React.ComponentProps<'input'>, 'size'> {
+    /** Icon to display at the start of the input */
     startIcon?: React.ReactNode;
+    /** Icon to display at the end of the input */
     endIcon?: React.ReactNode;
-};
+    /** Show loading spinner at the end */
+    loading?: boolean;
+    /** Show clear button when input has value */
+    clearable?: boolean;
+    /** Callback when clear button is clicked */
+    onClear?: () => void;
+    /** Input size variant */
+    inputSize?: 'sm' | 'default' | 'lg';
+    /** Error state */
+    error?: boolean;
+    /** Success state */
+    success?: boolean;
+}
 
 export default function Input({
     className,
     type,
     startIcon,
     endIcon,
+    loading = false,
+    clearable = false,
+    onClear,
+    inputSize = 'default',
+    error,
+    success,
     value,
     onChange,
+    disabled,
     ...props
 }: InputProps) {
     const [open, setOpen] = React.useState(false);
-    const withAdornment = !!startIcon || !!endIcon;
+    const [showPassword, setShowPassword] = React.useState(false);
+    const inputRef = React.useRef<HTMLInputElement>(null);
+
+    const isPassword = type === 'password';
+    const hasValue = value !== undefined && value !== '';
+    const showClear = clearable && hasValue && !disabled && !loading;
+
+    // Size classes
+    const sizeClasses = {
+        sm: 'h-8 text-xs px-2.5 [&_svg]:size-3.5',
+        default: 'h-9 text-sm px-3 [&_svg]:size-4',
+        lg: 'h-10 text-base px-4 [&_svg]:size-5',
+    };
+
+    const iconPadding = {
+        sm: { start: 'pl-8', end: 'pr-8' },
+        default: { start: 'pl-9', end: 'pr-9' },
+        lg: { start: 'pl-11', end: 'pr-11' },
+    };
+
     const baseClasses = cn(
-        'file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm',
+        'file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input w-full min-w-0 rounded-md border bg-transparent py-1 shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50',
         'focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]',
-        'aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive',
-        className
+        error &&
+            'border-destructive focus-visible:border-destructive focus-visible:ring-destructive/20',
+        success &&
+            'border-green-500 focus-visible:border-green-500 focus-visible:ring-green-500/20',
+        sizeClasses[inputSize]
     );
+
+    // Icon size classes matching button component sizes
+    const iconSizeClasses = {
+        sm: '[&_svg]:size-3.5',
+        default: '[&_svg]:size-4',
+        lg: '[&_svg]:size-5',
+    };
+
+    const iconBaseClasses = cn(
+        'pointer-events-none absolute top-1/2 -translate-y-1/2 text-muted-foreground inline-flex items-center justify-center',
+        iconSizeClasses[inputSize]
+    );
+    const iconStartClasses = cn(
+        iconBaseClasses,
+        inputSize === 'sm'
+            ? 'left-2'
+            : inputSize === 'lg'
+              ? 'left-3'
+              : 'left-2.5'
+    );
+    const iconEndClasses = cn(
+        'absolute top-1/2 -translate-y-1/2 text-muted-foreground inline-flex items-center justify-center',
+        iconSizeClasses[inputSize],
+        inputSize === 'sm'
+            ? 'right-2'
+            : inputSize === 'lg'
+              ? 'right-3'
+              : 'right-2.5'
+    );
+
+    const handleClear = () => {
+        if (onClear) {
+            onClear();
+        } else if (onChange) {
+            const syntheticEvent = {
+                target: { value: '' },
+            } as React.ChangeEvent<HTMLInputElement>;
+            onChange(syntheticEvent);
+        }
+        inputRef.current?.focus();
+    };
 
     // Handle date input type with calendar popover
     if (type === 'date') {
@@ -35,14 +120,12 @@ export default function Input({
 
         const handleDateSelect = (date: Date | undefined) => {
             if (date && onChange) {
-                // Format date as yyyy-MM-dd for input value
                 const formattedDate = format(date, 'yyyy-MM-dd');
                 const syntheticEvent = {
                     target: { value: formattedDate },
                 } as React.ChangeEvent<HTMLInputElement>;
                 onChange(syntheticEvent);
             } else if (!date && onChange) {
-                // Handle clearing the date
                 const syntheticEvent = {
                     target: { value: '' },
                 } as React.ChangeEvent<HTMLInputElement>;
@@ -56,11 +139,12 @@ export default function Input({
                 <PopoverTrigger asChild>
                     <div className="relative w-full">
                         {startIcon && (
-                            <span className="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2 text-muted-foreground inline-flex items-center justify-center z-10">
+                            <span className={iconStartClasses}>
                                 {startIcon}
                             </span>
                         )}
                         <input
+                            ref={inputRef}
                             type="text"
                             readOnly
                             data-slot="input"
@@ -68,30 +152,28 @@ export default function Input({
                                 selectedDate ? format(selectedDate, 'PPP') : ''
                             }
                             placeholder={props.placeholder || 'Select date'}
+                            disabled={disabled}
                             className={cn(
                                 baseClasses,
-                                startIcon && 'pl-9',
-                                !endIcon && !startIcon && 'pr-9',
-                                endIcon && 'pr-9',
-                                'cursor-pointer'
+                                startIcon && iconPadding[inputSize].start,
+                                iconPadding[inputSize].end,
+                                'cursor-pointer',
+                                className
                             )}
-                            onClick={() => setOpen(true)}
+                            onClick={() => !disabled && setOpen(true)}
                             {...(props as Omit<
                                 React.ComponentProps<'input'>,
                                 'type' | 'value' | 'onChange' | 'className'
                             >)}
                         />
-                        {endIcon ? (
-                            <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground inline-flex items-center justify-center z-10">
-                                {endIcon}
-                            </span>
-                        ) : (
-                            !startIcon && (
-                                <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-primary/60 inline-flex items-center justify-center z-10">
-                                    <CalendarIcon className="h-4 w-4" />
-                                </span>
-                            )
-                        )}
+                        <span
+                            className={cn(
+                                iconEndClasses,
+                                'pointer-events-none'
+                            )}
+                        >
+                            {endIcon || <CalendarIcon />}
+                        </span>
                     </div>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0" align="start">
@@ -106,43 +188,66 @@ export default function Input({
         );
     }
 
-    if (!withAdornment) {
-        return (
-            <input
-                type={type}
-                data-slot="input"
-                className={baseClasses}
-                value={value}
-                onChange={onChange}
-                {...props}
-            />
-        );
-    }
+    // Determine what to show at the end
+    const hasEndAdornment = endIcon || loading || showClear || isPassword;
+    const hasStartAdornment = !!startIcon;
+
+    // Password toggle
+    const actualType = isPassword && showPassword ? 'text' : type;
 
     return (
         <div className="relative w-full">
-            {startIcon ? (
-                <span className="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2 text-muted-foreground inline-flex items-center justify-center">
-                    {startIcon}
-                </span>
-            ) : null}
+            {hasStartAdornment && (
+                <span className={iconStartClasses}>{startIcon}</span>
+            )}
             <input
-                type={type}
+                ref={inputRef}
+                type={actualType}
                 data-slot="input"
+                disabled={disabled}
                 className={cn(
                     baseClasses,
-                    startIcon && 'pl-9',
-                    endIcon && 'pr-9'
+                    hasStartAdornment && iconPadding[inputSize].start,
+                    hasEndAdornment && iconPadding[inputSize].end,
+                    className
                 )}
                 value={value}
                 onChange={onChange}
                 {...props}
             />
-            {endIcon ? (
-                <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground inline-flex items-center justify-center">
-                    {endIcon}
+            {hasEndAdornment && (
+                <span className={iconEndClasses}>
+                    {loading ? (
+                        <Loader2 className="animate-spin" />
+                    ) : showClear ? (
+                        <button
+                            type="button"
+                            onClick={handleClear}
+                            className={cn(
+                                'pointer-events-auto p-0.5 rounded-sm hover:bg-muted transition-colors',
+                                iconSizeClasses[inputSize]
+                            )}
+                            tabIndex={-1}
+                        >
+                            <X />
+                        </button>
+                    ) : isPassword ? (
+                        <button
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)}
+                            className={cn(
+                                'pointer-events-auto p-0.5 rounded-sm hover:bg-muted transition-colors',
+                                iconSizeClasses[inputSize]
+                            )}
+                            tabIndex={-1}
+                        >
+                            {showPassword ? <EyeOff /> : <Eye />}
+                        </button>
+                    ) : (
+                        endIcon
+                    )}
                 </span>
-            ) : null}
+            )}
         </div>
     );
 }

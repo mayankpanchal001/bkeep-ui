@@ -1,3 +1,4 @@
+import { ArrowLeft, ArrowRight, Check } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import {
     FaCheckCircle,
@@ -13,8 +14,8 @@ import {
     useVerifyTOTP,
 } from '../../services/apis/mfaApi';
 import { showSuccessToast } from '../../utills/toast';
-import Button from '../typography/Button';
-import { InputField } from '../typography/InputFields';
+import { Button } from '../ui/button';
+import Input from '../ui/input';
 
 interface TOTPSetupModalProps {
     isOpen: boolean;
@@ -145,7 +146,7 @@ const TOTPSetupModal = ({
                 onClose()
             }
         >
-            <div className="w-full max-w-2xl rounded-2 bg-card p-4 shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div className="w-full max-w-2xl rounded bg-card p-4 shadow-2xl max-h-[90vh] overflow-y-auto">
                 <div className="flex items-center justify-between mb-6">
                     <h3 className="text-xl font-semibold text-primary">
                         {step === 'setup'
@@ -164,7 +165,7 @@ const TOTPSetupModal = ({
                 {step === 'setup' ? (
                     <div className="space-y-6">
                         {/* Instructions */}
-                        <div className="bg-blue-50 border border-blue-200 rounded-2 p-4">
+                        <div className="bg-blue-50 border border-blue-200 rounded p-4">
                             <h4 className="font-semibold text-blue-900 mb-2 flex items-center gap-2">
                                 <FaQrcode className="w-4 h-4" />
                                 Step 1: Scan QR Code
@@ -177,7 +178,7 @@ const TOTPSetupModal = ({
                         </div>
 
                         {/* QR Code */}
-                        <div className="flex justify-center p-4 bg-card border-2 border-primary/10 rounded-2">
+                        <div className="flex justify-center p-4 bg-card border-2 border-primary/10 rounded">
                             <img
                                 src={totpData.qrCode}
                                 alt="TOTP QR Code"
@@ -186,7 +187,7 @@ const TOTPSetupModal = ({
                         </div>
 
                         {/* Manual Setup */}
-                        <div className="bg-card border border-primary/10 rounded-2 p-4">
+                        <div className="bg-card border border-primary/10 rounded p-4">
                             <h4 className="font-semibold text-primary mb-3 flex items-center gap-2">
                                 <FaKey className="w-4 h-4" />
                                 Can't scan? Enter manually
@@ -202,7 +203,7 @@ const TOTPSetupModal = ({
                                     <Button
                                         type="button"
                                         variant={
-                                            copiedSecret ? 'primary' : 'outline'
+                                            copiedSecret ? 'default' : 'outline'
                                         }
                                         size="sm"
                                         onClick={handleCopySecret}
@@ -218,7 +219,7 @@ const TOTPSetupModal = ({
                         </div>
 
                         {/* Backup Codes */}
-                        <div className="bg-yellow-50 border border-yellow-200 rounded-2 p-4">
+                        <div className="bg-yellow-50 border border-yellow-200 rounded p-4">
                             <h4 className="font-semibold text-yellow-900 mb-2">
                                 Save Your Backup Codes
                             </h4>
@@ -284,7 +285,9 @@ const TOTPSetupModal = ({
                             </Button>
                             <Button
                                 type="button"
-                                variant="primary"
+                                variant="default"
+                                size="default"
+                                startIcon={<ArrowRight className="w-4 h-4" />}
                                 onClick={handleProceedToVerify}
                                 disabled={isSettingUp}
                             >
@@ -295,7 +298,7 @@ const TOTPSetupModal = ({
                 ) : (
                     <form onSubmit={handleVerify} className="space-y-6">
                         {/* Verification Instructions */}
-                        <div className="bg-blue-50 border border-blue-200 rounded-2 p-4">
+                        <div className="bg-blue-50 border border-blue-200 rounded p-4">
                             <h4 className="font-semibold text-blue-900 mb-2">
                                 Step 2: Verify Your Setup
                             </h4>
@@ -306,20 +309,21 @@ const TOTPSetupModal = ({
                         </div>
 
                         {/* Verification Code Input */}
-                        <InputField
+                        <Input
                             id="verification-code"
-                            label="Verification Code"
                             type="text"
                             placeholder="Enter 6-digit code"
                             value={verificationCode}
-                            onChange={(e) => {
+                            onChange={(
+                                e: React.ChangeEvent<HTMLInputElement>
+                            ) => {
                                 const value = e.target.value.replace(/\D/g, '');
                                 if (value.length <= 6) {
                                     setVerificationCode(value);
                                 }
                             }}
+                            autoComplete="one-time-code"
                             required
-                            maxLength={6}
                         />
 
                         {/* Action Buttons */}
@@ -329,12 +333,15 @@ const TOTPSetupModal = ({
                                 variant="outline"
                                 onClick={() => setStep('setup')}
                                 disabled={isVerifying}
+                                startIcon={<ArrowLeft className="w-4 h-4" />}
                             >
                                 Back
                             </Button>
                             <Button
                                 type="submit"
-                                variant="primary"
+                                variant="default"
+                                size="default"
+                                startIcon={<Check className="w-4 h-4" />}
                                 loading={isVerifying}
                                 disabled={
                                     isVerifying || verificationCode.length !== 6
@@ -349,5 +356,4 @@ const TOTPSetupModal = ({
         </div>
     );
 };
-
 export default TOTPSetupModal;

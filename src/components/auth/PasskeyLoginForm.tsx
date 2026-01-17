@@ -1,4 +1,5 @@
 import { startAuthentication } from '@simplewebauthn/browser';
+import { LogIn } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { FaFingerprint, FaTimes, FaUser } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router';
@@ -15,7 +16,7 @@ import {
 } from '../../utills/passkey';
 import { logPasskeyDiagnostics } from '../../utills/passkeyDebug';
 import { showErrorToast, showSuccessToast } from '../../utills/toast';
-import Button from '../typography/Button';
+import { Button } from '../ui/button';
 
 export function PasskeyLoginForm() {
     const [storedUser, setStoredUser] = useState(getStoredPasskeyUser());
@@ -166,7 +167,12 @@ export function PasskeyLoginForm() {
                     password.
                 </p>
                 <Link to="/login">
-                    <Button variant="primary">Go to Sign In</Button>
+                    <Button
+                        variant="default"
+                        startIcon={<LogIn className="w-4 h-4" />}
+                    >
+                        Go to Sign In
+                    </Button>
                 </Link>
             </div>
         );
@@ -190,7 +196,7 @@ export function PasskeyLoginForm() {
                     </p>
                 </div>
 
-                <div className="bg-blue-50 border border-blue-200 rounded-2 p-4 text-left">
+                <div className="bg-blue-50 border border-blue-200 rounded p-4 text-left">
                     <ol className="text-sm text-blue-900 space-y-2">
                         <li className="flex gap-2">
                             <span className="font-semibold">1.</span>
@@ -215,8 +221,11 @@ export function PasskeyLoginForm() {
                 </div>
 
                 <Link to="/login">
-                    <Button variant="primary" className="w-full">
-                        <FaUser className="w-4 h-4" />
+                    <Button
+                        variant="default"
+                        className="w-full"
+                        startIcon={<FaUser className="w-4 h-4" />}
+                    >
                         Sign In with Email & Password
                     </Button>
                 </Link>
@@ -302,13 +311,13 @@ export function PasskeyLoginForm() {
             {/* Passkey Login Button */}
             <Button
                 type="button"
-                variant="primary"
+                variant="default"
                 className="w-full normal-case"
+                startIcon={<FaFingerprint className="w-5 h-5" />}
                 onClick={handlePasskeyLogin}
                 loading={isAuthenticating}
                 disabled={isAuthenticating}
             >
-                <FaFingerprint className="w-5 h-5" />
                 {isAuthenticating
                     ? 'Authenticating with passkey...'
                     : 'Sign in with Passkey '}

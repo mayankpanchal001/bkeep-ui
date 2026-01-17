@@ -72,9 +72,10 @@ interface DataTableProps<T> {
     // Drag and Drop
     onRowDragStart?: (item: T) => void;
     onRowDragOver?: (e: React.DragEvent, item: T) => void;
-    onRowDragLeave?: () => void;
+    onRowDragEnter?: (e: React.DragEvent, item: T) => void;
+    onRowDragLeave?: (e: React.DragEvent) => void;
     onRowDrop?: (e: React.DragEvent, item: T) => void;
-    onRowDragEnd?: () => void;
+    onRowDragEnd?: (e: React.DragEvent) => void;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -194,9 +195,11 @@ export function DataTable<T extends { [key: string]: any }>({
                                         rowClassName?.(item)
                                     )}
                                     onClick={(e) => {
+                                        // Don't trigger row click if clicking on draggable elements, drag handles, or interactive elements
+                                        const target = e.target as HTMLElement;
                                         if (
-                                            (e.target as HTMLElement).closest(
-                                                'input[type="checkbox"], button, a, [role="checkbox"]'
+                                            target.closest(
+                                                'input[type="checkbox"], button, a, [role="checkbox"], [draggable="true"], [data-drag-handle]'
                                             )
                                         ) {
                                             return;
@@ -205,16 +208,51 @@ export function DataTable<T extends { [key: string]: any }>({
                                     }}
                                     onDragOver={
                                         onRowDragOver
-                                            ? (e) => onRowDragOver(e, item)
+                                            ? (e) => {
+                                                  // Always prevent default to allow drop
+                                                  e.preventDefault();
+                                                  e.stopPropagation();
+                                                  onRowDragOver(e, item);
+                                              }
                                             : undefined
                                     }
-                                    onDragLeave={onRowDragLeave}
+                                    onDragEnter={
+                                        onRowDragOver
+                                            ? (e) => {
+                                                  // Prevent default to allow drop
+                                                  e.preventDefault();
+                                                  e.stopPropagation();
+                                                  // Also trigger dragOver to ensure state is updated
+                                                  onRowDragOver(e, item);
+                                              }
+                                            : undefined
+                                    }
+                                    onDragLeave={
+                                        onRowDragLeave
+                                            ? (e) => {
+                                                  // Don't stop propagation - let the parent handle it
+                                                  // This ensures dragLeave works correctly with only 2 lines
+                                                  onRowDragLeave(e);
+                                              }
+                                            : undefined
+                                    }
                                     onDrop={
                                         onRowDrop
-                                            ? (e) => onRowDrop(e, item)
+                                            ? (e) => {
+                                                  e.preventDefault();
+                                                  e.stopPropagation();
+                                                  onRowDrop(e, item);
+                                              }
                                             : undefined
                                     }
-                                    onDragEnd={onRowDragEnd}
+                                    onDragEnd={
+                                        onRowDragEnd
+                                            ? (e) => {
+                                                  e.stopPropagation();
+                                                  onRowDragEnd(e);
+                                              }
+                                            : undefined
+                                    }
                                 >
                                     {onSelectionChange && (
                                         <TableCell className="w-12">

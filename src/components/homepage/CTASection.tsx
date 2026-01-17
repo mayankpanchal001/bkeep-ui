@@ -1,6 +1,6 @@
 import { CircleCheckIcon } from 'lucide-react';
 import { Link } from 'react-router';
-import Button from '../typography/Button';
+import { Button } from '../ui/button';
 
 export default function CTASection() {
     return (
@@ -23,7 +23,7 @@ export default function CTASection() {
                         <div className="flex flex-col items-center justify-start gap-4 pt-4 sm:flex-row">
                             <Link to="/register">
                                 <Button
-                                    variant="primary"
+                                    variant="default"
                                     className="bg-card text-foreground hover:bg-card/90"
                                 >
                                     Get started
@@ -46,7 +46,7 @@ export default function CTASection() {
                         </div>
                     </div>
                     <div className="grid gap-3 sm:grid-cols-2">
-                        <div className="flex items-start gap-3 rounded-2 bg-primary/20 p-4">
+                        <div className="flex items-start gap-3 rounded bg-primary/20 p-4">
                             <CircleCheckIcon className="size-4" />
                             <div>
                                 <p className="text-sm font-medium">
@@ -57,7 +57,7 @@ export default function CTASection() {
                                 </p>
                             </div>
                         </div>
-                        <div className="flex items-start gap-3 rounded-2 bg-primary/20 p-4">
+                        <div className="flex items-start gap-3 rounded bg-primary/20 p-4">
                             <CircleCheckIcon className="size-4" />
                             <div>
                                 <p className="text-sm font-medium">
@@ -68,7 +68,7 @@ export default function CTASection() {
                                 </p>
                             </div>
                         </div>
-                        <div className="flex items-start gap-3 rounded-2 bg-primary/20 p-4">
+                        <div className="flex items-start gap-3 rounded bg-primary/20 p-4">
                             <CircleCheckIcon className="size-4" />
                             <div>
                                 <p className="text-sm font-medium">
@@ -79,7 +79,7 @@ export default function CTASection() {
                                 </p>
                             </div>
                         </div>
-                        <div className="flex items-start gap-3 rounded-2 bg-primary/20 p-4">
+                        <div className="flex items-start gap-3 rounded bg-primary/20 p-4">
                             <CircleCheckIcon className="size-4" />
                             <div>
                                 <p className="text-sm font-medium">

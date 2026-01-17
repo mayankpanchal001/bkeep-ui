@@ -8,23 +8,28 @@ import {
     useTaxTemplatePreview,
 } from '../../services/apis/taxApi';
 import { useTemplates } from '../../services/apis/templatesApi';
+import { useAuth } from '../../stores/auth/authSelectore';
 import type {
     Template,
     TemplateListType,
     TemplateType,
 } from '../../types/templates';
-import { useAuth } from '../../stores/auth/authSelectore';
-import Button from '../typography/Button';
-import { InputField, SelectField } from '../typography/InputFields';
+import { Icons } from '../shared/Icons';
+import { Button } from '../ui/button';
+import Input from '../ui/input';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '../ui/select';
 
 const TemplatesTab = () => {
     const { user } = useAuth();
     const [search, setSearch] = useState('');
     const [templateType, setTemplateType] =
         useState<TemplateListType>('accounts');
-    const [isActiveFilter, setIsActiveFilter] = useState<
-        'all' | 'active' | 'inactive'
-    >('active');
     const [selectedTemplateId, setSelectedTemplateId] = useState<string | null>(
         null
     );
@@ -37,15 +42,11 @@ const TemplatesTab = () => {
         return {
             type: apiType,
             search: search.trim() || undefined,
-            isActive:
-                isActiveFilter === 'all'
-                    ? undefined
-                    : isActiveFilter === 'active',
             limit: 50,
             sort: 'updatedAt',
             order: 'desc' as const,
         };
-    }, [templateType, search, isActiveFilter]);
+    }, [templateType, search]);
 
     const { data: templatesData, isLoading: isTemplatesLoading } = useTemplates(
         listFilters,
@@ -106,47 +107,32 @@ const TemplatesTab = () => {
         <div className="space-y-4 py-4">
             <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
                 <div className="flex-1">
-                    <InputField
+                    <Input
                         id="template-search"
-                        label="Search"
                         placeholder="Search templates by name or description..."
                         value={search}
-                        onChange={(e) => setSearch(e.target.value)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                            setSearch(e.target.value)
+                        }
+                        startIcon={<Icons.Search className="w-4 h-4" />}
                     />
                 </div>
                 <div className="grid grid-cols-2 gap-3 lg:w-[520px]">
-                    <SelectField
-                        id="template-type"
-                        label="Type"
-                        labelShow
+                    <Select
                         value={templateType}
-                        onChange={(e) => {
-                            const nextType = e.target.value as TemplateListType;
-                            setTemplateType(nextType);
-                            setSelectedTemplateId(null);
-                        }}
-                        options={[
-                            { value: 'accounts', label: 'Accounts' },
-                            { value: 'tax', label: 'Tax' },
-                        ]}
-                    />
-                    <SelectField
-                        id="template-status"
-                        label="Status"
-                        labelShow
-                        value={isActiveFilter}
-                        onChange={(e) => {
-                            setIsActiveFilter(
-                                e.target.value as 'all' | 'active' | 'inactive'
-                            );
-                            setSelectedTemplateId(null);
-                        }}
-                        options={[
-                            { value: 'all', label: 'All' },
-                            { value: 'active', label: 'Active' },
-                            { value: 'inactive', label: 'Inactive' },
-                        ]}
-                    />
+                        onValueChange={(value: TemplateListType) =>
+                            setTemplateType(value)
+                        }
+                    >
+                        <SelectTrigger>
+                            <SelectValue placeholder="Select template type" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="all">All</SelectItem>
+                            <SelectItem value="active">Active</SelectItem>
+                            <SelectItem value="inactive">Inactive</SelectItem>
+                        </SelectContent>
+                    </Select>
                 </div>
             </div>
 
@@ -233,24 +219,24 @@ const TemplatesTab = () => {
                         </div>
                         {selectedTemplateId && templateType === 'accounts' ? (
                             <Button
-                                variant="primary"
+                                variant="default"
                                 onClick={() =>
                                     applyAccountsTemplate.mutate(
                                         selectedTemplateId
                                     )
                                 }
-                                loading={applyAccountsTemplate.isPending}
+                                startIcon={<Icons.Save className="w-4 h-4" />}
                                 disabled={isAccountsPreviewLoading}
                             >
                                 Apply Template
                             </Button>
                         ) : selectedTemplateId && templateType === 'tax' ? (
                             <Button
-                                variant="primary"
+                                variant="default"
                                 onClick={() =>
                                     applyTaxTemplate.mutate(selectedTemplateId)
                                 }
-                                loading={applyTaxTemplate.isPending}
+                                startIcon={<Icons.Save className="w-4 h-4" />}
                                 disabled={isTaxPreviewLoading}
                             >
                                 Apply Template

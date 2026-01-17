@@ -4,7 +4,7 @@ import { logo } from '../../utills/image';
 
 const Registerpage = () => {
     return (
-        <div className="grid h-dvh justify-center p-2 lg:grid-cols-2 overflow-hidden relative bg-surface-muted">
+        <div className="grid h-dvh justify-center p-2 lg:grid-cols-2 overflow-hidden relative bg-muted">
             {/* Background Glow Effects */}
             <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-blue-500/10 blur-[120px] rounded-full -translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
             <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-indigo-500/10 blur-[120px] rounded-full translate-x-1/2 translate-y-1/2 pointer-events-none"></div>
@@ -78,10 +78,10 @@ const Registerpage = () => {
                                 className="h-24 w-24 object-contain brightness-0 invert dark:brightness-100 dark:invert-0"
                             />
                         </div>
-                        <h1 className="text-[30px] font-semibold leading-[36px] text-surface mb-2 tracking-tight">
+                        <h1 className="text-[30px] font-semibold leading-[36px] text-foreground mb-2 tracking-tight">
                             Bkeep Accounting
                         </h1>
-                        <p className="text-[16px] text-surface/90 font-medium tracking-tight">
+                        <p className="text-[16px] text-foreground/90 font-medium tracking-tight">
                             Manage. Track. Grow. Succeed.
                         </p>
                     </div>
@@ -90,14 +90,14 @@ const Registerpage = () => {
                     <div className="absolute bottom-0 left-10 right-10">
                         <div className="relative grid grid-cols-2 border-t border-primary/20 dark:border-surface/20 pt-6 pb-8">
                             {/* Vertical Divider */}
-                            <div className="absolute left-1/2 top-6 h-[72px] w-px bg-primary/20 dark:bg-surface/20"></div>
+                            <div className="absolute left-1/2 top-6 h-[72px] w-px bg-primary/20 dark:bg-card/20"></div>
 
                             {/* Left Section */}
                             <div className="pr-9">
-                                <h3 className="text-surface text-[16px] font-semibold">
+                                <h3 className="text-foreground text-[16px] font-semibold">
                                     Ready to launch?
                                 </h3>
-                                <p className="text-surface/70 text-[14px] leading-relaxed">
+                                <p className="text-foreground/70 text-[14px] leading-relaxed">
                                     Clone the repo, install dependencies, and
                                     your dashboard is live in minutes.
                                 </p>
@@ -105,10 +105,10 @@ const Registerpage = () => {
 
                             {/* Right Section */}
                             <div className="pl-8">
-                                <h3 className="text-surface text-[16px] font-semibold">
+                                <h3 className="text-foreground text-[16px] font-semibold">
                                     Need help?
                                 </h3>
-                                <p className="text-surface/70 text-[14px] leading-relaxed">
+                                <p className="text-foreground/70 text-[14px] leading-relaxed">
                                     Check out the docs or open an issue on
                                     GitHub, community support is just a click
                                     away.

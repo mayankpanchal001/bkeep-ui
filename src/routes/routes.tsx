@@ -141,6 +141,11 @@ const UsersTab = lazyWithRetry(() => import('../components/settings/UsersTab'));
 const TemplatesTab = lazyWithRetry(
     () => import('../components/settings/TemplatesTab')
 );
+const PreferencesTabWrapper = lazyWithRetry(() =>
+    import('../components/settings/SettingsTabWrappers').then((module) => ({
+        default: module.PreferencesTabWrapper,
+    }))
+);
 
 // Helper component to wrap lazy-loaded routes with Suspense
 const withSuspense = (
@@ -269,6 +274,10 @@ const routes = createBrowserRouter([
                     {
                         path: '/settings/notifications',
                         element: withSuspense(NotificationsTabWrapper),
+                    },
+                    {
+                        path: '/settings/preferences',
+                        element: withSuspense(PreferencesTabWrapper),
                     },
                 ],
             },

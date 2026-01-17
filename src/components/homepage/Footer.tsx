@@ -1,8 +1,8 @@
+import { GithubIcon, LinkedinIcon, MailIcon, TwitterIcon } from 'lucide-react';
 import { Link } from 'react-router';
-import { GithubIcon, LinkedinIcon, TwitterIcon, MailIcon } from 'lucide-react';
 import { APP_TITLE } from '../../constants';
 import { logo } from '../../utills/image';
-import Button from '../typography/Button';
+import { Button } from '../ui/button';
 
 const footerLinks = [
     {
@@ -125,9 +125,10 @@ export default function Footer() {
                                     />
                                 </div>
                                 <Button
-                                    variant="primary"
+                                    variant="default"
                                     className="shrink-0"
-                                    size="md"
+                                    size="default"
+                                    startIcon={<MailIcon className="w-4 h-4" />}
                                 >
                                     Subscribe
                                 </Button>

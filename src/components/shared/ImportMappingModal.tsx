@@ -1,8 +1,14 @@
 import { useEffect, useState } from 'react';
 import { FaArrowRight, FaTimes } from 'react-icons/fa';
 import { ImportField } from '../../services/apis/chartsAccountApi';
-import Button from '../typography/Button';
-import { SelectField } from '../typography/InputFields';
+import { Button } from '../ui/button';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '../ui/select';
 
 interface ImportMappingModalProps {
     isOpen: boolean;
@@ -117,25 +123,23 @@ const ImportMappingModal = ({
                                     <FaArrowRight />
                                 </div>
                                 <div className="col-span-5">
-                                    <SelectField
+                                    <Select
                                         value={mapping[field.key] || ''}
-                                        onChange={(e) =>
-                                            handleMappingChange(
-                                                field.key,
-                                                e.target.value
-                                            )
+                                        onValueChange={(e) =>
+                                            handleMappingChange(field.key, e)
                                         }
-                                        options={[
-                                            {
-                                                value: '',
-                                                label: 'Select column...',
-                                            },
-                                            ...fileHeaders.map((h) => ({
-                                                value: h,
-                                                label: h,
-                                            })),
-                                        ]}
-                                    />
+                                    >
+                                        <SelectTrigger className="w-full">
+                                            <SelectValue placeholder="Select column..." />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {fileHeaders.map((h) => (
+                                                <SelectItem key={h} value={h}>
+                                                    {h}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
                                 </div>
                             </div>
                         ))}
@@ -152,10 +156,8 @@ const ImportMappingModal = ({
                         Cancel
                     </Button>
                     <Button
-                        variant="primary"
                         onClick={handleConfirm}
                         disabled={!isFormValid || isUploading}
-                        loading={isUploading}
                     >
                         Import Data
                     </Button>

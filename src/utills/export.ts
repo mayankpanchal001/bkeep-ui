@@ -9,22 +9,25 @@ export interface ExportData {
 // Theme colors - Matching theme.css values (light mode for Excel export)
 // These match the CSS variables defined in src/styles/theme.css
 const THEME_COLORS = {
-    primary: '1C1C1C', // --color-primary: #1c1c1c
-    accent: 'C55A11', // --color-accent: #c55a11 (was primary in old code)
-    secondary: '5E17EB', // --color-secondary: #5e17eb
-    surface: 'FFFFFF', // --color-surface: #ffffff
-    surfaceMuted: 'F6F7FB', // --color-surface-muted: #f6f7fb
+    primary: '1C1C1C', // --color-primary
+    accent: 'C55A11', // --color-accent
+    secondary: '5E17EB', // --color-secondary
+    card: 'FFFFFF', // --color-card
+    muted: 'F6F7FB', // --color-muted
     // Derived colors for styling
     primaryLight: 'E8A87A', // Lighter version of accent
     primaryVeryLight: 'F5E6D9', // Very light version of accent
     primaryLighter: 'FFB366', // Even lighter for header banner
     text: '1C1C1C', // Same as primary
     textLight: '666666', // Light text
-    border: 'E0E0E0', // Light border (approximation of rgba(28, 28, 28, 0.1))
-    background: 'FFFFFF', // Same as surface
-    sectionBg: 'F6F7FB', // Same as surface-muted
+    border: 'E0E0E0', // Light border (approximation)
+    background: 'FFFFFF', // --color-background
+    sectionBg: 'F6F7FB', // Same as muted
     blue: '5E17EB', // Use secondary color
-    white: 'FFFFFF', // Same as surface
+    white: 'FFFFFF', // Same as card
+    // Legacy aliases for backward compatibility
+    surface: 'FFFFFF', // Alias for card
+    surfaceMuted: 'F6F7FB', // Alias for muted
 };
 
 /**

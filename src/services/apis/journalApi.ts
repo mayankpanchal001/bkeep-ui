@@ -91,7 +91,13 @@ export async function getJournalEntries(
         `/journal-entries${params.toString() ? `?${params.toString()}` : ''}`
     );
     const payload = response.data as JournalEntriesListResponse;
-    const list = payload?.data?.journalEntries;
+
+    const rawData = payload?.data as unknown as {
+        items?: unknown[];
+        journalEntries?: unknown[];
+    };
+    const list = rawData?.items || rawData?.journalEntries;
+
     if (!Array.isArray(list)) return payload;
     return {
         ...payload,

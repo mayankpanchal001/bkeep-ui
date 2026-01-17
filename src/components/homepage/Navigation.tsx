@@ -1,9 +1,10 @@
+import { LogIn, Plus } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { FaBars, FaTimes } from 'react-icons/fa';
 import { Link } from 'react-router';
 import { APP_TITLE } from '../../constants';
 import { logo } from '../../utills/image';
-import Button from '../typography/Button';
+import { Button } from '../ui/button';
 import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
 
 const NAV_LINKS = [
@@ -63,9 +64,10 @@ export default function Navigation() {
 
                     <Link to="/login">
                         <Button
-                            variant="primary"
-                            size="md"
+                            variant="default"
+                            size="default"
                             tooltip="Sign in to your account"
+                            startIcon={<LogIn className="w-4 h-4" />}
                         >
                             Sign in
                         </Button>
@@ -117,7 +119,11 @@ export default function Navigation() {
                             onClick={() => setIsMobileMenuOpen(false)}
                             className="rounded-lg px-4 py-2 text-center text-sm font-semibold"
                         >
-                            <Button variant="primary" size="md">
+                            <Button
+                                variant="default"
+                                size="default"
+                                startIcon={<Plus className="w-4 h-4" />}
+                            >
                                 Get started
                             </Button>
                         </Link>

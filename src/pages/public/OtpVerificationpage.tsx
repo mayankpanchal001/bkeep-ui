@@ -1,5 +1,5 @@
-import Button from '@/components/typography/Button';
-import { InputField } from '@/components/typography/InputFields';
+import { Button } from '@/components/ui/button';
+import Input from '@/components/ui/input';
 import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { useVerifyMfa } from '../../services/apis/authApi';
@@ -168,8 +168,8 @@ const OtpVerificationpage = () => {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-surface-muted px-4">
-            <div className="w-full max-w-md bg-card rounded-2 shadow-xl p-4 lg:p-8 border border-primary/10">
+        <div className="min-h-screen flex items-center justify-center bg-muted px-4">
+            <div className="w-full max-w-md bg-card rounded shadow-xl p-4 lg:p-8 border border-primary/10">
                 <h1 className="text-2xl font-bold text-primary mb-2">
                     {getTitle()}
                 </h1>
@@ -178,15 +178,8 @@ const OtpVerificationpage = () => {
                 </p>
 
                 <form onSubmit={handleSubmit} className="space-y-6">
-                    <InputField
+                    <Input
                         id="otp-code"
-                        label={
-                            mfaType === 'totp'
-                                ? isBackupCode
-                                    ? 'Backup Code'
-                                    : 'Authenticator Code'
-                                : 'Verification Code'
-                        }
                         value={code}
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                             const value = isBackupCode
@@ -227,7 +220,7 @@ const OtpVerificationpage = () => {
                     <div className="flex flex-col gap-3">
                         <Button
                             type="submit"
-                            variant="primary"
+                            variant="default"
                             className="w-full"
                             loading={isVerifying}
                             disabled={

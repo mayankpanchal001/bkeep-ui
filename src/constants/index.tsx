@@ -105,6 +105,11 @@ export const SIDEBAR_ITEMS: SidebarItemProps[] = [
                 path: '/settings/users',
             },
             {
+                label: 'Preferences',
+                icon: <Icons.Settings />,
+                path: '/settings/preferences',
+            },
+            {
                 label: 'Roles',
                 icon: <Icons.Roles />,
                 path: '/settings/roles',

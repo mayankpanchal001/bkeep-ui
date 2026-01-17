@@ -1,5 +1,4 @@
-import Button from '@/components/typography/Button';
-import { InputField } from '@/components/typography/InputFields';
+import { Button } from '@/components/ui/button';
 import {
     Select,
     SelectContent,
@@ -15,13 +14,14 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import { useChartOfAccounts } from '@/services/apis/chartsAccountApi';
 import { useContacts } from '@/services/apis/contactsApi';
 import { useTaxes } from '@/services/apis/taxApi';
 import type { CreateJournalEntryPayload } from '@/types/journal';
+import { Save } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { FaPlus, FaTrash } from 'react-icons/fa';
-import Input from '../ui/input';
+import { CurrencyInput } from '@/pages/protected/CreateJournalEntrypage';
+import { useChartOfAccounts } from '@/services/apis/chartsAccountApi';
 
 type JournalEntryFormProps = {
     initialData?: Partial<CreateJournalEntryPayload>;
@@ -318,18 +318,20 @@ export function JournalEntryForm({
     return (
         <form onSubmit={handleSubmit} className="space-y-6 ">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <InputField
-                    label="Entry date"
+                <Input
                     type="date"
                     value={entryDate}
-                    onChange={(e) => setEntryDate(e.target.value)}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        setEntryDate(e.target.value)
+                    }
                     required
                 />
-                <InputField
-                    label="Entry number"
+                <Input
                     type="text"
                     value={entryNumber}
-                    onChange={(e) => setEntryNumber(e.target.value)}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        setEntryNumber(e.target.value)
+                    }
                     placeholder="Optional"
                 />
                 <div className="flex items-end">
@@ -454,35 +456,27 @@ export function JournalEntryForm({
                                     </Select>
                                 </TableCell>
                                 <TableCell align="right">
-                                    <Input
-                                        type="number"
+                                    <CurrencyInput
                                         value={line.debit}
-                                        onChange={(e) => {
-                                            const next = e.target.value;
+                                        onValueChange={(val) => {
                                             updateLine(index, {
-                                                debit: next,
-                                                credit: next ? '' : line.credit,
+                                                debit: val,
+                                                credit: val ? '' : line.credit,
                                             });
                                         }}
-                                        placeholder="0.00"
-                                        step="0.01"
-                                        min="0"
+                                        placeholder="$0.00"
                                     />
                                 </TableCell>
                                 <TableCell align="right" noTruncate>
-                                    <Input
-                                        type="number"
+                                    <CurrencyInput
                                         value={line.credit}
-                                        onChange={(e) => {
-                                            const next = e.target.value;
+                                        onValueChange={(val) => {
                                             updateLine(index, {
-                                                credit: next,
-                                                debit: next ? '' : line.debit,
+                                                credit: val,
+                                                debit: val ? '' : line.debit,
                                             });
                                         }}
-                                        placeholder="0.00"
-                                        step="0.01"
-                                        min="0"
+                                        placeholder="$0.00"
                                     />
                                 </TableCell>
                                 <TableCell noTruncate>
@@ -542,7 +536,7 @@ export function JournalEntryForm({
                     type="button"
                     variant="outline"
                     size="sm"
-                    icon={<FaPlus className="w-3.5 h-3.5" />}
+                    startIcon={<FaPlus className="w-3.5 h-3.5" />}
                     onClick={handleAddLine}
                     disabled={isLoading}
                 >
@@ -553,13 +547,19 @@ export function JournalEntryForm({
                     <span className="text-primary/70">
                         Debit:{' '}
                         <span className="text-primary font-semibold">
-                            ${totals.totalDebit.toFixed(2)}
+                            {totals.totalDebit.toLocaleString('en-US', {
+                                style: 'currency',
+                                currency: 'USD',
+                            })}
                         </span>
                     </span>
                     <span className="text-primary/70">
                         Credit:{' '}
                         <span className="text-primary font-semibold">
-                            ${totals.totalCredit.toFixed(2)}
+                            {totals.totalCredit.toLocaleString('en-US', {
+                                style: 'currency',
+                                currency: 'USD',
+                            })}
                         </span>
                     </span>
                     <span
@@ -590,7 +590,7 @@ export function JournalEntryForm({
                 <Button
                     type="button"
                     variant="outline"
-                    size="md"
+                    size="default"
                     onClick={onCancel}
                     disabled={isLoading}
                 >
@@ -598,9 +598,10 @@ export function JournalEntryForm({
                 </Button>
                 <Button
                     type="submit"
-                    variant="primary"
-                    size="md"
+                    variant="default"
+                    size="default"
                     loading={isLoading}
+                    startIcon={<Save className="w-4 h-4" />}
                 >
                     Save
                 </Button>
