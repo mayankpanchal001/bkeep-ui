@@ -51,6 +51,11 @@ const Settingspage = () => {
             icon: <Icons.Users className="w-4 h-4" />,
         },
         {
+            title: 'Preferences',
+            href: '/settings/preferences',
+            icon: <Icons.Settings className="w-4 h-4" />,
+        },
+        {
             title: 'Roles',
             href: '/settings/roles',
             icon: <Icons.Shield className="w-4 h-4" />,
@@ -75,11 +80,7 @@ const Settingspage = () => {
             href: '/settings/notifications',
             icon: <Icons.Notifications className="w-4 h-4" />,
         },
-        {
-            title: 'Preferences',
-            href: '/settings/preferences',
-            icon: <Icons.Settings className="w-4 h-4" />,
-        },
+
     ];
 
     // Dynamic header based on current route

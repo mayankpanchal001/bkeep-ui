@@ -72,8 +72,17 @@ export default function Input({
         sizeClasses[inputSize]
     );
 
-    const iconBaseClasses =
-        'pointer-events-none absolute top-1/2 -translate-y-1/2 text-muted-foreground inline-flex items-center justify-center [&_svg]:size-4';
+    // Icon size classes matching button component sizes
+    const iconSizeClasses = {
+        sm: '[&_svg]:size-3.5',
+        default: '[&_svg]:size-4',
+        lg: '[&_svg]:size-5',
+    };
+
+    const iconBaseClasses = cn(
+        'pointer-events-none absolute top-1/2 -translate-y-1/2 text-muted-foreground inline-flex items-center justify-center',
+        iconSizeClasses[inputSize]
+    );
     const iconStartClasses = cn(
         iconBaseClasses,
         inputSize === 'sm'
@@ -83,7 +92,8 @@ export default function Input({
               : 'left-2.5'
     );
     const iconEndClasses = cn(
-        'absolute top-1/2 -translate-y-1/2 text-muted-foreground inline-flex items-center justify-center [&_svg]:size-4',
+        'absolute top-1/2 -translate-y-1/2 text-muted-foreground inline-flex items-center justify-center',
+        iconSizeClasses[inputSize],
         inputSize === 'sm'
             ? 'right-2'
             : inputSize === 'lg'
@@ -213,16 +223,22 @@ export default function Input({
                         <button
                             type="button"
                             onClick={handleClear}
-                            className="pointer-events-auto p-0.5 rounded-sm hover:bg-muted transition-colors"
+                            className={cn(
+                                'pointer-events-auto p-0.5 rounded-sm hover:bg-muted transition-colors',
+                                iconSizeClasses[inputSize]
+                            )}
                             tabIndex={-1}
                         >
-                            <X className="size-3.5" />
+                            <X />
                         </button>
                     ) : isPassword ? (
                         <button
                             type="button"
                             onClick={() => setShowPassword(!showPassword)}
-                            className="pointer-events-auto p-0.5 rounded-sm hover:bg-muted transition-colors"
+                            className={cn(
+                                'pointer-events-auto p-0.5 rounded-sm hover:bg-muted transition-colors',
+                                iconSizeClasses[inputSize]
+                            )}
                             tabIndex={-1}
                         >
                             {showPassword ? <EyeOff /> : <Eye />}

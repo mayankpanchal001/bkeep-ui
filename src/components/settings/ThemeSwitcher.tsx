@@ -1,5 +1,5 @@
-import { Check, Palette, Search, Shuffle } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { Check, ChevronDown, ChevronUp, Palette, Shuffle } from 'lucide-react';
+import { useState } from 'react';
 import {
     THEME_PALETTES,
     useThemePaletteStore,
@@ -7,38 +7,19 @@ import {
 } from '../../stores/theme/themePaletteStore';
 import { cn } from '../../utils/cn';
 import { Button } from '../ui/button';
-import {
-    Command,
-    CommandEmpty,
-    CommandGroup,
-    CommandInput,
-    CommandItem,
-    CommandList,
-} from '../ui/command';
-import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 
 interface ThemeSwitcherProps {
     className?: string;
 }
 
+const INITIAL_THEMES_TO_SHOW = 12;
+
 const ThemeSwitcher = ({ className }: ThemeSwitcherProps) => {
     const { selectedPaletteId, setPalette } = useThemePaletteStore();
-    const [searchQuery, setSearchQuery] = useState('');
-    const [open, setOpen] = useState(false);
-
-    const filteredThemes = useMemo(() => {
-        if (!searchQuery.trim()) return THEME_PALETTES;
-        const query = searchQuery.toLowerCase();
-        return THEME_PALETTES.filter(
-            (theme) =>
-                theme.name.toLowerCase().includes(query) ||
-                theme.description?.toLowerCase().includes(query)
-        );
-    }, [searchQuery]);
+    const [showAll, setShowAll] = useState(false);
 
     const handleSelectTheme = (paletteId: string) => {
         setPalette(paletteId);
-        setOpen(false);
     };
 
     const handleRandomTheme = () => {
@@ -50,6 +31,11 @@ const ThemeSwitcher = ({ className }: ThemeSwitcherProps) => {
     const selectedTheme = THEME_PALETTES.find(
         (t) => t.id === selectedPaletteId
     );
+
+    const themesToDisplay = showAll
+        ? THEME_PALETTES
+        : THEME_PALETTES.slice(0, INITIAL_THEMES_TO_SHOW);
+    const hasMoreThemes = THEME_PALETTES.length > INITIAL_THEMES_TO_SHOW;
 
     return (
         <div className={cn('space-y-4', className)}>
@@ -71,105 +57,86 @@ const ThemeSwitcher = ({ className }: ThemeSwitcherProps) => {
                 </div>
             </div>
 
-            <Popover open={open} onOpenChange={setOpen}>
-                <PopoverTrigger asChild>
-                    <Button
-                        variant="outline"
-                        className="w-full justify-between h-auto py-3"
-                    >
-                        <div className="flex items-center gap-3">
-                            <div className="flex items-center gap-1">
-                                {selectedTheme && (
-                                    <ThemeColorSwatches
-                                        palette={selectedTheme}
-                                    />
-                                )}
-                            </div>
-                            <div className="text-left">
-                                <div className="font-medium">
-                                    {selectedTheme?.name || 'Select Theme'}
+            {/* Selected Theme Display */}
+            {selectedTheme && (
+                <div className="rounded-lg border bg-card p-4">
+                    <div className="flex items-center gap-3">
+                        <ThemeColorSwatches palette={selectedTheme} />
+                        <div className="flex-1">
+                            <div className="font-medium">{selectedTheme.name}</div>
+                            {selectedTheme.description && (
+                                <div className="text-xs text-muted-foreground">
+                                    {selectedTheme.description}
                                 </div>
-                                {selectedTheme?.description && (
-                                    <div className="text-xs text-muted-foreground">
-                                        {selectedTheme.description}
+                            )}
+                        </div>
+                        <Check className="h-5 w-5 text-primary" />
+                    </div>
+                </div>
+            )}
+
+            {/* Themes Grid */}
+            <div className="space-y-3">
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                    {themesToDisplay.map((theme) => (
+                        <button
+                            key={theme.id}
+                            onClick={() => handleSelectTheme(theme.id)}
+                            className={cn(
+                                'group relative rounded-lg border-2 p-3 transition-all duration-200',
+                                'hover:scale-[1.02] hover:shadow-md hover:border-primary/30',
+                                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
+                                selectedPaletteId === theme.id
+                                    ? 'border-primary shadow-md shadow-primary/20 bg-primary/5'
+                                    : 'border-border bg-card hover:bg-accent/30'
+                            )}
+                            title={theme.name}
+                        >
+                            <div className="flex flex-col gap-2.5">
+                                <div className="flex items-center justify-center">
+                                    <ThemeColorSwatches palette={theme} size="md" />
+                                </div>
+                                <div className="text-center">
+                                    <p className="text-xs font-medium text-foreground truncate">
+                                        {theme.name}
+                                    </p>
+                                </div>
+                            </div>
+                            {selectedPaletteId === theme.id && (
+                                <div className="absolute top-1.5 right-1.5">
+                                    <div className="rounded-full bg-primary p-0.5">
+                                        <Check className="h-3 w-3 text-primary-foreground" />
                                     </div>
-                                )}
-                            </div>
-                        </div>
-                        <Palette className="h-4 w-4 opacity-50" />
-                    </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-[400px] p-0" align="start">
-                    <Command className="rounded-lg border-0">
-                        <div className="flex items-center border-b px-3">
-                            <Search className="mr-2 h-4 w-4 shrink-0 opacity-50" />
-                            <CommandInput
-                                placeholder="Search themes..."
-                                value={searchQuery}
-                                onChange={(
-                                    e: React.ChangeEvent<HTMLInputElement>
-                                ) => setSearchQuery(e.target.value)}
-                                className="flex h-11 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50"
-                            />
-                        </div>
-                        <div className="flex items-center justify-between px-3 py-2 border-b">
-                            <span className="text-xs text-muted-foreground">
-                                {filteredThemes.length} theme
-                                {filteredThemes.length !== 1 ? 's' : ''}
-                            </span>
-                            <div className="flex items-center gap-2">
-                                <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    className="h-7 w-7"
-                                    onClick={handleRandomTheme}
-                                    tooltip="Random theme"
-                                >
-                                    <Shuffle className="h-3.5 w-3.5" />
-                                </Button>
-                            </div>
-                        </div>
-                        <CommandList className="max-h-[400px]">
-                            <CommandEmpty>No themes found.</CommandEmpty>
-                            <CommandGroup heading="Built-in Themes">
-                                {filteredThemes.map((theme) => (
-                                    <CommandItem
-                                        key={theme.id}
-                                        value={theme.id}
-                                        onSelect={() =>
-                                            handleSelectTheme(theme.id)
-                                        }
-                                        className={cn(
-                                            'flex items-center justify-between gap-3 px-3 py-2.5 cursor-pointer',
-                                            selectedPaletteId === theme.id &&
-                                                'bg-accent'
-                                        )}
-                                    >
-                                        <div className="flex items-center gap-3 flex-1 min-w-0">
-                                            <ThemeColorSwatches
-                                                palette={theme}
-                                            />
-                                            <div className="flex-1 min-w-0">
-                                                <div className="font-medium truncate">
-                                                    {theme.name}
-                                                </div>
-                                                {theme.description && (
-                                                    <div className="text-xs text-muted-foreground truncate">
-                                                        {theme.description}
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </div>
-                                        {selectedPaletteId === theme.id && (
-                                            <Check className="h-4 w-4 shrink-0 text-primary" />
-                                        )}
-                                    </CommandItem>
-                                ))}
-                            </CommandGroup>
-                        </CommandList>
-                    </Command>
-                </PopoverContent>
-            </Popover>
+                                </div>
+                            )}
+                        </button>
+                    ))}
+                </div>
+
+                {/* View All / Show Less Button */}
+                {hasMoreThemes && (
+                    <div className="flex justify-center pt-2">
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setShowAll(!showAll)}
+                            className="gap-2"
+                        >
+                            {showAll ? (
+                                <>
+                                    <ChevronUp className="h-4 w-4" />
+                                    Show Less
+                                </>
+                            ) : (
+                                <>
+                                    <ChevronDown className="h-4 w-4" />
+                                    View All ({THEME_PALETTES.length} themes)
+                                </>
+                            )}
+                        </Button>
+                    </div>
+                )}
+            </div>
         </div>
     );
 };

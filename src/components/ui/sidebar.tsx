@@ -4,7 +4,7 @@
 
 import { Slot } from '@radix-ui/react-slot';
 import { cva, type VariantProps } from 'class-variance-authority';
-import { PanelLeftIcon } from 'lucide-react';
+import { PanelLeftIcon, Search } from 'lucide-react';
 import * as React from 'react';
 
 import { useIsMobile } from '../../hooks/use-mobile';
@@ -339,6 +339,7 @@ function SidebarInset({ className, ...props }: React.ComponentProps<'main'>) {
 }
 
 function SidebarInput({
+    inputSize = 'sm',
     className,
     ...props
 }: React.ComponentProps<typeof Input>) {
@@ -346,10 +347,15 @@ function SidebarInput({
         <Input
             data-slot="sidebar-input"
             data-sidebar="input"
+            inputSize={inputSize}
+            endIcon={<Search />}
             className={cn(
-                'max-sm:hidden bg-sidebar-accent text-sidebar-foreground border-sidebar-border h-8 w-full shadow-none placeholder:text-sidebar-foreground/60',
+                'max-sm:hidden bg-sidebar-accent text-sidebar-foreground border-sidebar-border shadow-none placeholder:text-sidebar-foreground/60',
                 className
             )}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                props.onChange?.(e);
+            }}
             {...props}
         />
     );
@@ -755,5 +761,6 @@ export {
     SidebarRail,
     SidebarSeparator,
     SidebarTrigger,
-    useSidebar,
+    useSidebar
 };
+
