@@ -6,7 +6,7 @@ import {
     FaFileInvoiceDollar,
     FaMoneyBillWave,
     FaPiggyBank,
-    FaRegEye
+    FaRegEye,
 } from 'react-icons/fa';
 import { Icons } from '../shared/Icons';
 import TabNav from '../shared/TabNav';
@@ -123,7 +123,7 @@ export default function AdminDashboardKit() {
                     onChange={setTab}
                 />
                 <div className="flex items-center gap-2">
-                    <Button variant="default" >
+                    <Button variant="default">
                         <Icons.Download />
                         Download
                     </Button>

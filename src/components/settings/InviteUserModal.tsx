@@ -5,7 +5,13 @@ import { Role } from '../../types';
 import Popup from '../shared/Popup';
 import { Button } from '../ui/button';
 import Input from '../ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '../ui/select';
 
 interface InviteUserModalProps {
     isOpen: boolean;
@@ -93,7 +99,7 @@ const InviteUserModal = ({
                     </Button>
                     <Button
                         type="submit"
-                            variant="default"
+                        variant="default"
                         size="sm"
                         loading={isPending}
                         disabled={isPending}
@@ -121,7 +127,9 @@ const InviteUserModal = ({
                                 id="user-name"
                                 type="text"
                                 value={formData.name}
-                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                onChange={(
+                                    e: React.ChangeEvent<HTMLInputElement>
+                                ) => {
                                     setFormData({
                                         ...formData,
                                         name: e.target.value,
@@ -150,7 +158,9 @@ const InviteUserModal = ({
                                 id="user-email"
                                 type="email"
                                 value={formData.email}
-                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                onChange={(
+                                    e: React.ChangeEvent<HTMLInputElement>
+                                ) => {
                                     setFormData({
                                         ...formData,
                                         email: e.target.value,
@@ -188,7 +198,9 @@ const InviteUserModal = ({
                         </SelectTrigger>
                         <SelectContent>
                             {roles.map((role) => (
-                                <SelectItem key={role.id} value={role.id}>{role.displayName}</SelectItem>
+                                <SelectItem key={role.id} value={role.id}>
+                                    {role.displayName}
+                                </SelectItem>
                             ))}
                         </SelectContent>
                     </Select>

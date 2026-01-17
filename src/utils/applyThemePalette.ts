@@ -42,7 +42,10 @@ export const applyThemePalette = (
     root.style.setProperty('--accent', theme.accent);
     root.style.setProperty('--accent-foreground', theme.accentForeground);
     root.style.setProperty('--destructive', theme.destructive);
-    root.style.setProperty('--destructive-foreground', theme.destructiveForeground);
+    root.style.setProperty(
+        '--destructive-foreground',
+        theme.destructiveForeground
+    );
     root.style.setProperty('--border', theme.border);
     root.style.setProperty('--input', theme.input);
     root.style.setProperty('--ring', theme.ring);
@@ -56,7 +59,10 @@ export const applyThemePalette = (
     root.style.setProperty('--sidebar-accent-foreground', theme.primary);
     // Sidebar primary uses primary color for active states
     root.style.setProperty('--sidebar-primary', theme.primary);
-    root.style.setProperty('--sidebar-primary-foreground', theme.primaryForeground);
+    root.style.setProperty(
+        '--sidebar-primary-foreground',
+        theme.primaryForeground
+    );
     // Sidebar border uses border color
     root.style.setProperty('--sidebar-border', theme.border);
     // Sidebar ring uses ring color

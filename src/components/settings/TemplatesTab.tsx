@@ -17,7 +17,13 @@ import type {
 import { Icons } from '../shared/Icons';
 import { Button } from '../ui/button';
 import Input from '../ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '../ui/select';
 
 const TemplatesTab = () => {
     const { user } = useAuth();
@@ -105,14 +111,18 @@ const TemplatesTab = () => {
                         id="template-search"
                         placeholder="Search templates by name or description..."
                         value={search}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearch(e.target.value)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                            setSearch(e.target.value)
+                        }
                         startIcon={<Icons.Search className="w-4 h-4" />}
                     />
                 </div>
                 <div className="grid grid-cols-2 gap-3 lg:w-[520px]">
-                        <Select
+                    <Select
                         value={templateType}
-                        onValueChange={(value: TemplateListType) => setTemplateType(value)}
+                        onValueChange={(value: TemplateListType) =>
+                            setTemplateType(value)
+                        }
                     >
                         <SelectTrigger>
                             <SelectValue placeholder="Select template type" />
@@ -218,7 +228,7 @@ const TemplatesTab = () => {
                                 startIcon={<Icons.Save className="w-4 h-4" />}
                                 disabled={isAccountsPreviewLoading}
                             >
-                                    Apply Template
+                                Apply Template
                             </Button>
                         ) : selectedTemplateId && templateType === 'tax' ? (
                             <Button

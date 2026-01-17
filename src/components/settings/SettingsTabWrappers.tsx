@@ -1,7 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../stores/auth/authSelectore';
 import { useUpdateProfile } from '../../services/apis/usersApi';
-import { NotificationsTab, PreferencesTab, ProfileTab, type SettingsFormData } from './index';
+import {
+    NotificationsTab,
+    PreferencesTab,
+    ProfileTab,
+    type SettingsFormData,
+} from './index';
 
 export const ProfileTabWrapper = () => {
     const { user, setAuth, accessToken, refreshToken } = useAuth();

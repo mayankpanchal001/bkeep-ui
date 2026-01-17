@@ -13,7 +13,8 @@ const ChangePasswordModal = ({ isOpen, onClose }: ChangePasswordModalProps) => {
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    const { mutateAsync: changePassword, isPending: loading } = useChangePassword();
+    const { mutateAsync: changePassword, isPending: loading } =
+        useChangePassword();
     const [error, setError] = useState('');
     useEffect(() => {
         if (isOpen) {
@@ -102,7 +103,9 @@ const ChangePasswordModal = ({ isOpen, onClose }: ChangePasswordModalProps) => {
                         id="current-password"
                         placeholder="Enter current password"
                         value={currentPassword}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCurrentPassword(e.target.value)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                            setCurrentPassword(e.target.value)
+                        }
                         autoComplete="current-password"
                         required
                     />
@@ -111,7 +114,9 @@ const ChangePasswordModal = ({ isOpen, onClose }: ChangePasswordModalProps) => {
                         id="new-password"
                         placeholder="Enter new password"
                         value={newPassword}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewPassword(e.target.value)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                            setNewPassword(e.target.value)
+                        }
                         autoComplete="new-password"
                         required
                     />
@@ -120,7 +125,9 @@ const ChangePasswordModal = ({ isOpen, onClose }: ChangePasswordModalProps) => {
                         id="confirm-password"
                         placeholder="Re-enter new password"
                         value={confirmPassword}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setConfirmPassword(e.target.value)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                            setConfirmPassword(e.target.value)
+                        }
                         autoComplete="new-password"
                         required
                     />

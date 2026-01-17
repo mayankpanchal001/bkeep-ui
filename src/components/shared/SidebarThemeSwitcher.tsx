@@ -8,11 +8,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
-import {
-    SidebarMenu,
-    SidebarMenuButton,
-    SidebarMenuItem,
-} from '../ui/sidebar';
+import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '../ui/sidebar';
 import {
     THEME_PALETTES,
     useThemePaletteStore,
@@ -101,9 +97,9 @@ export function SidebarThemeSwitcher() {
                         align="end"
                         sideOffset={4}
                     >
-                    <DropdownMenuLabel className="text-xs text-muted-foreground">
-                        Theme Manager
-                    </DropdownMenuLabel>
+                        <DropdownMenuLabel className="text-xs text-muted-foreground">
+                            Theme Manager
+                        </DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         {THEME_PALETTES.map((theme) => (
                             <DropdownMenuItem

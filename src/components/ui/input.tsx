@@ -5,7 +5,8 @@ import * as React from 'react';
 import { Calendar } from './calendar';
 import { Popover, PopoverContent, PopoverTrigger } from './popover';
 
-export interface InputProps extends Omit<React.ComponentProps<'input'>, 'size'> {
+export interface InputProps
+    extends Omit<React.ComponentProps<'input'>, 'size'> {
     /** Icon to display at the start of the input */
     startIcon?: React.ReactNode;
     /** Icon to display at the end of the input */
@@ -64,14 +65,31 @@ export default function Input({
     const baseClasses = cn(
         'file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input w-full min-w-0 rounded-md border bg-transparent py-1 shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50',
         'focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]',
-        error && 'border-destructive focus-visible:border-destructive focus-visible:ring-destructive/20',
-        success && 'border-green-500 focus-visible:border-green-500 focus-visible:ring-green-500/20',
+        error &&
+            'border-destructive focus-visible:border-destructive focus-visible:ring-destructive/20',
+        success &&
+            'border-green-500 focus-visible:border-green-500 focus-visible:ring-green-500/20',
         sizeClasses[inputSize]
     );
 
-    const iconBaseClasses = 'pointer-events-none absolute top-1/2 -translate-y-1/2 text-muted-foreground inline-flex items-center justify-center [&_svg]:size-4';
-    const iconStartClasses = cn(iconBaseClasses, inputSize === 'sm' ? 'left-2' : inputSize === 'lg' ? 'left-3' : 'left-2.5');
-    const iconEndClasses = cn('absolute top-1/2 -translate-y-1/2 text-muted-foreground inline-flex items-center justify-center [&_svg]:size-4', inputSize === 'sm' ? 'right-2' : inputSize === 'lg' ? 'right-3' : 'right-2.5');
+    const iconBaseClasses =
+        'pointer-events-none absolute top-1/2 -translate-y-1/2 text-muted-foreground inline-flex items-center justify-center [&_svg]:size-4';
+    const iconStartClasses = cn(
+        iconBaseClasses,
+        inputSize === 'sm'
+            ? 'left-2'
+            : inputSize === 'lg'
+              ? 'left-3'
+              : 'left-2.5'
+    );
+    const iconEndClasses = cn(
+        'absolute top-1/2 -translate-y-1/2 text-muted-foreground inline-flex items-center justify-center [&_svg]:size-4',
+        inputSize === 'sm'
+            ? 'right-2'
+            : inputSize === 'lg'
+              ? 'right-3'
+              : 'right-2.5'
+    );
 
     const handleClear = () => {
         if (onClear) {
@@ -120,7 +138,9 @@ export default function Input({
                             type="text"
                             readOnly
                             data-slot="input"
-                            value={selectedDate ? format(selectedDate, 'PPP') : ''}
+                            value={
+                                selectedDate ? format(selectedDate, 'PPP') : ''
+                            }
                             placeholder={props.placeholder || 'Select date'}
                             disabled={disabled}
                             className={cn(
@@ -136,9 +156,14 @@ export default function Input({
                                 'type' | 'value' | 'onChange' | 'className'
                             >)}
                         />
-                        <span className={cn(iconEndClasses, 'pointer-events-none')}>
+                        <span
+                            className={cn(
+                                iconEndClasses,
+                                'pointer-events-none'
+                            )}
+                        >
                             {endIcon || <CalendarIcon />}
-                                </span>
+                        </span>
                     </div>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0" align="start">
@@ -163,9 +188,7 @@ export default function Input({
     return (
         <div className="relative w-full">
             {hasStartAdornment && (
-                <span className={iconStartClasses}>
-                    {startIcon}
-                </span>
+                <span className={iconStartClasses}>{startIcon}</span>
             )}
             <input
                 ref={inputRef}

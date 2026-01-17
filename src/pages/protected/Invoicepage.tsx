@@ -274,7 +274,9 @@ const Invoicepage = () => {
                         <TableHead sortable sortKey="clientName">
                             Client
                         </TableHead>
-                        <TableHead sortable sortKey="date">Date</TableHead>
+                        <TableHead sortable sortKey="date">
+                            Date
+                        </TableHead>
                         <TableHead sortable sortKey="dueDate">
                             Due Date
                         </TableHead>

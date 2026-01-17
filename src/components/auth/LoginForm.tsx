@@ -101,7 +101,7 @@ export function LoginForm() {
                         type="password"
                         placeholder="••••••••"
                         value={password}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>   ) => {
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                             setPassword(e.target.value);
                             if (fieldErrors.password)
                                 setFieldErrors({
@@ -137,7 +137,13 @@ export function LoginForm() {
                     </div>
                 )}
 
-                <Button type="submit" disabled={isLoading} loading={isLoading} variant="default" startIcon={<LogIn className="w-4 h-4" />}>
+                <Button
+                    type="submit"
+                    disabled={isLoading}
+                    loading={isLoading}
+                    variant="default"
+                    startIcon={<LogIn className="w-4 h-4" />}
+                >
                     Login
                 </Button>
             </form>

@@ -68,7 +68,9 @@ export function ForgotPasswordForm() {
                         type="email"
                         placeholder="Enter your email address"
                         value={email}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                            setEmail(e.target.value)
+                        }
                         required
                         startIcon={<FaUser className="w-4 h-4" />}
                     />
@@ -100,7 +102,7 @@ export function ForgotPasswordForm() {
                             className="w-full"
                             disabled={isForgotPasswordLoading}
                             startIcon={<LogIn className="w-4 h-4" />}
-                            >
+                        >
                             Back to Login
                         </Button>
                     </Link>

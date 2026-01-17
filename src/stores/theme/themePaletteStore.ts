@@ -1583,7 +1583,8 @@ export const useThemePaletteStore = create<ThemePaletteState>()(
     persist(
         (set, get) => ({
             selectedPaletteId: 'default',
-            setPalette: (paletteId: string) => set({ selectedPaletteId: paletteId }),
+            setPalette: (paletteId: string) =>
+                set({ selectedPaletteId: paletteId }),
             getPalette: () => {
                 const paletteId = get().selectedPaletteId;
                 return THEME_PALETTES.find((p) => p.id === paletteId);

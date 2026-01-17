@@ -2,8 +2,13 @@ import { useEffect, useState } from 'react';
 import { FaArrowRight, FaTimes } from 'react-icons/fa';
 import { ImportField } from '../../services/apis/chartsAccountApi';
 import { Button } from '../ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
-
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '../ui/select';
 
 interface ImportMappingModalProps {
     isOpen: boolean;
@@ -123,18 +128,16 @@ const ImportMappingModal = ({
                                         onValueChange={(e) =>
                                             handleMappingChange(field.key, e)
                                         }
-                                        >
+                                    >
                                         <SelectTrigger className="w-full">
                                             <SelectValue placeholder="Select column..." />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            {
-                                                fileHeaders.map((h) => (
-                                                    <SelectItem key={h} value={h}>
-                                                        {h}
-                                                    </SelectItem>
-                                                ))
-                                            }
+                                            {fileHeaders.map((h) => (
+                                                <SelectItem key={h} value={h}>
+                                                    {h}
+                                                </SelectItem>
+                                            ))}
                                         </SelectContent>
                                     </Select>
                                 </div>

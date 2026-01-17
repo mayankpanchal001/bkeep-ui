@@ -53,8 +53,10 @@ const NotificationsTab = ({
                 ))}
             </div>
             <div className="flex justify-end pt-4 ">
-                <Button onClick={onSubmit} variant="default"
-                startIcon={<Icons.Save className="w-4 h-4" />}
+                <Button
+                    onClick={onSubmit}
+                    variant="default"
+                    startIcon={<Icons.Save className="w-4 h-4" />}
                 >
                     Save Changes
                 </Button>

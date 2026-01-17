@@ -80,7 +80,9 @@ const ThemeSwitcher = ({ className }: ThemeSwitcherProps) => {
                         <div className="flex items-center gap-3">
                             <div className="flex items-center gap-1">
                                 {selectedTheme && (
-                                    <ThemeColorSwatches palette={selectedTheme} />
+                                    <ThemeColorSwatches
+                                        palette={selectedTheme}
+                                    />
                                 )}
                             </div>
                             <div className="text-left">
@@ -104,7 +106,9 @@ const ThemeSwitcher = ({ className }: ThemeSwitcherProps) => {
                             <CommandInput
                                 placeholder="Search themes..."
                                 value={searchQuery}
-                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
+                                onChange={(
+                                    e: React.ChangeEvent<HTMLInputElement>
+                                ) => setSearchQuery(e.target.value)}
                                 className="flex h-11 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50"
                             />
                         </div>
@@ -132,7 +136,9 @@ const ThemeSwitcher = ({ className }: ThemeSwitcherProps) => {
                                     <CommandItem
                                         key={theme.id}
                                         value={theme.id}
-                                        onSelect={() => handleSelectTheme(theme.id)}
+                                        onSelect={() =>
+                                            handleSelectTheme(theme.id)
+                                        }
                                         className={cn(
                                             'flex items-center justify-between gap-3 px-3 py-2.5 cursor-pointer',
                                             selectedPaletteId === theme.id &&
@@ -140,7 +146,9 @@ const ThemeSwitcher = ({ className }: ThemeSwitcherProps) => {
                                         )}
                                     >
                                         <div className="flex items-center gap-3 flex-1 min-w-0">
-                                            <ThemeColorSwatches palette={theme} />
+                                            <ThemeColorSwatches
+                                                palette={theme}
+                                            />
                                             <div className="flex-1 min-w-0">
                                                 <div className="font-medium truncate">
                                                     {theme.name}

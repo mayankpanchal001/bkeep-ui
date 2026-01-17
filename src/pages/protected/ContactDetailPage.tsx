@@ -19,7 +19,12 @@ import {
     SelectValue,
 } from '../../components/ui/select';
 import { Switch } from '../../components/ui/switch';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../components/ui/tabs';
+import {
+    Tabs,
+    TabsContent,
+    TabsList,
+    TabsTrigger,
+} from '../../components/ui/tabs';
 import {
     useContact,
     useCreateContact,
@@ -58,7 +63,9 @@ const InputField: React.FC<InputFieldProps> = ({
             {labelShow && label && (
                 <Label htmlFor={id} className="text-sm font-medium">
                     {label}
-                    {required && <span className="text-destructive ml-1">*</span>}
+                    {required && (
+                        <span className="text-destructive ml-1">*</span>
+                    )}
                 </Label>
             )}
             <Input id={id} name={id} {...props} />
@@ -89,12 +96,16 @@ const SelectField: React.FC<SelectFieldProps> = ({
             {labelShow && label && (
                 <Label htmlFor={id} className="text-sm font-medium">
                     {label}
-                    {required && <span className="text-destructive ml-1">*</span>}
+                    {required && (
+                        <span className="text-destructive ml-1">*</span>
+                    )}
                 </Label>
             )}
             <Select name={id} defaultValue={defaultValue}>
                 <SelectTrigger id={id}>
-                    <SelectValue placeholder={`Select ${label?.toLowerCase() || 'option'}`} />
+                    <SelectValue
+                        placeholder={`Select ${label?.toLowerCase() || 'option'}`}
+                    />
                 </SelectTrigger>
                 <SelectContent>
                     {options.map((option) => (

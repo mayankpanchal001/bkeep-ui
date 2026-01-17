@@ -3,7 +3,13 @@ import { useAuth } from '../../stores/auth/authSelectore';
 import { Icons } from '../shared/Icons';
 import { Button } from '../ui/button';
 import Input from '../ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '../ui/select';
 import { Textarea } from '../ui/textarea';
 import { SettingsFormData } from './types';
 
@@ -144,14 +150,16 @@ const ProfileTab = ({
                                     email: value,
                                 })
                             }
-                            >
-                                <SelectTrigger>
-                                    <SelectValue placeholder="Select an email to display" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value={user?.email || ''}>{user?.email || ''}</SelectItem>
-                                </SelectContent>
-                            </Select>
+                        >
+                            <SelectTrigger>
+                                <SelectValue placeholder="Select an email to display" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value={user?.email || ''}>
+                                    {user?.email || ''}
+                                </SelectItem>
+                            </SelectContent>
+                        </Select>
                         <p className="mt-2 text-xs text-primary/50">
                             You can manage verified email addresses in your
                             email settings.
@@ -162,7 +170,9 @@ const ProfileTab = ({
                         <Textarea
                             id="bio"
                             value={formData.bio || ''}
-                            onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                            onChange={(
+                                e: React.ChangeEvent<HTMLTextAreaElement>
+                            ) =>
                                 onFormDataChange({
                                     ...formData,
                                     bio: e.target.value,
@@ -190,7 +200,9 @@ const ProfileTab = ({
                                     id={`url-${idx}`}
                                     type="url"
                                     value={url}
-                                    onChange={(e: React.ChangeEvent<HTMLInputElement>   ) => {
+                                    onChange={(
+                                        e: React.ChangeEvent<HTMLInputElement>
+                                    ) => {
                                         const next = [...(formData.urls || [])];
                                         next[idx] = e.target.value;
                                         onFormDataChange({

@@ -319,9 +319,9 @@ const AcceptInvitationForm = () => {
                             type="password"
                             placeholder="Enter your password"
                             value={password}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                                handlePasswordChange(e.target.value)
-                            }
+                            onChange={(
+                                e: React.ChangeEvent<HTMLInputElement>
+                            ) => handlePasswordChange(e.target.value)}
                             required
                             startIcon={<Lock className="w-4 h-4" />}
                             disabled={isAccepting}
@@ -396,9 +396,9 @@ const AcceptInvitationForm = () => {
                             type="password"
                             placeholder="Confirm your password"
                             value={confirmPassword}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                                handleConfirmPasswordChange(e.target.value)
-                            }
+                            onChange={(
+                                e: React.ChangeEvent<HTMLInputElement>
+                            ) => handleConfirmPasswordChange(e.target.value)}
                             required
                             startIcon={<Lock className="w-4 h-4" />}
                             disabled={isAccepting}

@@ -1,4 +1,4 @@
-    import { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
     useCreateTax,
     useUpdateTax,
@@ -169,7 +169,7 @@ const TaxForm = ({ onClose, initialData }: TaxFormProps) => {
             </div>
 
             <div>
-                        <Textarea
+                <Textarea
                     id="tax-description"
                     placeholder="Optional description"
                     value={formData.description || ''}
@@ -188,10 +188,17 @@ const TaxForm = ({ onClose, initialData }: TaxFormProps) => {
                     variant="outline"
                     onClick={onClose}
                     disabled={isPending}
-                    startIcon={<Icons.Close className="w-4 h-4" />}    >
+                    startIcon={<Icons.Close className="w-4 h-4" />}
+                >
                     Cancel
                 </Button>
-                <Button type="submit" disabled={isPending} loading={isPending} variant="default" startIcon={<Icons.Save className="w-4 h-4" />}>
+                <Button
+                    type="submit"
+                    disabled={isPending}
+                    loading={isPending}
+                    variant="default"
+                    startIcon={<Icons.Save className="w-4 h-4" />}
+                >
                     Save
                 </Button>
             </div>

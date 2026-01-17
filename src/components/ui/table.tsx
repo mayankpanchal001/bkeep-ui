@@ -1214,9 +1214,13 @@ function TablePagination({
         >
             <div>
                 Showing{' '}
-                <span className="font-medium text-foreground">{startItem}</span> to{' '}
-                <span className="font-medium text-foreground">{endItem}</span> of{' '}
-                <span className="font-medium text-foreground">{totalItems}</span>{' '}
+                <span className="font-medium text-foreground">{startItem}</span>{' '}
+                to{' '}
+                <span className="font-medium text-foreground">{endItem}</span>{' '}
+                of{' '}
+                <span className="font-medium text-foreground">
+                    {totalItems}
+                </span>{' '}
                 results
             </div>
             <div className="flex items-center gap-1">
@@ -1293,6 +1297,5 @@ export {
     TableRow,
     TableRowCheckbox,
     TableSelectAllCheckbox,
-    TableSelectionToolbar
+    TableSelectionToolbar,
 };
-

@@ -72,7 +72,8 @@ function Button({
     const isDisabled = disabled || loading;
 
     // Determine if this is an icon-only button
-    const isIconOnly = size === 'icon' || size === 'icon-sm' || size === 'icon-lg';
+    const isIconOnly =
+        size === 'icon' || size === 'icon-sm' || size === 'icon-lg';
 
     const buttonContent = (
         <>

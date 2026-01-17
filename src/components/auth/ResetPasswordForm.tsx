@@ -96,7 +96,11 @@ export function ResetPasswordForm() {
                     </p>
                 </div>
                 <Link to="/login">
-                    <Button variant="default" className="w-full" startIcon={<LogIn className="w-4 h-4" />}>
+                    <Button
+                        variant="default"
+                        className="w-full"
+                        startIcon={<LogIn className="w-4 h-4" />}
+                    >
                         Back to Login
                     </Button>
                 </Link>
@@ -123,7 +127,9 @@ export function ResetPasswordForm() {
                         type="password"
                         placeholder="Enter your new password"
                         value={password}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                            setPassword(e.target.value)
+                        }
                         required
                         startIcon={<Lock className="w-4 h-4" />}
                     />
@@ -132,9 +138,11 @@ export function ResetPasswordForm() {
                         type="password"
                         placeholder="Confirm your new password"
                         value={confirmPassword}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setConfirmPassword(e.target.value)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                            setConfirmPassword(e.target.value)
+                        }
                         required
-                            startIcon={<Lock className="w-4 h-4" />}
+                        startIcon={<Lock className="w-4 h-4" />}
                     />
                 </div>
 

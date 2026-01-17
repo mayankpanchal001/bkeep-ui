@@ -1,6 +1,12 @@
-    import ConfirmationDialog from '@/components/shared/ConfirmationDialog';
+import ConfirmationDialog from '@/components/shared/ConfirmationDialog';
 import Input from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 import {
     Tooltip,
     TooltipContent,
@@ -19,7 +25,7 @@ import {
     FaFolder,
     FaSearch,
     FaTrash,
-    FaUpload
+    FaUpload,
 } from 'react-icons/fa';
 
 type Document = {
@@ -281,24 +287,29 @@ const Documentspage = () => {
                                 id="search-documents"
                                 placeholder="Search documents..."
                                 value={searchQuery}
-                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
+                                onChange={(
+                                    e: React.ChangeEvent<HTMLInputElement>
+                                ) => setSearchQuery(e.target.value)}
                                 startIcon={<FaSearch className="w-4 h-4" />}
                             />
                         </div>
                     </div>
                     <div className="flex items-center gap-2">
-                            <Select
+                        <Select
                             value={categoryFilter}
-                            onValueChange={(value: string) => setCategoryFilter(value)}
+                            onValueChange={(value: string) =>
+                                setCategoryFilter(value)
+                            }
                         >
                             <SelectTrigger>
                                 <FilterIcon size={16} />
-                                    <SelectValue placeholder="All Categories" />
+                                <SelectValue placeholder="All Categories" />
                             </SelectTrigger>
                             <SelectContent>
                                 {CATEGORIES.map((category) => (
                                     <SelectItem key={category} value={category}>
-                                        {category.charAt(0).toUpperCase() + category.slice(1)}
+                                        {category.charAt(0).toUpperCase() +
+                                            category.slice(1)}
                                     </SelectItem>
                                 ))}
                             </SelectContent>

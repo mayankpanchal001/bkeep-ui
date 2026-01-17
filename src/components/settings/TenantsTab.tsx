@@ -616,10 +616,12 @@ export default function TenantsTab() {
                         ) : null}
                         <div>
                             <Input
-                                    id="edit-tenant-name"
+                                id="edit-tenant-name"
                                 placeholder="e.g., Sun Medicose"
                                 value={editFormData.name}
-                                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                                onChange={(
+                                    e: React.ChangeEvent<HTMLInputElement>
+                                ) =>
                                     setEditFormData((prev) => ({
                                         ...prev,
                                         name: e.target.value,
@@ -647,7 +649,9 @@ export default function TenantsTab() {
                                 id="edit-tenant-email"
                                 placeholder="e.g., contact@acmecorp.com"
                                 value={editFormData.email || ''}
-                                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                                onChange={(
+                                    e: React.ChangeEvent<HTMLInputElement>
+                                ) =>
                                     setEditFormData((prev) => ({
                                         ...prev,
                                         email: e.target.value,
@@ -661,7 +665,9 @@ export default function TenantsTab() {
                                 id="edit-tenant-phone"
                                 placeholder="e.g., +1-555-123-4567"
                                 value={editFormData.phone || ''}
-                                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                                onChange={(
+                                    e: React.ChangeEvent<HTMLInputElement>
+                                ) =>
                                     setEditFormData((prev) => ({
                                         ...prev,
                                         phone: e.target.value,
@@ -676,7 +682,9 @@ export default function TenantsTab() {
                                     id="edit-tenant-fiscal-year"
                                     placeholder="YYYY-MM-DD"
                                     value={editFormData.fiscalYear || ''}
-                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                                    onChange={(
+                                        e: React.ChangeEvent<HTMLInputElement>
+                                    ) =>
                                         setEditFormData((prev) => ({
                                             ...prev,
                                             fiscalYear: e.target.value,
@@ -692,7 +700,9 @@ export default function TenantsTab() {
                                     value={
                                         editFormData.dateOfIncorporation || ''
                                     }
-                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                                    onChange={(
+                                        e: React.ChangeEvent<HTMLInputElement>
+                                    ) =>
                                         setEditFormData((prev) => ({
                                             ...prev,
                                             dateOfIncorporation: e.target.value,
@@ -704,11 +714,13 @@ export default function TenantsTab() {
                         </div>
 
                         <div>
-                                <Textarea
+                            <Textarea
                                 id="edit-tenant-address"
                                 placeholder="e.g., 123 Main St, City, State 12345"
                                 value={editFormData.address || ''}
-                                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                                onChange={(
+                                    e: React.ChangeEvent<HTMLTextAreaElement>
+                                ) =>
                                     setEditFormData((prev) => ({
                                         ...prev,
                                         address: e.target.value,
@@ -729,7 +741,7 @@ export default function TenantsTab() {
                             </Button>
                             <Button
                                 type="submit"
-                                        startIcon={<Icons.Save className="w-4 h-4" />}
+                                startIcon={<Icons.Save className="w-4 h-4" />}
                                 disabled={
                                     isUpdatingTenant || isLoadingEditTenant
                                 }
@@ -815,7 +827,7 @@ export default function TenantsTab() {
                                     readOnly
                                 />
                             </div>
-                                    <Textarea
+                            <Textarea
                                 id="details-tenant-address"
                                 value={
                                     detailsTenantResponse?.data?.address || ''

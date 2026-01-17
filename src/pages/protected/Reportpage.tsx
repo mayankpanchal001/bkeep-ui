@@ -379,7 +379,9 @@ const Reportpage = () => {
             <div className="relative">
                 <div className="relative">
                     <Input
-                        startIcon={<Search className="w-5 h-5 text-primary/40" />}
+                        startIcon={
+                            <Search className="w-5 h-5 text-primary/40" />
+                        }
                         value={query}
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                             setQuery(e.target.value);
@@ -389,7 +391,7 @@ const Reportpage = () => {
                         onBlur={() =>
                             setTimeout(() => setSuggestOpen(false), 200)
                         }
-                            placeholder="Search for reports..."
+                        placeholder="Search for reports..."
                     />
                 </div>
 

@@ -139,7 +139,6 @@ const ImportFileModal = ({
                                 variant="outline"
                                 onClick={handleApplyTemplate}
                                 disabled={applyTemplateMutation.isPending}
-
                             >
                                 Apply Template
                             </Button>
@@ -150,7 +149,6 @@ const ImportFileModal = ({
                             Cancel
                         </Button>
                         <Button
-
                             onClick={handleConfirm}
                             disabled={!selectedFile}
                         >

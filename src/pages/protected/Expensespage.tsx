@@ -164,7 +164,9 @@ const Expensespage = () => {
                             id="search-expenses"
                             placeholder="Search expenses..."
                             value={searchQuery}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
+                            onChange={(
+                                e: React.ChangeEvent<HTMLInputElement>
+                            ) => setSearchQuery(e.target.value)}
                         />
                     </div>
                 </div>
@@ -316,11 +318,7 @@ const Expensespage = () => {
                         </div>
                         <form className="space-y-4">
                             <div className="grid grid-cols-2 gap-4">
-                                <Input
-                                    id="expense-date"
-                                    type="date"
-                                    required
-                                />
+                                <Input id="expense-date" type="date" required />
                                 <Input
                                     id="vendor"
                                     placeholder="Enter vendor name"
@@ -376,10 +374,7 @@ const Expensespage = () => {
                                 >
                                     Cancel
                                 </Button>
-                                <Button
-                                    type="submit"
-                                    className="flex-1"
-                                >
+                                <Button type="submit" className="flex-1">
                                     Add Expense
                                 </Button>
                             </div>

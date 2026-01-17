@@ -124,7 +124,7 @@ const ContactsPage = () => {
         <div className="space-y-4">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
                 <div className="w-full sm:min-w-[320px]">
-                        <Input
+                    <Input
                         id="search"
                         type="search"
                         placeholder="Search contacts..."
@@ -209,9 +209,7 @@ const ContactsPage = () => {
                             message="No contacts found"
                             description="Add your first contact to get started"
                             action={
-                                <Button
-                                    size="sm"
-                                    onClick={handleGoToCreate}>
+                                <Button size="sm" onClick={handleGoToCreate}>
                                     <Icons.Plus className="w-4 h-4 mr-2" />
                                     New Contact
                                 </Button>

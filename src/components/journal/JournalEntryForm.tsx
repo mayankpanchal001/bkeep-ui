@@ -318,16 +318,20 @@ export function JournalEntryForm({
     return (
         <form onSubmit={handleSubmit} className="space-y-6 ">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <Input
+                <Input
                     type="date"
                     value={entryDate}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEntryDate(e.target.value)}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        setEntryDate(e.target.value)
+                    }
                     required
                 />
                 <Input
                     type="text"
                     value={entryNumber}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEntryNumber(e.target.value)}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        setEntryNumber(e.target.value)
+                    }
                     placeholder="Optional"
                 />
                 <div className="flex items-end">
@@ -455,7 +459,9 @@ export function JournalEntryForm({
                                     <Input
                                         type="number"
                                         value={line.debit}
-                                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                        onChange={(
+                                            e: React.ChangeEvent<HTMLInputElement>
+                                        ) => {
                                             const next = e.target.value;
                                             updateLine(index, {
                                                 debit: next,
@@ -471,7 +477,9 @@ export function JournalEntryForm({
                                     <Input
                                         type="number"
                                         value={line.credit}
-                                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                        onChange={(
+                                            e: React.ChangeEvent<HTMLInputElement>
+                                        ) => {
                                             const next = e.target.value;
                                             updateLine(index, {
                                                 credit: next,

@@ -161,7 +161,9 @@ const TenantForm = ({ onClose, initialData }: TenantFormProps) => {
                     id="client-name"
                     placeholder="e.g., Sun Medicose"
                     value={formData.name}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleNameChange(e.target.value)}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        handleNameChange(e.target.value)
+                    }
                     required
                 />
                 {errors.name && (
@@ -202,7 +204,7 @@ const TenantForm = ({ onClose, initialData }: TenantFormProps) => {
                     id="client-email"
                     placeholder="e.g., contact@acmecorp.com"
                     value={formData.email || ''}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>   ) =>
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                         setFormData({
                             ...formData,
                             email: e.target.value,
@@ -296,7 +298,7 @@ const TenantForm = ({ onClose, initialData }: TenantFormProps) => {
                 </Button>
                 <Button
                     type="submit"
-                        variant="default"
+                    variant="default"
                     className="flex-1 sm:flex-initial"
                     loading={isPending}
                     startIcon={<Icons.Save className="w-4 h-4" />}

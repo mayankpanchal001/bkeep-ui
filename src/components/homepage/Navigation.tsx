@@ -119,7 +119,11 @@ export default function Navigation() {
                             onClick={() => setIsMobileMenuOpen(false)}
                             className="rounded-lg px-4 py-2 text-center text-sm font-semibold"
                         >
-                            <Button variant="default" size="default" startIcon={<Plus className="w-4 h-4" />}>
+                            <Button
+                                variant="default"
+                                size="default"
+                                startIcon={<Plus className="w-4 h-4" />}
+                            >
                                 Get started
                             </Button>
                         </Link>

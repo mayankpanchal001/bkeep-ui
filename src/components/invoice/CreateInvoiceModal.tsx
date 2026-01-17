@@ -11,7 +11,11 @@ import {
 } from '@/components/ui/command';
 import Input from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from '@/components/ui/popover';
 import {
     Select,
     SelectContent,
@@ -305,10 +309,16 @@ const CreateInvoiceModal = ({
                     </div>
                 </div>
                 <div className="flex items-center gap-3">
-                    <Button variant="outline" onClick={() => onSaveDraft?.(formData)}>
+                    <Button
+                        variant="outline"
+                        onClick={() => onSaveDraft?.(formData)}
+                    >
                         Save Draft
                     </Button>
-                    <Button onClick={() => onSendInvoice?.(formData)} disabled={!canSend}>
+                    <Button
+                        onClick={() => onSendInvoice?.(formData)}
+                        disabled={!canSend}
+                    >
                         Send Invoice
                     </Button>
                 </div>
@@ -318,7 +328,10 @@ const CreateInvoiceModal = ({
             <div className="flex-1 flex overflow-hidden">
                 {/* Left Side - Form */}
                 <div className="w-full md:w-[520px] border-r border-border overflow-y-auto bg-card">
-                    <Tabs defaultValue="details" className="h-full flex flex-col">
+                    <Tabs
+                        defaultValue="details"
+                        className="h-full flex flex-col"
+                    >
                         <TabsList className="w-full justify-start rounded-none border-b border-border bg-transparent p-0 h-auto">
                             <TabsTrigger
                                 value="details"
@@ -349,10 +362,15 @@ const CreateInvoiceModal = ({
                         </TabsList>
 
                         {/* Details Tab */}
-                        <TabsContent value="details" className="flex-1 p-6 space-y-6 mt-0">
+                        <TabsContent
+                            value="details"
+                            className="flex-1 p-6 space-y-6 mt-0"
+                        >
                             {/* Invoice Number */}
                             <div className="space-y-2">
-                                <Label htmlFor="invoiceNumber">Invoice Number</Label>
+                                <Label htmlFor="invoiceNumber">
+                                    Invoice Number
+                                </Label>
                                 <Input
                                     id="invoiceNumber"
                                     value={formData.invoiceNumber}
@@ -369,7 +387,9 @@ const CreateInvoiceModal = ({
                             {/* Dates */}
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-2">
-                                    <Label htmlFor="issueDate">Issue Date</Label>
+                                    <Label htmlFor="issueDate">
+                                        Issue Date
+                                    </Label>
                                     <Input
                                         id="issueDate"
                                         type="date"
@@ -380,7 +400,9 @@ const CreateInvoiceModal = ({
                                                 issueDate: e.target.value,
                                             })
                                         }
-                                        startIcon={<Calendar className="h-4 w-4" />}
+                                        startIcon={
+                                            <Calendar className="h-4 w-4" />
+                                        }
                                     />
                                 </div>
                                 <div className="space-y-2">
@@ -395,7 +417,9 @@ const CreateInvoiceModal = ({
                                                 dueDate: e.target.value,
                                             })
                                         }
-                                        startIcon={<Calendar className="h-4 w-4" />}
+                                        startIcon={
+                                            <Calendar className="h-4 w-4" />
+                                        }
                                     />
                                 </div>
                             </div>
@@ -403,7 +427,10 @@ const CreateInvoiceModal = ({
                             {/* Customer Selection */}
                             <div className="space-y-2">
                                 <Label>Customer</Label>
-                                <Popover open={customerOpen} onOpenChange={setCustomerOpen}>
+                                <Popover
+                                    open={customerOpen}
+                                    onOpenChange={setCustomerOpen}
+                                >
                                     <PopoverTrigger asChild>
                                         <Button
                                             variant="outline"
@@ -414,7 +441,9 @@ const CreateInvoiceModal = ({
                                             <div className="flex items-center gap-2">
                                                 <User className="h-4 w-4 text-muted-foreground" />
                                                 {formData.customer ? (
-                                                    <span>{formData.customer.name}</span>
+                                                    <span>
+                                                        {formData.customer.name}
+                                                    </span>
                                                 ) : (
                                                     <span className="text-muted-foreground">
                                                         Select customer...
@@ -424,45 +453,64 @@ const CreateInvoiceModal = ({
                                             <ChevronsUpDown className="h-4 w-4 shrink-0 opacity-50" />
                                         </Button>
                                     </PopoverTrigger>
-                                    <PopoverContent className="w-[--radix-popover-trigger-width] p-0" align="start">
+                                    <PopoverContent
+                                        className="w-[--radix-popover-trigger-width] p-0"
+                                        align="start"
+                                    >
                                         <Command>
                                             <CommandInput
                                                 placeholder="Search customers..."
                                                 value={customerSearch}
-                                                onValueChange={setCustomerSearch}
+                                                onValueChange={
+                                                    setCustomerSearch
+                                                }
                                             />
                                             <CommandList>
-                                                <CommandEmpty>No customers found.</CommandEmpty>
+                                                <CommandEmpty>
+                                                    No customers found.
+                                                </CommandEmpty>
                                                 <CommandGroup>
-                                                    {filteredCustomers.map((customer) => (
-                                                        <CommandItem
-                                                            key={customer.id}
-                                                            onSelect={() =>
-                                                                handleSelectCustomer(customer)
-                                                            }
-                                                            className="flex flex-col items-start py-3"
-                                                        >
-                                                            <div className="flex items-center w-full">
-                                                                <Check
-                                                                    className={cn(
-                                                                        'mr-2 h-4 w-4',
-                                                                        formData.customer?.id ===
-                                                                            customer.id
-                                                                            ? 'opacity-100'
-                                                                            : 'opacity-0'
-                                                                    )}
-                                                                />
-                                                                <span className="font-medium">
-                                                                    {customer.name}
-                                                                </span>
-                                                            </div>
-                                                            {customer.email && (
-                                                                <span className="ml-6 text-xs text-muted-foreground">
-                                                                    {customer.email}
-                                                                </span>
-                                                            )}
-                                                        </CommandItem>
-                                                    ))}
+                                                    {filteredCustomers.map(
+                                                        (customer) => (
+                                                            <CommandItem
+                                                                key={
+                                                                    customer.id
+                                                                }
+                                                                onSelect={() =>
+                                                                    handleSelectCustomer(
+                                                                        customer
+                                                                    )
+                                                                }
+                                                                className="flex flex-col items-start py-3"
+                                                            >
+                                                                <div className="flex items-center w-full">
+                                                                    <Check
+                                                                        className={cn(
+                                                                            'mr-2 h-4 w-4',
+                                                                            formData
+                                                                                .customer
+                                                                                ?.id ===
+                                                                                customer.id
+                                                                                ? 'opacity-100'
+                                                                                : 'opacity-0'
+                                                                        )}
+                                                                    />
+                                                                    <span className="font-medium">
+                                                                        {
+                                                                            customer.name
+                                                                        }
+                                                                    </span>
+                                                                </div>
+                                                                {customer.email && (
+                                                                    <span className="ml-6 text-xs text-muted-foreground">
+                                                                        {
+                                                                            customer.email
+                                                                        }
+                                                                    </span>
+                                                                )}
+                                                            </CommandItem>
+                                                        )
+                                                    )}
                                                 </CommandGroup>
                                             </CommandList>
                                         </Command>
@@ -479,13 +527,17 @@ const CreateInvoiceModal = ({
                                     <div className="flex items-center space-x-3">
                                         <Checkbox
                                             id="interac"
-                                            checked={formData.paymentMethods.interacTransfer}
+                                            checked={
+                                                formData.paymentMethods
+                                                    .interacTransfer
+                                            }
                                             onCheckedChange={(checked) =>
                                                 setFormData({
                                                     ...formData,
                                                     paymentMethods: {
                                                         ...formData.paymentMethods,
-                                                        interacTransfer: checked === true,
+                                                        interacTransfer:
+                                                            checked === true,
                                                     },
                                                 })
                                             }
@@ -500,13 +552,17 @@ const CreateInvoiceModal = ({
                                     <div className="flex items-center space-x-3">
                                         <Checkbox
                                             id="eft"
-                                            checked={formData.paymentMethods.eftTransfer}
+                                            checked={
+                                                formData.paymentMethods
+                                                    .eftTransfer
+                                            }
                                             onCheckedChange={(checked) =>
                                                 setFormData({
                                                     ...formData,
                                                     paymentMethods: {
                                                         ...formData.paymentMethods,
-                                                        eftTransfer: checked === true,
+                                                        eftTransfer:
+                                                            checked === true,
                                                     },
                                                 })
                                             }
@@ -524,16 +580,22 @@ const CreateInvoiceModal = ({
                             {/* Recurring Invoice */}
                             <div className="flex items-center justify-between">
                                 <div className="space-y-0.5">
-                                    <Label htmlFor="recurring">Recurring Invoice</Label>
+                                    <Label htmlFor="recurring">
+                                        Recurring Invoice
+                                    </Label>
                                     <p className="text-xs text-muted-foreground">
-                                        Automatically send this invoice on a schedule
+                                        Automatically send this invoice on a
+                                        schedule
                                     </p>
                                 </div>
                                 <Switch
                                     id="recurring"
                                     checked={formData.isRecurring}
                                     onCheckedChange={(checked) =>
-                                        setFormData({ ...formData, isRecurring: checked })
+                                        setFormData({
+                                            ...formData,
+                                            isRecurring: checked,
+                                        })
                                     }
                                 />
                             </div>
@@ -542,13 +604,18 @@ const CreateInvoiceModal = ({
 
                             {/* CC Email */}
                             <div className="space-y-2">
-                                <Label htmlFor="ccEmail">CC Email (optional)</Label>
+                                <Label htmlFor="ccEmail">
+                                    CC Email (optional)
+                                </Label>
                                 <Input
                                     id="ccEmail"
                                     type="email"
                                     value={formData.ccEmail}
                                     onChange={(e) =>
-                                        setFormData({ ...formData, ccEmail: e.target.value })
+                                        setFormData({
+                                            ...formData,
+                                            ccEmail: e.target.value,
+                                        })
                                     }
                                     placeholder="email@example.com"
                                     startIcon={<Mail className="h-4 w-4" />}
@@ -557,12 +624,17 @@ const CreateInvoiceModal = ({
 
                             {/* Memo */}
                             <div className="space-y-2">
-                                <Label htmlFor="memo">Internal Memo (optional)</Label>
+                                <Label htmlFor="memo">
+                                    Internal Memo (optional)
+                                </Label>
                                 <Textarea
                                     id="memo"
                                     value={formData.memo}
                                     onChange={(e) =>
-                                        setFormData({ ...formData, memo: e.target.value })
+                                        setFormData({
+                                            ...formData,
+                                            memo: e.target.value,
+                                        })
                                     }
                                     placeholder="Internal notes not shown on invoice..."
                                     rows={2}
@@ -571,12 +643,17 @@ const CreateInvoiceModal = ({
 
                             {/* Notes */}
                             <div className="space-y-2">
-                                <Label htmlFor="notes">Notes (shown on invoice)</Label>
+                                <Label htmlFor="notes">
+                                    Notes (shown on invoice)
+                                </Label>
                                 <Textarea
                                     id="notes"
                                     value={formData.notes}
                                     onChange={(e) =>
-                                        setFormData({ ...formData, notes: e.target.value })
+                                        setFormData({
+                                            ...formData,
+                                            notes: e.target.value,
+                                        })
                                     }
                                     placeholder="Thank you for your business!"
                                     rows={3}
@@ -585,7 +662,10 @@ const CreateInvoiceModal = ({
                         </TabsContent>
 
                         {/* Items Tab */}
-                        <TabsContent value="items" className="flex-1 p-6 space-y-6 mt-0">
+                        <TabsContent
+                            value="items"
+                            className="flex-1 p-6 space-y-6 mt-0"
+                        >
                             <div className="flex justify-between items-center">
                                 <div>
                                     <h3 className="text-sm font-semibold text-foreground">
@@ -607,7 +687,11 @@ const CreateInvoiceModal = ({
                                     <p className="text-sm text-muted-foreground mb-3">
                                         No items added yet
                                     </p>
-                                    <Button variant="outline" size="sm" onClick={handleAddLineItem}>
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={handleAddLineItem}
+                                    >
                                         <Plus className="h-4 w-4 mr-1" />
                                         Add First Item
                                     </Button>
@@ -630,7 +714,11 @@ const CreateInvoiceModal = ({
                                                     variant="ghost"
                                                     size="icon"
                                                     className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10"
-                                                    onClick={() => handleDeleteLineItem(item.id)}
+                                                    onClick={() =>
+                                                        handleDeleteLineItem(
+                                                            item.id
+                                                        )
+                                                    }
                                                 >
                                                     <Trash2 className="h-4 w-4" />
                                                 </Button>
@@ -660,7 +748,10 @@ const CreateInvoiceModal = ({
                                                                 handleUpdateLineItem(
                                                                     item.id,
                                                                     'qty',
-                                                                    parseFloat(e.target.value) || 0
+                                                                    parseFloat(
+                                                                        e.target
+                                                                            .value
+                                                                    ) || 0
                                                                 )
                                                             }
                                                             min="0"
@@ -676,7 +767,10 @@ const CreateInvoiceModal = ({
                                                                 handleUpdateLineItem(
                                                                     item.id,
                                                                     'price',
-                                                                    parseFloat(e.target.value) || 0
+                                                                    parseFloat(
+                                                                        e.target
+                                                                            .value
+                                                                    ) || 0
                                                                 )
                                                             }
                                                             min="0"
@@ -686,7 +780,10 @@ const CreateInvoiceModal = ({
                                                     <div className="space-y-2">
                                                         <Label>Total</Label>
                                                         <div className="h-10 px-3 flex items-center bg-muted rounded-md text-sm font-medium">
-                                                            {formatCurrency(item.qty * item.price)}
+                                                            {formatCurrency(
+                                                                item.qty *
+                                                                    item.price
+                                                            )}
                                                         </div>
                                                     </div>
                                                 </div>
@@ -708,12 +805,17 @@ const CreateInvoiceModal = ({
                                         onChange={(e) =>
                                             setFormData({
                                                 ...formData,
-                                                taxRate: parseFloat(e.target.value) || 0,
+                                                taxRate:
+                                                    parseFloat(
+                                                        e.target.value
+                                                    ) || 0,
                                             })
                                         }
                                         min="0"
                                         step="0.1"
-                                        endIcon={<Percent className="h-4 w-4" />}
+                                        endIcon={
+                                            <Percent className="h-4 w-4" />
+                                        }
                                     />
                                 </div>
                                 <div className="space-y-2">
@@ -726,7 +828,10 @@ const CreateInvoiceModal = ({
                                             onChange={(e) =>
                                                 setFormData({
                                                     ...formData,
-                                                    discount: parseFloat(e.target.value) || 0,
+                                                    discount:
+                                                        parseFloat(
+                                                            e.target.value
+                                                        ) || 0,
                                                 })
                                             }
                                             min="0"
@@ -735,7 +840,9 @@ const CreateInvoiceModal = ({
                                         />
                                         <Select
                                             value={formData.discountType}
-                                            onValueChange={(value: 'percentage' | 'fixed') =>
+                                            onValueChange={(
+                                                value: 'percentage' | 'fixed'
+                                            ) =>
                                                 setFormData({
                                                     ...formData,
                                                     discountType: value,
@@ -746,8 +853,12 @@ const CreateInvoiceModal = ({
                                                 <SelectValue />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                <SelectItem value="percentage">%</SelectItem>
-                                                <SelectItem value="fixed">$</SelectItem>
+                                                <SelectItem value="percentage">
+                                                    %
+                                                </SelectItem>
+                                                <SelectItem value="fixed">
+                                                    $
+                                                </SelectItem>
                                             </SelectContent>
                                         </Select>
                                     </div>
@@ -757,16 +868,23 @@ const CreateInvoiceModal = ({
                             {/* Totals Summary */}
                             <div className="bg-muted/50 rounded-lg p-4 space-y-2">
                                 <div className="flex justify-between text-sm">
-                                    <span className="text-muted-foreground">Subtotal</span>
-                                    <span className="font-medium">{formatCurrency(subtotal)}</span>
+                                    <span className="text-muted-foreground">
+                                        Subtotal
+                                    </span>
+                                    <span className="font-medium">
+                                        {formatCurrency(subtotal)}
+                                    </span>
                                 </div>
                                 {formData.discount > 0 && (
                                     <div className="flex justify-between text-sm">
                                         <span className="text-muted-foreground">
                                             Discount (
-                                            {formData.discountType === 'percentage'
+                                            {formData.discountType ===
+                                            'percentage'
                                                 ? `${formData.discount}%`
-                                                : formatCurrency(formData.discount)}
+                                                : formatCurrency(
+                                                      formData.discount
+                                                  )}
                                             )
                                         </span>
                                         <span className="font-medium text-destructive">
@@ -778,18 +896,25 @@ const CreateInvoiceModal = ({
                                     <span className="text-muted-foreground">
                                         Tax ({formData.taxRate}%)
                                     </span>
-                                    <span className="font-medium">{formatCurrency(totalTax)}</span>
+                                    <span className="font-medium">
+                                        {formatCurrency(totalTax)}
+                                    </span>
                                 </div>
                                 <Separator />
                                 <div className="flex justify-between">
                                     <span className="font-semibold">Total</span>
-                                    <span className="font-bold text-lg">{formatCurrency(total)}</span>
+                                    <span className="font-bold text-lg">
+                                        {formatCurrency(total)}
+                                    </span>
                                 </div>
                             </div>
                         </TabsContent>
 
                         {/* Settings Tab */}
-                        <TabsContent value="settings" className="flex-1 p-6 space-y-6 mt-0">
+                        <TabsContent
+                            value="settings"
+                            className="flex-1 p-6 space-y-6 mt-0"
+                        >
                             <div>
                                 <h3 className="text-sm font-semibold text-foreground mb-1">
                                     Company Information
@@ -828,7 +953,11 @@ const CreateInvoiceModal = ({
                                                 </div>
                                             )}
                                             <label className="cursor-pointer">
-                                                <Button variant="outline" size="sm" asChild>
+                                                <Button
+                                                    variant="outline"
+                                                    size="sm"
+                                                    asChild
+                                                >
                                                     <span>
                                                         <Upload className="h-4 w-4 mr-2" />
                                                         Upload Logo
@@ -845,7 +974,9 @@ const CreateInvoiceModal = ({
                                     </div>
 
                                     <div className="space-y-2">
-                                        <Label htmlFor="companyName">Company Name</Label>
+                                        <Label htmlFor="companyName">
+                                            Company Name
+                                        </Label>
                                         <Input
                                             id="companyName"
                                             value={companyInfo.name}
@@ -855,12 +986,16 @@ const CreateInvoiceModal = ({
                                                     name: e.target.value,
                                                 })
                                             }
-                                            startIcon={<Building2 className="h-4 w-4" />}
+                                            startIcon={
+                                                <Building2 className="h-4 w-4" />
+                                            }
                                         />
                                     </div>
 
                                     <div className="space-y-2">
-                                        <Label htmlFor="companyAddress">Address</Label>
+                                        <Label htmlFor="companyAddress">
+                                            Address
+                                        </Label>
                                         <Input
                                             id="companyAddress"
                                             value={companyInfo.address}
@@ -870,13 +1005,17 @@ const CreateInvoiceModal = ({
                                                     address: e.target.value,
                                                 })
                                             }
-                                            startIcon={<MapPin className="h-4 w-4" />}
+                                            startIcon={
+                                                <MapPin className="h-4 w-4" />
+                                            }
                                         />
                                     </div>
 
                                     <div className="grid grid-cols-2 gap-4">
                                         <div className="space-y-2">
-                                            <Label htmlFor="companyCity">City</Label>
+                                            <Label htmlFor="companyCity">
+                                                City
+                                            </Label>
                                             <Input
                                                 id="companyCity"
                                                 value={companyInfo.city}
@@ -889,14 +1028,17 @@ const CreateInvoiceModal = ({
                                             />
                                         </div>
                                         <div className="space-y-2">
-                                            <Label htmlFor="companyPostal">Postal Code</Label>
+                                            <Label htmlFor="companyPostal">
+                                                Postal Code
+                                            </Label>
                                             <Input
                                                 id="companyPostal"
                                                 value={companyInfo.postalCode}
                                                 onChange={(e) =>
                                                     setCompanyInfo({
                                                         ...companyInfo,
-                                                        postalCode: e.target.value,
+                                                        postalCode:
+                                                            e.target.value,
                                                     })
                                                 }
                                             />
@@ -904,7 +1046,9 @@ const CreateInvoiceModal = ({
                                     </div>
 
                                     <div className="space-y-2">
-                                        <Label htmlFor="companyCountry">Country</Label>
+                                        <Label htmlFor="companyCountry">
+                                            Country
+                                        </Label>
                                         <Input
                                             id="companyCountry"
                                             value={companyInfo.country}
@@ -918,7 +1062,9 @@ const CreateInvoiceModal = ({
                                     </div>
 
                                     <div className="space-y-2">
-                                        <Label htmlFor="companyEmail">Email</Label>
+                                        <Label htmlFor="companyEmail">
+                                            Email
+                                        </Label>
                                         <Input
                                             id="companyEmail"
                                             type="email"
@@ -929,7 +1075,9 @@ const CreateInvoiceModal = ({
                                                     email: e.target.value,
                                                 })
                                             }
-                                            startIcon={<Mail className="h-4 w-4" />}
+                                            startIcon={
+                                                <Mail className="h-4 w-4" />
+                                            }
                                         />
                                     </div>
                                 </div>
@@ -981,7 +1129,8 @@ const CreateInvoiceModal = ({
                                             {companyInfo.address}
                                         </p>
                                         <p className="text-sm text-muted-foreground">
-                                            {companyInfo.city}, {companyInfo.postalCode}
+                                            {companyInfo.city},{' '}
+                                            {companyInfo.postalCode}
                                         </p>
                                         <p className="text-sm text-muted-foreground">
                                             {companyInfo.country}
@@ -1003,12 +1152,18 @@ const CreateInvoiceModal = ({
                                                 </p>
                                                 {formData.customer.email && (
                                                     <p className="text-sm text-muted-foreground">
-                                                        {formData.customer.email}
+                                                        {
+                                                            formData.customer
+                                                                .email
+                                                        }
                                                     </p>
                                                 )}
                                                 {formData.customer.address && (
                                                     <p className="text-sm text-muted-foreground">
-                                                        {formData.customer.address}
+                                                        {
+                                                            formData.customer
+                                                                .address
+                                                        }
                                                     </p>
                                                 )}
                                             </>
@@ -1083,18 +1238,27 @@ const CreateInvoiceModal = ({
                                             </tr>
                                         ) : (
                                             formData.lineItems.map((item) => (
-                                                <tr key={item.id} className="border-b border-border/50">
+                                                <tr
+                                                    key={item.id}
+                                                    className="border-b border-border/50"
+                                                >
                                                     <td className="py-3 text-foreground">
-                                                        {item.description || 'Untitled Item'}
+                                                        {item.description ||
+                                                            'Untitled Item'}
                                                     </td>
                                                     <td className="py-3 text-center text-foreground">
                                                         {item.qty}
                                                     </td>
                                                     <td className="py-3 text-right text-foreground">
-                                                        {formatCurrency(item.price)}
+                                                        {formatCurrency(
+                                                            item.price
+                                                        )}
                                                     </td>
                                                     <td className="py-3 text-right font-medium text-foreground">
-                                                        {formatCurrency(item.qty * item.price)}
+                                                        {formatCurrency(
+                                                            item.qty *
+                                                                item.price
+                                                        )}
                                                     </td>
                                                 </tr>
                                             ))
@@ -1106,7 +1270,9 @@ const CreateInvoiceModal = ({
                             {/* Totals */}
                             <div className="border-t border-border pt-4 space-y-2">
                                 <div className="flex justify-between text-sm">
-                                    <span className="text-muted-foreground">Subtotal</span>
+                                    <span className="text-muted-foreground">
+                                        Subtotal
+                                    </span>
                                     <span className="text-foreground">
                                         {formatCurrency(subtotal)}
                                     </span>
@@ -1115,9 +1281,12 @@ const CreateInvoiceModal = ({
                                     <div className="flex justify-between text-sm">
                                         <span className="text-muted-foreground">
                                             Discount (
-                                            {formData.discountType === 'percentage'
+                                            {formData.discountType ===
+                                            'percentage'
                                                 ? `${formData.discount}%`
-                                                : formatCurrency(formData.discount)}
+                                                : formatCurrency(
+                                                      formData.discount
+                                                  )}
                                             )
                                         </span>
                                         <span className="text-destructive">
@@ -1135,7 +1304,9 @@ const CreateInvoiceModal = ({
                                 </div>
                                 <Separator />
                                 <div className="flex justify-between pt-2">
-                                    <span className="font-semibold text-foreground">Total</span>
+                                    <span className="font-semibold text-foreground">
+                                        Total
+                                    </span>
                                     <span className="font-bold text-lg text-foreground">
                                         {formatCurrency(total)}
                                     </span>
@@ -1158,10 +1329,13 @@ const CreateInvoiceModal = ({
                         {/* Preview Footer */}
                         <div className="px-8 py-4 bg-muted/50 border-t border-border flex justify-between items-center">
                             <span className="text-xs text-muted-foreground">
-                                {formData.invoiceNumber} • {formatCurrency(total)} due{' '}
+                                {formData.invoiceNumber} •{' '}
+                                {formatCurrency(total)} due{' '}
                                 {formatDate(formData.dueDate)}
                             </span>
-                            <span className="text-xs text-muted-foreground">Page 1 of 1</span>
+                            <span className="text-xs text-muted-foreground">
+                                Page 1 of 1
+                            </span>
                         </div>
                     </div>
                 </div>

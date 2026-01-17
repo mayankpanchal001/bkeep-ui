@@ -283,11 +283,7 @@ const UsersTab = () => {
                         Manage your team members and their access
                     </p>
                 </div>
-                <Button
-                    size="sm"
-                    onClick={() => setIsInviteModalOpen(true)}
-
-                >
+                <Button size="sm" onClick={() => setIsInviteModalOpen(true)}>
                     <Icons.Plus className="mr-2 w-4 h-4" />
                     Invite User
                 </Button>
@@ -371,7 +367,9 @@ const UsersTab = () => {
                             id="user-search"
                             placeholder="Search users by name or email..."
                             value={search}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearch(e.target.value)}
+                            onChange={(
+                                e: React.ChangeEvent<HTMLInputElement>
+                            ) => setSearch(e.target.value)}
                             startIcon={<Icons.Search className="w-4 h-4" />}
                         />
                         {search && (
@@ -385,7 +383,12 @@ const UsersTab = () => {
                             </button>
                         )}
                     </div>
-                    <Button type="submit" size="sm" startIcon={<Icons.Search className="w-4 h-4" />}    disabled={isLoading}>
+                    <Button
+                        type="submit"
+                        size="sm"
+                        startIcon={<Icons.Search className="w-4 h-4" />}
+                        disabled={isLoading}
+                    >
                         Search
                     </Button>
                 </form>
@@ -729,7 +732,9 @@ const UsersTab = () => {
                                             onClick={() =>
                                                 setIsInviteModalOpen(true)
                                             }
-                                            startIcon={<Icons.Plus className="w-4 h-4" />}
+                                            startIcon={
+                                                <Icons.Plus className="w-4 h-4" />
+                                            }
                                         >
                                             Invite User
                                         </Button>

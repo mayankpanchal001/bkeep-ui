@@ -532,9 +532,9 @@ const PasskeyManagementModal = ({
                                     <Input
                                         placeholder="e.g., My iPhone, Touch ID, Work Laptop"
                                         value={friendlyName}
-                                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                                            setFriendlyName(e.target.value)
-                                        }
+                                        onChange={(
+                                            e: React.ChangeEvent<HTMLInputElement>
+                                        ) => setFriendlyName(e.target.value)}
                                         disabled={isRegistering}
                                         required
                                     />
@@ -550,7 +550,9 @@ const PasskeyManagementModal = ({
                                         variant="outline"
                                         onClick={() => setCurrentStep('list')}
                                         disabled={isRegistering}
-                                        startIcon={<FaTimes className="w-4 h-4" />}
+                                        startIcon={
+                                            <FaTimes className="w-4 h-4" />
+                                        }
                                     >
                                         Cancel
                                     </Button>
@@ -561,7 +563,9 @@ const PasskeyManagementModal = ({
                                         onClick={handleRegisterPasskey}
                                         loading={isRegistering}
                                         disabled={isRegistering}
-                                        startIcon={<FaPlus className="w-4 h-4" />}
+                                        startIcon={
+                                            <FaPlus className="w-4 h-4" />
+                                        }
                                     >
                                         Register Passkey
                                     </Button>
@@ -582,9 +586,9 @@ const PasskeyManagementModal = ({
                                 <Input
                                     placeholder="e.g., My iPhone, Touch ID, Work Laptop"
                                     value={friendlyName}
-                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                                        setFriendlyName(e.target.value)
-                                    }
+                                    onChange={(
+                                        e: React.ChangeEvent<HTMLInputElement>
+                                    ) => setFriendlyName(e.target.value)}
                                     disabled={isRenaming}
                                     required
                                 />
@@ -595,8 +599,10 @@ const PasskeyManagementModal = ({
                                         variant="outline"
                                         onClick={() => setCurrentStep('list')}
                                         disabled={isRenaming}
-                                        startIcon={<SaveIcon         className="w-4 h-4" />}
-                                            >
+                                        startIcon={
+                                            <SaveIcon className="w-4 h-4" />
+                                        }
+                                    >
                                         Cancel
                                     </Button>
                                     <Button
@@ -606,7 +612,9 @@ const PasskeyManagementModal = ({
                                         onClick={handleRenamePasskey}
                                         loading={isRenaming}
                                         disabled={isRenaming}
-                                        startIcon={<FaSave className="w-4 h-4" />}
+                                        startIcon={
+                                            <FaSave className="w-4 h-4" />
+                                        }
                                     >
                                         Save Changes
                                     </Button>

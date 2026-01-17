@@ -39,7 +39,7 @@ const DataPrivacyTab = () => {
                             className="border-destructive/30 text-destructive hover:bg-destructive/10"
                         >
                             <Icons.Trash className="w-4 h-4" />
-                                    Delete Account
+                            Delete Account
                         </Button>
                     </div>
                 </div>

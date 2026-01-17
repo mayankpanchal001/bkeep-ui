@@ -148,10 +148,12 @@ const EditUserModal = ({ isOpen, onClose, user }: EditUserModalProps) => {
                         </h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                                    <Input
+                                <Input
                                     id="edit-user-name"
                                     value={formData.name}
-                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                    onChange={(
+                                        e: React.ChangeEvent<HTMLInputElement>
+                                    ) => {
                                         setFormData({
                                             ...formData,
                                             name: e.target.value,
@@ -175,11 +177,13 @@ const EditUserModal = ({ isOpen, onClose, user }: EditUserModalProps) => {
                             </div>
 
                             <div>
-                                            <Input
+                                <Input
                                     id="edit-user-email"
                                     type="email"
                                     value={formData.email}
-                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                    onChange={(
+                                        e: React.ChangeEvent<HTMLInputElement>
+                                    ) => {
                                         setFormData({
                                             ...formData,
                                             email: e.target.value,
@@ -203,11 +207,13 @@ const EditUserModal = ({ isOpen, onClose, user }: EditUserModalProps) => {
                             </div>
 
                             <div>
-                                    <Input
+                                <Input
                                     id="edit-user-phone"
                                     type="tel"
                                     value={formData.phone}
-                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                    onChange={(
+                                        e: React.ChangeEvent<HTMLInputElement>
+                                    ) => {
                                         setFormData({
                                             ...formData,
                                             phone: e.target.value,
@@ -236,7 +242,12 @@ const EditUserModal = ({ isOpen, onClose, user }: EditUserModalProps) => {
                                 >
                                     <SelectContent>
                                         {roles.map((role) => (
-                                            <SelectItem key={role.id} value={role.id}>{role.displayName}</SelectItem>
+                                            <SelectItem
+                                                key={role.id}
+                                                value={role.id}
+                                            >
+                                                {role.displayName}
+                                            </SelectItem>
                                         ))}
                                     </SelectContent>
                                 </Select>
@@ -288,8 +299,8 @@ const EditUserModal = ({ isOpen, onClose, user }: EditUserModalProps) => {
                         </Button>
                         <Button
                             type="submit"
-                                variant="default"
-                                size="default"
+                            variant="default"
+                            size="default"
                             loading={isPending}
                             disabled={isPending}
                             startIcon={<Save className="w-4 h-4" />}

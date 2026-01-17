@@ -203,7 +203,7 @@ const TOTPSetupModal = ({
                                     <Button
                                         type="button"
                                         variant={
-                                                            copiedSecret ? 'default' : 'outline'
+                                            copiedSecret ? 'default' : 'outline'
                                         }
                                         size="sm"
                                         onClick={handleCopySecret}
@@ -314,7 +314,9 @@ const TOTPSetupModal = ({
                             type="text"
                             placeholder="Enter 6-digit code"
                             value={verificationCode}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                            onChange={(
+                                e: React.ChangeEvent<HTMLInputElement>
+                            ) => {
                                 const value = e.target.value.replace(/\D/g, '');
                                 if (value.length <= 6) {
                                     setVerificationCode(value);
@@ -332,7 +334,7 @@ const TOTPSetupModal = ({
                                 onClick={() => setStep('setup')}
                                 disabled={isVerifying}
                                 startIcon={<ArrowLeft className="w-4 h-4" />}
-                                >
+                            >
                                 Back
                             </Button>
                             <Button
@@ -341,7 +343,9 @@ const TOTPSetupModal = ({
                                 size="default"
                                 startIcon={<Check className="w-4 h-4" />}
                                 loading={isVerifying}
-                                disabled={isVerifying || verificationCode.length !== 6}
+                                disabled={
+                                    isVerifying || verificationCode.length !== 6
+                                }
                             >
                                 Verify & Enable
                             </Button>

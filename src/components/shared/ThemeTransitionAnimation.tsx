@@ -103,7 +103,11 @@ export const ThemeTransitionAnimation = () => {
                         y2="100%"
                         gradientUnits="userSpaceOnUse"
                     >
-                        <stop offset="0%" stopColor={themeColors?.primary || '#000000'} stopOpacity="0.6">
+                        <stop
+                            offset="0%"
+                            stopColor={themeColors?.primary || '#000000'}
+                            stopOpacity="0.6"
+                        >
                             <animate
                                 attributeName="stop-opacity"
                                 values="0.3;0.8;0.3"
@@ -111,7 +115,11 @@ export const ThemeTransitionAnimation = () => {
                                 repeatCount="indefinite"
                             />
                         </stop>
-                        <stop offset="50%" stopColor={themeColors?.accent || '#000000'} stopOpacity="0.4">
+                        <stop
+                            offset="50%"
+                            stopColor={themeColors?.accent || '#000000'}
+                            stopOpacity="0.4"
+                        >
                             <animate
                                 attributeName="stop-opacity"
                                 values="0.2;0.6;0.2"
@@ -119,7 +127,11 @@ export const ThemeTransitionAnimation = () => {
                                 repeatCount="indefinite"
                             />
                         </stop>
-                        <stop offset="100%" stopColor={themeColors?.secondary || '#000000'} stopOpacity="0.3">
+                        <stop
+                            offset="100%"
+                            stopColor={themeColors?.secondary || '#000000'}
+                            stopOpacity="0.3"
+                        >
                             <animate
                                 attributeName="stop-opacity"
                                 values="0.1;0.5;0.1"
@@ -138,8 +150,16 @@ export const ThemeTransitionAnimation = () => {
                         y2="100%"
                         gradientUnits="userSpaceOnUse"
                     >
-                        <stop offset="0%" stopColor={themeColors?.accent || '#000000'} stopOpacity="0.5" />
-                        <stop offset="100%" stopColor={themeColors?.primary || '#000000'} stopOpacity="0.3" />
+                        <stop
+                            offset="0%"
+                            stopColor={themeColors?.accent || '#000000'}
+                            stopOpacity="0.5"
+                        />
+                        <stop
+                            offset="100%"
+                            stopColor={themeColors?.primary || '#000000'}
+                            stopOpacity="0.3"
+                        />
                     </linearGradient>
 
                     {/* Radial gradient for glow effects */}
@@ -149,8 +169,16 @@ export const ThemeTransitionAnimation = () => {
                         cy="50%"
                         r="50%"
                     >
-                        <stop offset="0%" stopColor={themeColors?.primary || '#000000'} stopOpacity="0.8" />
-                        <stop offset="100%" stopColor={themeColors?.primary || '#000000'} stopOpacity="0" />
+                        <stop
+                            offset="0%"
+                            stopColor={themeColors?.primary || '#000000'}
+                            stopOpacity="0.8"
+                        />
+                        <stop
+                            offset="100%"
+                            stopColor={themeColors?.primary || '#000000'}
+                            stopOpacity="0"
+                        />
                     </radialGradient>
 
                     {/* Mesh gradient for modern look */}
@@ -161,14 +189,36 @@ export const ThemeTransitionAnimation = () => {
                         x2="100%"
                         y2="100%"
                     >
-                        <stop offset="0%" stopColor={themeColors?.primary || '#000000'} stopOpacity="0.4" />
-                        <stop offset="33%" stopColor={themeColors?.accent || '#000000'} stopOpacity="0.3" />
-                        <stop offset="66%" stopColor={themeColors?.secondary || '#000000'} stopOpacity="0.2" />
-                        <stop offset="100%" stopColor={themeColors?.primary || '#000000'} stopOpacity="0.4" />
+                        <stop
+                            offset="0%"
+                            stopColor={themeColors?.primary || '#000000'}
+                            stopOpacity="0.4"
+                        />
+                        <stop
+                            offset="33%"
+                            stopColor={themeColors?.accent || '#000000'}
+                            stopOpacity="0.3"
+                        />
+                        <stop
+                            offset="66%"
+                            stopColor={themeColors?.secondary || '#000000'}
+                            stopOpacity="0.2"
+                        />
+                        <stop
+                            offset="100%"
+                            stopColor={themeColors?.primary || '#000000'}
+                            stopOpacity="0.4"
+                        />
                     </linearGradient>
 
                     {/* Glow filter */}
-                    <filter id={`theme-glow-${animationKey}`} x="-50%" y="-50%" width="200%" height="200%">
+                    <filter
+                        id={`theme-glow-${animationKey}`}
+                        x="-50%"
+                        y="-50%"
+                        width="200%"
+                        height="200%"
+                    >
                         <feGaussianBlur stdDeviation="8" result="coloredBlur" />
                         <feMerge>
                             <feMergeNode in="coloredBlur" />
@@ -540,7 +590,9 @@ export const ThemeTransitionAnimation = () => {
                                 cy="100"
                                 r="70"
                                 fill="none"
-                                stroke={themeColors?.secondary || 'currentColor'}
+                                stroke={
+                                    themeColors?.secondary || 'currentColor'
+                                }
                                 strokeWidth="2"
                                 opacity="0.6"
                                 strokeDasharray="10,5"
@@ -561,7 +613,8 @@ export const ThemeTransitionAnimation = () => {
                         <div
                             className="absolute inset-0 -m-12 rounded-full blur-3xl animate-theme-icon-glow"
                             style={{
-                                background: themeColors?.primary || 'currentColor',
+                                background:
+                                    themeColors?.primary || 'currentColor',
                                 opacity: 0.6,
                             }}
                         />
@@ -599,7 +652,9 @@ export const ThemeTransitionAnimation = () => {
                                             className="absolute top-1/2 left-1/2 w-3 h-3 rounded-full animate-theme-dot"
                                             style={{
                                                 transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`,
-                                                background: themeColors?.accent || 'currentColor',
+                                                background:
+                                                    themeColors?.accent ||
+                                                    'currentColor',
                                                 animationDelay: `${i * 0.08}s`,
                                             }}
                                         />

@@ -51,30 +51,33 @@
     }
 
     body.theme-transitioning * {
-        transition: background-color var(--theme-transition),
-                    border-color var(--theme-transition),
-                    color var(--theme-transition),
-                    fill var(--theme-transition),
-                    stroke var(--theme-transition),
-                    opacity var(--theme-transition),
-                    box-shadow var(--theme-transition),
-                    outline-color var(--theme-transition);
+        transition:
+            background-color var(--theme-transition),
+            border-color var(--theme-transition),
+            color var(--theme-transition),
+            fill var(--theme-transition),
+            stroke var(--theme-transition),
+            opacity var(--theme-transition),
+            box-shadow var(--theme-transition),
+            outline-color var(--theme-transition);
     }
 
     body.theme-transitioning {
-        transition: background-color var(--theme-transition),
-                    color var(--theme-transition);
+        transition:
+            background-color var(--theme-transition),
+            color var(--theme-transition);
     }
 
     /* Smooth color transitions for theme variables */
     * {
-        transition: background-color 0.3s ease,
-                    border-color 0.3s ease,
-                    color 0.3s ease;
+        transition:
+            background-color 0.3s ease,
+            border-color 0.3s ease,
+            color 0.3s ease;
     }
 
     /* Drag and Drop Improvements */
-    [draggable="true"] {
+    [draggable='true'] {
         -webkit-user-drag: element;
         user-select: none;
         -webkit-user-select: none;
@@ -94,8 +97,8 @@
     }
 
     /* Improve drag feedback */
-    tr[draggable="true"],
-    tr:has([draggable="true"]) {
+    tr[draggable='true'],
+    tr:has([draggable='true']) {
         cursor: default;
     }
 

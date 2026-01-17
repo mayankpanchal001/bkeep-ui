@@ -40,7 +40,11 @@ export default function HeroSection() {
                     </div>
                     <div className="flex flex-wrap gap-4">
                         <Link to="/register">
-                            <Button variant="default" className="px-8" startIcon={<Plus className="w-4 h-4" />}>
+                            <Button
+                                variant="default"
+                                className="px-8"
+                                startIcon={<Plus className="w-4 h-4" />}
+                            >
                                 Get started
                             </Button>
                         </Link>

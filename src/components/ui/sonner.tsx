@@ -4,11 +4,7 @@ import { X } from 'lucide-react';
 import { Toaster as Sonner, type ToasterProps } from 'sonner';
 
 // Custom close button component
-const CustomCloseButton = ({
-    closeToast
-}: {
-    closeToast: () => void;
-}) => {
+const CustomCloseButton = ({ closeToast }: { closeToast: () => void }) => {
     return (
         <button
             type="button"
@@ -58,8 +54,12 @@ const Toaster = ({ ...props }: ToasterProps) => {
     return (
         <Sonner
             theme={theme as ToasterProps['theme']}
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            closeButton={((props: { closeToast: () => void }) => <CustomCloseButton {...props} />) as any}
+
+            closeButton={
+                ((props: { closeToast: () => void }) => (
+                    <CustomCloseButton {...props} />
+                )) as unknown as boolean | undefined
+            }
             toastOptions={toastOptions}
             className="toaster group [&>li]:list-none"
             position={props.position || 'top-center'}

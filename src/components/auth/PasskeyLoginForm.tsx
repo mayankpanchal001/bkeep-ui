@@ -167,7 +167,12 @@ export function PasskeyLoginForm() {
                     password.
                 </p>
                 <Link to="/login">
-                        <Button variant="default" startIcon={<LogIn className="w-4 h-4" />}>Go to Sign In</Button>
+                    <Button
+                        variant="default"
+                        startIcon={<LogIn className="w-4 h-4" />}
+                    >
+                        Go to Sign In
+                    </Button>
                 </Link>
             </div>
         );
@@ -216,7 +221,11 @@ export function PasskeyLoginForm() {
                 </div>
 
                 <Link to="/login">
-                    <Button variant="default" className="w-full" startIcon={<FaUser className="w-4 h-4" />}>
+                    <Button
+                        variant="default"
+                        className="w-full"
+                        startIcon={<FaUser className="w-4 h-4" />}
+                    >
                         Sign In with Email & Password
                     </Button>
                 </Link>

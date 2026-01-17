@@ -1,4 +1,3 @@
-
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -191,9 +190,7 @@ export function TransactionHeader({
 
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <Button
-                                variant="outline"
-                            >
+                            <Button variant="outline">
                                 Requests
                                 <ChevronDown className="w-4 h-4 ml-2" />
                             </Button>

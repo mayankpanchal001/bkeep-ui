@@ -61,7 +61,9 @@ export default function ViewJournalEntrypage() {
     const [draggedLineId, setDraggedLineId] = useState<string | null>(null);
     const [dragOverLineId, setDragOverLineId] = useState<string | null>(null);
     const reorderMutation = useReorderJournalEntryLines();
-    const dragLeaveTimeoutRef = useRef<Map<HTMLElement, ReturnType<typeof setTimeout>>>(new Map());
+    const dragLeaveTimeoutRef = useRef<
+        Map<HTMLElement, ReturnType<typeof setTimeout>>
+    >(new Map());
 
     const journalEntry = useMemo<JournalEntry | undefined>(() => {
         const root = data as unknown as Record<string, unknown> | undefined;
@@ -383,8 +385,14 @@ export default function ViewJournalEntrypage() {
                                     // Set drag data immediately for better browser compatibility
                                     e.dataTransfer.effectAllowed = 'move';
                                     e.dataTransfer.dropEffect = 'move';
-                                    e.dataTransfer.setData('text/plain', line.id);
-                                    e.dataTransfer.setData('application/x-line-id', line.id);
+                                    e.dataTransfer.setData(
+                                        'text/plain',
+                                        line.id
+                                    );
+                                    e.dataTransfer.setData(
+                                        'application/x-line-id',
+                                        line.id
+                                    );
 
                                     // Call handler for state management and visual feedback
                                     handleDragStart(e, line.id);
@@ -392,7 +400,10 @@ export default function ViewJournalEntrypage() {
                                 onDrag={(e) => {
                                     // Keep drag effect during drag
                                     e.stopPropagation();
-                                    if (!reorderMutation.isPending && draggedLineId) {
+                                    if (
+                                        !reorderMutation.isPending &&
+                                        draggedLineId
+                                    ) {
                                         e.dataTransfer.dropEffect = 'move';
                                     }
                                 }}
@@ -546,17 +557,20 @@ export default function ViewJournalEntrypage() {
                             : undefined
                     }
                     onRowDragOver={
-                        journalEntry.status === 'draft' && !reorderMutation.isPending
+                        journalEntry.status === 'draft' &&
+                        !reorderMutation.isPending
                             ? (e, line) => handleDragOver(e, line.id)
                             : undefined
                     }
                     onRowDragLeave={
-                        journalEntry.status === 'draft' && !reorderMutation.isPending
+                        journalEntry.status === 'draft' &&
+                        !reorderMutation.isPending
                             ? handleDragLeave
                             : undefined
                     }
                     onRowDrop={
-                        journalEntry.status === 'draft' && !reorderMutation.isPending
+                        journalEntry.status === 'draft' &&
+                        !reorderMutation.isPending
                             ? (e, line) => handleDrop(e, line.id)
                             : undefined
                     }

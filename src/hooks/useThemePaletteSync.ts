@@ -1,7 +1,10 @@
 import { useEffect, useRef } from 'react';
 import { useThemePaletteStore } from '../stores/theme/themePaletteStore';
 import { useThemeStore } from '../stores/theme/themeStore';
-import { applyThemePalette, getCurrentThemeMode } from '../utils/applyThemePalette';
+import {
+    applyThemePalette,
+    getCurrentThemeMode,
+} from '../utils/applyThemePalette';
 
 /**
  * Hook to sync theme palette changes with CSS variables
