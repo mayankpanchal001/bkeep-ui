@@ -32,7 +32,6 @@ import {
     TableSelectAllCheckbox,
     TableSelectionToolbar,
 } from '@/components/ui/table';
-import { cn } from '@/utils/cn';
 import { Filter, Search, X } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useContacts } from '../../services/apis/contactsApi';
@@ -126,7 +125,22 @@ const Transactionpage = () => {
             limit,
         };
 
-        if (search) filters.search = search;
+        // Check if search is a number - if so, use it for amountMin and amountMax
+        const searchAsNumber = search ? parseFloat(search.trim()) : NaN;
+        const isNumericSearch =
+            !isNaN(searchAsNumber) && isFinite(searchAsNumber);
+
+        if (search) {
+            if (isNumericSearch) {
+                // If search is a number, set both minAmount and maxAmount to that value
+                filters.minAmount = searchAsNumber;
+                filters.maxAmount = searchAsNumber;
+            } else {
+                // Otherwise, use it as a regular text search
+                filters.search = search;
+            }
+        }
+
         if (status !== 'all') filters.status = status;
         if (selectedAccountId) filters.accountId = selectedAccountId;
         if (filterStartDate) filters.startDate = filterStartDate;
@@ -150,13 +164,18 @@ const Transactionpage = () => {
 
         if (filterCategory) filters.category = filterCategory;
         if (filterTax) filters.taxId = filterTax;
-        if (filterMinAmount) {
-            const minAmount = parseFloat(filterMinAmount);
-            if (!isNaN(minAmount)) filters.minAmount = minAmount;
-        }
-        if (filterMaxAmount) {
-            const maxAmount = parseFloat(filterMaxAmount);
-            if (!isNaN(maxAmount)) filters.maxAmount = maxAmount;
+
+        // Only apply filter drawer min/max if search is not a number
+        // (If search is a number, it already set minAmount and maxAmount above)
+        if (!isNumericSearch) {
+            if (filterMinAmount) {
+                const minAmount = parseFloat(filterMinAmount);
+                if (!isNaN(minAmount)) filters.minAmount = minAmount;
+            }
+            if (filterMaxAmount) {
+                const maxAmount = parseFloat(filterMaxAmount);
+                if (!isNaN(maxAmount)) filters.maxAmount = maxAmount;
+            }
         }
         if (sort) {
             // Map UI sort keys to API sort keys
@@ -463,51 +482,21 @@ const Transactionpage = () => {
                 onStatusSelect={(status) => filterStore.setStatus(status)}
             />
 
-            <div className="p-4 border-b border-primary/10">
+            <div className="p-4 border-b border-primary/10 sticky -top-4 z-30 bg-background">
                 <div className="flex items-center gap-2 flex-wrap">
-                    <button
-                        className={cn(
-                            'px-4 py-2 rounded-lg text-sm font-medium transition-all',
-                            filterStore.status === 'all'
-                                ? 'bg-primary text-white shadow-sm'
-                                : 'bg-card border border-primary/10 text-primary hover:bg-primary/5 hover:border-primary/20'
-                        )}
-                        onClick={() => filterStore.setStatus('all')}
-                    >
-                        All ({allCount})
-                    </button>
-                    <button
-                        className={cn(
-                            'px-4 py-2 rounded-lg text-sm font-medium transition-all',
-                            filterStore.status === 'pending'
-                                ? 'bg-orange-500 text-white shadow-sm'
-                                : 'bg-card border border-primary/10 text-primary hover:bg-orange-50 hover:border-orange-200'
-                        )}
-                        onClick={() => filterStore.setStatus('pending')}
-                    >
-                        Pending ({pendingCount})
-                    </button>
-                    <button
-                        className={cn(
-                            'px-4 py-2 rounded-lg text-sm font-medium transition-all',
-                            filterStore.status === 'posted'
-                                ? 'bg-green-600 text-white shadow-sm'
-                                : 'bg-card border border-primary/10 text-primary hover:bg-green-50 hover:border-green-200'
-                        )}
-                        onClick={() => filterStore.setStatus('posted')}
-                    >
-                        Posted ({postedCount})
-                    </button>
+                    <Button>All ({allCount})</Button>
+                    <Button variant="outline">Pending ({pendingCount})</Button>
+                    <Button>Posted ({postedCount})</Button>
+
                     <div className="ml-auto flex items-center gap-3">
                         <div className="relative w-[260px]">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-primary/50 w-4 h-4" />
-                            <input
+                            <Input
                                 value={filterStore.search}
                                 onChange={(e) =>
                                     filterStore.setSearch(e.target.value)
                                 }
                                 placeholder="Search"
-                                className="w-full pl-10 pr-4 py-2 border border-primary/10 rounded-2 text-sm focus:outline-none focus:border-primary"
+                                startIcon={<Search className="w-4 h-4" />}
                             />
                         </div>
                         <CreateTransactionDrawer />

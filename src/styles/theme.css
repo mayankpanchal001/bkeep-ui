@@ -1,11 +1,11 @@
 @import 'tailwindcss';
 
 :root {
-    --color-surface: #ffffff;
-    --color-surface-muted: #f6f7fb;
     --color-primary: #1c1c1c;
     --color-secondary: #5e17eb;
     --color-accent: #c55a11;
+    --color-surface: #ffffff;
+    --color-surface-muted: #f6f7fb;
 }
 
 @theme {

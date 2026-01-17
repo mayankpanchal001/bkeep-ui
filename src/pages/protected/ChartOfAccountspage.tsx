@@ -39,6 +39,7 @@ import {
 import { FileUp, Filter, Pencil, Plus, Search, Trash2, X } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import * as XLSX from 'xlsx';
+import { ACCOUNT_HIERARCHY } from '../../components/homepage/constants';
 import {
     useChartOfAccounts,
     useCreateChartOfAccount,
@@ -65,144 +66,6 @@ const ACCOUNT_TYPE_DISPLAY: Record<AccountType, string> = {
     equity: 'Equity',
     income: 'Income',
     expense: 'Expense',
-};
-
-// Account Hierarchy Structure
-type AccountHierarchyItem = {
-    label: string;
-    value: string;
-    detailTypes: { value: AccountDetailType; label: string }[];
-};
-
-const ACCOUNT_HIERARCHY: Record<AccountType, AccountHierarchyItem[]> = {
-    asset: [
-        {
-            label: 'Bank',
-            value: 'bank',
-            detailTypes: [
-                { value: 'cash', label: 'Cash on hand' },
-                { value: 'checking', label: 'Checking' },
-                { value: 'money-market', label: 'Money Market' },
-                { value: 'rents-held-in-trust', label: 'Rents held in trust' },
-                { value: 'savings', label: 'Savings' },
-                { value: 'trust-account', label: 'Trust account' },
-            ],
-        },
-        {
-            label: 'Accounts Receivable',
-            value: 'accounts-receivable',
-            detailTypes: [
-                {
-                    value: 'accounts-receivable',
-                    label: 'Accounts Receivable (A/R)',
-                },
-            ],
-        },
-        {
-            label: 'Current Assets',
-            value: 'current-assets',
-            detailTypes: [
-                {
-                    value: 'allowance-for-bad-debts',
-                    label: 'Allowance for bad debts',
-                },
-                { value: 'development-costs', label: 'Development costs' },
-                {
-                    value: 'employee-cash-advances',
-                    label: 'Employee cash advances',
-                },
-                { value: 'inventory', label: 'Inventory' },
-                { value: 'investment', label: 'Investment' },
-                { value: 'loans-to-others', label: 'Loans to others' },
-                { value: 'other', label: 'Other Current Assets' },
-            ],
-        },
-        {
-            label: 'Fixed Assets', // Property plants & equipment
-            value: 'fixed-assets',
-            detailTypes: [
-                { value: 'fixed-asset', label: 'Fixed Asset' },
-                {
-                    value: 'accumulated-depletion',
-                    label: 'Accumulated depletion',
-                },
-                {
-                    value: 'accumulated-depreciation',
-                    label: 'Accumulated depreciation',
-                },
-                { value: 'buildings', label: 'Buildings' },
-                { value: 'land', label: 'Land' },
-                { value: 'furniture', label: 'Furniture & Equipment' },
-            ],
-        },
-    ],
-    liability: [
-        {
-            label: 'Accounts Payable',
-            value: 'accounts-payable',
-            detailTypes: [
-                { value: 'accounts-payable', label: 'Accounts Payable (A/P)' },
-            ],
-        },
-        {
-            label: 'Credit Card',
-            value: 'credit-card',
-            detailTypes: [{ value: 'credit-card', label: 'Credit Card' }],
-        },
-        {
-            label: 'Current Liabilities',
-            value: 'current-liabilities',
-            detailTypes: [
-                { value: 'loan', label: 'Loan' },
-                { value: 'other', label: 'Other Current Liabilities' },
-            ],
-        },
-        {
-            label: 'Long Term Liabilities',
-            value: 'long-term-liabilities',
-            detailTypes: [
-                { value: 'loan', label: 'Long-term Loan' },
-                { value: 'other', label: 'Other Long-term Liabilities' },
-            ],
-        },
-    ],
-    equity: [
-        {
-            label: 'Equity',
-            value: 'equity',
-            detailTypes: [
-                { value: 'retained-earnings', label: 'Retained Earnings' },
-                { value: 'other', label: 'Owner Equity' },
-            ],
-        },
-    ],
-    income: [
-        {
-            label: 'Income',
-            value: 'income',
-            detailTypes: [
-                { value: 'revenue', label: 'Revenue' },
-                { value: 'other', label: 'Other Income' },
-            ],
-        },
-    ],
-    expense: [
-        {
-            label: 'Expense',
-            value: 'expense',
-            detailTypes: [
-                { value: 'expense', label: 'Expense' },
-                { value: 'other', label: 'Other Expense' },
-            ],
-        },
-        {
-            label: 'Cost of Goods Sold',
-            value: 'cost-of-goods-sold',
-            detailTypes: [
-                { value: 'cost-of-goods-sold', label: 'Cost of Goods Sold' },
-            ],
-        },
-    ],
 };
 
 // Derived Options for Dropdown
@@ -282,7 +145,7 @@ const ChartOfAccountspage = () => {
     const [formData, setFormData] = useState<CreateChartOfAccountPayload>({
         accountName: '',
         accountType: 'asset',
-        accountDetailType: 'checking',
+        accountDetailType: 'cash-on-hand',
         openingBalance: 0,
         description: '',
     });
@@ -365,7 +228,7 @@ const ChartOfAccountspage = () => {
         setFormData({
             accountName: '',
             accountType: 'asset',
-            accountDetailType: 'cash',
+            accountDetailType: 'cash-on-hand',
             openingBalance: 0,
             description: '',
         });
@@ -606,7 +469,6 @@ const ChartOfAccountspage = () => {
             {/* Accounts Table */}
             <Table
                 enableSelection
-                containerClassName="flex-1 overflow-hidden [&>div]:h-full [&>div]:overflow-auto"
                 rowIds={rowIds}
                 selectedIds={selectedItems}
                 onSelectionChange={setSelectedItems}
@@ -780,9 +642,14 @@ const ChartOfAccountspage = () => {
                                             opt.value
                                         );
                                         return (
-                                            <button
+                                            <Button
                                                 key={opt.value}
-                                                type="button"
+                                                variant={
+                                                    active
+                                                        ? 'active'
+                                                        : 'outline'
+                                                }
+                                                size="sm"
                                                 onClick={() => {
                                                     setSelectedTypes((prev) =>
                                                         active
@@ -797,14 +664,9 @@ const ChartOfAccountspage = () => {
                                                               ]
                                                     );
                                                 }}
-                                                className={`px-3 py-1.5 text-xs rounded-md transition-colors ${
-                                                    active
-                                                        ? 'bg-primary/10 text-primary border border-primary/10'
-                                                        : 'text-primary/60 hover:bg-primary/10'
-                                                }`}
                                             >
                                                 {opt.label}
-                                            </button>
+                                            </Button>
                                         );
                                     })}
                                 </div>
@@ -850,9 +712,14 @@ const ChartOfAccountspage = () => {
                                                     dt.value
                                                 );
                                             return (
-                                                <button
+                                                <Button
                                                     key={dt.value}
-                                                    type="button"
+                                                    variant={
+                                                        active
+                                                            ? 'active'
+                                                            : 'outline'
+                                                    }
+                                                    size="sm"
                                                     onClick={() => {
                                                         setSelectedDetailTypes(
                                                             (prev) =>
@@ -868,14 +735,9 @@ const ChartOfAccountspage = () => {
                                                                       ]
                                                         );
                                                     }}
-                                                    className={`px-3 py-1.5 text-xs rounded-md transition-colors capitalize ${
-                                                        active
-                                                            ? 'bg-primary/10 text-primary border border-primary/10'
-                                                            : 'text-primary/60 hover:bg-primary/10'
-                                                    }`}
                                                 >
                                                     {dt.label}
-                                                </button>
+                                                </Button>
                                             );
                                         })}
                                 </div>
@@ -894,22 +756,18 @@ const ChartOfAccountspage = () => {
                                                     'inactive' &&
                                                     s === 'inactive');
                                             return (
-                                                <button
+                                                <Button
                                                     key={s}
-                                                    type="button"
+                                                    variant="outline"
+                                                    size="sm"
                                                     onClick={() => {
                                                         setIsActiveFilter(
                                                             active ? 'all' : s
                                                         );
                                                     }}
-                                                    className={`px-3 py-1.5 text-xs rounded-md transition-colors capitalize ${
-                                                        active
-                                                            ? 'bg-primary/10 text-primary border border-primary/10'
-                                                            : 'text-primary/60 hover:bg-primary/10'
-                                                    }`}
                                                 >
                                                     {s}
-                                                </button>
+                                                </Button>
                                             );
                                         }
                                     )}
@@ -919,7 +777,13 @@ const ChartOfAccountspage = () => {
                         <div className="flex justify-between gap-3 mt-8 pt-4 border-t border-primary/10">
                             <Button
                                 type="button"
-                                variant="outline"
+                                variant={
+                                    selectedTypes.length === 0 &&
+                                    selectedDetailTypes.length === 0 &&
+                                    isActiveFilter === 'all'
+                                        ? 'active'
+                                        : 'outline'
+                                }
                                 onClick={() => {
                                     setSelectedTypes([]);
                                     setSelectedDetailTypes([]);

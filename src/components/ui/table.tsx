@@ -370,7 +370,7 @@ function Table({
 
     // Container styles based on borderStyle
     const containerClasses = cn(
-        'relative w-full overflow-hidden',
+        'relative w-full overflow-hidden max-h-full',
         borderStyle === 'default' &&
             'rounded-md border border-border bg-background',
         borderStyle === 'minimal' &&
@@ -723,7 +723,7 @@ function TableHead({
                     'hover:bg-primary/10',
                 ],
                 // Active sort state using theme secondary color
-                isCurrentSort && ['text-secondary', 'bg-secondary/10'],
+                isCurrentSort && ['text-accent', 'bg-accent/10'],
                 // Smooth transitions
                 'transition-all duration-200 ease-in-out',
                 // Subtle border between columns using theme border color
@@ -761,7 +761,7 @@ function SortIndicator({ direction }: { direction: SortDirection }) {
             {direction === 'asc' && (
                 <svg
                     className={cn(
-                        'text-secondary',
+                        'text-accent',
                         isCompact ? 'w-3 h-3' : 'w-3.5 h-3.5'
                     )}
                     fill="none"
@@ -779,7 +779,7 @@ function SortIndicator({ direction }: { direction: SortDirection }) {
             {direction === 'desc' && (
                 <svg
                     className={cn(
-                        'text-secondary',
+                        'text-accent',
                         isCompact ? 'w-3 h-3' : 'w-3.5 h-3.5'
                     )}
                     fill="none"

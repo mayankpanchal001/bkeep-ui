@@ -193,11 +193,12 @@ export async function voidJournalEntry(
  * Reverse a posted journal entry
  */
 export async function reverseJournalEntry(
-    id: string
+    id: string,
+    reversalDate: string
 ): Promise<JournalEntryResponse> {
     const response = await axiosInstance.post(
         `/journal-entries/${id}/reverse`,
-        {}
+        { reversalDate }
     );
     return response.data;
 }
@@ -211,6 +212,20 @@ export async function restoreJournalEntry(
     const response = await axiosInstance.patch(
         `/journal-entries/${id}/restore`,
         {}
+    );
+    return response.data;
+}
+
+/**
+ * Reorder journal entry lines
+ */
+export async function reorderJournalEntryLines(
+    id: string,
+    lineIds: string[]
+): Promise<JournalEntryResponse> {
+    const response = await axiosInstance.patch(
+        `/journal-entries/${id}/reorder`,
+        { lineIds }
     );
     return response.data;
 }
@@ -411,13 +426,21 @@ export const useReverseJournalEntry = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: (id: string) => reverseJournalEntry(id),
-        onSuccess: (data, id) => {
+        mutationFn: ({
+            id,
+            reversalDate,
+        }: {
+            id: string;
+            reversalDate: string;
+        }) => reverseJournalEntry(id, reversalDate),
+        onSuccess: (data, variables) => {
             showSuccessToast(
                 data?.message || 'Journal entry reversed successfully'
             );
             queryClient.invalidateQueries({ queryKey: ['journal-entries'] });
-            queryClient.invalidateQueries({ queryKey: ['journal-entry', id] });
+            queryClient.invalidateQueries({
+                queryKey: ['journal-entry', variables.id],
+            });
         },
         onError: (error) => {
             console.error('Reverse journal entry failed:', error);
@@ -455,6 +478,37 @@ export const useRestoreJournalEntry = () => {
             const message =
                 maybeAxiosError.response?.data?.message ||
                 'Failed to restore journal entry';
+            showErrorToast(message);
+        },
+    });
+};
+
+/**
+ * Hook to reorder journal entry lines
+ */
+export const useReorderJournalEntryLines = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: ({ id, lineIds }: { id: string; lineIds: string[] }) =>
+            reorderJournalEntryLines(id, lineIds),
+        onSuccess: (data, variables) => {
+            showSuccessToast(
+                data?.message || 'Journal entry lines reordered successfully'
+            );
+            queryClient.invalidateQueries({ queryKey: ['journal-entries'] });
+            queryClient.invalidateQueries({
+                queryKey: ['journal-entry', variables.id],
+            });
+        },
+        onError: (error) => {
+            console.error('Reorder journal entry lines failed:', error);
+            const maybeAxiosError = error as {
+                response?: { data?: { message?: string } };
+            };
+            const message =
+                maybeAxiosError.response?.data?.message ||
+                'Failed to reorder journal entry lines';
             showErrorToast(message);
         },
     });

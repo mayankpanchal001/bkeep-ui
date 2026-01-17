@@ -7,10 +7,14 @@ import {
     CollapsibleTrigger,
 } from '@/components/ui/collapsible';
 import { useContacts } from '@/services/apis/contactsApi';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, GripVertical } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { useParams } from 'react-router';
-import { useJournalEntry } from '../../services/apis/journalApi';
+import { Badge } from '../../components/ui/badge';
+import {
+    useJournalEntry,
+    useReorderJournalEntryLines,
+} from '../../services/apis/journalApi';
 import type { JournalEntry, JournalEntryLine } from '../../types/journal';
 
 const toNumber = (v: unknown) => {
@@ -52,6 +56,10 @@ export default function ViewJournalEntrypage() {
     const { id } = useParams<{ id: string }>();
     const { data, isLoading } = useJournalEntry(id!);
     const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+    const [selectedLineIds, setSelectedLineIds] = useState<string[]>([]);
+    const [draggedLineId, setDraggedLineId] = useState<string | null>(null);
+    const [dragOverLineId, setDragOverLineId] = useState<string | null>(null);
+    const reorderMutation = useReorderJournalEntryLines();
 
     const journalEntry = useMemo<JournalEntry | undefined>(() => {
         const root = data as unknown as Record<string, unknown> | undefined;
@@ -105,11 +113,121 @@ export default function ViewJournalEntrypage() {
         return map;
     }, [contactsData]);
 
+    const handleDragStart = (lineId: string) => {
+        if (journalEntry?.status !== 'draft') return;
+        setDraggedLineId(lineId);
+    };
+
+    const handleDragOver = (e: React.DragEvent, lineId: string) => {
+        if (journalEntry?.status !== 'draft' || !draggedLineId) return;
+        e.preventDefault();
+        e.stopPropagation();
+        if (lineId !== draggedLineId) {
+            setDragOverLineId(lineId);
+        }
+    };
+
+    const handleDragLeave = () => {
+        setDragOverLineId(null);
+    };
+
+    const handleDrop = (e: React.DragEvent, dropLineId: string) => {
+        if (
+            !journalEntry ||
+            !id ||
+            !draggedLineId ||
+            journalEntry.status !== 'draft'
+        ) {
+            setDraggedLineId(null);
+            setDragOverLineId(null);
+            return;
+        }
+
+        e.preventDefault();
+        e.stopPropagation();
+
+        if (draggedLineId === dropLineId) {
+            setDraggedLineId(null);
+            setDragOverLineId(null);
+            return;
+        }
+
+        const lines = [...journalEntry.lines];
+        const draggedIndex = lines.findIndex(
+            (line) => line.id === draggedLineId
+        );
+        const dropIndex = lines.findIndex((line) => line.id === dropLineId);
+
+        if (draggedIndex === -1 || dropIndex === -1) {
+            setDraggedLineId(null);
+            setDragOverLineId(null);
+            return;
+        }
+
+        // Remove the dragged line from its current position
+        const [draggedLine] = lines.splice(draggedIndex, 1);
+        // Insert it at the new position
+        lines.splice(dropIndex, 0, draggedLine);
+
+        // Extract all line IDs in the new order (API requires all lines)
+        const lineIds = lines.map((line) => line.id);
+
+        // Call API with all line IDs in the new order
+        reorderMutation.mutate(
+            { id, lineIds },
+            {
+                onSuccess: () => {
+                    // Clear drag state after successful reorder
+                    setDraggedLineId(null);
+                    setDragOverLineId(null);
+                },
+                onError: () => {
+                    setDraggedLineId(null);
+                    setDragOverLineId(null);
+                },
+            }
+        );
+    };
+
+    const handleDragEnd = () => {
+        setDraggedLineId(null);
+        setDragOverLineId(null);
+    };
+
     const columns: Column<JournalEntryLine>[] = [
         {
             header: '#',
             accessorKey: 'lineNumber',
-            className: 'w-16 text-primary/50',
+            className: 'w-20',
+            cell: (line) => {
+                if (!journalEntry) return null;
+                const canReorder = journalEntry.status === 'draft';
+                const isDragging = draggedLineId === line.id;
+
+                return (
+                    <div className="flex items-center gap-2">
+                        <span className="text-primary/50">
+                            {line.lineNumber}
+                        </span>
+                        {canReorder && (
+                            <div
+                                draggable
+                                onDragStart={(e) => {
+                                    handleDragStart(line.id);
+                                    e.dataTransfer.effectAllowed = 'move';
+                                }}
+                                onDragEnd={handleDragEnd}
+                                className={`cursor-grab active:cursor-grabbing ${
+                                    isDragging ? 'opacity-50' : ''
+                                }`}
+                                title="Drag to reorder"
+                            >
+                                <GripVertical className="h-4 w-4 text-primary/50" />
+                            </div>
+                        )}
+                    </div>
+                );
+            },
         },
         {
             header: 'Account',
@@ -182,40 +300,90 @@ export default function ViewJournalEntrypage() {
         );
     }
 
-    const getStatusBadge = (status: string) => {
-        const statusConfig = {
-            draft: {
-                bg: 'bg-gray-100',
-                text: 'text-primary/70',
-                label: 'Draft',
-            },
-            posted: {
-                bg: 'bg-green-100',
-                text: 'text-green-700',
-                label: 'Posted',
-            },
-            voided: { bg: 'bg-red-100', text: 'text-red-700', label: 'Voided' },
-        };
-
-        const config =
-            statusConfig[status as keyof typeof statusConfig] ||
-            statusConfig.draft;
-
-        return (
-            <span
-                className={`px-3 py-1 text-sm font-medium rounded-full ${config.bg} ${config.text}`}
-            >
-                {config.label}
-            </span>
-        );
-    };
-
     return (
         <div className="space-y-4">
             <PageHeader
                 title={`Journal Entry ${formatText(journalEntry.entryNumber)}`}
                 subtitle={formatDateOnly(journalEntry.entryDate)}
             />
+
+            <div className="bg-card rounded-lg border border-primary/10 overflow-hidden">
+                <div className="px-4 py-2 border-b border-primary/10 flex items-center justify-between">
+                    <h3 className="text-base font-semibold text-primary">
+                        Journal Lines
+                    </h3>
+                    {journalEntry.status === 'draft' && (
+                        <span className="text-sm text-primary/70">
+                            Drag and drop lines to reorder
+                        </span>
+                    )}
+                </div>
+                <DataTable
+                    data={journalEntry.lines}
+                    columns={columns}
+                    containerClassName="border-none rounded-none"
+                    tableClassName="w-full"
+                    selectedItems={
+                        journalEntry.status === 'draft'
+                            ? selectedLineIds
+                            : undefined
+                    }
+                    onSelectionChange={
+                        journalEntry.status === 'draft'
+                            ? setSelectedLineIds
+                            : undefined
+                    }
+                    onRowDragOver={
+                        journalEntry.status === 'draft'
+                            ? (e, line) => handleDragOver(e, line.id)
+                            : undefined
+                    }
+                    onRowDragLeave={
+                        journalEntry.status === 'draft'
+                            ? handleDragLeave
+                            : undefined
+                    }
+                    onRowDrop={
+                        journalEntry.status === 'draft'
+                            ? (e, line) => handleDrop(e, line.id)
+                            : undefined
+                    }
+                    onRowDragEnd={
+                        journalEntry.status === 'draft'
+                            ? handleDragEnd
+                            : undefined
+                    }
+                    rowClassName={(line) => {
+                        const baseClasses = '';
+                        if (journalEntry.status !== 'draft') return baseClasses;
+                        if (draggedLineId === line.id) {
+                            return `${baseClasses} opacity-50`;
+                        }
+                        if (dragOverLineId === line.id) {
+                            return `${baseClasses} border-t-2 border-primary`;
+                        }
+                        return baseClasses;
+                    }}
+                    footerContent={
+                        <tr className="bg-card border-t border-primary/10">
+                            <td
+                                colSpan={
+                                    journalEntry.status === 'draft' ? 4 : 3
+                                }
+                                className="px-3 py-2 text-right font-semibold text-sm text-primary"
+                            >
+                                Total
+                            </td>
+                            <td className="px-3 py-2 text-right font-semibold text-sm text-primary">
+                                ${toNumber(journalEntry.totalDebit).toFixed(2)}
+                            </td>
+                            <td className="px-3 py-2 text-right font-semibold text-sm text-primary">
+                                ${toNumber(journalEntry.totalCredit).toFixed(2)}
+                            </td>
+                        </tr>
+                    }
+                />
+            </div>
 
             {/* Essential Details - Always Visible */}
             <div className="bg-card rounded-lg border border-primary/10 p-4">
@@ -224,7 +392,18 @@ export default function ViewJournalEntrypage() {
                         <label className="block text-sm font-medium text-primary/50 mb-1">
                             Status
                         </label>
-                        {getStatusBadge(formatText(journalEntry.status))}
+                        <Badge
+                            variant={
+                                journalEntry.status === 'draft'
+                                    ? 'secondary'
+                                    : journalEntry.status === 'posted'
+                                      ? 'success'
+                                      : 'destructive'
+                            }
+                            className="text-primary/70"
+                        >
+                            {journalEntry.status}
+                        </Badge>
                     </div>
                     <div>
                         <label className="block text-sm font-medium text-primary/50 mb-1">
@@ -253,36 +432,6 @@ export default function ViewJournalEntrypage() {
                 </div>
             </div>
 
-            <div className="bg-card rounded-lg border border-primary/10 overflow-hidden">
-                <div className="px-4 py-2 border-b border-primary/10">
-                    <h3 className="text-base font-semibold text-primary">
-                        Journal Lines
-                    </h3>
-                </div>
-                <DataTable
-                    data={journalEntry.lines}
-                    columns={columns}
-                    containerClassName="border-none rounded-none"
-                    tableClassName="w-full"
-                    footerContent={
-                        <tr className="bg-card border-t border-primary/10">
-                            <td
-                                colSpan={4}
-                                className="px-3 py-2 text-right font-semibold text-sm text-primary"
-                            >
-                                Total
-                            </td>
-                            <td className="px-3 py-2 text-right font-semibold text-sm text-primary">
-                                ${toNumber(journalEntry.totalDebit).toFixed(2)}
-                            </td>
-                            <td className="px-3 py-2 text-right font-semibold text-sm text-primary">
-                                ${toNumber(journalEntry.totalCredit).toFixed(2)}
-                            </td>
-                        </tr>
-                    }
-                />
-            </div>
-
             {/* Additional Details - Collapsible */}
             <Collapsible open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
                 <div className="bg-card rounded-lg border border-primary/10 overflow-hidden">
@@ -298,7 +447,7 @@ export default function ViewJournalEntrypage() {
                     </CollapsibleTrigger>
                     <CollapsibleContent>
                         <div className="px-4 pb-4 space-y-4">
-                            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 pt-4">
+                            {/*                            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 pt-4">
                                 <div>
                                     <label className="block text-sm font-medium text-primary/50 mb-1">
                                         ID
@@ -331,7 +480,7 @@ export default function ViewJournalEntrypage() {
                                         {formatText(journalEntry.sourceId)}
                                     </p>
                                 </div>
-                            </div>
+                            </div> */}
 
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <div>

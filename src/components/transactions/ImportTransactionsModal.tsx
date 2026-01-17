@@ -46,7 +46,7 @@ const ImportTransactionsModal = ({
             a.accountType === 'asset' ||
             a.accountType === 'liability' ||
             a.accountDetailType === 'credit-card' ||
-            a.accountDetailType === 'checking'
+            a.accountDetailType === 'chequing'
     );
 
     const handleDrag = (e: React.DragEvent) => {
