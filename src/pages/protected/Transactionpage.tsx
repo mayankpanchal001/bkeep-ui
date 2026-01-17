@@ -127,7 +127,8 @@ const Transactionpage = () => {
 
         // Check if search is a number - if so, use it for amountMin and amountMax
         const searchAsNumber = search ? parseFloat(search.trim()) : NaN;
-        const isNumericSearch = !isNaN(searchAsNumber) && isFinite(searchAsNumber);
+        const isNumericSearch =
+            !isNaN(searchAsNumber) && isFinite(searchAsNumber);
 
         if (search) {
             if (isNumericSearch) {
