@@ -74,7 +74,7 @@ export function TransactionHeader({
             a.accountType === 'asset' ||
             a.accountType === 'liability' ||
             a.accountDetailType === 'credit-card' ||
-            a.accountDetailType === 'checking'
+            a.accountDetailType === 'chequing'
     );
 
     const activeAccount = accounts.find((a) => a.id === selectedAccountId);
@@ -205,7 +205,7 @@ export function TransactionHeader({
 
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <Button className="bg-green-700 hover:bg-green-800 text-white">
+                            <Button>
                                 Link account
                                 <ChevronDown className="w-4 h-4 ml-2" />
                             </Button>

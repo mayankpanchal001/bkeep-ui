@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { FaTimes } from 'react-icons/fa';
+import { Button } from '../ui/button';
 
 type ConfirmationDialogProps = {
     isOpen: boolean;
@@ -22,7 +23,6 @@ const ConfirmationDialog = ({
     message,
     confirmText = 'Confirm',
     cancelText = 'Cancel',
-    confirmVariant = 'primary',
     loading = false,
     showCloseButton = true,
 }: ConfirmationDialogProps) => {
@@ -54,11 +54,6 @@ const ConfirmationDialog = ({
         }
     };
 
-    const confirmButtonClasses =
-        confirmVariant === 'danger'
-            ? 'rounded-2 bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-70'
-            : 'rounded-2 bg-primary px-4 py-2 text-sm font-semibold text-white transition hover:bg-primary/75 disabled:cursor-not-allowed disabled:opacity-70';
-
     return (
         <div
             className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4"
@@ -82,20 +77,16 @@ const ConfirmationDialog = ({
                 </div>
                 <p className="mt-2 text-sm text-primary/75">{message}</p>
                 <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-end">
-                    <button
-                        className="rounded-2 border border-primary/10 px-4 py-2 text-sm font-semibold text-primary transition hover:bg-primary/10 disabled:cursor-not-allowed disabled:opacity-70"
+                    <Button
+                        variant="outline"
                         onClick={onClose}
                         disabled={loading}
                     >
                         {cancelText}
-                    </button>
-                    <button
-                        className={confirmButtonClasses}
-                        onClick={onConfirm}
-                        disabled={loading}
-                    >
+                    </Button>
+                    <Button onClick={onConfirm} disabled={loading}>
                         {loading ? 'Processing...' : confirmText}
-                    </button>
+                    </Button>
                 </div>
             </div>
         </div>

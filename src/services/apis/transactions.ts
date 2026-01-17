@@ -50,9 +50,9 @@ const getTransactions = async (
     if (filters?.category) params.append('category', filters.category);
     if (filters?.taxId) params.append('taxId', filters.taxId);
     if (filters?.minAmount !== undefined)
-        params.append('minAmount', filters.minAmount.toString());
+        params.append('amountMin', filters.minAmount.toString());
     if (filters?.maxAmount !== undefined)
-        params.append('maxAmount', filters.maxAmount.toString());
+        params.append('amountMax', filters.maxAmount.toString());
     if (filters?.sort) params.append('sort', filters.sort);
     if (filters?.order) params.append('order', filters.order);
 

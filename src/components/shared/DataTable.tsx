@@ -1,5 +1,8 @@
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { ReactNode } from 'react';
 import { cn } from '../../utils/cn';
+import { Button } from '../ui/button';
+import type { SortDirection } from '../ui/table';
 import {
     Table,
     TableBody,
@@ -13,9 +16,6 @@ import {
     TableRowCheckbox,
     TableSelectAllCheckbox,
 } from '../ui/table';
-import { Button } from '../ui/button';
-import type { SortDirection } from '../ui/table';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 export interface Column<T> {
     header: string | ReactNode;
@@ -68,6 +68,13 @@ interface DataTableProps<T> {
     containerClassName?: string;
     tableClassName?: string;
     rowClassName?: (item: T) => string;
+
+    // Drag and Drop
+    onRowDragStart?: (item: T) => void;
+    onRowDragOver?: (e: React.DragEvent, item: T) => void;
+    onRowDragLeave?: () => void;
+    onRowDrop?: (e: React.DragEvent, item: T) => void;
+    onRowDragEnd?: () => void;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -87,6 +94,10 @@ export function DataTable<T extends { [key: string]: any }>({
     containerClassName,
     tableClassName,
     rowClassName,
+    onRowDragOver,
+    onRowDragLeave,
+    onRowDrop,
+    onRowDragEnd,
 }: DataTableProps<T>) {
     const rowIds = data.map((item) => item[keyField]) as Array<string | number>;
 
@@ -192,6 +203,18 @@ export function DataTable<T extends { [key: string]: any }>({
                                         }
                                         onRowClick?.(item);
                                     }}
+                                    onDragOver={
+                                        onRowDragOver
+                                            ? (e) => onRowDragOver(e, item)
+                                            : undefined
+                                    }
+                                    onDragLeave={onRowDragLeave}
+                                    onDrop={
+                                        onRowDrop
+                                            ? (e) => onRowDrop(e, item)
+                                            : undefined
+                                    }
+                                    onDragEnd={onRowDragEnd}
                                 >
                                     {onSelectionChange && (
                                         <TableCell className="w-12">

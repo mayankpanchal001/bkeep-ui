@@ -58,7 +58,7 @@ const ProfileTab = ({
     };
 
     return (
-        <div className="flex flex-col gap-4 ">
+        <div className="flex flex-col gap-4 max-w-2xl ">
             {/* Header: Avatar + Upload + Edit Toggle */}
             <div className="bg-surface">
                 <div className="flex items-center justify-between gap-6">
@@ -110,8 +110,12 @@ const ProfileTab = ({
             </div>
 
             {/* Profile Form */}
-            <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
-                <div className="flex flex-col gap-4">
+            <form
+                ref={formRef}
+                onSubmit={handleSubmit}
+                className="flex flex-col gap-4 "
+            >
+                <div className="flex flex-col gap-4 ">
                     <div>
                         <Input
                             id="name"

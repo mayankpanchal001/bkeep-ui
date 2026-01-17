@@ -33,6 +33,7 @@ import { useChartOfAccounts } from '../../services/apis/chartsAccountApi';
 import { useContacts } from '../../services/apis/contactsApi';
 import { useTaxes } from '../../services/apis/taxApi';
 import { useCreateTransaction } from '../../services/apis/transactions';
+import { Textarea } from '../ui/textarea';
 
 const formSchema = z.object({
     type: z.enum(['income', 'expense', 'transfer']),
@@ -140,75 +141,133 @@ export function CreateTransactionDrawer() {
                     <Form {...form}>
                         <form
                             onSubmit={form.handleSubmit(onSubmit)}
-                            className="space-y-4"
+                            className="flex flex-col gap-4"
                         >
-                            <FormField
-                                control={form.control}
-                                name="type"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Type</FormLabel>
-                                        <Select
-                                            onValueChange={field.onChange}
-                                            defaultValue={field.value}
-                                        >
-                                            <FormControl>
-                                                <SelectTrigger>
-                                                    <SelectValue placeholder="Select type" />
-                                                </SelectTrigger>
-                                            </FormControl>
-                                            <SelectContent>
-                                                <SelectItem value="income">
-                                                    Income
-                                                </SelectItem>
-                                                <SelectItem value="expense">
-                                                    Expense
-                                                </SelectItem>
-                                                <SelectItem value="transfer">
-                                                    Transfer
-                                                </SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
+                            <div className="grid grid-cols-2 gap-4">
+                                <FormField
+                                    control={form.control}
+                                    name="type"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Type</FormLabel>
+                                            <Select
+                                                onValueChange={field.onChange}
+                                                defaultValue={field.value}
+                                            >
+                                                <FormControl>
+                                                    <SelectTrigger>
+                                                        <SelectValue placeholder="Select type" />
+                                                    </SelectTrigger>
+                                                </FormControl>
+                                                <SelectContent>
+                                                    <SelectItem value="income">
+                                                        Income
+                                                    </SelectItem>
+                                                    <SelectItem value="expense">
+                                                        Expense
+                                                    </SelectItem>
+                                                    <SelectItem value="transfer">
+                                                        Transfer
+                                                    </SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
 
-                            <FormField
-                                control={form.control}
-                                name="accountId"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Account</FormLabel>
-                                        <Select
-                                            onValueChange={field.onChange}
-                                            defaultValue={field.value}
-                                        >
+                                <FormField
+                                    control={form.control}
+                                    name="accountId"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Account</FormLabel>
+                                            <Select
+                                                onValueChange={field.onChange}
+                                                defaultValue={field.value}
+                                            >
+                                                <FormControl>
+                                                    <SelectTrigger>
+                                                        <SelectValue placeholder="Select account" />
+                                                    </SelectTrigger>
+                                                </FormControl>
+                                                <SelectContent>
+                                                    {filteredAccounts.map(
+                                                        (account) => (
+                                                            <SelectItem
+                                                                key={account.id}
+                                                                value={
+                                                                    account.id
+                                                                }
+                                                            >
+                                                                {
+                                                                    account.accountName
+                                                                }
+                                                            </SelectItem>
+                                                        )
+                                                    )}
+                                                </SelectContent>
+                                            </Select>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <FormField
+                                    control={form.control}
+                                    name="amount"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Amount</FormLabel>
                                             <FormControl>
-                                                <SelectTrigger>
-                                                    <SelectValue placeholder="Select account" />
-                                                </SelectTrigger>
+                                                <Input
+                                                    type="number"
+                                                    step="0.01"
+                                                    {...field}
+                                                />
                                             </FormControl>
-                                            <SelectContent>
-                                                {filteredAccounts.map(
-                                                    (account) => (
-                                                        <SelectItem
-                                                            key={account.id}
-                                                            value={account.id}
-                                                        >
-                                                            {
-                                                                account.accountName
-                                                            }
-                                                        </SelectItem>
-                                                    )
-                                                )}
-                                            </SelectContent>
-                                        </Select>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="taxIds"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Tax</FormLabel>
+                                            <Select
+                                                onValueChange={(val) =>
+                                                    field.onChange([val])
+                                                }
+                                                defaultValue={field.value?.[0]}
+                                            >
+                                                <FormControl>
+                                                    <SelectTrigger>
+                                                        <SelectValue placeholder="Select tax" />
+                                                    </SelectTrigger>
+                                                </FormControl>
+                                                <SelectContent>
+                                                    {taxesData?.data?.items?.map(
+                                                        (tax) => (
+                                                            <SelectItem
+                                                                key={tax.id}
+                                                                value={tax.id}
+                                                            >
+                                                                {tax.name} (
+                                                                {tax.rate * 100}
+                                                                %)
+                                                            </SelectItem>
+                                                        )
+                                                    )}
+                                                </SelectContent>
+                                            </Select>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                            </div>
                             <FormField
                                 control={form.control}
                                 name="contactId"
@@ -243,52 +302,14 @@ export function CreateTransactionDrawer() {
                                     </FormItem>
                                 )}
                             />
-
-                            <div className="grid grid-cols-2 gap-4">
-                                <FormField
-                                    control={form.control}
-                                    name="paidAt"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Date</FormLabel>
-                                            <FormControl>
-                                                <Input type="date" {...field} />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-
-                                <FormField
-                                    control={form.control}
-                                    name="amount"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Amount</FormLabel>
-                                            <FormControl>
-                                                <Input
-                                                    type="number"
-                                                    step="0.01"
-                                                    {...field}
-                                                />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                            </div>
-
                             <FormField
                                 control={form.control}
-                                name="description"
+                                name="paidAt"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Description</FormLabel>
+                                        <FormLabel>Date</FormLabel>
                                         <FormControl>
-                                            <Input
-                                                placeholder="Description"
-                                                {...field}
-                                            />
+                                            <Input type="date" {...field} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -335,6 +356,24 @@ export function CreateTransactionDrawer() {
 
                             <FormField
                                 control={form.control}
+                                name="description"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Description</FormLabel>
+                                        <FormControl>
+                                            <Textarea
+                                                className="h-24"
+                                                placeholder="Description"
+                                                {...field}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
+                            <FormField
+                                control={form.control}
                                 name="reference"
                                 render={({ field }) => (
                                     <FormItem>
@@ -345,41 +384,6 @@ export function CreateTransactionDrawer() {
                                                 {...field}
                                             />
                                         </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                            <FormField
-                                control={form.control}
-                                name="taxIds"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Tax</FormLabel>
-                                        <Select
-                                            onValueChange={(val) =>
-                                                field.onChange([val])
-                                            }
-                                            defaultValue={field.value?.[0]}
-                                        >
-                                            <FormControl>
-                                                <SelectTrigger>
-                                                    <SelectValue placeholder="Select tax" />
-                                                </SelectTrigger>
-                                            </FormControl>
-                                            <SelectContent>
-                                                {taxesData?.data?.items?.map(
-                                                    (tax) => (
-                                                        <SelectItem
-                                                            key={tax.id}
-                                                            value={tax.id}
-                                                        >
-                                                            {tax.name} (
-                                                            {tax.rate * 100}%)
-                                                        </SelectItem>
-                                                    )
-                                                )}
-                                            </SelectContent>
-                                        </Select>
                                         <FormMessage />
                                     </FormItem>
                                 )}

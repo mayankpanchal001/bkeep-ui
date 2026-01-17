@@ -39,6 +39,7 @@ import {
 import { FileUp, Filter, Pencil, Plus, Search, Trash2, X } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import * as XLSX from 'xlsx';
+import { ACCOUNT_HIERARCHY } from '../../components/homepage/constants';
 import {
     useChartOfAccounts,
     useCreateChartOfAccount,
@@ -65,418 +66,6 @@ const ACCOUNT_TYPE_DISPLAY: Record<AccountType, string> = {
     equity: 'Equity',
     income: 'Income',
     expense: 'Expense',
-};
-
-// Account Hierarchy Structure
-type AccountHierarchyItem = {
-    label: string;
-    value: string;
-    detailTypes: { value: AccountDetailType; label: string }[];
-};
-
-const ACCOUNT_HIERARCHY: Record<AccountType, AccountHierarchyItem[]> = {
-    asset: [
-        {
-            label: 'Accounts Receivable (A/R)',
-            value: 'accounts-receivable',
-            detailTypes: [
-                {
-                    value: 'accounts-receivable',
-                    label: 'Accounts Receivable (A/R)',
-                },
-            ],
-        },
-        {
-            label: 'Current Assets',
-            value: 'current-assets',
-            detailTypes: [
-                {
-                    value: 'allowance-for-bad-debts',
-                    label: 'Allowance for bad debts',
-                },
-                { value: 'development-costs', label: 'Development Costs' },
-                {
-                    value: 'employee-cash-advances',
-                    label: 'Employee Cash Advances',
-                },
-                { value: 'inventory', label: 'Inventory' },
-                { value: 'investments-other', label: 'Investments - Other' },
-                { value: 'loans-to-officers', label: 'Loans to Officers' },
-                { value: 'loans-to-others', label: 'Loans to Others' },
-                {
-                    value: 'loans-to-shareholders',
-                    label: 'Loans to Shareholders',
-                },
-                {
-                    value: 'other-current-assets',
-                    label: 'Other current assets',
-                },
-                { value: 'prepaid-expenses', label: 'Prepaid Expenses' },
-                { value: 'retainage', label: 'Retainage' },
-                { value: 'undeposited-funds', label: 'Undeposited Funds' },
-            ],
-        },
-        {
-            label: 'Bank',
-            value: 'bank',
-            detailTypes: [
-                { value: 'cash-on-hand', label: 'Cash on hand' },
-                { value: 'chequing', label: 'Chequing' },
-                { value: 'money-market', label: 'Money Market' },
-                { value: 'rents-held-in-trust', label: 'Rents Held in Trust' },
-                { value: 'savings', label: 'Savings' },
-                { value: 'trust-account', label: 'Trust account' },
-            ],
-        },
-        {
-            label: 'Property, plant and equipment',
-            value: 'property-plant-and-equipment',
-            detailTypes: [
-                {
-                    value: 'accumulated-amortization',
-                    label: 'Accumulated Amortization',
-                },
-                {
-                    value: 'accumulated-depreciation',
-                    label: 'Accumulated Depreciation',
-                },
-                {
-                    value: 'accumulated-depletion',
-                    label: 'Accumulataed depletion',
-                },
-                { value: 'buildings', label: 'Buildings' },
-                { value: 'depletable-assets', label: 'Depletable Assets' },
-                {
-                    value: 'furniture-and-fixtures',
-                    label: 'Furniture and Fixtures',
-                },
-                {
-                    value: 'leasehold-improvements',
-                    label: 'Leasehold Improvements',
-                },
-                {
-                    value: 'machinery-and-equipment',
-                    label: 'Machinery and equipment',
-                },
-                { value: 'other-fixed-assets', label: 'Other fixed assets' },
-                { value: 'vehicles', label: 'Vehicles' },
-                {
-                    value: 'accumulated-amortization-of-other-assets',
-                    label: 'Accumulated Amortization of other Assets',
-                },
-                {
-                    value: 'available-for-sale-financial-assets',
-                    label: 'Available-for-sale financial assets',
-                },
-                { value: 'deferred-tax', label: 'Deferred tax' },
-                { value: 'goodwill', label: 'Goodwill' },
-                { value: 'intangible-assets', label: 'Intangible Assets' },
-                { value: 'investments', label: 'Investments' },
-                { value: 'lease-buyout', label: 'Lease Buyout' },
-                { value: 'licences', label: 'Licences' },
-                {
-                    value: 'organizational-costs',
-                    label: 'Organizational Costs',
-                },
-                {
-                    value: 'other-long-term-assets',
-                    label: 'Other Long-term Assets',
-                },
-                {
-                    value: 'other-intangible-assets',
-                    label: 'Other intangible assets',
-                },
-                {
-                    value: 'prepayments-and-accrued-income',
-                    label: 'Prepayments and accrued income',
-                },
-                { value: 'security-deposits', label: 'Security Deposits' },
-            ],
-        },
-    ],
-    liability: [
-        {
-            label: 'Accounts payable (A/P)',
-            value: 'accounts-payable',
-            detailTypes: [
-                { value: 'accounts-payable', label: 'Accounts Payable (A/P)' },
-            ],
-        },
-        {
-            label: 'Credit Card',
-            value: 'credit-card',
-            detailTypes: [{ value: 'credit-card', label: 'Credit Card' }],
-        },
-        {
-            label: 'Other Current Liabilities',
-            value: 'other-current-liabilities',
-            detailTypes: [
-                { value: 'current-liabilities', label: 'Current Liabilities' },
-                {
-                    value: 'current-tax-liability',
-                    label: 'Current Tax Liability',
-                },
-                {
-                    value: 'current-portion-of-employee-benefits-obligations',
-                    label: 'Current portion of employee benefits obligations',
-                },
-                {
-                    value: 'current-portion-of-obligations-under-finance-leases',
-                    label: 'Current portion of obligations under finance leases',
-                },
-                { value: 'insurance-payable', label: 'Insurance Payable' },
-                { value: 'interest-payable', label: 'Interest payable' },
-                { value: 'line-of-credit', label: 'Line of Credit' },
-                { value: 'loans-payable', label: 'Loans Payable' },
-                { value: 'payroll-clearing', label: 'Payroll Clearing' },
-                { value: 'payroll-liabilities', label: 'Payroll liabilities' },
-                {
-                    value: 'prepaid-expenses-payable',
-                    label: 'Prepaid Expenses Payable',
-                },
-                {
-                    value: 'provision-for-warranty-obligations',
-                    label: 'Provision for warranty obligations',
-                },
-                {
-                    value: 'rents-in-trust-liability',
-                    label: 'Rents in trust - Liability',
-                },
-                {
-                    value: 'short-term-borrowings-from-related-parties',
-                    label: 'Short term borrowings from related parties',
-                },
-                {
-                    value: 'trust-accounts-liabilities',
-                    label: 'Trust Accounts - Liabilities',
-                },
-            ],
-        },
-        {
-            label: 'Long-term Liabilities',
-            value: 'long-term-liabilities',
-            detailTypes: [
-                {
-                    value: 'accruals-and-deferred-income',
-                    label: 'Accruals and Deferred Income',
-                },
-                { value: 'bank-loans', label: 'Bank loans' },
-                {
-                    value: 'long-term-borrowings',
-                    label: 'Long term borrowings',
-                },
-                {
-                    value: 'long-term-employee-benefit-obligations',
-                    label: 'Long term employee benefit obligations',
-                },
-                { value: 'notes-payable', label: 'Notes Payable' },
-                {
-                    value: 'obligations-under-finance-leases',
-                    label: 'Obligations under finance leases',
-                },
-                {
-                    value: 'other-long-term-liabilities',
-                    label: 'Other Long Term Liabilities',
-                },
-                {
-                    value: 'shareholder-notes-payable',
-                    label: 'Shareholder Notes Payable',
-                },
-            ],
-        },
-    ],
-    equity: [
-        {
-            label: 'Equity',
-            value: 'equity',
-            detailTypes: [
-                {
-                    value: 'accumulated-adjustment',
-                    label: 'Accumulated adjustment',
-                },
-                { value: 'common-stock', label: 'Common Stock' },
-                {
-                    value: 'opening-balance-equity',
-                    label: 'opening Balance Equity',
-                },
-                { value: 'owners-equity', label: "Owner's Equity" },
-                {
-                    value: 'paid-in-capital-or-surplus',
-                    label: 'Paid-in capital or surplus',
-                },
-                {
-                    value: 'partners-contributions',
-                    label: 'Partners Contributions',
-                },
-                {
-                    value: 'partners-distributions',
-                    label: 'Partners Distributions',
-                },
-                { value: 'partners-equity', label: "Partner's Equity" },
-                { value: 'preferred-stock', label: 'Preferred Stock' },
-                { value: 'retained-earnings', label: 'Retained Earnings' },
-                { value: 'share-capital', label: 'Share capital' },
-                { value: 'treasury-shares', label: 'Treasury Shares' },
-            ],
-        },
-    ],
-    income: [
-        {
-            label: 'Income',
-            value: 'income',
-            detailTypes: [
-                {
-                    value: 'discounts-refunds-given',
-                    label: 'Discounts/Refunds Given',
-                },
-                { value: 'non-profit-income', label: 'Non-profit Income' },
-                {
-                    value: 'other-primary-income',
-                    label: 'Other Primary Income',
-                },
-                {
-                    value: 'sales-of-product-income',
-                    label: 'Sales of Product Income',
-                },
-                {
-                    value: 'unapplied-cash-payment-income',
-                    label: 'Unapplied Cash Payment Income',
-                },
-            ],
-        },
-        {
-            label: 'Other Income',
-            value: 'other-income',
-            detailTypes: [
-                { value: 'dividend-income', label: 'Dividend income' },
-                {
-                    value: 'gain-loss-on-sale-of-fixed-assets',
-                    label: 'Gain/loss on sale of fixed assets',
-                },
-                {
-                    value: 'gain-loss-on-sale-of-investments',
-                    label: 'Gain/loss on sale of investments',
-                },
-                { value: 'income', label: 'Income' },
-                { value: 'interest-earned', label: 'Interest earned' },
-                {
-                    value: 'other-investment-income',
-                    label: 'Other Investment Income',
-                },
-                { value: 'tax-exempt-interest', label: 'Tax-Exempt Interest' },
-            ],
-        },
-    ],
-    expense: [
-        {
-            label: 'Cost of Goods Sold',
-            value: 'cost-of-goods-sold',
-            detailTypes: [
-                { value: 'cost-of-goods-sold', label: 'Cost of Goods Sold' },
-                { value: 'cost-of-labour-cos', label: 'Cost of Labour - COS' },
-                {
-                    value: 'equipment-rental-cos',
-                    label: 'Equipment rental - COS',
-                },
-                {
-                    value: 'other-costs-of-service-cos',
-                    label: 'Other costs of service - COS',
-                },
-                {
-                    value: 'shipping-freight-and-delivery-cos',
-                    label: 'Shipping, Freight and Delivery - COS',
-                },
-                {
-                    value: 'supplies-and-materials-cos',
-                    label: 'Supplies and materials - COS',
-                },
-            ],
-        },
-        {
-            label: 'Expenses',
-            value: 'expenses',
-            detailTypes: [
-                {
-                    value: 'advertising-promotional',
-                    label: 'Advertising/Promotional',
-                },
-                { value: 'auto', label: 'Auto' },
-                { value: 'bad-debts', label: 'Bed debts' },
-                { value: 'bank-charges', label: 'Bank charges' },
-                {
-                    value: 'charitable-contributions',
-                    label: 'Charitable Contributions',
-                },
-                { value: 'distribution-costs', label: 'Distribution costs' },
-                {
-                    value: 'dues-and-subscriptions',
-                    label: 'Dues and Subscriptions',
-                },
-                { value: 'entertainment', label: 'Entertainment' },
-                { value: 'equipment-rental', label: 'Equipment rental' },
-                { value: 'insurance', label: 'Insurance' },
-                { value: 'interest-paid', label: 'Interest paid' },
-                {
-                    value: 'legal-and-professional-fees',
-                    label: 'Legal and professional fees',
-                },
-                {
-                    value: 'meals-and-entertainment',
-                    label: 'Meals and entertainment',
-                },
-                {
-                    value: 'office-general-administrative-expenses',
-                    label: 'Office/Genera Administrative Expenses',
-                },
-                {
-                    value: 'other-miscellaneous-service-cost',
-                    label: 'Other Miscellaneous Service Cost',
-                },
-                { value: 'payroll-expenses', label: 'Payroll Expenses' },
-                {
-                    value: 'rent-or-lease-of-buildings',
-                    label: 'Rent or Lease of Buildings',
-                },
-                {
-                    value: 'repair-and-maintenance',
-                    label: 'Repair and maintenance',
-                },
-                {
-                    value: 'shipping-freight-and-delivery',
-                    label: 'Shipping, Freight, and Delivery',
-                },
-                { value: 'supplies', label: 'Supplies' },
-                { value: 'taxes-paid', label: 'Taxes Paid' },
-                { value: 'travel', label: 'Travel' },
-                { value: 'travel-meals', label: 'Travel meals' },
-                {
-                    value: 'unapplied-cash-bill-payment-expense',
-                    label: 'Unapplied Cash Bill Payment Expense',
-                },
-                { value: 'utilities', label: 'Utilities' },
-            ],
-        },
-        {
-            label: 'Other Expense',
-            value: 'other-expense',
-            detailTypes: [
-                { value: 'amortization', label: 'Amortization' },
-                { value: 'depreciation', label: 'Depreciation' },
-                {
-                    value: 'exchange-gain-or-loss',
-                    label: 'Exchange Gain or Loss',
-                },
-                {
-                    value: 'other-miscellaneous-expense',
-                    label: 'Other Miscellaneous Expense',
-                },
-                {
-                    value: 'penalties-and-settlements',
-                    label: 'Penalties and settlements',
-                },
-            ],
-        },
-    ],
 };
 
 // Derived Options for Dropdown
@@ -880,7 +469,6 @@ const ChartOfAccountspage = () => {
             {/* Accounts Table */}
             <Table
                 enableSelection
-                containerClassName="flex-1 overflow-hidden [&>div]:h-full [&>div]:overflow-auto"
                 rowIds={rowIds}
                 selectedIds={selectedItems}
                 onSelectionChange={setSelectedItems}
@@ -1054,9 +642,14 @@ const ChartOfAccountspage = () => {
                                             opt.value
                                         );
                                         return (
-                                            <button
+                                            <Button
                                                 key={opt.value}
-                                                type="button"
+                                                variant={
+                                                    active
+                                                        ? 'active'
+                                                        : 'outline'
+                                                }
+                                                size="sm"
                                                 onClick={() => {
                                                     setSelectedTypes((prev) =>
                                                         active
@@ -1071,14 +664,9 @@ const ChartOfAccountspage = () => {
                                                               ]
                                                     );
                                                 }}
-                                                className={`px-3 py-1.5 text-xs rounded-md transition-colors ${
-                                                    active
-                                                        ? 'bg-primary/10 text-primary border border-primary/10'
-                                                        : 'text-primary/60 hover:bg-primary/10'
-                                                }`}
                                             >
                                                 {opt.label}
-                                            </button>
+                                            </Button>
                                         );
                                     })}
                                 </div>
@@ -1124,9 +712,14 @@ const ChartOfAccountspage = () => {
                                                     dt.value
                                                 );
                                             return (
-                                                <button
+                                                <Button
                                                     key={dt.value}
-                                                    type="button"
+                                                    variant={
+                                                        active
+                                                            ? 'active'
+                                                            : 'outline'
+                                                    }
+                                                    size="sm"
                                                     onClick={() => {
                                                         setSelectedDetailTypes(
                                                             (prev) =>
@@ -1142,14 +735,9 @@ const ChartOfAccountspage = () => {
                                                                       ]
                                                         );
                                                     }}
-                                                    className={`px-3 py-1.5 text-xs rounded-md transition-colors capitalize ${
-                                                        active
-                                                            ? 'bg-primary/10 text-primary border border-primary/10'
-                                                            : 'text-primary/60 hover:bg-primary/10'
-                                                    }`}
                                                 >
                                                     {dt.label}
-                                                </button>
+                                                </Button>
                                             );
                                         })}
                                 </div>
@@ -1168,22 +756,18 @@ const ChartOfAccountspage = () => {
                                                     'inactive' &&
                                                     s === 'inactive');
                                             return (
-                                                <button
+                                                <Button
                                                     key={s}
-                                                    type="button"
+                                                    variant="outline"
+                                                    size="sm"
                                                     onClick={() => {
                                                         setIsActiveFilter(
                                                             active ? 'all' : s
                                                         );
                                                     }}
-                                                    className={`px-3 py-1.5 text-xs rounded-md transition-colors capitalize ${
-                                                        active
-                                                            ? 'bg-primary/10 text-primary border border-primary/10'
-                                                            : 'text-primary/60 hover:bg-primary/10'
-                                                    }`}
                                                 >
                                                     {s}
-                                                </button>
+                                                </Button>
                                             );
                                         }
                                     )}
@@ -1193,7 +777,13 @@ const ChartOfAccountspage = () => {
                         <div className="flex justify-between gap-3 mt-8 pt-4 border-t border-primary/10">
                             <Button
                                 type="button"
-                                variant="outline"
+                                variant={
+                                    selectedTypes.length === 0 &&
+                                    selectedDetailTypes.length === 0 &&
+                                    isActiveFilter === 'all'
+                                        ? 'active'
+                                        : 'outline'
+                                }
                                 onClick={() => {
                                     setSelectedTypes([]);
                                     setSelectedDetailTypes([]);

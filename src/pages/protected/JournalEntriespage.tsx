@@ -1,7 +1,16 @@
-import ConfirmationDialog from '@/components/shared/ConfirmationDialog';
 import { Icons } from '@/components/shared/Icons';
 import PageHeader from '@/components/shared/PageHeader';
-import { Button } from '@/components/ui/button';
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { Combobox, type ComboboxOption } from '@/components/ui/combobox';
 import {
     Drawer,
@@ -40,6 +49,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
+import { Badge } from '../../components/ui/badge';
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -110,6 +120,13 @@ export default function JournalEntriespage() {
         isOpen: boolean;
         entry: JournalEntry | null;
     }>({ isOpen: false, entry: null });
+    const [reverseDialog, setReverseDialog] = useState<{
+        isOpen: boolean;
+        entry: JournalEntry | null;
+    }>({ isOpen: false, entry: null });
+    const [reversalDate, setReversalDate] = useState<string>(
+        new Date().toISOString().split('T')[0]
+    );
     const [isFilterDrawerOpen, setIsFilterDrawerOpen] = useState(false);
 
     // Fetch contacts and accounts data first (needed for filter conversion)
@@ -328,10 +345,25 @@ export default function JournalEntriespage() {
     };
 
     const handleReverse = (entry: JournalEntry) => {
-        reverseMutation.mutate(entry.id, {
-            onSuccess: () => showSuccessToast('Journal entry reversed'),
-            onError: () => showErrorToast('Failed to reverse entry'),
-        });
+        setReversalDate(new Date().toISOString().split('T')[0]);
+        setReverseDialog({ isOpen: true, entry });
+    };
+
+    const handleConfirmReverse = () => {
+        if (!reverseDialog.entry || !reversalDate) return;
+        reverseMutation.mutate(
+            {
+                id: reverseDialog.entry.id,
+                reversalDate,
+            },
+            {
+                onSuccess: () => {
+                    showSuccessToast('Journal entry reversed');
+                    setReverseDialog({ isOpen: false, entry: null });
+                },
+                onError: () => showErrorToast('Failed to reverse entry'),
+            }
+        );
     };
 
     const handleRestore = (entry: JournalEntry) => {
@@ -389,34 +421,6 @@ export default function JournalEntriespage() {
         } finally {
             setIsBulkLoading(false);
         }
-    };
-
-    const getStatusBadge = (status: string) => {
-        const statusConfig = {
-            draft: {
-                bg: 'bg-gray-100',
-                text: 'text-primary/70',
-                label: 'Draft',
-            },
-            posted: {
-                bg: 'bg-green-100',
-                text: 'text-green-700',
-                label: 'Posted',
-            },
-            voided: { bg: 'bg-red-100', text: 'text-red-700', label: 'Voided' },
-        };
-
-        const config =
-            statusConfig[status as keyof typeof statusConfig] ||
-            statusConfig.draft;
-
-        return (
-            <span
-                className={`px-2 py-1 text-xs font-medium rounded-full ${config.bg} ${config.text}`}
-            >
-                {config.label}
-            </span>
-        );
     };
 
     // Calculate total pages from API response
@@ -940,7 +944,21 @@ export default function JournalEntriespage() {
                                     </span>
                                 </TableCell>
                                 <TableCell>
-                                    {getStatusBadge(entry.status)}
+                                    <Badge
+                                        variant={
+                                            entry.isReversing
+                                                ? 'warning'
+                                                : entry.status === 'draft'
+                                                  ? 'secondary'
+                                                  : entry.status === 'posted'
+                                                    ? 'success'
+                                                    : 'destructive'
+                                        }
+                                    >
+                                        {entry.isReversing
+                                            ? 'reversed'
+                                            : entry.status}
+                                    </Badge>
                                 </TableCell>
                                 <TableCell>
                                     <div
@@ -1029,19 +1047,21 @@ export default function JournalEntriespage() {
                                                         >
                                                             Void
                                                         </DropdownMenuItem>
-                                                        <DropdownMenuItem
-                                                            onClick={() =>
-                                                                handleReverse(
-                                                                    entry
-                                                                )
-                                                            }
-                                                            disabled={
-                                                                reverseMutation.isPending
-                                                            }
-                                                        >
-                                                            <Undo2 className="mr-2 h-4 w-4" />
-                                                            Reverse
-                                                        </DropdownMenuItem>
+                                                        {!entry.isReversing && (
+                                                            <DropdownMenuItem
+                                                                onClick={() =>
+                                                                    handleReverse(
+                                                                        entry
+                                                                    )
+                                                                }
+                                                                disabled={
+                                                                    reverseMutation.isPending
+                                                                }
+                                                            >
+                                                                <Undo2 className="mr-2 h-4 w-4" />
+                                                                Reverse
+                                                            </DropdownMenuItem>
+                                                        )}
                                                     </>
                                                 )}
                                                 {entry.status === 'voided' && (
@@ -1077,63 +1097,215 @@ export default function JournalEntriespage() {
             />
 
             {/* Delete Confirmation Dialog */}
-            <ConfirmationDialog
-                isOpen={deleteDialog.isOpen}
-                onClose={() => setDeleteDialog({ isOpen: false, entry: null })}
-                onConfirm={handleConfirmDelete}
-                title="Delete Journal Entry"
-                message={`Are you sure you want to delete journal entry "${deleteDialog.entry?.entryNumber}"? This action cannot be undone.`}
-                confirmText="Delete"
-                cancelText="Cancel"
-                confirmVariant="danger"
-                loading={deleteMutation.isPending}
-            />
+            <AlertDialog
+                open={deleteDialog.isOpen}
+                onOpenChange={(open) => {
+                    if (!open && !deleteMutation.isPending) {
+                        setDeleteDialog({ isOpen: false, entry: null });
+                    }
+                }}
+            >
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>
+                            Delete Journal Entry
+                        </AlertDialogTitle>
+                        <AlertDialogDescription>
+                            Are you sure you want to delete journal entry "
+                            {deleteDialog.entry?.entryNumber}"? This action
+                            cannot be undone.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel disabled={deleteMutation.isPending}>
+                            Cancel
+                        </AlertDialogCancel>
+                        <AlertDialogAction
+                            onClick={handleConfirmDelete}
+                            disabled={deleteMutation.isPending}
+                            className={cn(
+                                buttonVariants({
+                                    variant: 'destructive',
+                                })
+                            )}
+                        >
+                            {deleteMutation.isPending
+                                ? 'Processing...'
+                                : 'Delete'}
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
 
             {/* Post Confirmation Dialog */}
-            <ConfirmationDialog
-                isOpen={postDialog.isOpen}
-                onClose={() => setPostDialog({ isOpen: false, entry: null })}
-                onConfirm={handleConfirmPost}
-                title="Post Journal Entry"
-                message={`Are you sure you want to post journal entry "${postDialog.entry?.entryNumber}"? Posted entries cannot be edited.`}
-                confirmText="Post"
-                cancelText="Cancel"
-                loading={postMutation.isPending}
-            />
+            <AlertDialog
+                open={postDialog.isOpen}
+                onOpenChange={(open) => {
+                    if (!open && !postMutation.isPending) {
+                        setPostDialog({ isOpen: false, entry: null });
+                    }
+                }}
+            >
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Post Journal Entry</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            Are you sure you want to post journal entry "
+                            {postDialog.entry?.entryNumber}"? Posted entries
+                            cannot be edited.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel disabled={postMutation.isPending}>
+                            Cancel
+                        </AlertDialogCancel>
+                        <AlertDialogAction
+                            onClick={handleConfirmPost}
+                            disabled={postMutation.isPending}
+                        >
+                            {postMutation.isPending ? 'Processing...' : 'Post'}
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
 
             {/* Void Confirmation Dialog */}
-            <ConfirmationDialog
-                isOpen={voidDialog.isOpen}
-                onClose={() => setVoidDialog({ isOpen: false, entry: null })}
-                onConfirm={handleConfirmVoid}
-                title="Void Journal Entry"
-                message={`Are you sure you want to void journal entry "${voidDialog.entry?.entryNumber}"? This will mark it as voided.`}
-                confirmText="Void"
-                cancelText="Cancel"
-                confirmVariant="danger"
-                loading={voidMutation.isPending}
-            />
+            <AlertDialog
+                open={voidDialog.isOpen}
+                onOpenChange={(open) => {
+                    if (!open && !voidMutation.isPending) {
+                        setVoidDialog({ isOpen: false, entry: null });
+                    }
+                }}
+            >
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Void Journal Entry</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            Are you sure you want to void journal entry "
+                            {voidDialog.entry?.entryNumber}"? This will mark it
+                            as voided.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel disabled={voidMutation.isPending}>
+                            Cancel
+                        </AlertDialogCancel>
+                        <AlertDialogAction
+                            onClick={handleConfirmVoid}
+                            disabled={voidMutation.isPending}
+                            className={cn(
+                                buttonVariants({
+                                    variant: 'destructive',
+                                })
+                            )}
+                        >
+                            {voidMutation.isPending ? 'Processing...' : 'Void'}
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
 
-            <ConfirmationDialog
-                isOpen={bulkDialog.isOpen}
-                onClose={() => setBulkDialog({ isOpen: false, type: null })}
-                onConfirm={handleConfirmBulk}
-                title={
-                    bulkDialog.type === 'post'
-                        ? `Post ${selectedItems.length} entries`
-                        : `Delete ${selectedItems.length} entries`
-                }
-                message={
-                    bulkDialog.type === 'post'
-                        ? 'Only draft entries will be posted.'
-                        : 'Only draft entries will be deleted.'
-                }
-                confirmText={bulkDialog.type === 'post' ? 'Post' : 'Delete'}
-                confirmVariant={
-                    bulkDialog.type === 'delete' ? 'danger' : 'primary'
-                }
-                loading={isBulkLoading}
-            />
+            {/* Reverse Confirmation Dialog */}
+            <AlertDialog
+                open={reverseDialog.isOpen}
+                onOpenChange={(open) => {
+                    if (!open && !reverseMutation.isPending) {
+                        setReverseDialog({ isOpen: false, entry: null });
+                    }
+                }}
+            >
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>
+                            Reverse Journal Entry
+                        </AlertDialogTitle>
+                        <AlertDialogDescription>
+                            Are you sure you want to reverse journal entry "
+                            {reverseDialog.entry?.entryNumber}"? This will
+                            create a reversing entry.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <div className="py-4">
+                        <label
+                            htmlFor="reversal-date"
+                            className="text-sm font-medium text-primary mb-2 block"
+                        >
+                            Reversal Date *
+                        </label>
+                        <Input
+                            id="reversal-date"
+                            type="date"
+                            value={reversalDate}
+                            onChange={(e) => setReversalDate(e.target.value)}
+                            disabled={reverseMutation.isPending}
+                            required
+                        />
+                    </div>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel disabled={reverseMutation.isPending}>
+                            Cancel
+                        </AlertDialogCancel>
+                        <AlertDialogAction
+                            onClick={handleConfirmReverse}
+                            disabled={
+                                reverseMutation.isPending || !reversalDate
+                            }
+                        >
+                            {reverseMutation.isPending
+                                ? 'Processing...'
+                                : 'Reverse'}
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
+
+            <AlertDialog
+                open={bulkDialog.isOpen}
+                onOpenChange={(open) => {
+                    if (!open && !isBulkLoading) {
+                        setBulkDialog({ isOpen: false, type: null });
+                    }
+                }}
+            >
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>
+                            {bulkDialog.type === 'post'
+                                ? `Post ${selectedItems.length} entries`
+                                : `Delete ${selectedItems.length} entries`}
+                        </AlertDialogTitle>
+                        <AlertDialogDescription>
+                            {bulkDialog.type === 'post'
+                                ? 'Only draft entries will be posted.'
+                                : 'Only draft entries will be deleted.'}
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel disabled={isBulkLoading}>
+                            Cancel
+                        </AlertDialogCancel>
+                        <AlertDialogAction
+                            onClick={handleConfirmBulk}
+                            disabled={isBulkLoading}
+                            className={cn(
+                                buttonVariants({
+                                    variant:
+                                        bulkDialog.type === 'delete'
+                                            ? 'destructive'
+                                            : 'default',
+                                })
+                            )}
+                        >
+                            {isBulkLoading
+                                ? 'Processing...'
+                                : bulkDialog.type === 'post'
+                                  ? 'Post'
+                                  : 'Delete'}
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </div>
     );
 }
