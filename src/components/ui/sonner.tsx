@@ -54,7 +54,6 @@ const Toaster = ({ ...props }: ToasterProps) => {
     return (
         <Sonner
             theme={theme as ToasterProps['theme']}
-
             closeButton={
                 ((props: { closeToast: () => void }) => (
                     <CustomCloseButton {...props} />
