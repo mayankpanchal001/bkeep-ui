@@ -63,7 +63,9 @@ const ThemeSwitcher = ({ className }: ThemeSwitcherProps) => {
                     <div className="flex items-center gap-3">
                         <ThemeColorSwatches palette={selectedTheme} />
                         <div className="flex-1">
-                            <div className="font-medium">{selectedTheme.name}</div>
+                            <div className="font-medium">
+                                {selectedTheme.name}
+                            </div>
                             {selectedTheme.description && (
                                 <div className="text-xs text-muted-foreground">
                                     {selectedTheme.description}
@@ -94,7 +96,10 @@ const ThemeSwitcher = ({ className }: ThemeSwitcherProps) => {
                         >
                             <div className="flex flex-col gap-2.5">
                                 <div className="flex items-center justify-center">
-                                    <ThemeColorSwatches palette={theme} size="md" />
+                                    <ThemeColorSwatches
+                                        palette={theme}
+                                        size="md"
+                                    />
                                 </div>
                                 <div className="text-center">
                                     <p className="text-xs font-medium text-foreground truncate">

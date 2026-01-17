@@ -446,7 +446,9 @@ const Navbar = ({ onSearchClick, onShortcutsClick }: NavbarProps) => {
                                         <TooltipTrigger asChild>
                                             <button
                                                 onClick={() =>
-                                                setIsNotificationsOpen(false)
+                                                    setIsNotificationsOpen(
+                                                        false
+                                                    )
                                                 }
                                                 className="p-1 rounded-md hover:bg-surface-muted dark:hover:bg-surface-muted/50 text-primary/40 hover:text-primary/70 dark:hover:text-primary/50 transition-colors shrink-0"
                                             >
@@ -511,7 +513,7 @@ const Navbar = ({ onSearchClick, onShortcutsClick }: NavbarProps) => {
                                                         : 'hover:bg-surface-muted dark:hover:bg-surface-muted/50'
                                                 )}
                                                 onClick={() =>
-                                                handleNotificationClick(n)
+                                                    handleNotificationClick(n)
                                                 }
                                             >
                                                 <div className="flex items-start gap-3">
@@ -524,7 +526,11 @@ const Navbar = ({ onSearchClick, onShortcutsClick }: NavbarProps) => {
                                                             ]
                                                         )}
                                                     >
-                                                    {notificationIcons[n.type]}
+                                                        {
+                                                            notificationIcons[
+                                                                n.type
+                                                            ]
+                                                        }
                                                     </div>
 
                                                     {/* Content */}
@@ -582,9 +588,13 @@ const Navbar = ({ onSearchClick, onShortcutsClick }: NavbarProps) => {
                                                             </Tooltip>
                                                         )}
                                                         <Tooltip>
-                                                        <TooltipTrigger asChild>
+                                                            <TooltipTrigger
+                                                                asChild
+                                                            >
                                                                 <button
-                                                                onClick={(e) =>
+                                                                    onClick={(
+                                                                        e
+                                                                    ) =>
                                                                         deleteNotification(
                                                                             n.id,
                                                                             e

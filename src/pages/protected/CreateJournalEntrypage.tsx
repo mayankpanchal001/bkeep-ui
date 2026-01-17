@@ -70,9 +70,8 @@ export default function CreateJournalEntrypage() {
 function getNextJournalEntryNumber(current: string | undefined | null): string {
     if (!current) return '1';
 
-//Numbers
+    //Numbers
     if (/^\d+$/.test(current)) {
-
         const nextNum = parseInt(current, 10) + 1;
 
         if (current.startsWith('0') && current.length > 1) {
@@ -91,7 +90,7 @@ function getNextJournalEntryNumber(current: string | undefined | null): string {
         return prefix + nextNumStr;
     }
 
-/* letters updating */
+    /* letters updating */
 
     if (/^[a-zA-Z]+$/.test(current)) {
         const chars = current.split('');
@@ -99,7 +98,7 @@ function getNextJournalEntryNumber(current: string | undefined | null): string {
         while (i >= 0) {
             const charCode = chars[i].charCodeAt(0);
             if (chars[i] === 'z') {
-                chars[i] ='a';
+                chars[i] = 'a';
                 i--;
             } else if (chars[i] === 'Z') {
                 chars[i] = 'A';
@@ -109,13 +108,9 @@ function getNextJournalEntryNumber(current: string | undefined | null): string {
                 return chars.join('');
             }
         }
-
     }
     return '1';
 }
-
-
-
 
 //Number format
 interface CurrencyInputProps

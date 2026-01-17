@@ -80,7 +80,6 @@ const Settingspage = () => {
             href: '/settings/notifications',
             icon: <Icons.Notifications className="w-4 h-4" />,
         },
-
     ];
 
     // Dynamic header based on current route
