@@ -217,6 +217,36 @@ export default function ViewJournalEntrypage() {
                 subtitle={formatDateOnly(journalEntry.entryDate)}
             />
 
+            <div className="bg-card rounded-lg border border-primary/10 overflow-hidden">
+                <div className="px-4 py-2 border-b border-primary/10">
+                    <h3 className="text-base font-semibold text-primary">
+                        Journal Lines
+                    </h3>
+                </div>
+                <DataTable
+                    data={journalEntry.lines}
+                    columns={columns}
+                    containerClassName="border-none rounded-none"
+                    tableClassName="w-full"
+                    footerContent={
+                        <tr className="bg-card border-t border-primary/10">
+                            <td
+                                colSpan={4}
+                                className="px-3 py-2 text-right font-semibold text-sm text-primary"
+                            >
+                                Total
+                            </td>
+                            <td className="px-3 py-2 text-right font-semibold text-sm text-primary">
+                                ${toNumber(journalEntry.totalDebit).toFixed(2)}
+                            </td>
+                            <td className="px-3 py-2 text-right font-semibold text-sm text-primary">
+                                ${toNumber(journalEntry.totalCredit).toFixed(2)}
+                            </td>
+                        </tr>
+                    }
+                />
+            </div>
+
             {/* Essential Details - Always Visible */}
             <div className="bg-card rounded-lg border border-primary/10 p-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
@@ -253,36 +283,6 @@ export default function ViewJournalEntrypage() {
                 </div>
             </div>
 
-            <div className="bg-card rounded-lg border border-primary/10 overflow-hidden">
-                <div className="px-4 py-2 border-b border-primary/10">
-                    <h3 className="text-base font-semibold text-primary">
-                        Journal Lines
-                    </h3>
-                </div>
-                <DataTable
-                    data={journalEntry.lines}
-                    columns={columns}
-                    containerClassName="border-none rounded-none"
-                    tableClassName="w-full"
-                    footerContent={
-                        <tr className="bg-card border-t border-primary/10">
-                            <td
-                                colSpan={4}
-                                className="px-3 py-2 text-right font-semibold text-sm text-primary"
-                            >
-                                Total
-                            </td>
-                            <td className="px-3 py-2 text-right font-semibold text-sm text-primary">
-                                ${toNumber(journalEntry.totalDebit).toFixed(2)}
-                            </td>
-                            <td className="px-3 py-2 text-right font-semibold text-sm text-primary">
-                                ${toNumber(journalEntry.totalCredit).toFixed(2)}
-                            </td>
-                        </tr>
-                    }
-                />
-            </div>
-
             {/* Additional Details - Collapsible */}
             <Collapsible open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
                 <div className="bg-card rounded-lg border border-primary/10 overflow-hidden">
@@ -298,7 +298,7 @@ export default function ViewJournalEntrypage() {
                     </CollapsibleTrigger>
                     <CollapsibleContent>
                         <div className="px-4 pb-4 space-y-4">
-                            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 pt-4">
+                            {/*                            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 pt-4">
                                 <div>
                                     <label className="block text-sm font-medium text-primary/50 mb-1">
                                         ID
@@ -331,7 +331,7 @@ export default function ViewJournalEntrypage() {
                                         {formatText(journalEntry.sourceId)}
                                     </p>
                                 </div>
-                            </div>
+                            </div> */}
 
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <div>
