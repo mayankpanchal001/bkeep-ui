@@ -27,7 +27,6 @@ import {
 import { Tenant } from '../../types';
 import ActionMenu, { type ActionMenuItem } from '../shared/ActionMenu';
 import { Icons } from '../shared/Icons';
-import { InputField, TextareaField } from '../typography/InputFields';
 import {
     AlertDialog,
     AlertDialogContent,
@@ -52,6 +51,7 @@ import {
     TableHeader,
     TableRow,
 } from '../ui/table';
+import { Textarea } from '../ui/textarea';
 import TenantForm from './TenantForm';
 
 const CAP_SINGULAR =
@@ -615,18 +615,16 @@ export default function TenantsTab() {
                             </div>
                         ) : null}
                         <div>
-                            <InputField
-                                id="edit-tenant-name"
-                                label={`${CAP_SINGULAR} Name`}
+                            <Input
+                                    id="edit-tenant-name"
                                 placeholder="e.g., Sun Medicose"
                                 value={editFormData.name}
-                                onChange={(e) =>
+                                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                                     setEditFormData((prev) => ({
                                         ...prev,
                                         name: e.target.value,
                                     }))
                                 }
-                                required
                             />
                             {editErrors.name && (
                                 <p className="text-destructive text-xs mt-1 pl-1">
@@ -645,28 +643,25 @@ export default function TenantsTab() {
                         </div> */}
 
                         <div>
-                            <InputField
+                            <Input
                                 id="edit-tenant-email"
-                                label="Contact Email"
                                 placeholder="e.g., contact@acmecorp.com"
                                 value={editFormData.email || ''}
-                                onChange={(e) =>
+                                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                                     setEditFormData((prev) => ({
                                         ...prev,
                                         email: e.target.value,
                                     }))
                                 }
-                                type="email"
                             />
                         </div>
 
                         <div>
-                            <InputField
+                            <Input
                                 id="edit-tenant-phone"
-                                label={`${CAP_SINGULAR} Phone`}
                                 placeholder="e.g., +1-555-123-4567"
                                 value={editFormData.phone || ''}
-                                onChange={(e) =>
+                                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                                     setEditFormData((prev) => ({
                                         ...prev,
                                         phone: e.target.value,
@@ -677,12 +672,11 @@ export default function TenantsTab() {
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
-                                <InputField
+                                <Input
                                     id="edit-tenant-fiscal-year"
-                                    label={`${CAP_SINGULAR} Fiscal Year Start`}
                                     placeholder="YYYY-MM-DD"
                                     value={editFormData.fiscalYear || ''}
-                                    onChange={(e) =>
+                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                                         setEditFormData((prev) => ({
                                             ...prev,
                                             fiscalYear: e.target.value,
@@ -692,14 +686,13 @@ export default function TenantsTab() {
                                 />
                             </div>
                             <div>
-                                <InputField
+                                <Input
                                     id="edit-tenant-incorporation-date"
-                                    label={`${CAP_SINGULAR} Incorporation Date`}
                                     placeholder="YYYY-MM-DD"
                                     value={
                                         editFormData.dateOfIncorporation || ''
                                     }
-                                    onChange={(e) =>
+                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                                         setEditFormData((prev) => ({
                                             ...prev,
                                             dateOfIncorporation: e.target.value,
@@ -711,12 +704,11 @@ export default function TenantsTab() {
                         </div>
 
                         <div>
-                            <TextareaField
+                                <Textarea
                                 id="edit-tenant-address"
-                                label={`${CAP_SINGULAR} Address`}
                                 placeholder="e.g., 123 Main St, City, State 12345"
                                 value={editFormData.address || ''}
-                                onChange={(e) =>
+                                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
                                     setEditFormData((prev) => ({
                                         ...prev,
                                         address: e.target.value,
@@ -737,8 +729,7 @@ export default function TenantsTab() {
                             </Button>
                             <Button
                                 type="submit"
-                                variant="default"
-                                className="flex-1 sm:flex-initial"
+                                        startIcon={<Icons.Save className="w-4 h-4" />}
                                 disabled={
                                     isUpdatingTenant || isLoadingEditTenant
                                 }
@@ -770,37 +761,32 @@ export default function TenantsTab() {
                         </div>
                     ) : (
                         <div className="space-y-4">
-                            <InputField
+                            <Input
                                 id="details-tenant-name"
-                                label={`${CAP_SINGULAR} Name`}
                                 value={detailsTenantResponse?.data?.name || ''}
                                 readOnly
                             />
-                            <InputField
+                            <Input
                                 id="details-tenant-schema"
-                                label="Schema Name"
                                 value={
                                     detailsTenantResponse?.data?.schemaName ||
                                     ''
                                 }
                                 readOnly
                             />
-                            <InputField
+                            <Input
                                 id="details-tenant-email"
-                                label="Contact Email"
                                 value={detailsTenantResponse?.data?.email || ''}
                                 readOnly
                             />
-                            <InputField
+                            <Input
                                 id="details-tenant-phone"
-                                label={`${CAP_SINGULAR} Phone`}
                                 value={detailsTenantResponse?.data?.phone || ''}
                                 readOnly
                             />
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <InputField
+                                <Input
                                     id="details-tenant-fiscal-year"
-                                    label={`${CAP_SINGULAR} Fiscal Year Start`}
                                     value={
                                         detailsTenantResponse?.data?.fiscalYear
                                             ? new Date(
@@ -813,9 +799,8 @@ export default function TenantsTab() {
                                     type="date"
                                     readOnly
                                 />
-                                <InputField
+                                <Input
                                     id="details-tenant-incorporation-date"
-                                    label={`${CAP_SINGULAR} Incorporation Date`}
                                     value={
                                         detailsTenantResponse?.data
                                             ?.dateOfIncorporation
@@ -830,9 +815,8 @@ export default function TenantsTab() {
                                     readOnly
                                 />
                             </div>
-                            <TextareaField
+                                    <Textarea
                                 id="details-tenant-address"
-                                label={`${CAP_SINGULAR} Address`}
                                 value={
                                     detailsTenantResponse?.data?.address || ''
                                 }

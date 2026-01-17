@@ -1,73 +1,106 @@
-import { Slot } from '@radix-ui/react-slot';
+import { Slot, Slottable } from '@radix-ui/react-slot';
 import { cva, type VariantProps } from 'class-variance-authority';
+import { Loader2 } from 'lucide-react';
 import * as React from 'react';
 import { cn } from '../../utils/cn';
 import { Tooltip, TooltipContent, TooltipTrigger } from './tooltip';
 
 const buttonVariants = cva(
-    "inline-flex capitalize  items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
+    'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0',
     {
         variants: {
             variant: {
-                default: 'bg-primary text-surface hover:bg-primary/90',
-                outline:
-                    'border border-primary/30 bg-surface shadow-xs hover:bg-primary/5 hover:text-primary dark:bg-surface-muted dark:border-primary/20 dark:hover:bg-primary/10',
+                default:
+                    'bg-primary text-primary-foreground shadow hover:bg-primary/90',
                 destructive:
-                    'bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60',
-
+                    'bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90',
+                outline:
+                    'border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground',
                 secondary:
-                    'bg-secondary text-secondary-foreground hover:bg-secondary/80',
-                ghost: 'hover:bg-primary/5 hover:text-primary dark:hover:bg-primary/10',
+                    'bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80',
+                ghost: 'hover:bg-accent hover:text-accent-foreground',
                 link: 'text-primary underline-offset-4 hover:underline',
-                active: 'bg-primary/10 text-primary border border-primary/10 hover:bg-primary/15 dark:bg-primary/20 dark:border-primary/20',
             },
             size: {
-                default: 'h-9 px-4 py-2 has-[>svg]:px-3',
-                sm: 'h-8 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5',
-                lg: 'h-10 rounded-md px-6 has-[>svg]:px-4',
-                icon: 'size-9',
-                'icon-sm': 'size-8',
-                'icon-lg': 'size-10',
-            },
-            isActive: {
-                true: 'bg-primary/10 text-primary border border-primary/10',
-                false: '',
+                default: 'h-9 px-4 py-2 [&_svg]:size-4',
+                sm: 'h-8 rounded-md px-3 text-xs [&_svg]:size-3.5',
+                lg: 'h-10 rounded-md px-8 [&_svg]:size-5',
+                icon: 'h-9 w-9 [&_svg]:size-4',
+                'icon-sm': 'h-8 w-8 [&_svg]:size-3.5',
+                'icon-lg': 'h-10 w-10 [&_svg]:size-5',
             },
         },
         defaultVariants: {
             variant: 'default',
             size: 'default',
-            isActive: false,
         },
     }
 );
 
+export interface ButtonProps
+    extends React.ComponentProps<'button'>,
+        VariantProps<typeof buttonVariants> {
+    /** Render as child component */
+    asChild?: boolean;
+    /** Icon to display before the button text */
+    startIcon?: React.ReactNode;
+    /** Icon to display after the button text */
+    endIcon?: React.ReactNode;
+    /** Show loading spinner and disable button */
+    loading?: boolean;
+    /** Text to show while loading (defaults to children) */
+    loadingText?: string;
+    /** Tooltip content */
+    tooltip?: string | React.ComponentProps<typeof TooltipContent>;
+}
+
 function Button({
     className,
-    variant = 'default',
-    size = 'sm',
+    variant,
+    size,
     asChild = false,
+    startIcon,
+    endIcon,
+    loading = false,
+    loadingText,
     tooltip,
-    isActive = false,
+    children,
+    disabled,
     ...props
-}: React.ComponentProps<'button'> &
-    VariantProps<typeof buttonVariants> & {
-        asChild?: boolean;
-        tooltip?: string | React.ComponentProps<typeof TooltipContent>;
-        isActive?: boolean;
-    }) {
+}: ButtonProps) {
     const Comp = asChild ? Slot : 'button';
+    const isDisabled = disabled || loading;
+
+    // Determine if this is an icon-only button
+    const isIconOnly = size === 'icon' || size === 'icon-sm' || size === 'icon-lg';
+
+    const buttonContent = (
+        <>
+            {loading ? (
+                <Loader2 className="animate-spin" />
+            ) : startIcon ? (
+                <span className="inline-flex shrink-0">{startIcon}</span>
+            ) : null}
+            {!isIconOnly && (
+                <Slottable>
+                    {loading && loadingText ? loadingText : children}
+                </Slottable>
+            )}
+            {isIconOnly && !loading && <Slottable>{children}</Slottable>}
+            {!loading && endIcon && (
+                <span className="inline-flex shrink-0">{endIcon}</span>
+            )}
+        </>
+    );
 
     const button = (
         <Comp
-            data-slot="button"
-            data-variant={variant}
-            data-size={size}
-            className={cn(
-                buttonVariants({ variant, size, className, isActive })
-            )}
+            className={cn(buttonVariants({ variant, size, className }))}
+            disabled={isDisabled}
             {...props}
-        />
+        >
+            {buttonContent}
+        </Comp>
     );
 
     if (!tooltip) {

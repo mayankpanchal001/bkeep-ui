@@ -1,22 +1,23 @@
-import { useEffect, useMemo, useState } from 'react';
 import {
-    FaBuilding,
-    FaCheck,
-    FaCheckCircle,
-    FaEnvelope,
-    FaExclamationTriangle,
-    FaLock,
-    FaSpinner,
-    FaTimes,
-    FaUser,
-} from 'react-icons/fa';
+    AlertTriangle,
+    Building,
+    Check,
+    CheckCircle,
+    Loader2,
+    Lock,
+    LogIn,
+    Mail,
+    User,
+    X,
+} from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router';
 import {
     useAcceptInvitation,
     useVerifyInvitation,
 } from '../../services/apis/authApi';
-import Button from '../typography/Button';
-import { InputField } from '../typography/InputFields';
+import { Button } from '../ui/button';
+import Input from '../ui/input';
 
 interface PasswordRequirement {
     label: string;
@@ -164,7 +165,7 @@ const AcceptInvitationForm = () => {
         return (
             <div className="flex flex-col items-center justify-center py-16">
                 <div className="relative">
-                    <FaSpinner className="w-16 h-16 text-primary animate-spin mb-6" />
+                    <Loader2 className="w-16 h-16 text-primary animate-spin mb-6" />
                 </div>
                 <h2 className="text-2xl font-bold text-primary mb-3">
                     Verifying Invitation
@@ -181,7 +182,7 @@ const AcceptInvitationForm = () => {
         return (
             <div className="flex flex-col items-center justify-center py-12">
                 <div className="w-20 h-20 rounded-full bg-red-50 flex items-center justify-center mb-6">
-                    <FaExclamationTriangle className="w-10 h-10 text-red-500" />
+                    <AlertTriangle className="w-10 h-10 text-red-500" />
                 </div>
                 <h2 className="text-2xl font-bold text-primary mb-3">
                     Invalid or Expired Invitation
@@ -191,9 +192,10 @@ const AcceptInvitationForm = () => {
                         'This invitation link is invalid or has expired. Please contact your administrator for a new invitation.'}
                 </p>
                 <Button
-                    variant="primary"
+                    variant="default"
                     onClick={() => navigate('/login')}
                     className="w-full"
+                    startIcon={<LogIn className="w-4 h-4" />}
                 >
                     Go to Login
                 </Button>
@@ -209,7 +211,7 @@ const AcceptInvitationForm = () => {
         return (
             <div className="flex flex-col items-center justify-center py-16">
                 <div className="relative">
-                    <FaSpinner className="w-16 h-16 text-primary animate-spin mb-6" />
+                    <Loader2 className="w-16 h-16 text-primary animate-spin mb-6" />
                 </div>
                 <h2 className="text-2xl font-bold text-primary mb-3">
                     Accepting Invitation
@@ -237,17 +239,17 @@ const AcceptInvitationForm = () => {
 
             {/* Invitation Details Card */}
             {invitationData && (
-                <div className="bg-gradient-to-br from-primary/5 to-primary/10 rounded-2 p-4 mb-8 border border-primary/20 shadow-sm">
+                <div className="bg-linear-to-br from-primary/5 to-primary/10 rounded p-4 mb-8 border border-primary/20 shadow-sm">
                     <div className="flex items-center gap-2 mb-4">
-                        <FaCheckCircle className="w-5 h-5 text-primary" />
+                        <CheckCircle className="w-5 h-5 text-primary" />
                         <h3 className="text-sm font-semibold text-primary uppercase tracking-wide">
                             Invitation Details
                         </h3>
                     </div>
                     <div className="space-y-4">
                         <div className="flex items-start gap-4 p-3 bg-card/60 rounded-lg backdrop-blur-sm">
-                            <div className="w-12 h-12 rounded-2 bg-primary/10 flex items-center justify-center shrink-0">
-                                <FaUser className="w-5 h-5 text-primary" />
+                            <div className="w-12 h-12 rounded bg-primary/10 flex items-center justify-center shrink-0">
+                                <User className="w-5 h-5 text-primary" />
                             </div>
                             <div className="flex-1 min-w-0">
                                 <p className="text-xs font-medium text-primary/50 uppercase tracking-wide mb-1">
@@ -259,8 +261,8 @@ const AcceptInvitationForm = () => {
                             </div>
                         </div>
                         <div className="flex items-start gap-4 p-3 bg-card/60 rounded-lg backdrop-blur-sm">
-                            <div className="w-12 h-12 rounded-2 bg-primary/10 flex items-center justify-center shrink-0">
-                                <FaEnvelope className="w-5 h-5 text-primary" />
+                            <div className="w-12 h-12 rounded bg-primary/10 flex items-center justify-center shrink-0">
+                                <Mail className="w-5 h-5 text-primary" />
                             </div>
                             <div className="flex-1 min-w-0">
                                 <p className="text-xs font-medium text-primary/50 uppercase tracking-wide mb-1">
@@ -273,8 +275,8 @@ const AcceptInvitationForm = () => {
                         </div>
                         {invitationData.role && (
                             <div className="flex items-start gap-4 p-3 bg-card/60 rounded-lg backdrop-blur-sm">
-                                <div className="w-12 h-12 rounded-2 bg-primary/10 flex items-center justify-center shrink-0">
-                                    <FaCheckCircle className="w-5 h-5 text-primary" />
+                                <div className="w-12 h-12 rounded bg-primary/10 flex items-center justify-center shrink-0">
+                                    <CheckCircle className="w-5 h-5 text-primary" />
                                 </div>
                                 <div className="flex-1 min-w-0">
                                     <p className="text-xs font-medium text-primary/50 uppercase tracking-wide mb-1">
@@ -289,8 +291,8 @@ const AcceptInvitationForm = () => {
                         {(invitationData.tenantName ||
                             invitationData.tenant) && (
                             <div className="flex items-start gap-4 p-3 bg-card/60 rounded-lg backdrop-blur-sm">
-                                <div className="w-12 h-12 rounded-2 bg-primary/10 flex items-center justify-center shrink-0">
-                                    <FaBuilding className="w-5 h-5 text-primary" />
+                                <div className="w-12 h-12 rounded bg-primary/10 flex items-center justify-center shrink-0">
+                                    <Building className="w-5 h-5 text-primary" />
                                 </div>
                                 <div className="flex-1 min-w-0">
                                     <p className="text-xs font-medium text-primary/50 uppercase tracking-wide mb-1">
@@ -312,23 +314,22 @@ const AcceptInvitationForm = () => {
                 <form onSubmit={handleSubmit} className="space-y-6">
                     {/* Password Field */}
                     <div>
-                        <InputField
+                        <Input
                             id="password"
-                            label="Create Password"
                             type="password"
                             placeholder="Enter your password"
                             value={password}
-                            onChange={(e) =>
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                                 handlePasswordChange(e.target.value)
                             }
                             required
-                            icon={<FaLock className="w-4 h-4" />}
+                            startIcon={<Lock className="w-4 h-4" />}
                             disabled={isAccepting}
                         />
                         {errors.password && (
                             <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg">
                                 <p className="text-red-700 text-xs flex items-center gap-2">
-                                    <FaExclamationTriangle className="w-3 h-3 shrink-0" />
+                                    <AlertTriangle className="w-3 h-3 shrink-0" />
                                     {errors.password}
                                 </p>
                             </div>
@@ -337,9 +338,9 @@ const AcceptInvitationForm = () => {
 
                     {/* Password Requirements - Interactive */}
                     {password && (
-                        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-100 rounded-2 p-4 shadow-sm">
+                        <div className="bg-linear-to-br from-blue-50 to-indigo-50 border border-blue-100 rounded p-4 shadow-sm">
                             <p className="text-xs font-semibold text-blue-900 mb-3 flex items-center gap-2">
-                                <FaLock className="w-3 h-3" />
+                                <Lock className="w-3 h-3" />
                                 Password Requirements
                             </p>
                             <ul className="space-y-2">
@@ -360,9 +361,9 @@ const AcceptInvitationForm = () => {
                                             }`}
                                         >
                                             {req.met ? (
-                                                <FaCheck className="w-2.5 h-2.5" />
+                                                <Check className="w-2.5 h-2.5" />
                                             ) : (
-                                                <FaTimes className="w-2.5 h-2.5" />
+                                                <X className="w-2.5 h-2.5" />
                                             )}
                                         </div>
                                         <span
@@ -380,7 +381,7 @@ const AcceptInvitationForm = () => {
                             {isPasswordValid && (
                                 <div className="mt-3 pt-3 border-t border-green-200">
                                     <p className="text-xs font-medium text-green-700 flex items-center gap-2">
-                                        <FaCheckCircle className="w-3 h-3" />
+                                        <CheckCircle className="w-3 h-3" />
                                         Password meets all requirements
                                     </p>
                                 </div>
@@ -390,23 +391,22 @@ const AcceptInvitationForm = () => {
 
                     {/* Confirm Password Field */}
                     <div>
-                        <InputField
+                        <Input
                             id="confirmPassword"
-                            label="Confirm Password"
                             type="password"
                             placeholder="Confirm your password"
                             value={confirmPassword}
-                            onChange={(e) =>
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                                 handleConfirmPasswordChange(e.target.value)
                             }
                             required
-                            icon={<FaLock className="w-4 h-4" />}
+                            startIcon={<Lock className="w-4 h-4" />}
                             disabled={isAccepting}
                         />
                         {confirmPassword && password === confirmPassword && (
                             <div className="mt-2 p-2 bg-green-50 border border-green-200 rounded-lg">
                                 <p className="text-green-700 text-xs flex items-center gap-2">
-                                    <FaCheck className="w-3 h-3" />
+                                    <Check className="w-3 h-3" />
                                     Passwords match
                                 </p>
                             </div>
@@ -414,7 +414,7 @@ const AcceptInvitationForm = () => {
                         {errors.confirmPassword && (
                             <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg">
                                 <p className="text-red-700 text-xs flex items-center gap-2">
-                                    <FaExclamationTriangle className="w-3 h-3 shrink-0" />
+                                    <AlertTriangle className="w-3 h-3 shrink-0" />
                                     {errors.confirmPassword}
                                 </p>
                             </div>
@@ -424,19 +424,18 @@ const AcceptInvitationForm = () => {
                     {/* Submit Button */}
                     <Button
                         type="submit"
-                        variant="primary"
+                        variant="default"
                         className="w-full"
                         loading={isAccepting}
                         disabled={isAccepting || !isPasswordValid}
+                        startIcon={<Check className="w-4 h-4" />}
                     >
-                        {isAccepting
-                            ? 'Creating Account...'
-                            : 'Accept & Create Account'}
+                        Create Account
                     </Button>
                 </form>
             ) : (
                 <div className="space-y-6">
-                    <div className="bg-blue-50 border border-blue-200 rounded-2 p-4">
+                    <div className="bg-blue-50 border border-blue-200 rounded p-4">
                         <p className="text-sm text-blue-800 text-center">
                             No password required. Click the button below to
                             accept the invitation.
@@ -444,15 +443,14 @@ const AcceptInvitationForm = () => {
                     </div>
                     <Button
                         type="button"
-                        variant="primary"
+                        variant="default"
                         className="w-full"
                         onClick={handleSubmit}
                         loading={isAccepting}
                         disabled={isAccepting}
+                        startIcon={<Check className="w-4 h-4" />}
                     >
-                        {isAccepting
-                            ? 'Accepting Invitation...'
-                            : 'Accept Invitation'}
+                        Accept Invitation
                     </Button>
                 </div>
             )}

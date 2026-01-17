@@ -134,6 +134,11 @@ export const SIDEBAR_ITEMS: SidebarItemProps[] = [
                 icon: <Icons.Notifications />,
                 path: '/settings/notifications',
             },
+            {
+                label: 'Preferences',
+                icon: <Icons.Settings />,
+                path: '/settings/preferences',
+            },
         ],
     },
 ];

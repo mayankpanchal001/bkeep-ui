@@ -1,10 +1,12 @@
-import ConfirmationDialog from '@/components/shared/ConfirmationDialog';
-import { InputField } from '@/components/typography/InputFields';
+    import ConfirmationDialog from '@/components/shared/ConfirmationDialog';
+import Input from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import {
     Tooltip,
     TooltipContent,
     TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { FilterIcon } from 'lucide-react';
 import { useRef, useState } from 'react';
 import {
     FaDownload,
@@ -14,11 +16,10 @@ import {
     FaFileImage,
     FaFilePdf,
     FaFileWord,
-    FaFilter,
     FaFolder,
     FaSearch,
     FaTrash,
-    FaUpload,
+    FaUpload
 } from 'react-icons/fa';
 
 type Document = {
@@ -253,7 +254,7 @@ const Documentspage = () => {
                 onDragOver={handleDrag}
                 onDrop={handleDrop}
                 onClick={handleUploadAreaClick}
-                className={`w-full max-w-3xl mx-auto border-2 border-dashed rounded-2 p-10 sm:p-12 text-center transition-all cursor-pointer shadow-sm ${
+                className={`w-full max-w-3xl mx-auto border-2 border-dashed rounded p-10 sm:p-12 text-center transition-all cursor-pointer shadow-sm ${
                     dragActive
                         ? 'border-primary bg-primary/10 shadow-md scale-[1.01]'
                         : 'border-primary/25 bg-primary/5 hover:border-primary hover:bg-primary/10'
@@ -272,39 +273,43 @@ const Documentspage = () => {
             </div>
 
             {/* Filters */}
-            <div className="bg-card rounded-2 shadow-sm border border-primary/10 p-4">
+            <div className="bg-card rounded shadow-sm border border-primary/10 p-4">
                 <div className="flex flex-col sm:flex-row gap-4">
                     <div className="flex-1">
                         <div className="relative">
-                            <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-primary/50 w-4 h-4" />
-                            <InputField
+                            <Input
                                 id="search-documents"
                                 placeholder="Search documents..."
                                 value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
+                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
+                                startIcon={<FaSearch className="w-4 h-4" />}
                             />
                         </div>
                     </div>
                     <div className="flex items-center gap-2">
-                        <FaFilter className="text-primary/50" />
-                        <select
+                            <Select
                             value={categoryFilter}
-                            onChange={(e) => setCategoryFilter(e.target.value)}
-                            className="px-4 py-2 border border-primary/10 rounded-2 text-sm text-primary focus:outline-none focus:border-primary"
+                            onValueChange={(value: string) => setCategoryFilter(value)}
                         >
-                            {CATEGORIES.map((category) => (
-                                <option key={category} value={category}>
-                                    {category}
-                                </option>
-                            ))}
-                        </select>
+                            <SelectTrigger>
+                                <FilterIcon size={16} />
+                                    <SelectValue placeholder="All Categories" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {CATEGORIES.map((category) => (
+                                    <SelectItem key={category} value={category}>
+                                        {category.charAt(0).toUpperCase() + category.slice(1)}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
                     </div>
                 </div>
             </div>
 
             {/* Documents Grid */}
             {isUploading && (
-                <div className="bg-blue-50 border border-blue-200 rounded-2 p-4 text-center">
+                <div className="bg-blue-50 border border-blue-200 rounded p-4 text-center">
                     <p className="text-blue-700 font-medium">
                         Uploading files...
                     </p>
@@ -320,7 +325,7 @@ const Documentspage = () => {
                     filteredDocuments.map((doc) => (
                         <div
                             key={doc.id}
-                            className="bg-card rounded-2 shadow-sm border border-primary/10 p-4 hover:shadow-md transition-shadow"
+                            className="bg-card rounded shadow-sm border border-primary/10 p-4 hover:shadow-md transition-shadow"
                         >
                             <div className="flex items-start justify-between mb-3">
                                 <div className="flex items-center gap-3 flex-1 min-w-0">

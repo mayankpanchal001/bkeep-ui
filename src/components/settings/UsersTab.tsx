@@ -12,8 +12,8 @@ import {
 
 import { UserType } from '../../types';
 import { Icons } from '../shared/Icons';
-import Button from '../typography/Button';
 import { Badge } from '../ui/badge';
+import { Button } from '../ui/button';
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -284,10 +284,9 @@ const UsersTab = () => {
                     </p>
                 </div>
                 <Button
-                    variant="primary"
                     size="sm"
                     onClick={() => setIsInviteModalOpen(true)}
-                    className="w-full sm:w-auto"
+
                 >
                     <Icons.Plus className="mr-2 w-4 h-4" />
                     Invite User
@@ -372,7 +371,7 @@ const UsersTab = () => {
                             id="user-search"
                             placeholder="Search users by name or email..."
                             value={search}
-                            onChange={(e) => setSearch(e.target.value)}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearch(e.target.value)}
                             startIcon={<Icons.Search className="w-4 h-4" />}
                         />
                         {search && (
@@ -386,7 +385,7 @@ const UsersTab = () => {
                             </button>
                         )}
                     </div>
-                    <Button type="submit" size="sm" variant="primary">
+                    <Button type="submit" size="sm" startIcon={<Icons.Search className="w-4 h-4" />}    disabled={isLoading}>
                         Search
                     </Button>
                 </form>
@@ -406,7 +405,7 @@ const UsersTab = () => {
                         }
                         className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
                             filters.isVerified === true
-                                ? 'bg-secondary text-surface'
+                                ? 'bg-secondary text-foreground'
                                 : 'bg-primary/5 text-primary/70 hover:bg-primary/10'
                         }`}
                     >
@@ -423,7 +422,7 @@ const UsersTab = () => {
                         }
                         className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
                             filters.isActive === true
-                                ? 'bg-secondary text-surface'
+                                ? 'bg-secondary text-foreground'
                                 : 'bg-primary/5 text-primary/70 hover:bg-primary/10'
                         }`}
                     >
@@ -726,13 +725,12 @@ const UsersTab = () => {
                                     !filters.isVerified &&
                                     !filters.isActive ? (
                                         <Button
-                                            variant="primary"
                                             size="sm"
                                             onClick={() =>
                                                 setIsInviteModalOpen(true)
                                             }
+                                            startIcon={<Icons.Plus className="w-4 h-4" />}
                                         >
-                                            <Icons.Plus className="mr-2 w-4 h-4" />
                                             Invite User
                                         </Button>
                                     ) : null

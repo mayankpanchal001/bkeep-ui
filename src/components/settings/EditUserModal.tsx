@@ -1,10 +1,12 @@
+import { Save } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { FaExclamationTriangle, FaTimes } from 'react-icons/fa';
 import { useGetRoles } from '../../services/apis/roleApi';
 import { useUpdateUser } from '../../services/apis/usersApi';
 import { UserType } from '../../types';
-import Button from '../typography/Button';
-import { InputField, SelectField } from '../typography/InputFields';
+import { Button } from '../ui/button';
+import Input from '../ui/input';
+import { Select, SelectContent, SelectItem } from '../ui/select';
 
 interface EditUserModalProps {
     isOpen: boolean;
@@ -123,7 +125,7 @@ const EditUserModal = ({ isOpen, onClose, user }: EditUserModalProps) => {
             className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4"
             onClick={handleBackdropClick}
         >
-            <div className="w-full max-w-2xl rounded-2 bg-card p-4 shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div className="w-full max-w-2xl rounded bg-card p-4 shadow-2xl max-h-[90vh] overflow-y-auto">
                 <div className="flex items-center justify-between mb-6">
                     <h2 className="text-2xl font-semibold text-primary">
                         Edit User
@@ -146,11 +148,10 @@ const EditUserModal = ({ isOpen, onClose, user }: EditUserModalProps) => {
                         </h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                                <InputField
+                                    <Input
                                     id="edit-user-name"
-                                    label="Name"
                                     value={formData.name}
-                                    onChange={(e) => {
+                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                                         setFormData({
                                             ...formData,
                                             name: e.target.value,
@@ -174,12 +175,11 @@ const EditUserModal = ({ isOpen, onClose, user }: EditUserModalProps) => {
                             </div>
 
                             <div>
-                                <InputField
+                                            <Input
                                     id="edit-user-email"
-                                    label="Email"
                                     type="email"
                                     value={formData.email}
-                                    onChange={(e) => {
+                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                                         setFormData({
                                             ...formData,
                                             email: e.target.value,
@@ -203,12 +203,11 @@ const EditUserModal = ({ isOpen, onClose, user }: EditUserModalProps) => {
                             </div>
 
                             <div>
-                                <InputField
+                                    <Input
                                     id="edit-user-phone"
-                                    label="Phone"
                                     type="tel"
                                     value={formData.phone}
-                                    onChange={(e) => {
+                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                                         setFormData({
                                             ...formData,
                                             phone: e.target.value,
@@ -219,14 +218,12 @@ const EditUserModal = ({ isOpen, onClose, user }: EditUserModalProps) => {
                             </div>
 
                             <div>
-                                <SelectField
-                                    id="edit-user-role"
-                                    label="Role"
+                                <Select
                                     value={formData.roleId}
-                                    onChange={(e) => {
+                                    onValueChange={(value: string) => {
                                         setFormData({
                                             ...formData,
-                                            roleId: e.target.value,
+                                            roleId: value,
                                         });
                                         if (errors.roleId) {
                                             setErrors((prev) => ({
@@ -236,11 +233,13 @@ const EditUserModal = ({ isOpen, onClose, user }: EditUserModalProps) => {
                                         }
                                     }}
                                     required
-                                    options={roles.map((role) => ({
-                                        value: role.id,
-                                        label: role.displayName,
-                                    }))}
-                                />
+                                >
+                                    <SelectContent>
+                                        {roles.map((role) => (
+                                            <SelectItem key={role.id} value={role.id}>{role.displayName}</SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
                                 {errors.roleId && (
                                     <p className="text-destructive text-xs mt-1 flex items-center gap-1">
                                         <FaExclamationTriangle className="w-3 h-3" />
@@ -283,14 +282,17 @@ const EditUserModal = ({ isOpen, onClose, user }: EditUserModalProps) => {
                             variant="outline"
                             onClick={onClose}
                             disabled={isPending}
+                            startIcon={<FaTimes className="w-4 h-4" />}
                         >
                             Cancel
                         </Button>
                         <Button
                             type="submit"
-                            variant="primary"
+                                variant="default"
+                                size="default"
                             loading={isPending}
                             disabled={isPending}
+                            startIcon={<Save className="w-4 h-4" />}
                         >
                             Save Changes
                         </Button>

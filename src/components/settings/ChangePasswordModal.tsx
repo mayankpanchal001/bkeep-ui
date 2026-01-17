@@ -1,24 +1,20 @@
+import { LockIcon, XIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { FaTimes } from 'react-icons/fa';
 import { useChangePassword } from '../../services/apis/authApi';
-import Button from '../typography/Button';
-import { InputField } from '../typography/InputFields';
+import { Button } from '../ui/button';
+import Input from '../ui/input';
 
-type changePasswordModalProps = {
+type ChangePasswordModalProps = {
     isOpen: boolean;
     onClose: () => void;
 };
 
-const ChangePasswordModal = ({ isOpen, onClose }: changePasswordModalProps) => {
+const ChangePasswordModal = ({ isOpen, onClose }: ChangePasswordModalProps) => {
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    const { mutateAsync: changePassword, isPending: loading } =
-        useChangePassword();
-
+    const { mutateAsync: changePassword, isPending: loading } = useChangePassword();
     const [error, setError] = useState('');
-    /*     const [success, setSuccess] = useState(""); */
-
     useEffect(() => {
         if (isOpen) {
             setCurrentPassword('');
@@ -26,9 +22,6 @@ const ChangePasswordModal = ({ isOpen, onClose }: changePasswordModalProps) => {
             setConfirmPassword('');
             setError('');
             /*         setSuccess(""); */
-            /*         setLoading(false); */
-
-            document.body.style.overflow = 'hidden';
         } else {
             document.body.style.overflow = 'unset';
         }
@@ -89,7 +82,7 @@ const ChangePasswordModal = ({ isOpen, onClose }: changePasswordModalProps) => {
         // 1. Overlay (Dark background)
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4">
             {/* 2. Modal Container */}
-            <div className="w-full max-w-md rounded-2 bg-card p-4 shadow-2xl animate-in fade-in zoom-in duration-200">
+            <div className="w-full max-w-md rounded bg-card p-4 shadow-2xl animate-in fade-in zoom-in duration-200">
                 {/* Header */}
                 <div className="flex items-center justify-between mb-6">
                     <h3 className="text-xl font-semibold text-primary">
@@ -99,41 +92,35 @@ const ChangePasswordModal = ({ isOpen, onClose }: changePasswordModalProps) => {
                         onClick={onClose}
                         className="text-primary/50 hover:text-primary transition-colors"
                     >
-                        <FaTimes className="w-5 h-5" />
+                        <XIcon className="w-5 h-5" />
                     </button>
                 </div>
 
                 {/* Form */}
                 <form onSubmit={handleSubmit} className="space-y-4">
-                    <InputField
+                    <Input
                         id="current-password"
-                        label="Current Password"
-                        type="password"
                         placeholder="Enter current password"
                         value={currentPassword}
-                        onChange={(e) => setCurrentPassword(e.target.value)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCurrentPassword(e.target.value)}
                         autoComplete="current-password"
                         required
                     />
 
-                    <InputField
+                    <Input
                         id="new-password"
-                        label="New Password"
-                        type="password"
                         placeholder="Enter new password"
                         value={newPassword}
-                        onChange={(e) => setNewPassword(e.target.value)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewPassword(e.target.value)}
                         autoComplete="new-password"
                         required
                     />
 
-                    <InputField
+                    <Input
                         id="confirm-password"
-                        label="Confirm New Password"
-                        type="password"
                         placeholder="Re-enter new password"
                         value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setConfirmPassword(e.target.value)}
                         autoComplete="new-password"
                         required
                     />
@@ -152,14 +139,16 @@ const ChangePasswordModal = ({ isOpen, onClose }: changePasswordModalProps) => {
                             variant="outline"
                             onClick={onClose}
                             disabled={loading}
+                            startIcon={<XIcon className="w-4 h-4" />}
                         >
                             Cancel
                         </Button>
                         <Button
                             type="submit"
-                            variant="primary"
+                            variant="default"
                             loading={loading}
                             disabled={loading}
+                            startIcon={<LockIcon className="w-4 h-4" />}
                         >
                             Update Password
                         </Button>

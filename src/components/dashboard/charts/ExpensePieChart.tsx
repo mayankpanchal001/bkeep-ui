@@ -21,7 +21,7 @@ const ExpensePieChart = ({ data }: ExpensePieChartProps) => {
     const accent = getThemeColor('--color-accent');
     const secondary = getThemeColor('--color-secondary');
     const foreground = getThemeColor('--color-foreground');
-    const surfaceMuted = getThemeColor('--color-surface-muted');
+    const surfaceMuted = getThemeColor('--color-muted');
     const destructive = getThemeColor('--color-destructive');
 
     const COLORS = [accent, secondary, foreground, surfaceMuted, destructive];

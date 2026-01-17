@@ -45,7 +45,7 @@ const AIInsightCard = ({
                 {onAccept && (
                     <button
                         onClick={onAccept}
-                        className="flex items-center gap-1 px-3 py-1.5 text-xs font-medium bg-primary text-surface rounded-md hover:bg-primary/75 transition-colors"
+                        className="flex items-center gap-1 px-3 py-1.5 text-xs font-medium bg-primary text-foreground rounded-md hover:bg-primary/75 transition-colors"
                     >
                         <FaCheck className="w-3 h-3" />
                         Accept

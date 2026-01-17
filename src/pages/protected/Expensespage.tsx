@@ -1,5 +1,5 @@
-import Button from '@/components/typography/Button';
-import { InputField } from '@/components/typography/InputFields';
+import { Button } from '@/components/ui/button';
+import Input from '@/components/ui/input';
 import {
     Table,
     TableBody,
@@ -126,7 +126,7 @@ const Expensespage = () => {
         <div className="flex flex-col gap-4">
             {/* Summary Cards */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div className="bg-card rounded-2 shadow-sm border border-primary/10 p-4">
+                <div className="bg-card rounded shadow-sm border border-primary/10 p-4">
                     <div className="text-sm text-primary/50 mb-1">
                         Total Expenses
                     </div>
@@ -142,7 +142,7 @@ const Expensespage = () => {
                     .map(([category, amount]) => (
                         <div
                             key={category}
-                            className="bg-card rounded-2 shadow-sm border border-primary/10 p-4"
+                            className="bg-card rounded shadow-sm border border-primary/10 p-4"
                         >
                             <div className="text-sm text-primary/50 mb-1">
                                 {category}
@@ -160,11 +160,11 @@ const Expensespage = () => {
                 <div className="flex-1">
                     <div className="relative">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-primary/50 w-4 h-4" />
-                        <InputField
+                        <Input
                             id="search-expenses"
                             placeholder="Search expenses..."
                             value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
                         />
                     </div>
                 </div>
@@ -173,7 +173,7 @@ const Expensespage = () => {
                     <select
                         value={categoryFilter}
                         onChange={(e) => setCategoryFilter(e.target.value)}
-                        className="px-4 py-2 border border-primary/10 rounded-2 text-sm text-primary focus:outline-none focus:border-primary"
+                        className="px-4 py-2 border border-primary/10 rounded text-sm text-primary focus:outline-none focus:border-primary"
                     >
                         <option value="all">All Categories</option>
                         {CATEGORIES.map((category) => (
@@ -302,7 +302,7 @@ const Expensespage = () => {
             {/* Create Expense Modal */}
             {showCreateModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4">
-                    <div className="w-full max-w-2xl rounded-2 bg-card p-4 shadow-2xl max-h-[90vh] overflow-y-auto">
+                    <div className="w-full max-w-2xl rounded bg-card p-4 shadow-2xl max-h-[90vh] overflow-y-auto">
                         <div className="flex items-center justify-between mb-4">
                             <h3 className="text-xl font-semibold text-primary">
                                 Add New Expense
@@ -316,15 +316,13 @@ const Expensespage = () => {
                         </div>
                         <form className="space-y-4">
                             <div className="grid grid-cols-2 gap-4">
-                                <InputField
+                                <Input
                                     id="expense-date"
-                                    label="Date"
                                     type="date"
                                     required
                                 />
-                                <InputField
+                                <Input
                                     id="vendor"
-                                    label="Vendor"
                                     placeholder="Enter vendor name"
                                     required
                                 />
@@ -334,7 +332,7 @@ const Expensespage = () => {
                                     <label className="block text-sm font-medium text-primary mb-2">
                                         Category
                                     </label>
-                                    <select className="w-full px-4 py-2 border border-primary/10 rounded-2 text-sm text-primary focus:outline-none focus:border-primary">
+                                    <select className="w-full px-4 py-2 border border-primary/10 rounded text-sm text-primary focus:outline-none focus:border-primary">
                                         {CATEGORIES.map((category) => (
                                             <option
                                                 key={category}
@@ -345,18 +343,16 @@ const Expensespage = () => {
                                         ))}
                                     </select>
                                 </div>
-                                <InputField
+                                <Input
                                     id="amount"
-                                    label="Amount"
                                     type="number"
                                     step="0.01"
                                     placeholder="0.00"
                                     required
                                 />
                             </div>
-                            <InputField
+                            <Input
                                 id="description"
-                                label="Description"
                                 placeholder="Enter description"
                                 required
                             />
@@ -364,7 +360,7 @@ const Expensespage = () => {
                                 <label className="block text-sm font-medium text-primary mb-2">
                                     Payment Method
                                 </label>
-                                <select className="w-full px-4 py-2 border border-primary/10 rounded-2 text-sm text-primary focus:outline-none focus:border-primary">
+                                <select className="w-full px-4 py-2 border border-primary/10 rounded text-sm text-primary focus:outline-none focus:border-primary">
                                     <option>Credit Card</option>
                                     <option>Bank Transfer</option>
                                     <option>Check</option>
@@ -382,7 +378,6 @@ const Expensespage = () => {
                                 </Button>
                                 <Button
                                     type="submit"
-                                    variant="primary"
                                     className="flex-1"
                                 >
                                     Add Expense

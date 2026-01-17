@@ -1,6 +1,15 @@
 import CreateInvoiceModal from '@/components/invoice/CreateInvoiceModal';
-import Button from '@/components/typography/Button';
-import { InputField } from '@/components/typography/InputFields';
+import PageHeader from '@/components/shared/PageHeader';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import Input from '@/components/ui/input';
 import {
     Select,
     SelectContent,
@@ -21,23 +30,19 @@ import {
     TableSelectionToolbar,
 } from '@/components/ui/table';
 import {
-    Tooltip,
-    TooltipContent,
-    TooltipTrigger,
-} from '@/components/ui/tooltip';
+    CheckCircle2,
+    Clock,
+    Edit,
+    Eye,
+    FileText,
+    Filter,
+    MoreVertical,
+    Plus,
+    Search,
+    Trash2,
+    XCircle,
+} from 'lucide-react';
 import { useState } from 'react';
-import {
-    FaCheckCircle,
-    FaClock,
-    FaEdit,
-    FaEye,
-    FaFileInvoiceDollar,
-    FaFilter,
-    FaPlus,
-    FaSearch,
-    FaTimesCircle,
-    FaTrash,
-} from 'react-icons/fa';
 
 type Invoice = {
     id: string;
@@ -102,19 +107,23 @@ const currencyFormatter = new Intl.NumberFormat('en-US', {
 const statusConfig = {
     draft: {
         label: 'Draft',
-        color: 'bg-gray-100 text-primary/70',
-        icon: FaFileInvoiceDollar,
+        variant: 'outline' as const,
+        icon: FileText,
     },
-    sent: { label: 'Sent', color: 'bg-blue-100 text-blue-700', icon: FaClock },
+    sent: {
+        label: 'Sent',
+        variant: 'secondary' as const,
+        icon: Clock,
+    },
     paid: {
         label: 'Paid',
-        color: 'bg-green-100 text-green-700',
-        icon: FaCheckCircle,
+        variant: 'success' as const,
+        icon: CheckCircle2,
     },
     overdue: {
         label: 'Overdue',
-        color: 'bg-red-100 text-red-700',
-        icon: FaTimesCircle,
+        variant: 'destructive' as const,
+        icon: XCircle,
     },
 };
 
@@ -165,237 +174,246 @@ const Invoicepage = () => {
         setSelectedItems([]);
     };
 
+    const totalAmount = filteredInvoices.reduce(
+        (sum, invoice) => sum + invoice.amount,
+        0
+    );
+
+    const statusCounts = {
+        all: invoices.length,
+        draft: invoices.filter((i) => i.status === 'draft').length,
+        sent: invoices.filter((i) => i.status === 'sent').length,
+        paid: invoices.filter((i) => i.status === 'paid').length,
+        overdue: invoices.filter((i) => i.status === 'overdue').length,
+    };
+
     return (
-        <div className="max-w-[1600px] mx-auto">
-            {/* Header */}
-            <div className="flex flex-col gap-4">
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 ">
-                    <div>
-                        <h1 className="text-2xl font-semibold text-primary">
-                            Invoices
-                        </h1>
-                        <p className="text-primary/75 text-sm mt-1">
-                            Manage your company invoices and payments
-                        </p>
+        <div className="space-y-4">
+            <PageHeader
+                title="Invoices"
+                subtitle={`${filteredInvoices.length} invoice${filteredInvoices.length !== 1 ? 's' : ''} • ${currencyFormatter.format(totalAmount)} total`}
+            />
+
+            {/* Filters */}
+            <div className="p-4 border-b border-border">
+                <div className="flex items-center gap-3 flex-wrap">
+                    <div className="w-[260px]">
+                        <Input
+                            type="text"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            placeholder="Search invoices..."
+                            startIcon={<Search className="w-4 h-4" />}
+                        />
                     </div>
-                    <Button
-                        variant="primary"
-                        icon={<FaPlus className="w-4 h-4" />}
-                        onClick={() => setShowCreateModal(true)}
-                    >
-                        Create Invoice
+                    <Button size="sm" onClick={() => setShowCreateModal(true)}>
+                        <Plus className="w-4 h-4 mr-1" />
+                        New Invoice
                     </Button>
+                    <Select
+                        value={statusFilter}
+                        onValueChange={setStatusFilter}
+                    >
+                        <SelectTrigger className="w-[180px]">
+                            <Filter className="w-4 h-4 mr-2" />
+                            <SelectValue placeholder="All Status" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="all">
+                                All ({statusCounts.all})
+                            </SelectItem>
+                            <SelectItem value="draft">
+                                Draft ({statusCounts.draft})
+                            </SelectItem>
+                            <SelectItem value="sent">
+                                Sent ({statusCounts.sent})
+                            </SelectItem>
+                            <SelectItem value="paid">
+                                Paid ({statusCounts.paid})
+                            </SelectItem>
+                            <SelectItem value="overdue">
+                                Overdue ({statusCounts.overdue})
+                            </SelectItem>
+                        </SelectContent>
+                    </Select>
                 </div>
-
-                {/* Filters */}
-
-                <div className="flex flex-col sm:flex-row gap-4">
-                    <div className="flex-1">
-                        <div className="relative">
-                            <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-primary/50 w-4 h-4" />
-                            <InputField
-                                id="search-invoices"
-                                placeholder="Search invoices..."
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                            />
-                        </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <FaFilter className="text-primary/50" />
-                        <Select
-                            value={statusFilter}
-                            onValueChange={setStatusFilter}
-                        >
-                            <SelectTrigger className="w-[180px]">
-                                <SelectValue placeholder="All" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="all">All</SelectItem>
-                                <SelectItem value="draft">Draft</SelectItem>
-                                <SelectItem value="sent">Sent</SelectItem>
-                                <SelectItem value="paid">Paid</SelectItem>
-                                <SelectItem value="overdue">Overdue</SelectItem>
-                            </SelectContent>
-                        </Select>
-                    </div>
-                </div>
-
-                {/* Invoices Table */}
-
-                <Table
-                    enableSelection
-                    rowIds={rowIds}
-                    selectedIds={selectedItems}
-                    onSelectionChange={setSelectedItems}
-                >
-                    <TableSelectionToolbar>
-                        <button
-                            onClick={() => handleBulkAction('Send')}
-                            className="px-3 py-1.5 text-xs font-medium text-blue-700 bg-blue-100 hover:bg-blue-200 rounded-md transition-colors"
-                        >
-                            Send Selected
-                        </button>
-                        <button
-                            onClick={() => handleBulkAction('Delete')}
-                            className="px-3 py-1.5 text-xs font-medium text-red-700 bg-red-100 hover:bg-red-200 rounded-md transition-colors"
-                        >
-                            Delete Selected
-                        </button>
-                    </TableSelectionToolbar>
-
-                    <TableHeader>
-                        <tr>
-                            <TableHead>
-                                <TableSelectAllCheckbox />
-                            </TableHead>
-                            <TableHead sortable sortKey="invoiceNumber">
-                                Invoice #
-                            </TableHead>
-                            <TableHead sortable sortKey="clientName">
-                                Company
-                            </TableHead>
-                            <TableHead sortable sortKey="date">
-                                Date
-                            </TableHead>
-                            <TableHead sortable sortKey="dueDate">
-                                Due Date
-                            </TableHead>
-                            <TableHead align="right" sortable sortKey="amount">
-                                Amount
-                            </TableHead>
-                            <TableHead align="center">Status</TableHead>
-                            <TableHead align="center">Actions</TableHead>
-                        </tr>
-                    </TableHeader>
-                    <TableBody>
-                        {filteredInvoices.length === 0 ? (
-                            <TableEmptyState
-                                colSpan={8}
-                                message="No invoices found"
-                                description="Create your first invoice to get started"
-                            />
-                        ) : (
-                            filteredInvoices.map((invoice) => {
-                                const StatusIcon =
-                                    statusConfig[invoice.status].icon;
-                                return (
-                                    <TableRow
-                                        key={invoice.id}
-                                        rowId={invoice.id}
-                                        onClick={() =>
-                                            console.log(
-                                                'Clicked invoice:',
-                                                invoice
-                                            )
-                                        }
-                                    >
-                                        <TableCell>
-                                            <TableRowCheckbox
-                                                rowId={invoice.id}
-                                            />
-                                        </TableCell>
-                                        <TableCell>
-                                            <span className="font-medium text-primary">
-                                                {invoice.invoiceNumber}
-                                            </span>
-                                        </TableCell>
-                                        <TableCell>
-                                            <span className="text-primary">
-                                                {invoice.clientName}
-                                            </span>
-                                        </TableCell>
-                                        <TableCell>
-                                            <span className="text-primary/75">
-                                                {new Date(
-                                                    invoice.date
-                                                ).toLocaleDateString()}
-                                            </span>
-                                        </TableCell>
-                                        <TableCell>
-                                            <span className="text-primary/75">
-                                                {new Date(
-                                                    invoice.dueDate
-                                                ).toLocaleDateString()}
-                                            </span>
-                                        </TableCell>
-                                        <TableCell align="right">
-                                            <span className="font-semibold text-primary">
-                                                {currencyFormatter.format(
-                                                    invoice.amount
-                                                )}
-                                            </span>
-                                        </TableCell>
-                                        <TableCell align="center">
-                                            <span
-                                                className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium ${
-                                                    statusConfig[invoice.status]
-                                                        .color
-                                                }`}
-                                            >
-                                                <StatusIcon className="w-3 h-3" />
-                                                {
-                                                    statusConfig[invoice.status]
-                                                        .label
-                                                }
-                                            </span>
-                                        </TableCell>
-                                        <TableCell align="center">
-                                            <div className="flex items-center justify-center gap-2">
-                                                <Tooltip>
-                                                    <TooltipTrigger asChild>
-                                                        <button
-                                                            className="p-2 text-primary/50 hover:text-primary hover:bg-primary/10 rounded transition-colors"
-                                                            onClick={(e) =>
-                                                                e.stopPropagation()
-                                                            }
-                                                        >
-                                                            <FaEye className="w-4 h-4" />
-                                                        </button>
-                                                    </TooltipTrigger>
-                                                    <TooltipContent>
-                                                        View
-                                                    </TooltipContent>
-                                                </Tooltip>
-                                                <Tooltip>
-                                                    <TooltipTrigger asChild>
-                                                        <button
-                                                            className="p-2 text-primary/50 hover:text-primary hover:bg-primary/10 rounded transition-colors"
-                                                            onClick={(e) =>
-                                                                e.stopPropagation()
-                                                            }
-                                                        >
-                                                            <FaEdit className="w-4 h-4" />
-                                                        </button>
-                                                    </TooltipTrigger>
-                                                    <TooltipContent>
-                                                        Edit
-                                                    </TooltipContent>
-                                                </Tooltip>
-                                                <Tooltip>
-                                                    <TooltipTrigger asChild>
-                                                        <button
-                                                            className="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
-                                                            onClick={(e) =>
-                                                                e.stopPropagation()
-                                                            }
-                                                        >
-                                                            <FaTrash className="w-4 h-4" />
-                                                        </button>
-                                                    </TooltipTrigger>
-                                                    <TooltipContent>
-                                                        Delete
-                                                    </TooltipContent>
-                                                </Tooltip>
-                                            </div>
-                                        </TableCell>
-                                    </TableRow>
-                                );
-                            })
-                        )}
-                    </TableBody>
-                </Table>
             </div>
+
+            {/* Invoices Table */}
+            <Table
+                enableSelection
+                rowIds={rowIds}
+                selectedIds={selectedItems}
+                onSelectionChange={setSelectedItems}
+            >
+                <TableSelectionToolbar>
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleBulkAction('Send')}
+                    >
+                        Send Selected
+                    </Button>
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleBulkAction('Delete')}
+                    >
+                        Delete Selected
+                    </Button>
+                </TableSelectionToolbar>
+
+                <TableHeader>
+                    <tr>
+                        <TableHead>
+                            <TableSelectAllCheckbox />
+                        </TableHead>
+                        <TableHead sortable sortKey="invoiceNumber">
+                            Invoice #
+                        </TableHead>
+                        <TableHead sortable sortKey="clientName">
+                            Client
+                        </TableHead>
+                        <TableHead sortable sortKey="date">Date</TableHead>
+                        <TableHead sortable sortKey="dueDate">
+                            Due Date
+                        </TableHead>
+                        <TableHead align="right" sortable sortKey="amount">
+                            Amount
+                        </TableHead>
+                        <TableHead align="center">Status</TableHead>
+                        <TableHead align="center" className="w-[100px]">
+                            Actions
+                        </TableHead>
+                    </tr>
+                </TableHeader>
+                <TableBody>
+                    {filteredInvoices.length === 0 ? (
+                        <TableEmptyState
+                            colSpan={8}
+                            message="No invoices found"
+                            description="Create your first invoice to get started"
+                        />
+                    ) : (
+                        filteredInvoices.map((invoice) => {
+                            const StatusIcon =
+                                statusConfig[invoice.status].icon;
+                            const statusVariant =
+                                statusConfig[invoice.status].variant;
+
+                            return (
+                                <TableRow
+                                    key={invoice.id}
+                                    rowId={invoice.id}
+                                    onClick={() =>
+                                        console.log('Clicked invoice:', invoice)
+                                    }
+                                >
+                                    <TableCell>
+                                        <TableRowCheckbox rowId={invoice.id} />
+                                    </TableCell>
+                                    <TableCell>
+                                        <span className="font-medium text-foreground">
+                                            {invoice.invoiceNumber}
+                                        </span>
+                                    </TableCell>
+                                    <TableCell>
+                                        <span className="text-foreground">
+                                            {invoice.clientName}
+                                        </span>
+                                    </TableCell>
+                                    <TableCell>
+                                        <span className="text-muted-foreground">
+                                            {new Date(
+                                                invoice.date
+                                            ).toLocaleDateString()}
+                                        </span>
+                                    </TableCell>
+                                    <TableCell>
+                                        <span className="text-muted-foreground">
+                                            {new Date(
+                                                invoice.dueDate
+                                            ).toLocaleDateString()}
+                                        </span>
+                                    </TableCell>
+                                    <TableCell align="right">
+                                        <span className="font-semibold text-foreground">
+                                            {currencyFormatter.format(
+                                                invoice.amount
+                                            )}
+                                        </span>
+                                    </TableCell>
+                                    <TableCell align="center">
+                                        <Badge
+                                            variant={statusVariant}
+                                            className="gap-1.5"
+                                        >
+                                            <StatusIcon className="w-3 h-3" />
+                                            {statusConfig[invoice.status].label}
+                                        </Badge>
+                                    </TableCell>
+                                    <TableCell align="center">
+                                        <DropdownMenu>
+                                            <DropdownMenuTrigger asChild>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    className="h-8 w-8"
+                                                    onClick={(e) =>
+                                                        e.stopPropagation()
+                                                    }
+                                                >
+                                                    <MoreVertical className="w-4 h-4" />
+                                                </Button>
+                                            </DropdownMenuTrigger>
+                                            <DropdownMenuContent align="end">
+                                                <DropdownMenuItem
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        console.log(
+                                                            'View invoice:',
+                                                            invoice.id
+                                                        );
+                                                    }}
+                                                >
+                                                    <Eye className="w-4 h-4 mr-2" />
+                                                    View
+                                                </DropdownMenuItem>
+                                                <DropdownMenuItem
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        console.log(
+                                                            'Edit invoice:',
+                                                            invoice.id
+                                                        );
+                                                    }}
+                                                >
+                                                    <Edit className="w-4 h-4 mr-2" />
+                                                    Edit
+                                                </DropdownMenuItem>
+                                                <DropdownMenuSeparator />
+                                                <DropdownMenuItem
+                                                    className="text-destructive focus:text-destructive"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        console.log(
+                                                            'Delete invoice:',
+                                                            invoice.id
+                                                        );
+                                                    }}
+                                                >
+                                                    <Trash2 className="w-4 h-4 mr-2" />
+                                                    Delete
+                                                </DropdownMenuItem>
+                                            </DropdownMenuContent>
+                                        </DropdownMenu>
+                                    </TableCell>
+                                </TableRow>
+                            );
+                        })
+                    )}
+                </TableBody>
+            </Table>
         </div>
     );
 };

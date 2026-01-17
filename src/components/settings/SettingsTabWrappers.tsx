@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../stores/auth/authSelectore';
 import { useUpdateProfile } from '../../services/apis/usersApi';
-import { NotificationsTab, ProfileTab, type SettingsFormData } from './index';
+import { NotificationsTab, PreferencesTab, ProfileTab, type SettingsFormData } from './index';
 
 export const ProfileTabWrapper = () => {
     const { user, setAuth, accessToken, refreshToken } = useAuth();
@@ -90,6 +90,39 @@ export const NotificationsTabWrapper = () => {
 
     return (
         <NotificationsTab
+            formData={formData}
+            onFormDataChange={setFormData}
+            onSubmit={handleSubmit}
+        />
+    );
+};
+
+export const PreferencesTabWrapper = () => {
+    const { user } = useAuth();
+    const [formData, setFormData] = useState<SettingsFormData>({
+        name: user?.name || '',
+        email: user?.email || '',
+        bio: '',
+        urls: [],
+        phone: '',
+        company: '',
+        timezone: 'America/New_York',
+        currency: 'USD',
+        dateFormat: 'MM/DD/YYYY',
+        notifications: {
+            email: true,
+            push: false,
+            sms: false,
+        },
+    });
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        console.log('Preferences saved:', formData);
+    };
+
+    return (
+        <PreferencesTab
             formData={formData}
             onFormDataChange={setFormData}
             onSubmit={handleSubmit}

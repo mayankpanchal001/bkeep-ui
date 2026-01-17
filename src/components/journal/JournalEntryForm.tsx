@@ -1,5 +1,4 @@
-import Button from '@/components/typography/Button';
-import { InputField } from '@/components/typography/InputFields';
+import { Button } from '@/components/ui/button';
 import {
     Select,
     SelectContent,
@@ -19,6 +18,7 @@ import { useChartOfAccounts } from '@/services/apis/chartsAccountApi';
 import { useContacts } from '@/services/apis/contactsApi';
 import { useTaxes } from '@/services/apis/taxApi';
 import type { CreateJournalEntryPayload } from '@/types/journal';
+import { Save } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { FaPlus, FaTrash } from 'react-icons/fa';
 import Input from '../ui/input';
@@ -318,18 +318,16 @@ export function JournalEntryForm({
     return (
         <form onSubmit={handleSubmit} className="space-y-6 ">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <InputField
-                    label="Entry date"
+                    <Input
                     type="date"
                     value={entryDate}
-                    onChange={(e) => setEntryDate(e.target.value)}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEntryDate(e.target.value)}
                     required
                 />
-                <InputField
-                    label="Entry number"
+                <Input
                     type="text"
                     value={entryNumber}
-                    onChange={(e) => setEntryNumber(e.target.value)}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEntryNumber(e.target.value)}
                     placeholder="Optional"
                 />
                 <div className="flex items-end">
@@ -457,7 +455,7 @@ export function JournalEntryForm({
                                     <Input
                                         type="number"
                                         value={line.debit}
-                                        onChange={(e) => {
+                                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                                             const next = e.target.value;
                                             updateLine(index, {
                                                 debit: next,
@@ -473,7 +471,7 @@ export function JournalEntryForm({
                                     <Input
                                         type="number"
                                         value={line.credit}
-                                        onChange={(e) => {
+                                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                                             const next = e.target.value;
                                             updateLine(index, {
                                                 credit: next,
@@ -542,7 +540,7 @@ export function JournalEntryForm({
                     type="button"
                     variant="outline"
                     size="sm"
-                    icon={<FaPlus className="w-3.5 h-3.5" />}
+                    startIcon={<FaPlus className="w-3.5 h-3.5" />}
                     onClick={handleAddLine}
                     disabled={isLoading}
                 >
@@ -590,7 +588,7 @@ export function JournalEntryForm({
                 <Button
                     type="button"
                     variant="outline"
-                    size="md"
+                    size="default"
                     onClick={onCancel}
                     disabled={isLoading}
                 >
@@ -598,9 +596,10 @@ export function JournalEntryForm({
                 </Button>
                 <Button
                     type="submit"
-                    variant="primary"
-                    size="md"
+                    variant="default"
+                    size="default"
                     loading={isLoading}
+                    startIcon={<Save className="w-4 h-4" />}
                 >
                     Save
                 </Button>

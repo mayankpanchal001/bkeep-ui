@@ -6,9 +6,10 @@ import {
     type CreateTenantRequest,
 } from '../../services/apis/tenantApi';
 import { Tenant } from '../../types';
-import Button from '../typography/Button';
-import { InputField, TextareaField } from '../typography/InputFields';
+import { Icons } from '../shared/Icons';
+import { Button } from '../ui/button';
 import Input from '../ui/input';
+import { Textarea } from '../ui/textarea';
 
 const CAP_SINGULAR =
     SINGLE_TENANT_PREFIX.charAt(0).toUpperCase() +
@@ -156,12 +157,11 @@ const TenantForm = ({ onClose, initialData }: TenantFormProps) => {
     return (
         <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-                <InputField
+                <Input
                     id="client-name"
-                    label={`${CAP_SINGULAR} Name`}
                     placeholder="e.g., Sun Medicose"
                     value={formData.name}
-                    onChange={(e) => handleNameChange(e.target.value)}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleNameChange(e.target.value)}
                     required
                 />
                 {errors.name && (
@@ -172,12 +172,11 @@ const TenantForm = ({ onClose, initialData }: TenantFormProps) => {
             </div>
 
             <div>
-                <InputField
+                <Input
                     id="schema-name"
-                    label="Schema Name"
                     placeholder="e.g., sun_medicose"
                     value={formData.schemaName}
-                    onChange={(e) =>
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                         setFormData({
                             ...formData,
                             schemaName: e.target.value.toLowerCase(),
@@ -199,12 +198,11 @@ const TenantForm = ({ onClose, initialData }: TenantFormProps) => {
             </div>
 
             <div>
-                <InputField
+                <Input
                     id="client-email"
-                    label="Contact Email"
                     placeholder="e.g., contact@acmecorp.com"
                     value={formData.email || ''}
-                    onChange={(e) =>
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>   ) =>
                         setFormData({
                             ...formData,
                             email: e.target.value,
@@ -215,12 +213,11 @@ const TenantForm = ({ onClose, initialData }: TenantFormProps) => {
             </div>
 
             <div>
-                <InputField
+                <Input
                     id="client-phone"
-                    label={`${CAP_SINGULAR} Phone`}
                     placeholder="e.g., +1-555-123-4567"
                     value={formData.phone || ''}
-                    onChange={(e) =>
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                         setFormData({
                             ...formData,
                             phone: e.target.value,
@@ -242,7 +239,7 @@ const TenantForm = ({ onClose, initialData }: TenantFormProps) => {
                         type="date"
                         placeholder="Select fiscal year start date"
                         value={formData.fiscalYear || ''}
-                        onChange={(e) =>
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                             setFormData({
                                 ...formData,
                                 fiscalYear: e.target.value,
@@ -262,7 +259,7 @@ const TenantForm = ({ onClose, initialData }: TenantFormProps) => {
                         type="date"
                         placeholder="Select incorporation date"
                         value={formData.dateOfIncorporation || ''}
-                        onChange={(e) =>
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                             setFormData({
                                 ...formData,
                                 dateOfIncorporation: e.target.value,
@@ -273,12 +270,11 @@ const TenantForm = ({ onClose, initialData }: TenantFormProps) => {
             </div>
 
             <div>
-                <TextareaField
+                <Textarea
                     id="client-address"
-                    label={`${CAP_SINGULAR} Address`}
                     placeholder="e.g., 123 Main St, City, State 12345"
                     value={formData.address || ''}
-                    onChange={(e) =>
+                    onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
                         setFormData({
                             ...formData,
                             address: e.target.value,
@@ -294,18 +290,18 @@ const TenantForm = ({ onClose, initialData }: TenantFormProps) => {
                     className="flex-1 sm:flex-initial"
                     onClick={onClose}
                     disabled={isPending}
+                    startIcon={<Icons.Close className="w-4 h-4" />}
                 >
                     Cancel
                 </Button>
                 <Button
                     type="submit"
-                    variant="primary"
+                        variant="default"
                     className="flex-1 sm:flex-initial"
                     loading={isPending}
+                    startIcon={<Icons.Save className="w-4 h-4" />}
                 >
-                    {isEditMode
-                        ? `Update ${CAP_SINGULAR}`
-                        : `Create ${CAP_SINGULAR}`}
+                    Save
                 </Button>
             </div>
         </form>

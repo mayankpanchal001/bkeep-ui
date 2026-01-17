@@ -16,7 +16,7 @@ const AcceptInvitationpage = () => {
     }, [token, navigate]);
 
     return (
-        <div className="min-h-screen flex w-full bg-surface-muted">
+        <div className="min-h-screen flex w-full bg-muted">
             {/* Right Side - Accept Invitation Form Section */}
             <div className="w-full lg:w-1/2 mx-auto flex items-center justify-center  p-4 lg:p-12 overflow-auto min-h-screen">
                 <div className="w-full">
@@ -38,7 +38,7 @@ const AcceptInvitationpage = () => {
                     </div>
 
                     {/* Accept Invitation Form Card */}
-                    <div className="bg-card rounded-2 shadow-xl p-4 lg:p-8 border border-primary/10">
+                    <div className="bg-card rounded shadow-xl p-4 lg:p-8 border border-primary/10">
                         <AcceptInvitationForm />
                     </div>
 

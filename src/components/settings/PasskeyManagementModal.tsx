@@ -1,9 +1,11 @@
+import { SaveIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import {
     FaCheck,
     FaEdit,
     FaFingerprint,
     FaPlus,
+    FaSave,
     FaTimes,
     FaTrash,
 } from 'react-icons/fa';
@@ -24,8 +26,8 @@ import {
 } from '../../utills/passkey';
 import { showErrorToast } from '../../utills/toast';
 import ConfirmationDialog from '../shared/ConfirmationDialog';
-import Button from '../typography/Button';
-import { InputField } from '../typography/InputFields';
+import { Button } from '../ui/button';
+import Input from '../ui/input';
 
 type PasskeyManagementModalProps = {
     isOpen: boolean;
@@ -315,7 +317,7 @@ const PasskeyManagementModal = ({
                     handleClose()
                 }
             >
-                <div className="w-full max-w-2xl rounded-2 bg-card p-4 shadow-2xl max-h-[90vh] overflow-y-auto">
+                <div className="w-full max-w-2xl rounded bg-card p-4 shadow-2xl max-h-[90vh] overflow-y-auto">
                     {/* Header */}
                     <div className="flex items-center justify-between mb-6">
                         <h3 className="text-xl font-semibold text-primary">
@@ -337,7 +339,7 @@ const PasskeyManagementModal = ({
                     <div className="space-y-6">
                         {/* WebAuthn Not Supported */}
                         {!webAuthnSupported && (
-                            <div className="bg-destructive/10 border border-destructive/20 rounded-2 p-4">
+                            <div className="bg-destructive/10 border border-destructive/20 rounded p-4">
                                 <p className="text-sm text-destructive">
                                     Your browser doesn't support passkeys.
                                     Please use a modern browser like Chrome,
@@ -350,7 +352,7 @@ const PasskeyManagementModal = ({
                         {currentStep === 'list' && (
                             <div className="space-y-6">
                                 {/* Info Banner */}
-                                <div className="bg-blue-50 border border-blue-200 rounded-2 p-4">
+                                <div className="bg-blue-50 border border-blue-200 rounded p-4">
                                     <p className="text-sm text-blue-800">
                                         Passkeys are a more secure and
                                         convenient way to sign in. Use your
@@ -361,12 +363,12 @@ const PasskeyManagementModal = ({
 
                                 {/* Add New Passkey Button */}
                                 <Button
-                                    variant="primary"
+                                    variant="default"
+                                    size="default"
                                     onClick={handleStartRegistration}
                                     disabled={!webAuthnSupported}
-                                    className="w-full"
+                                    startIcon={<FaPlus className="w-4 h-4" />}
                                 >
-                                    <FaPlus className="w-4 h-4" />
                                     Add New Passkey
                                 </Button>
 
@@ -379,7 +381,7 @@ const PasskeyManagementModal = ({
                                         </p>
                                     </div>
                                 ) : passkeys.length === 0 ? (
-                                    <div className="bg-card border border-primary/10 rounded-2 p-8 text-center">
+                                    <div className="bg-card border border-primary/10 rounded p-8 text-center">
                                         <FaFingerprint className="w-12 h-12 text-primary/20 mx-auto mb-3" />
                                         <p className="text-sm font-medium text-primary mb-1">
                                             No passkeys registered yet
@@ -394,7 +396,7 @@ const PasskeyManagementModal = ({
                                         {passkeys.map((passkey) => (
                                             <div
                                                 key={passkey.id}
-                                                className={`border rounded-2 p-4 transition-colors ${
+                                                className={`border rounded p-4 transition-colors ${
                                                     passkey.isActive
                                                         ? 'border-primary/10 bg-card'
                                                         : 'border-primary/10 bg-card'
@@ -514,7 +516,7 @@ const PasskeyManagementModal = ({
                         {/* Register View */}
                         {currentStep === 'register' && (
                             <div className="space-y-6">
-                                <div className="bg-blue-50 border border-blue-200 rounded-2 p-4">
+                                <div className="bg-blue-50 border border-blue-200 rounded p-4">
                                     <h4 className="font-semibold text-blue-900 mb-2 flex items-center gap-2">
                                         <FaFingerprint className="w-4 h-4" />
                                         Biometric Authentication
@@ -527,11 +529,10 @@ const PasskeyManagementModal = ({
                                 </div>
 
                                 <div>
-                                    <InputField
-                                        label="Passkey Name"
+                                    <Input
                                         placeholder="e.g., My iPhone, Touch ID, Work Laptop"
                                         value={friendlyName}
-                                        onChange={(e) =>
+                                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                                             setFriendlyName(e.target.value)
                                         }
                                         disabled={isRegistering}
@@ -549,15 +550,18 @@ const PasskeyManagementModal = ({
                                         variant="outline"
                                         onClick={() => setCurrentStep('list')}
                                         disabled={isRegistering}
+                                        startIcon={<FaTimes className="w-4 h-4" />}
                                     >
                                         Cancel
                                     </Button>
                                     <Button
                                         type="button"
-                                        variant="primary"
+                                        variant="default"
+                                        size="default"
                                         onClick={handleRegisterPasskey}
                                         loading={isRegistering}
                                         disabled={isRegistering}
+                                        startIcon={<FaPlus className="w-4 h-4" />}
                                     >
                                         Register Passkey
                                     </Button>
@@ -568,18 +572,17 @@ const PasskeyManagementModal = ({
                         {/* Rename View */}
                         {currentStep === 'rename' && selectedPasskey && (
                             <div className="space-y-6">
-                                <div className="bg-card border border-primary/10 rounded-2 p-4">
+                                <div className="bg-card border border-primary/10 rounded p-4">
                                     <p className="text-sm text-primary/75">
                                         Update the name of this passkey to help
                                         you identify it more easily.
                                     </p>
                                 </div>
 
-                                <InputField
-                                    label="Passkey Name"
+                                <Input
                                     placeholder="e.g., My iPhone, Touch ID, Work Laptop"
                                     value={friendlyName}
-                                    onChange={(e) =>
+                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                                         setFriendlyName(e.target.value)
                                     }
                                     disabled={isRenaming}
@@ -592,15 +595,18 @@ const PasskeyManagementModal = ({
                                         variant="outline"
                                         onClick={() => setCurrentStep('list')}
                                         disabled={isRenaming}
-                                    >
+                                        startIcon={<SaveIcon         className="w-4 h-4" />}
+                                            >
                                         Cancel
                                     </Button>
                                     <Button
                                         type="button"
-                                        variant="primary"
+                                        variant="default"
+                                        size="default"
                                         onClick={handleRenamePasskey}
                                         loading={isRenaming}
                                         disabled={isRenaming}
+                                        startIcon={<FaSave className="w-4 h-4" />}
                                     >
                                         Save Changes
                                     </Button>

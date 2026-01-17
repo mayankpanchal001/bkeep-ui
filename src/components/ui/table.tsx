@@ -544,7 +544,7 @@ function TableHeader({ className, sticky = true, ...props }: TableHeaderProps) {
                 'backdrop-blur-md backdrop-saturate-150',
                 // Enhanced border with subtle shadow using theme border color
                 'border-b-2',
-                'border-primary/10',
+                'border-border',
                 // Smooth transitions
                 'transition-all duration-200',
                 className
@@ -610,6 +610,18 @@ function TableRow({ className, rowId, onClick, ...props }: TableRowProps) {
 
     const handleClick = React.useCallback(
         (e: React.MouseEvent<HTMLTableRowElement>) => {
+            // Don't trigger row click if clicking on draggable elements or during drag
+            const target = e.target as HTMLElement;
+            if (
+                target.closest('[draggable="true"]') ||
+                target.closest('[data-drag-handle]') ||
+                target.closest('input[type="checkbox"]') ||
+                target.closest('[role="checkbox"]') ||
+                target.closest('button') ||
+                target.closest('a')
+            ) {
+                return;
+            }
             onClick?.(e);
         },
         [onClick]
@@ -623,9 +635,9 @@ function TableRow({ className, rowId, onClick, ...props }: TableRowProps) {
             onClick={handleClick}
             className={cn(
                 'transition-colors',
-                'hover:bg-primary/5 data-[state=selected]:bg-primary/10',
+                'hover:bg-muted/50 data-[state=selected]:bg-accent/30',
                 'group-data-[hover=none]/table:hover:bg-transparent',
-                'group-data-[striped=true]/table:odd:bg-primary/10',
+                'group-data-[striped=true]/table:odd:bg-muted/30',
                 onClick && 'cursor-pointer',
                 className
             )}
@@ -709,25 +721,25 @@ function TableHead({
                 isCompact ? 'h-8 px-1.5 py-1' : 'h-9 px-2 py-1.5',
                 // Modern typography with better hierarchy
                 'text-xs font-semibold uppercase tracking-wider',
-                'text-primary',
+                'text-muted-foreground',
                 'whitespace-nowrap select-none',
                 alignClass,
                 // Checkbox column styling
                 isCompact
                     ? '[&:has([role=checkbox])]:w-8 [&:has([role=checkbox])]:px-1.5 [&:has([role=checkbox])>div]:justify-center'
                     : '[&:has([role=checkbox])]:w-10 [&:has([role=checkbox])]:px-2 [&:has([role=checkbox])>div]:justify-center',
-                // Interactive states
+                // Interactive states for sortable columns
                 sortable && [
                     'cursor-pointer',
-                    'hover:text-primary',
-                    'hover:bg-primary/10',
+                    'hover:text-foreground',
+                    'hover:bg-muted/50',
                 ],
-                // Active sort state using theme secondary color
-                isCurrentSort && ['text-accent', 'bg-accent/10'],
+                // Active sort state - use primary color for sorted column
+                isCurrentSort && ['text-primary', 'bg-primary/5'],
                 // Smooth transitions
                 'transition-all duration-200 ease-in-out',
                 // Subtle border between columns using theme border color
-                'border-r border-border/60 last:border-r-0',
+                'border-r border-border/50 last:border-r-0',
                 className
             )}
             onClick={handleClick}
@@ -761,7 +773,7 @@ function SortIndicator({ direction }: { direction: SortDirection }) {
             {direction === 'asc' && (
                 <svg
                     className={cn(
-                        'text-accent',
+                        'text-primary',
                         isCompact ? 'w-3 h-3' : 'w-3.5 h-3.5'
                     )}
                     fill="none"
@@ -779,7 +791,7 @@ function SortIndicator({ direction }: { direction: SortDirection }) {
             {direction === 'desc' && (
                 <svg
                     className={cn(
-                        'text-accent',
+                        'text-primary',
                         isCompact ? 'w-3 h-3' : 'w-3.5 h-3.5'
                     )}
                     fill="none"
@@ -797,7 +809,7 @@ function SortIndicator({ direction }: { direction: SortDirection }) {
             {direction === null && (
                 <svg
                     className={cn(
-                        'text-primary/40 group-hover:text-primary/60 transition-colors',
+                        'text-muted-foreground/40 hover:text-muted-foreground transition-colors',
                         isCompact ? 'w-3 h-3' : 'w-3.5 h-3.5'
                     )}
                     fill="none"
@@ -872,7 +884,7 @@ function TableCaption({
     return (
         <caption
             data-slot="table-caption"
-            className={cn('mt-4 text-sm text-primary/70', className)}
+            className={cn('mt-4 text-sm text-muted-foreground', className)}
             {...props}
         />
     );
@@ -1026,13 +1038,13 @@ function TableSelectionToolbar({
         <div
             className={cn(
                 'flex items-center justify-between px-4 py-3 mb-3',
-                'bg-primary/10 border border-border rounded-lg',
+                'bg-accent/20 border border-border rounded-lg',
                 'animate-in slide-in-from-top-2 duration-200',
                 className
             )}
         >
             <div className="flex items-center gap-3">
-                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-surface text-sm font-semibold">
+                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground text-sm font-semibold">
                     {selectedCount}
                 </div>
                 <span className="text-sm font-medium text-foreground">
@@ -1075,10 +1087,10 @@ function TableEmptyState({
         <tr>
             <td colSpan={colSpan} className="h-64">
                 <div className="flex flex-col items-center justify-center gap-4 py-8">
-                    <div className="flex items-center justify-center w-16 h-16 rounded-full bg-primary/10">
+                    <div className="flex items-center justify-center w-16 h-16 rounded-full bg-muted">
                         {icon || (
                             <svg
-                                className="w-8 h-8 text-primary/50"
+                                className="w-8 h-8 text-muted-foreground"
                                 fill="none"
                                 stroke="currentColor"
                                 viewBox="0 0 24 24"
@@ -1093,11 +1105,11 @@ function TableEmptyState({
                         )}
                     </div>
                     <div className="text-center">
-                        <p className="text-base font-medium text-primary">
+                        <p className="text-base font-medium text-foreground">
                             {message}
                         </p>
                         {description && (
-                            <p className="mt-1 text-sm text-primary/60">
+                            <p className="mt-1 text-sm text-muted-foreground">
                                 {description}
                             </p>
                         )}
@@ -1125,10 +1137,10 @@ function TableLoadingState({ colSpan, rows = 5 }: TableLoadingStateProps) {
                 <tr key={index} className="animate-pulse">
                     <td colSpan={colSpan} className="px-3 py-3">
                         <div className="flex items-center gap-3">
-                            <div className="h-4 w-4 rounded bg-primary/10" />
+                            <div className="h-4 w-4 rounded bg-muted" />
                             <div className="flex-1 space-y-2">
                                 <div
-                                    className="h-4 rounded bg-primary/10"
+                                    className="h-4 rounded bg-muted"
                                     style={{
                                         width: `${60 + Math.random() * 30}%`,
                                     }}
@@ -1196,15 +1208,15 @@ function TablePagination({
         <div
             className={cn(
                 'flex items-center justify-between px-2 py-3 mt-4',
-                'text-sm text-primary/70',
+                'text-sm text-muted-foreground',
                 className
             )}
         >
             <div>
                 Showing{' '}
-                <span className="font-medium text-primary">{startItem}</span> to{' '}
-                <span className="font-medium text-primary">{endItem}</span> of{' '}
-                <span className="font-medium text-primary">{totalItems}</span>{' '}
+                <span className="font-medium text-foreground">{startItem}</span> to{' '}
+                <span className="font-medium text-foreground">{endItem}</span> of{' '}
+                <span className="font-medium text-foreground">{totalItems}</span>{' '}
                 results
             </div>
             <div className="flex items-center gap-1">
@@ -1213,7 +1225,7 @@ function TablePagination({
                     disabled={page === 1}
                     className={cn(
                         'px-3 py-1.5 rounded-md text-sm font-medium transition-colors',
-                        'hover:bg-primary/10',
+                        'hover:bg-muted',
                         'disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent'
                     )}
                 >
@@ -1225,7 +1237,7 @@ function TablePagination({
                         p === 'ellipsis' ? (
                             <span
                                 key={`ellipsis-${i}`}
-                                className="px-2 text-primary/50"
+                                className="px-2 text-muted-foreground"
                             >
                                 ...
                             </span>
@@ -1236,8 +1248,8 @@ function TablePagination({
                                 className={cn(
                                     'w-8 h-8 rounded-md text-sm font-medium transition-colors',
                                     page === p
-                                        ? 'bg-secondary text-surface'
-                                        : 'hover:bg-primary/10'
+                                        ? 'bg-primary text-primary-foreground'
+                                        : 'hover:bg-muted'
                                 )}
                             >
                                 {p}
@@ -1251,7 +1263,7 @@ function TablePagination({
                     disabled={page === totalPages}
                     className={cn(
                         'px-3 py-1.5 rounded-md text-sm font-medium transition-colors',
-                        'hover:bg-primary/10',
+                        'hover:bg-muted',
                         'disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent'
                     )}
                 >
@@ -1281,5 +1293,6 @@ export {
     TableRow,
     TableRowCheckbox,
     TableSelectAllCheckbox,
-    TableSelectionToolbar,
+    TableSelectionToolbar
 };
+

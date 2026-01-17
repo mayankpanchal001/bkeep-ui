@@ -75,6 +75,11 @@ const Settingspage = () => {
             href: '/settings/notifications',
             icon: <Icons.Notifications className="w-4 h-4" />,
         },
+        {
+            title: 'Preferences',
+            href: '/settings/preferences',
+            icon: <Icons.Settings className="w-4 h-4" />,
+        },
     ];
 
     // Dynamic header based on current route
@@ -93,6 +98,7 @@ const Settingspage = () => {
         '/settings/taxes': 'Manage tax rates and status',
         '/settings/data': 'Personal data and privacy controls',
         '/settings/notifications': 'Notification preferences',
+        '/settings/preferences': 'Theme, timezone, and display preferences',
     };
 
     const headerTitle = currentItem?.title || 'Settings';

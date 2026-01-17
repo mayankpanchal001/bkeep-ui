@@ -1,7 +1,7 @@
 @import 'tailwindcss';
 
 .input-wrap {
-    @apply border border-primary/20 p-1 px-2 rounded-md w-full bg-surface text-primary transition-all duration-300 focus-within:border-primary;
+    @apply border border-primary/20 p-1 px-2 rounded-md w-full bg-card text-primary transition-all duration-300 focus-within:border-primary;
 }
 
 input::placeholder {

@@ -1,10 +1,10 @@
+import { CheckCircle, Lock, LogIn } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
-import { FaCheckCircle, FaLock } from 'react-icons/fa';
 import { Link, useNavigate, useSearchParams } from 'react-router';
 import { useResetPassword } from '../../services/apis/authApi';
 import { showErrorToast, showSuccessToast } from '../../utills/toast';
-import Button from '../typography/Button';
-import { InputField } from '../typography/InputFields';
+import { Button } from '../ui/button';
+import Input from '../ui/input';
 
 export function ResetPasswordForm() {
     const [searchParams] = useSearchParams();
@@ -96,7 +96,7 @@ export function ResetPasswordForm() {
                     </p>
                 </div>
                 <Link to="/login">
-                    <Button variant="primary" className="w-full">
+                    <Button variant="default" className="w-full" startIcon={<LogIn className="w-4 h-4" />}>
                         Back to Login
                     </Button>
                 </Link>
@@ -118,25 +118,23 @@ export function ResetPasswordForm() {
 
             <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="space-y-4">
-                    <InputField
+                    <Input
                         id="reset-password"
-                        label="New Password"
                         type="password"
                         placeholder="Enter your new password"
                         value={password}
-                        onChange={(e) => setPassword(e.target.value)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
                         required
-                        icon={<FaLock className="w-4 h-4" />}
+                        startIcon={<Lock className="w-4 h-4" />}
                     />
-                    <InputField
+                    <Input
                         id="reset-confirm-password"
-                        label="Confirm New Password"
                         type="password"
                         placeholder="Confirm your new password"
                         value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setConfirmPassword(e.target.value)}
                         required
-                        icon={<FaLock className="w-4 h-4" />}
+                            startIcon={<Lock className="w-4 h-4" />}
                     />
                 </div>
 
@@ -151,10 +149,11 @@ export function ResetPasswordForm() {
                 <div className="space-y-2">
                     <Button
                         type="submit"
-                        variant="primary"
+                        variant="default"
                         className="w-full"
                         loading={isResetting}
                         disabled={isResetting}
+                        startIcon={<Lock className="w-4 h-4" />}
                     >
                         Reset Password
                     </Button>
@@ -173,7 +172,7 @@ export function ResetPasswordForm() {
 
             <div className="bg-primary/10 rounded-lg p-4">
                 <div className="flex items-start gap-3">
-                    <FaCheckCircle className="text-primary shrink-0 mt-0.5" />
+                    <CheckCircle className="w-4 h-4 text-primary shrink-0 mt-0.5" />
                     <div className="text-sm text-primary/75">
                         <p className="font-medium mb-1">
                             Password Requirements:

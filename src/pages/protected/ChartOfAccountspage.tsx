@@ -616,7 +616,7 @@ const ChartOfAccountspage = () => {
                 onOpenChange={(open) => setIsFilterOpen(open)}
                 direction="right"
             >
-                <DrawerContent className="data-[vaul-drawer-direction=right]:w-[420px] data-[vaul-drawer-direction=right]:sm:max-w-[420px] bg-card dark:bg-surface-muted">
+                <DrawerContent className="data-[vaul-drawer-direction=right]:w-[420px] data-[vaul-drawer-direction=right]:sm:max-w-[420px] bg-card dark:bg-muted">
                     <DrawerHeader className="flex flex-row items-center justify-between px-6 py-4 border-b border-primary/10">
                         <DrawerTitle className="text-xl font-semibold text-primary">
                             Filters
@@ -819,7 +819,7 @@ const ChartOfAccountspage = () => {
                 }}
                 direction="right"
             >
-                <DrawerContent className="data-[vaul-drawer-direction=right]:w-[480px] data-[vaul-drawer-direction=right]:sm:max-w-[480px] bg-card dark:bg-surface-muted">
+                <DrawerContent className="data-[vaul-drawer-direction=right]:w-[480px] data-[vaul-drawer-direction=right]:sm:max-w-[480px] bg-card dark:bg-muted">
                     <DrawerHeader className="flex flex-row items-center justify-between px-6 py-4 border-b border-primary/10">
                         <DrawerTitle className="text-xl font-semibold text-primary">
                             {editingAccount ? 'Edit Account' : 'New Account'}

@@ -9,16 +9,16 @@
 }
 
 .protected-route-wrapper {
-    @apply bg-surface-muted flex flex-col lg:flex-row items-stretch h-dvh overflow-hidden;
+    @apply bg-muted flex flex-col lg:flex-row items-stretch h-dvh overflow-hidden;
 }
 
 .protected-route-bottombar {
-    @apply lg:hidden absolute bottom-0 left-0 right-0 z-50 bg-surface border-t border-primary/10 shadow-lg;
+    @apply lg:hidden absolute bottom-0 left-0 right-0 z-50 bg-card border-t border-primary/10 shadow-lg;
     height: 64px;
 }
 
 .protected-route-topbar {
-    @apply lg:hidden absolute top-0 left-0 right-0 z-50 bg-surface border-b border-primary/10 shadow-md;
+    @apply lg:hidden absolute top-0 left-0 right-0 z-50 bg-card border-b border-primary/10 shadow-md;
     height: 64px;
 }
 
@@ -140,7 +140,7 @@
 
 /* Loading Overlay Styles */
 .loading-overlay {
-    @apply absolute inset-0 z-[9999] flex items-center justify-center bg-card/70 backdrop-blur-sm border border-primary/10 rounded-2;
+    @apply absolute inset-0 z-[9999] flex items-center justify-center bg-card/70 backdrop-blur-sm border border-primary/10 rounded;
 }
 
 .loading-spinner {
@@ -254,7 +254,7 @@
 }
 
 .topbar-dropdown-avatar {
-    @apply w-10 h-10 rounded-full bg-primary flex items-center justify-center text-surface;
+    @apply w-10 h-10 rounded-full bg-primary flex items-center justify-center text-foreground;
 }
 
 .topbar-dropdown-name {
@@ -290,5 +290,5 @@
     @apply px-4 py-3 text-sm;
 }
 .inner-section {
-    @apply bg-card rounded-2 shadow-sm border border-primary/10 p-4 hover:shadow-md transition-shadow;
+    @apply bg-card rounded shadow-sm border border-primary/10 p-4 hover:shadow-md transition-shadow;
 }

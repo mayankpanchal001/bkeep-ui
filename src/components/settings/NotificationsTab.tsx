@@ -1,5 +1,5 @@
-import { FaSave } from 'react-icons/fa';
-import Button from '../typography/Button';
+import { Icons } from '../shared/Icons';
+import { Button } from '../ui/button';
 import { SettingsFormData } from './types';
 
 interface NotificationsTabProps {
@@ -22,7 +22,7 @@ const NotificationsTab = ({
                 {Object.entries(formData.notifications).map(([key, value]) => (
                     <div
                         key={key}
-                        className="flex items-center justify-between p-4 border border-primary/10 rounded-2"
+                        className="flex items-center justify-between p-4 border border-primary/10 rounded"
                     >
                         <div>
                             <div className="font-medium text-primary capitalize">
@@ -53,8 +53,9 @@ const NotificationsTab = ({
                 ))}
             </div>
             <div className="flex justify-end pt-4 ">
-                <Button onClick={onSubmit} variant="primary">
-                    <FaSave className="mr-2" />
+                <Button onClick={onSubmit} variant="default"
+                startIcon={<Icons.Save className="w-4 h-4" />}
+                >
                     Save Changes
                 </Button>
             </div>

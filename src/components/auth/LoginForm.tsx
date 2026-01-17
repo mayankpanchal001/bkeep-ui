@@ -3,9 +3,10 @@ import { useLogin } from '../../services/apis/authApi';
 
 import { showErrorToast } from '../../utills/toast';
 
+import { LogIn } from 'lucide-react';
 import { Icons } from '../shared/Icons';
-import { InputField } from '../typography/InputFields';
 import { Button } from '../ui/button';
+import Input from '../ui/input';
 
 export function LoginForm() {
     const [email, setEmail] = useState('');
@@ -78,13 +79,12 @@ export function LoginForm() {
             {/* Email/Password Form */}
             <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="space-y-5">
-                    <InputField
+                    <Input
                         id="login-email"
-                        label="Email Address"
                         type="email"
                         placeholder="you@example.com"
                         value={email}
-                        onChange={(e) => {
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                             setEmail(e.target.value);
                             if (fieldErrors.email)
                                 setFieldErrors({
@@ -92,17 +92,16 @@ export function LoginForm() {
                                     email: undefined,
                                 });
                         }}
-                        error={fieldErrors.email}
+                        error={!!fieldErrors.email}
                         required
-                        icon={<Icons.UserCircle className="w-4 h-4" />}
+                        startIcon={<Icons.UserCircle className="w-4 h-4" />}
                     />
-                    <InputField
+                    <Input
                         id="login-password"
-                        label="Password"
                         type="password"
                         placeholder="••••••••"
                         value={password}
-                        onChange={(e) => {
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>   ) => {
                             setPassword(e.target.value);
                             if (fieldErrors.password)
                                 setFieldErrors({
@@ -110,8 +109,8 @@ export function LoginForm() {
                                     password: undefined,
                                 });
                         }}
-                        error={fieldErrors.password}
-                        icon={<Icons.Lock className="w-4 h-4" />}
+                        error={!!fieldErrors.password}
+                        startIcon={<Icons.Lock className="w-4 h-4" />}
                         required
                     />
                 </div>
@@ -138,7 +137,7 @@ export function LoginForm() {
                     </div>
                 )}
 
-                <Button type="submit" disabled={isLoading}>
+                <Button type="submit" disabled={isLoading} loading={isLoading} variant="default" startIcon={<LogIn className="w-4 h-4" />}>
                     Login
                 </Button>
             </form>

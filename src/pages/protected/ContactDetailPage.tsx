@@ -1,26 +1,25 @@
-import { Loader2 } from 'lucide-react';
+import { Loader2, Mail, Phone, Save } from 'lucide-react';
 import React, { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router';
-import { Icons } from '../../components/shared/Icons';
-import Button from '../../components/typography/Button';
-import {
-    InputField,
-    SelectField,
-} from '../../components/typography/InputFields';
 import { Badge } from '../../components/ui/badge';
+import { Button } from '../../components/ui/button';
 import {
     Card,
     CardContent,
     CardHeader,
     CardTitle,
 } from '../../components/ui/card';
-import { Switch } from '../../components/ui/switch';
+import Input from '../../components/ui/input';
+import { Label } from '../../components/ui/label';
 import {
-    Tabs,
-    TabsContent,
-    TabsList,
-    TabsTrigger,
-} from '../../components/ui/tabs';
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '../../components/ui/select';
+import { Switch } from '../../components/ui/switch';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../components/ui/tabs';
 import {
     useContact,
     useCreateContact,
@@ -39,6 +38,75 @@ const contactTypeOptions = [
     { value: 'customer', label: 'Customer' },
     { value: 'supplier', label: 'Supplier' },
 ];
+
+// Helper component for Input with Label
+interface InputFieldProps extends React.ComponentProps<typeof Input> {
+    label?: string;
+    labelShow?: boolean;
+    required?: boolean;
+}
+
+const InputField: React.FC<InputFieldProps> = ({
+    id,
+    label,
+    labelShow = true,
+    required,
+    ...props
+}) => {
+    return (
+        <div className="space-y-2">
+            {labelShow && label && (
+                <Label htmlFor={id} className="text-sm font-medium">
+                    {label}
+                    {required && <span className="text-destructive ml-1">*</span>}
+                </Label>
+            )}
+            <Input id={id} name={id} {...props} />
+        </div>
+    );
+};
+
+// Helper component for Select with Label
+interface SelectFieldProps {
+    id: string;
+    label?: string;
+    labelShow?: boolean;
+    required?: boolean;
+    defaultValue?: string;
+    options: { value: string; label: string }[];
+}
+
+const SelectField: React.FC<SelectFieldProps> = ({
+    id,
+    label,
+    labelShow = true,
+    required,
+    defaultValue,
+    options,
+}) => {
+    return (
+        <div className="space-y-2">
+            {labelShow && label && (
+                <Label htmlFor={id} className="text-sm font-medium">
+                    {label}
+                    {required && <span className="text-destructive ml-1">*</span>}
+                </Label>
+            )}
+            <Select name={id} defaultValue={defaultValue}>
+                <SelectTrigger id={id}>
+                    <SelectValue placeholder={`Select ${label?.toLowerCase() || 'option'}`} />
+                </SelectTrigger>
+                <SelectContent>
+                    {options.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                            {option.label}
+                        </SelectItem>
+                    ))}
+                </SelectContent>
+            </Select>
+        </div>
+    );
+};
 
 const ContactDetailPage = () => {
     const { id } = useParams();
@@ -236,8 +304,14 @@ const ContactDetailPage = () => {
                     >
                         Cancel
                     </Button>
-                    <Button type="submit" variant="primary" loading={isBusy}>
-                        {isNew ? 'Create Contact' : 'Save Changes'}
+                    <Button
+                        type="submit"
+                        variant="default"
+                        size="default"
+                        loading={isBusy}
+                        startIcon={<Save className="w-4 h-4" />}
+                    >
+                        Save Contact
                     </Button>
                 </div>
             </div>
@@ -330,14 +404,14 @@ const ContactDetailPage = () => {
                                     id="email"
                                     label="Email Address"
                                     type="email"
-                                    icon={<Icons.Mail className="w-4 h-4" />}
+                                    startIcon={<Mail className="w-4 h-4" />}
                                     placeholder="john.doe@example.com"
                                     defaultValue={contact?.email || ''}
                                 />
                                 <InputField
                                     id="phoneNumber"
                                     label="Phone Number"
-                                    icon={<Icons.Phone className="w-4 h-4" />}
+                                    startIcon={<Phone className="w-4 h-4" />}
                                     placeholder="+1-555-123-4567"
                                     defaultValue={contact?.phoneNumber || ''}
                                 />
