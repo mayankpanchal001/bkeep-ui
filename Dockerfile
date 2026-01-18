@@ -18,8 +18,17 @@ WORKDIR /app
 # Copy dependencies from deps stage
 COPY --from=deps /app/node_modules ./node_modules
 
+# Copy package files for potential rebuilds
+COPY package.json package-lock.json* ./
+
 # Copy source code and configuration files
-COPY . .
+# Copy in order: config files first, then source code for better caching
+COPY tsconfig*.json ./
+COPY vite.config.ts ./
+COPY index.html ./
+COPY components.json ./
+COPY public ./public
+COPY src ./src
 
 # Build arguments for environment variables
 # These are available at build time and can be overridden
@@ -38,16 +47,26 @@ ENV VITE_GIT_COMMIT=${VITE_GIT_COMMIT}
 
 # Build the application
 # This runs: tsc -b && vite build
-RUN npm run build
+# Add error handling and verify build output
+RUN npm run build && \
+    test -d dist && \
+    test -f dist/index.html || (echo "Build failed: dist/index.html not found" && exit 1)
 
 # Stage 3: Production - Serve with nginx
 FROM nginx:alpine AS production
+
+# Install curl for health checks (lightweight alternative to wget)
+RUN apk add --no-cache curl
 
 # Copy nginx configuration
 COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
 
 # Copy built assets from builder stage
 COPY --from=builder /app/dist /usr/share/nginx/html
+
+# Ensure nginx can read the files
+RUN chmod -R 755 /usr/share/nginx/html && \
+    chown -R nginx:nginx /usr/share/nginx/html
 
 # Add labels for metadata
 LABEL maintainer="bkeep-accounting"
@@ -58,8 +77,9 @@ LABEL version="1.0.0"
 EXPOSE 80
 
 # Health check to ensure the container is running properly
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-    CMD wget --quiet --tries=1 --spider http://localhost/health || exit 1
+# Use curl instead of wget (more reliable in alpine)
+HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
+    CMD curl -f http://localhost/health || exit 1
 
 # Start nginx in foreground mode
 CMD ["nginx", "-g", "daemon off;"]

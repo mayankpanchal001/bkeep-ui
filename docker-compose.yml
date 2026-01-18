@@ -20,19 +20,11 @@ services:
             - '80:80'
         restart: unless-stopped
         healthcheck:
-            test:
-                [
-                    'CMD',
-                    'wget',
-                    '--quiet',
-                    '--tries=1',
-                    '--spider',
-                    'http://localhost/health',
-                ]
+            test: ['CMD', 'curl', '-f', 'http://localhost/health']
             interval: 30s
             timeout: 3s
             retries: 3
-            start_period: 5s
+            start_period: 10s
         networks:
             - bkeep-network
         # Resource limits (optional, uncomment if needed)

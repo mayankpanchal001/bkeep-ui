@@ -52,7 +52,7 @@ README.md
 docs
 
 # Docker
-Dockerfile*
+# Note: Keep docker/nginx.conf - it's needed for the build
 docker-compose*.yml
 .dockerignore
 
