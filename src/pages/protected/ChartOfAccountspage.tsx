@@ -646,7 +646,7 @@ const ChartOfAccountspage = () => {
                                                 key={opt.value}
                                                 variant={
                                                     active
-                                                        ? 'active'
+                                                        ? 'default'
                                                         : 'outline'
                                                 }
                                                 size="sm"
@@ -716,7 +716,7 @@ const ChartOfAccountspage = () => {
                                                     key={dt.value}
                                                     variant={
                                                         active
-                                                            ? 'active'
+                                                            ? 'default'
                                                             : 'outline'
                                                     }
                                                     size="sm"
@@ -781,7 +781,7 @@ const ChartOfAccountspage = () => {
                                     selectedTypes.length === 0 &&
                                     selectedDetailTypes.length === 0 &&
                                     isActiveFilter === 'all'
-                                        ? 'active'
+                                        ? 'default'
                                         : 'outline'
                                 }
                                 onClick={() => {

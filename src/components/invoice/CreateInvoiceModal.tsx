@@ -461,8 +461,8 @@ const CreateInvoiceModal = ({
                                             <CommandInput
                                                 placeholder="Search customers..."
                                                 value={customerSearch}
-                                                onValueChange={
-                                                    setCustomerSearch
+                                                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                                                    setCustomerSearch(e.target.value)
                                                 }
                                             />
                                             <CommandList>
