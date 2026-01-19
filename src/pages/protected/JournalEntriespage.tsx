@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Icons } from '@/components/shared/Icons';
 import PageHeader from '@/components/shared/PageHeader';
 import {
@@ -35,10 +36,11 @@ import {
     TableSelectionToolbar,
     type SortDirection,
 } from '@/components/ui/table';
-import { showErrorToast, showSuccessToast } from '@/utills/toast.tsx';
+import { showErrorToast } from '@/utills/toast.tsx';
 import { cn } from '@/utils/cn';
 import {
     ArrowUpDown,
+    Ban,
     ChevronUp,
     FileText,
     Filter,
@@ -307,10 +309,8 @@ export default function JournalEntriespage() {
         if (!deleteDialog.entry) return;
         deleteMutation.mutate(deleteDialog.entry.id, {
             onSuccess: () => {
-                showSuccessToast('Journal entry deleted');
                 setDeleteDialog({ isOpen: false, entry: null });
             },
-            onError: () => showErrorToast('Failed to delete entry'),
         });
     };
 
@@ -322,10 +322,8 @@ export default function JournalEntriespage() {
         if (!postDialog.entry) return;
         postMutation.mutate(postDialog.entry.id, {
             onSuccess: () => {
-                showSuccessToast('Journal entry posted');
                 setPostDialog({ isOpen: false, entry: null });
             },
-            onError: () => showErrorToast('Failed to post entry'),
         });
     };
 
@@ -337,10 +335,8 @@ export default function JournalEntriespage() {
         if (!voidDialog.entry) return;
         voidMutation.mutate(voidDialog.entry.id, {
             onSuccess: () => {
-                showSuccessToast('Journal entry voided');
                 setVoidDialog({ isOpen: false, entry: null });
             },
-            onError: () => showErrorToast('Failed to void entry'),
         });
     };
 
@@ -358,19 +354,14 @@ export default function JournalEntriespage() {
             },
             {
                 onSuccess: () => {
-                    showSuccessToast('Journal entry reversed');
                     setReverseDialog({ isOpen: false, entry: null });
                 },
-                onError: () => showErrorToast('Failed to reverse entry'),
             }
         );
     };
 
     const handleRestore = (entry: JournalEntry) => {
-        restoreMutation.mutate(entry.id, {
-            onSuccess: () => showSuccessToast('Journal entry restored'),
-            onError: () => showErrorToast('Failed to restore entry'),
-        });
+        restoreMutation.mutate(entry.id);
     };
 
     const handleSortChange = (key: string, direction: SortDirection) => {
@@ -413,11 +404,12 @@ export default function JournalEntriespage() {
                     await deleteMutation.mutateAsync(entry.id);
                 }
             }
-            showSuccessToast(`${eligible.length} entries ${bulkDialog.type}ed`);
+            // Individual toasts are handled by the mutation hooks
+            // No need for a summary toast to avoid duplicates
             setSelectedItems([]);
             setBulkDialog({ isOpen: false, type: null });
         } catch {
-            showErrorToast(`Failed to ${bulkDialog.type} some entries`);
+            // Error toasts are handled by the mutation hooks
         } finally {
             setIsBulkLoading(false);
         }
@@ -442,6 +434,39 @@ export default function JournalEntriespage() {
             prev.filter((id) => rowIds.includes(String(id)))
         );
     }, [rowIds]);
+
+    // Close dialogs when mutations succeed (toasts are handled by hooks)
+
+    useEffect(() => {
+        if (deleteMutation.isSuccess && deleteDialog.isOpen) {
+            setDeleteDialog({ isOpen: false, entry: null });
+            deleteMutation.reset();
+        }
+    }, [deleteMutation.isSuccess, deleteDialog.isOpen]);
+
+
+    useEffect(() => {
+        if (postMutation.isSuccess && postDialog.isOpen) {
+            setPostDialog({ isOpen: false, entry: null });
+            postMutation.reset();
+        }
+    }, [postMutation.isSuccess, postDialog.isOpen]);
+
+
+    useEffect(() => {
+        if (voidMutation.isSuccess && voidDialog.isOpen) {
+            setVoidDialog({ isOpen: false, entry: null });
+            voidMutation.reset();
+        }
+    }, [voidMutation.isSuccess, voidDialog.isOpen]);
+
+
+    useEffect(() => {
+        if (reverseMutation.isSuccess && reverseDialog.isOpen) {
+            setReverseDialog({ isOpen: false, entry: null });
+            reverseMutation.reset();
+        }
+    }, [reverseMutation.isSuccess, reverseDialog.isOpen]);
 
     const getSortLabel = (sortKey: string | null): string => {
         if (!sortKey) return 'Sort by';
@@ -489,7 +514,7 @@ export default function JournalEntriespage() {
                                 className={cn(
                                     'gap-2',
                                     filterStore.sort &&
-                                        'border-primary/30 bg-primary/5'
+                                    'border-primary/30 bg-primary/5'
                                 )}
                             >
                                 <ArrowUpDown className="h-4 w-4" />
@@ -606,8 +631,8 @@ export default function JournalEntriespage() {
                                     filterStore.filterMaxAmount ||
                                     filterStore.startDate ||
                                     filterStore.endDate) && (
-                                    <span className="ml-2 h-2 w-2 rounded-full bg-accent" />
-                                )}
+                                        <span className="ml-2 h-2 w-2 rounded-full bg-accent" />
+                                    )}
                             </Button>
                         </DrawerTrigger>
                         <DrawerContent className="h-full w-full sm:w-[400px]">
@@ -633,10 +658,10 @@ export default function JournalEntriespage() {
                                         onValueChange={(value) =>
                                             filterStore.setStatus(
                                                 value as
-                                                    | 'draft'
-                                                    | 'posted'
-                                                    | 'voided'
-                                                    | 'all'
+                                                | 'draft'
+                                                | 'posted'
+                                                | 'voided'
+                                                | 'all'
                                             )
                                         }
                                     >
@@ -947,16 +972,19 @@ export default function JournalEntriespage() {
                                         })}
                                     </span>
                                 </TableCell>
-                                <TableCell>
+                                <TableCell
+                                    className="text-center"
+                                >
                                     <Badge
+
                                         variant={
                                             entry.isReversing
                                                 ? 'warning'
                                                 : entry.status === 'draft'
-                                                  ? 'secondary'
-                                                  : entry.status === 'posted'
-                                                    ? 'success'
-                                                    : 'destructive'
+                                                    ? 'secondary'
+                                                    : entry.status === 'posted'
+                                                        ? 'success'
+                                                        : 'destructive'
                                         }
                                     >
                                         {entry.isReversing
@@ -966,10 +994,10 @@ export default function JournalEntriespage() {
                                 </TableCell>
                                 <TableCell>
                                     <div
-                                        className="flex items-center gap-2"
+                                        className="flex items-center justify-end gap-2"
                                         onClick={(e) => e.stopPropagation()}
                                     >
-                                        {entry.status === 'draft' && (
+                                        {/* {entry.status === 'draft' && (
                                             <Button
                                                 variant="outline"
                                                 size="sm"
@@ -982,7 +1010,7 @@ export default function JournalEntriespage() {
                                             >
                                                 Post
                                             </Button>
-                                        )}
+                                        )} */}
                                         <DropdownMenu>
                                             <DropdownMenuTrigger asChild>
                                                 <Button
@@ -1019,6 +1047,7 @@ export default function JournalEntriespage() {
                                                                 postMutation.isPending
                                                             }
                                                         >
+                                                            <Icons.Plus className="mr-2 h-4 w-4" />
                                                             Post
                                                         </DropdownMenuItem>
                                                         <DropdownMenuItem
@@ -1049,6 +1078,7 @@ export default function JournalEntriespage() {
                                                                 voidMutation.isPending
                                                             }
                                                         >
+                                                            <Ban className="mr-2 h-4 w-4" />
                                                             Void
                                                         </DropdownMenuItem>
                                                         {!entry.isReversing && (
@@ -1304,8 +1334,8 @@ export default function JournalEntriespage() {
                             {isBulkLoading
                                 ? 'Processing...'
                                 : bulkDialog.type === 'post'
-                                  ? 'Post'
-                                  : 'Delete'}
+                                    ? 'Post'
+                                    : 'Delete'}
                         </AlertDialogAction>
                     </AlertDialogFooter>
                 </AlertDialogContent>

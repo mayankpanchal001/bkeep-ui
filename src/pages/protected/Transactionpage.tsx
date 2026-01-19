@@ -128,7 +128,7 @@ const Transactionpage = () => {
 
         const isDatePattern = (str: string): boolean => {
 
-// YYYY, YYYY-MM, YYYY-MM-DD, YYYY/MM, YYYY/MM/DD
+            // YYYY, YYYY-MM, YYYY-MM-DD, YYYY/MM, YYYY/MM/DD
             const datePattern = /^\d{4}(-|\/)?\d{0,2}(-|\/)?\d{0,2}$/;
             return datePattern.test(str.trim());
         };
@@ -183,7 +183,7 @@ const Transactionpage = () => {
 
             if (isDatePattern(trimmedSearch)) {
                 const isoDate = parseSearchAsDate(trimmedSearch);
-             if (isoDate) {
+                if (isoDate) {
 
                     // YYYY or YYYY-MM
                     const fullDateMatch = trimmedSearch.match(
@@ -573,16 +573,16 @@ const Transactionpage = () => {
             <div className="p-4 border-b border-primary/10 sticky -top-4 z-30 bg-background">
                 <div className="flex items-center gap-2 flex-wrap">
                     <Button variant={status === 'all' ? 'default' : 'outline'}
-                         onClick={() => filterStore.setStatus('all')
-                    }>All ({allCount})</Button>
+                        onClick={() => filterStore.setStatus('all')
+                        }>All ({allCount})</Button>
 
                     <Button variant={status === 'pending' ? 'default' : 'outline'}
-                         onClick={() => filterStore.setStatus('pending')
-                    }>Pending ({pendingCount})</Button>
+                        onClick={() => filterStore.setStatus('pending')
+                        }>Pending ({pendingCount})</Button>
 
                     <Button variant={status === 'posted' ? 'default' : 'outline'}
-                         onClick={() => filterStore.setStatus('posted')
-                    }>Posted ({postedCount})</Button>
+                        onClick={() => filterStore.setStatus('posted')
+                        }>Posted ({postedCount})</Button>
 
                     <div className="ml-auto flex items-center gap-3">
                         <div className="relative w-[260px]">
@@ -595,7 +595,9 @@ const Transactionpage = () => {
                                 startIcon={<Search className="w-4 h-4" />}
                             />
                         </div>
-                        <CreateTransactionDrawer />
+                        <CreateTransactionDrawer
+                            selectedAccountId={selectedAccountId}
+                        />
                         <Drawer
                             open={isFilterDrawerOpen}
                             onOpenChange={setIsFilterDrawerOpen}
@@ -611,8 +613,8 @@ const Transactionpage = () => {
                                         filterStore.filterEndDate ||
                                         filterStore.filterMinAmount ||
                                         filterStore.filterMaxAmount) && (
-                                        <span className="ml-2 h-2 w-2 rounded-full bg-accent" />
-                                    )}
+                                            <span className="ml-2 h-2 w-2 rounded-full bg-accent" />
+                                        )}
                                 </Button>
                             </DrawerTrigger>
                             <DrawerContent className="h-full w-full sm:w-[400px]">
@@ -914,7 +916,7 @@ const Transactionpage = () => {
                                                         const rate =
                                                             (value &&
                                                                 TAX_RATE_BY_ID[
-                                                                    value
+                                                                value
                                                                 ]) ||
                                                             0;
                                                         setTransactions(
@@ -966,8 +968,8 @@ const Transactionpage = () => {
                                                 value={
                                                     t.fromTo
                                                         ? contactNameById.get(
-                                                              t.fromTo
-                                                          ) || t.fromTo
+                                                            t.fromTo
+                                                        ) || t.fromTo
                                                         : ''
                                                 }
                                                 onChange={(value) => {
@@ -984,11 +986,11 @@ const Transactionpage = () => {
                                                         prev.map((tx) =>
                                                             tx.id === t.id
                                                                 ? {
-                                                                      ...tx,
-                                                                      fromTo:
-                                                                          contactId ||
-                                                                          undefined,
-                                                                  }
+                                                                    ...tx,
+                                                                    fromTo:
+                                                                        contactId ||
+                                                                        undefined,
+                                                                }
                                                                 : tx
                                                         )
                                                     );
@@ -1011,13 +1013,13 @@ const Transactionpage = () => {
                                                                 prev.map(
                                                                     (tx) =>
                                                                         tx.id ===
-                                                                        t.id
+                                                                            t.id
                                                                             ? {
-                                                                                  ...tx,
-                                                                                  category:
-                                                                                      value ||
-                                                                                      undefined,
-                                                                              }
+                                                                                ...tx,
+                                                                                category:
+                                                                                    value ||
+                                                                                    undefined,
+                                                                            }
                                                                             : tx
                                                                 )
                                                         );
@@ -1039,10 +1041,10 @@ const Transactionpage = () => {
                                                         prev.map((tx) =>
                                                             tx.id === t.id
                                                                 ? {
-                                                                      ...tx,
-                                                                      matched:
-                                                                          !tx.matched,
-                                                                  }
+                                                                    ...tx,
+                                                                    matched:
+                                                                        !tx.matched,
+                                                                }
                                                                 : tx
                                                         )
                                                     );

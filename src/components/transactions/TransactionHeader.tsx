@@ -10,8 +10,6 @@ import {
     ChevronLeft,
     ChevronRight,
     ExternalLink,
-    Landmark,
-    Import,
 } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Button } from '../ui/button';
@@ -88,7 +86,7 @@ export function TransactionHeader({
         setCanScrollLeft(container.scrollLeft > 0);
         setCanScrollRight(
             container.scrollLeft <
-                container.scrollWidth - container.clientWidth - 10
+            container.scrollWidth - container.clientWidth - 10
         );
     }, []);
 

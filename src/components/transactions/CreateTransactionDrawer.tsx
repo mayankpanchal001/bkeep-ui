@@ -26,7 +26,7 @@ import {
 } from '@/components/ui/select';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Plus } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useForm, type Resolver } from 'react-hook-form';
 import { z } from 'zod';
 import { CurrencyInput } from '../../pages/protected/CreateJournalEntrypage';
@@ -35,6 +35,10 @@ import { useContacts } from '../../services/apis/contactsApi';
 import { useTaxes } from '../../services/apis/taxApi';
 import { useCreateTransaction } from '../../services/apis/transactions';
 import { Textarea } from '../ui/textarea';
+
+interface CreateTransactionDrawerProps {
+    selectedAccountId?: string;
+}
 
 const formSchema = z.object({
     type: z.enum(['income', 'expense', 'transfer']),
@@ -54,7 +58,9 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-export function CreateTransactionDrawer() {
+export function CreateTransactionDrawer({
+    selectedAccountId,
+}: CreateTransactionDrawerProps = {}) {
     const [open, setOpen] = useState(false);
     const { mutate: createTransaction, isPending } = useCreateTransaction();
     const { data: accountsData } = useChartOfAccounts({
@@ -87,8 +93,39 @@ export function CreateTransactionDrawer() {
             currencyRate: 1,
             paidAt: new Date().toISOString().split('T')[0],
             amount: 0,
+            accountId: selectedAccountId || '',
         },
     });
+
+    // Update form when selectedAccountId changes or drawer opens
+    useEffect(() => {
+        if (open) {
+            // Reset form with default values
+            form.reset({
+                type: 'expense',
+                currencyCode: 'CAD',
+                currencyRate: 1,
+                paidAt: new Date().toISOString().split('T')[0],
+                amount: 0,
+                accountId: selectedAccountId || '',
+                contactId: '',
+                description: '',
+                reference: '',
+                paymentMethod: undefined,
+                taxIds: [],
+            });
+
+            // Set the selected account if it exists in filtered accounts
+            if (selectedAccountId) {
+                const accountExists = filteredAccounts.some(
+                    (account) => account.id === selectedAccountId
+                );
+                if (accountExists) {
+                    form.setValue('accountId', selectedAccountId);
+                }
+            }
+        }
+    }, [open, selectedAccountId, filteredAccounts, form]);
 
     const onSubmit = (values: FormValues) => {
         // Ensure date is in ISO format with time to avoid timezone issues
@@ -114,7 +151,7 @@ export function CreateTransactionDrawer() {
                         currencyRate: 1,
                         paidAt: new Date().toISOString().split('T')[0],
                         amount: 0,
-                        accountId: '',
+                        accountId: selectedAccountId || '',
                         contactId: '',
                         description: '',
                         reference: '',
@@ -185,7 +222,7 @@ export function CreateTransactionDrawer() {
                                             <FormLabel>Account</FormLabel>
                                             <Select
                                                 onValueChange={field.onChange}
-                                                defaultValue={field.value}
+                                                value={field.value}
                                             >
                                                 <FormControl>
                                                     <SelectTrigger>
