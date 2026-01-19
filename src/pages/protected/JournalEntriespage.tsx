@@ -444,7 +444,6 @@ export default function JournalEntriespage() {
         }
     }, [deleteMutation.isSuccess, deleteDialog.isOpen]);
 
-
     useEffect(() => {
         if (postMutation.isSuccess && postDialog.isOpen) {
             setPostDialog({ isOpen: false, entry: null });
@@ -452,14 +451,12 @@ export default function JournalEntriespage() {
         }
     }, [postMutation.isSuccess, postDialog.isOpen]);
 
-
     useEffect(() => {
         if (voidMutation.isSuccess && voidDialog.isOpen) {
             setVoidDialog({ isOpen: false, entry: null });
             voidMutation.reset();
         }
     }, [voidMutation.isSuccess, voidDialog.isOpen]);
-
 
     useEffect(() => {
         if (reverseMutation.isSuccess && reverseDialog.isOpen) {
@@ -514,7 +511,7 @@ export default function JournalEntriespage() {
                                 className={cn(
                                     'gap-2',
                                     filterStore.sort &&
-                                    'border-primary/30 bg-primary/5'
+                                        'border-primary/30 bg-primary/5'
                                 )}
                             >
                                 <ArrowUpDown className="h-4 w-4" />
@@ -631,8 +628,8 @@ export default function JournalEntriespage() {
                                     filterStore.filterMaxAmount ||
                                     filterStore.startDate ||
                                     filterStore.endDate) && (
-                                        <span className="ml-2 h-2 w-2 rounded-full bg-accent" />
-                                    )}
+                                    <span className="ml-2 h-2 w-2 rounded-full bg-accent" />
+                                )}
                             </Button>
                         </DrawerTrigger>
                         <DrawerContent className="h-full w-full sm:w-[400px]">
@@ -658,10 +655,10 @@ export default function JournalEntriespage() {
                                         onValueChange={(value) =>
                                             filterStore.setStatus(
                                                 value as
-                                                | 'draft'
-                                                | 'posted'
-                                                | 'voided'
-                                                | 'all'
+                                                    | 'draft'
+                                                    | 'posted'
+                                                    | 'voided'
+                                                    | 'all'
                                             )
                                         }
                                     >
@@ -972,19 +969,16 @@ export default function JournalEntriespage() {
                                         })}
                                     </span>
                                 </TableCell>
-                                <TableCell
-                                    className="text-center"
-                                >
+                                <TableCell className="text-center">
                                     <Badge
-
                                         variant={
                                             entry.isReversing
                                                 ? 'warning'
                                                 : entry.status === 'draft'
-                                                    ? 'secondary'
-                                                    : entry.status === 'posted'
-                                                        ? 'success'
-                                                        : 'destructive'
+                                                  ? 'secondary'
+                                                  : entry.status === 'posted'
+                                                    ? 'success'
+                                                    : 'destructive'
                                         }
                                     >
                                         {entry.isReversing
@@ -1334,8 +1328,8 @@ export default function JournalEntriespage() {
                             {isBulkLoading
                                 ? 'Processing...'
                                 : bulkDialog.type === 'post'
-                                    ? 'Post'
-                                    : 'Delete'}
+                                  ? 'Post'
+                                  : 'Delete'}
                         </AlertDialogAction>
                     </AlertDialogFooter>
                 </AlertDialogContent>

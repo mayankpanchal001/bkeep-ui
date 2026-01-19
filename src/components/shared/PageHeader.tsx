@@ -13,7 +13,9 @@ const PageHeader = ({
                 <h1 className="text-xl font-bold text-primary">{title}</h1>
                 <p className="text-sm text-primary/50">{subtitle}</p>
             </div>
-            {actions && <div className="flex items-center gap-2">{actions}</div>}
+            {actions && (
+                <div className="flex items-center gap-2">{actions}</div>
+            )}
         </div>
     );
 };

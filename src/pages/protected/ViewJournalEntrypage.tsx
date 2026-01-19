@@ -27,7 +27,11 @@ import {
     useJournalEntry,
     useReorderJournalEntryLines,
 } from '../../services/apis/journalApi';
-import type { CreateJournalEntryPayload, JournalEntry, JournalEntryLine } from '../../types/journal';
+import type {
+    CreateJournalEntryPayload,
+    JournalEntry,
+    JournalEntryLine,
+} from '../../types/journal';
 import { cn } from '../../utils/cn';
 
 const toNumber = (v: unknown) => {
@@ -66,9 +70,7 @@ const formatBoolean = (value: unknown) => {
 };
 
 // Helper function to get next journal entry number
-function getNextJournalEntryNumber(
-    current: string | undefined | null
-): string {
+function getNextJournalEntryNumber(current: string | undefined | null): string {
     if (!current) return '1';
 
     // Numbers
@@ -121,7 +123,8 @@ export default function ViewJournalEntrypage() {
     const [draggedLineId, setDraggedLineId] = useState<string | null>(null);
     const [dragOverLineId, setDragOverLineId] = useState<string | null>(null);
     const [showCopyPreview, setShowCopyPreview] = useState(false);
-    const [copyPreviewData, setCopyPreviewData] = useState<CreateJournalEntryPayload | null>(null);
+    const [copyPreviewData, setCopyPreviewData] =
+        useState<CreateJournalEntryPayload | null>(null);
     const reorderMutation = useReorderJournalEntryLines();
     const createMutation = useCreateJournalEntry();
 
@@ -155,7 +158,7 @@ export default function ViewJournalEntrypage() {
             return entry as unknown as JournalEntry;
         if (
             typeof (entry as { journalEntry?: unknown }).journalEntry ===
-            'object' &&
+                'object' &&
             (entry as { journalEntry?: Record<string, unknown> }).journalEntry
         ) {
             const nested = (entry as { journalEntry: Record<string, unknown> })
@@ -557,8 +560,8 @@ export default function ViewJournalEntrypage() {
                                     reorderMutation.isPending
                                         ? 'cursor-not-allowed opacity-30'
                                         : isDragging
-                                            ? 'cursor-grabbing opacity-50'
-                                            : 'cursor-grab opacity-100 hover:opacity-80'
+                                          ? 'cursor-grabbing opacity-50'
+                                          : 'cursor-grab opacity-100 hover:opacity-80'
                                 )}
                                 title={
                                     reorderMutation.isPending
@@ -584,8 +587,9 @@ export default function ViewJournalEntrypage() {
                 <div>
                     <div className="font-medium text-primary">
                         {line.account?.accountNumber
-                            ? `${line.account.accountNumber} - ${line.account.accountName || ''
-                                }`.trim()
+                            ? `${line.account.accountNumber} - ${
+                                  line.account.accountName || ''
+                              }`.trim()
                             : line.accountName || line.accountId}
                     </div>
                     {(line.account?.accountType || line.name) && (
@@ -768,19 +772,19 @@ export default function ViewJournalEntrypage() {
                     }
                     onRowDragOver={
                         journalEntry.status === 'draft' &&
-                            !reorderMutation.isPending
+                        !reorderMutation.isPending
                             ? (e, line) => handleDragOver(e, line.id)
                             : undefined
                     }
                     onRowDragLeave={
                         journalEntry.status === 'draft' &&
-                            !reorderMutation.isPending
+                        !reorderMutation.isPending
                             ? handleDragLeave
                             : undefined
                     }
                     onRowDrop={
                         journalEntry.status === 'draft' &&
-                            !reorderMutation.isPending
+                        !reorderMutation.isPending
                             ? (e, line) => handleDrop(e, line.id)
                             : undefined
                     }
@@ -858,8 +862,8 @@ export default function ViewJournalEntrypage() {
                                 journalEntry.status === 'draft'
                                     ? 'secondary'
                                     : journalEntry.status === 'posted'
-                                        ? 'success'
-                                        : 'destructive'
+                                      ? 'success'
+                                      : 'destructive'
                             }
                             className="text-primary/70"
                         >
@@ -901,8 +905,9 @@ export default function ViewJournalEntrypage() {
                             Additional Details
                         </h3>
                         <ChevronDown
-                            className={`w-4 h-4 text-primary/50 transition-transform duration-200 ${isDetailsOpen ? 'rotate-180' : ''
-                                }`}
+                            className={`w-4 h-4 text-primary/50 transition-transform duration-200 ${
+                                isDetailsOpen ? 'rotate-180' : ''
+                            }`}
                         />
                     </CollapsibleTrigger>
                     <CollapsibleContent>
@@ -1134,7 +1139,9 @@ export default function ViewJournalEntrypage() {
                                         Entry Date
                                     </label>
                                     <p className="text-primary font-medium">
-                                        {formatDateOnly(copyPreviewData.entryDate)}
+                                        {formatDateOnly(
+                                            copyPreviewData.entryDate
+                                        )}
                                     </p>
                                 </div>
                                 <div>
@@ -1142,27 +1149,34 @@ export default function ViewJournalEntrypage() {
                                         Entry Type
                                     </label>
                                     <p className="text-primary font-medium capitalize">
-                                        {copyPreviewData.entryType || 'standard'}
+                                        {copyPreviewData.entryType ||
+                                            'standard'}
                                     </p>
                                 </div>
                                 <div>
                                     <label className="block text-sm font-medium text-primary/50 mb-1">
                                         Status
                                     </label>
-                                    <Badge variant="secondary" className="text-primary/70">
+                                    <Badge
+                                        variant="secondary"
+                                        className="text-primary/70"
+                                    >
                                         Draft
                                     </Badge>
                                 </div>
                             </div>
 
                             {/* Memo/Description */}
-                            {(copyPreviewData.memo || copyPreviewData.description) && (
+                            {(copyPreviewData.memo ||
+                                copyPreviewData.description) && (
                                 <div className="p-4 bg-card rounded-lg border border-primary/10">
                                     <label className="block text-sm font-medium text-primary/50 mb-2">
                                         Memo
                                     </label>
                                     <p className="text-primary text-sm whitespace-pre-wrap">
-                                        {copyPreviewData.memo || copyPreviewData.description || '—'}
+                                        {copyPreviewData.memo ||
+                                            copyPreviewData.description ||
+                                            '—'}
                                     </p>
                                 </div>
                             )}
@@ -1171,7 +1185,8 @@ export default function ViewJournalEntrypage() {
                             <div className="border border-primary/10 rounded-lg overflow-hidden">
                                 <div className="px-4 py-2 bg-primary/5 border-b border-primary/10">
                                     <h3 className="text-sm font-semibold text-primary">
-                                        Journal Lines ({copyPreviewData.lines.length} lines)
+                                        Journal Lines (
+                                        {copyPreviewData.lines.length} lines)
                                     </h3>
                                 </div>
                                 <div className="overflow-x-auto">
@@ -1196,37 +1211,54 @@ export default function ViewJournalEntrypage() {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {copyPreviewData.lines.map((line, index) => (
-                                                <tr
-                                                    key={index}
-                                                    className="border-b border-primary/10 hover:bg-primary/5"
-                                                >
-                                                    <td className="px-3 py-2 text-sm text-primary/50">
-                                                        {line.lineNumber}
-                                                    </td>
-                                                    <td className="px-3 py-2 text-sm text-primary">
-                                                        {line.accountId
-                                                            ? accountNameMap.get(line.accountId) ||
-                                                            line.accountId
-                                                            : '—'}
-                                                    </td>
-                                                    <td className="px-3 py-2 text-sm text-primary/75">
-                                                        {line.description || '—'}
-                                                    </td>
-                                                    <td className="px-3 py-2 text-sm text-right font-medium text-primary">
-                                                        {toNumber(line.debit).toLocaleString('en-US', {
-                                                            style: 'currency',
-                                                            currency: 'USD',
-                                                        })}
-                                                    </td>
-                                                    <td className="px-3 py-2 text-sm text-right font-medium text-primary">
-                                                        {toNumber(line.credit).toLocaleString('en-US', {
-                                                            style: 'currency',
-                                                            currency: 'USD',
-                                                        })}
-                                                    </td>
-                                                </tr>
-                                            ))}
+                                            {copyPreviewData.lines.map(
+                                                (line, index) => (
+                                                    <tr
+                                                        key={index}
+                                                        className="border-b border-primary/10 hover:bg-primary/5"
+                                                    >
+                                                        <td className="px-3 py-2 text-sm text-primary/50">
+                                                            {line.lineNumber}
+                                                        </td>
+                                                        <td className="px-3 py-2 text-sm text-primary">
+                                                            {line.accountId
+                                                                ? accountNameMap.get(
+                                                                      line.accountId
+                                                                  ) ||
+                                                                  line.accountId
+                                                                : '—'}
+                                                        </td>
+                                                        <td className="px-3 py-2 text-sm text-primary/75">
+                                                            {line.description ||
+                                                                '—'}
+                                                        </td>
+                                                        <td className="px-3 py-2 text-sm text-right font-medium text-primary">
+                                                            {toNumber(
+                                                                line.debit
+                                                            ).toLocaleString(
+                                                                'en-US',
+                                                                {
+                                                                    style: 'currency',
+                                                                    currency:
+                                                                        'USD',
+                                                                }
+                                                            )}
+                                                        </td>
+                                                        <td className="px-3 py-2 text-sm text-right font-medium text-primary">
+                                                            {toNumber(
+                                                                line.credit
+                                                            ).toLocaleString(
+                                                                'en-US',
+                                                                {
+                                                                    style: 'currency',
+                                                                    currency:
+                                                                        'USD',
+                                                                }
+                                                            )}
+                                                        </td>
+                                                    </tr>
+                                                )
+                                            )}
                                         </tbody>
                                         <tfoot className="bg-primary/5">
                                             <tr>
@@ -1240,25 +1272,37 @@ export default function ViewJournalEntrypage() {
                                                     {copyPreviewData.lines
                                                         .reduce(
                                                             (sum, line) =>
-                                                                sum + toNumber(line.debit),
+                                                                sum +
+                                                                toNumber(
+                                                                    line.debit
+                                                                ),
                                                             0
                                                         )
-                                                        .toLocaleString('en-US', {
-                                                            style: 'currency',
-                                                            currency: 'USD',
-                                                        })}
+                                                        .toLocaleString(
+                                                            'en-US',
+                                                            {
+                                                                style: 'currency',
+                                                                currency: 'USD',
+                                                            }
+                                                        )}
                                                 </td>
                                                 <td className="px-3 py-2 text-right font-semibold text-sm text-primary">
                                                     {copyPreviewData.lines
                                                         .reduce(
                                                             (sum, line) =>
-                                                                sum + toNumber(line.credit),
+                                                                sum +
+                                                                toNumber(
+                                                                    line.credit
+                                                                ),
                                                             0
                                                         )
-                                                        .toLocaleString('en-US', {
-                                                            style: 'currency',
-                                                            currency: 'USD',
-                                                        })}
+                                                        .toLocaleString(
+                                                            'en-US',
+                                                            {
+                                                                style: 'currency',
+                                                                currency: 'USD',
+                                                            }
+                                                        )}
                                                 </td>
                                             </tr>
                                         </tfoot>
@@ -1284,7 +1328,9 @@ export default function ViewJournalEntrypage() {
                             disabled={createMutation.isPending}
                         >
                             <Copy className="w-4 h-4 mr-2" />
-                            {createMutation.isPending ? 'Creating...' : 'Create Copy'}
+                            {createMutation.isPending
+                                ? 'Creating...'
+                                : 'Create Copy'}
                         </Button>
                     </DialogFooter>
                 </DialogContent>
