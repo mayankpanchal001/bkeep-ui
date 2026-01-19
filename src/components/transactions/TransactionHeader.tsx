@@ -10,6 +10,8 @@ import {
     ChevronLeft,
     ChevronRight,
     ExternalLink,
+    Landmark,
+    Import,
 } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Button } from '../ui/button';
