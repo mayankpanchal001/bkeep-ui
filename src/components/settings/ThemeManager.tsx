@@ -13,7 +13,7 @@ import {
     CommandGroup,
     CommandInput,
     CommandItem,
-    CommandList
+    CommandList,
 } from '../ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 
@@ -87,9 +87,12 @@ const ThemeManager = () => {
                             <Palette className="h-5 w-5 text-primary" />
                         </div>
                         <div>
-                            <CardTitle className="text-xl">Theme Manager</CardTitle>
+                            <CardTitle className="text-xl">
+                                Theme Manager
+                            </CardTitle>
                             <CardDescription>
-                                Choose from {THEME_PALETTES.length} beautiful themes
+                                Choose from {THEME_PALETTES.length} beautiful
+                                themes
                             </CardDescription>
                         </div>
                     </div>
@@ -156,14 +159,18 @@ const ThemeManager = () => {
                                 <CommandInput
                                     placeholder="Search themes..."
                                     value={searchQuery}
-                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    onChange={(e) =>
+                                        setSearchQuery(e.target.value)
+                                    }
                                     className="flex h-10 w-full rounded-md bg-transparent text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50 border-0"
                                 />
                             </div>
                             <div className="flex items-center justify-between px-4 py-2.5 border-b bg-muted/20">
                                 <span className="text-xs font-medium text-muted-foreground">
                                     {filteredThemes.length} theme
-                                    {filteredThemes.length !== 1 ? 's' : ''}{' '}
+                                    {filteredThemes.length !== 1
+                                        ? 's'
+                                        : ''}{' '}
                                     available
                                 </span>
                                 <Button
@@ -178,7 +185,6 @@ const ThemeManager = () => {
                                 </Button>
                             </div>
                             <CommandList className="max-h-[450px]">
-
                                 <CommandGroup heading="Available Themes">
                                     <div className="grid grid-cols-1 gap-1 p-2">
                                         {filteredThemes.map((theme) => (
@@ -192,10 +198,10 @@ const ThemeManager = () => {
                                                     'flex items-center justify-between gap-3 px-3 py-3 rounded-lg cursor-pointer transition-all',
                                                     'hover:bg-accent/50',
                                                     selectedPaletteId ===
-                                                    theme.id &&
-                                                    'bg-primary/10 border border-primary/20',
+                                                        theme.id &&
+                                                        'bg-primary/10 border border-primary/20',
                                                     isTransitioning &&
-                                                    'opacity-60 pointer-events-none'
+                                                        'opacity-60 pointer-events-none'
                                                 )}
                                             >
                                                 <div className="flex items-center gap-3 flex-1 min-w-0">
@@ -208,19 +214,22 @@ const ThemeManager = () => {
                                                             {theme.name}
                                                             {selectedPaletteId ===
                                                                 theme.id && (
-                                                                    <span className="text-xs px-1.5 py-0.5 rounded bg-primary/20 text-primary font-medium">
-                                                                        Active
-                                                                    </span>
-                                                                )}
+                                                                <span className="text-xs px-1.5 py-0.5 rounded bg-primary/20 text-primary font-medium">
+                                                                    Active
+                                                                </span>
+                                                            )}
                                                         </div>
                                                         {theme.description && (
                                                             <div className="text-left text-xs text-muted-foreground mt-0.5 line-clamp-1">
-                                                                {theme.description}
+                                                                {
+                                                                    theme.description
+                                                                }
                                                             </div>
                                                         )}
                                                     </div>
                                                 </div>
-                                                {selectedPaletteId === theme.id && (
+                                                {selectedPaletteId ===
+                                                    theme.id && (
                                                     <Check className="h-4 w-4 shrink-0 text-primary" />
                                                 )}
                                             </CommandItem>
@@ -261,7 +270,7 @@ const ThemeManager = () => {
                                             ? 'border-primary shadow-md shadow-primary/20 bg-primary/5'
                                             : 'border-border bg-card hover:bg-accent/30',
                                         isTransitioning &&
-                                        'opacity-60 pointer-events-none'
+                                            'opacity-60 pointer-events-none'
                                     )}
                                     disabled={isTransitioning}
                                     title={theme.name}
@@ -288,8 +297,6 @@ const ThemeManager = () => {
                                 </button>
                             ))}
                         </div>
-
-
                     </div>
                 )}
             </div>

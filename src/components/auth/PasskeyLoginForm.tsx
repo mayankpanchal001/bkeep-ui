@@ -137,7 +137,7 @@ export function PasskeyLoginForm() {
                 // Handle generic errors
                 showErrorToast(
                     error.message ||
-                    'Passkey authentication failed. Please try again.'
+                        'Passkey authentication failed. Please try again.'
                 );
             }
             // Note: API errors are handled by the usePasskeyLoginInit and usePasskeyLoginVerify hooks

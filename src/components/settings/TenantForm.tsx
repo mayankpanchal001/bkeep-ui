@@ -43,13 +43,13 @@ const TenantForm = ({ onClose, initialData }: TenantFormProps) => {
                 address: initialData.address || '',
                 fiscalYear: initialData.fiscalYear
                     ? new Date(initialData.fiscalYear)
-                        .toISOString()
-                        .split('T')[0]
+                          .toISOString()
+                          .split('T')[0]
                     : '',
                 dateOfIncorporation: initialData.dateOfIncorporation
                     ? new Date(initialData.dateOfIncorporation)
-                        .toISOString()
-                        .split('T')[0]
+                          .toISOString()
+                          .split('T')[0]
                     : '',
             });
         }
@@ -113,7 +113,6 @@ const TenantForm = ({ onClose, initialData }: TenantFormProps) => {
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
-
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();

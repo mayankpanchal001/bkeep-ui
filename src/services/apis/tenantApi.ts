@@ -248,10 +248,12 @@ const extractErrorMessage = (
                 'field' in data.errors[0] &&
                 'message' in data.errors[0]
             ) {
-                const errorMessages = (data.errors as Array<{
-                    field: string;
-                    message: string;
-                }>).map((err) => `${err.field}: ${err.message}`);
+                const errorMessages = (
+                    data.errors as Array<{
+                        field: string;
+                        message: string;
+                    }>
+                ).map((err) => `${err.field}: ${err.message}`);
                 return errorMessages.join('; ');
             }
             // Handle simple string array
@@ -259,7 +261,11 @@ const extractErrorMessage = (
         }
 
         // Handle errors object (key-value pairs)
-        if (data.errors && typeof data.errors === 'object' && !Array.isArray(data.errors)) {
+        if (
+            data.errors &&
+            typeof data.errors === 'object' &&
+            !Array.isArray(data.errors)
+        ) {
             const errorMessages: string[] = [];
             Object.entries(data.errors).forEach(([field, messages]) => {
                 const fieldMessages = Array.isArray(messages)
@@ -295,9 +301,7 @@ const extractErrorMessage = (
 };
 
 // Helper function to extract field-level errors from API response
-export const extractFieldErrors = (
-    error: unknown
-): Record<string, string> => {
+export const extractFieldErrors = (error: unknown): Record<string, string> => {
     const axiosError = error as {
         response?: {
             data?: {

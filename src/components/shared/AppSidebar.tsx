@@ -232,7 +232,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                     onChange={(e) => setQuery(e.target.value)}
                     className="group-data-[collapsible=icon]:hidden"
                 />
-
             </SidebarHeader>
             <SidebarContent>
                 {favLinks.length > 0 && (

@@ -78,7 +78,7 @@ const ImportTransactionsModal = ({
     const handleFile = (file: File) => {
         if (
             file.type ===
-            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
             file.type === 'application/vnd.ms-excel' ||
             file.name.endsWith('.xlsx') ||
             file.name.endsWith('.xls') ||
@@ -318,9 +318,10 @@ const ImportTransactionsModal = ({
                     </label>
                     <div
                         className={`relative flex flex-col items-center justify-center w-full h-40 border-2 border-dashed rounded-lg transition-colors cursor-pointer
-                            ${dragActive
-                                ? 'border-primary bg-primary/5'
-                                : 'border-gray-300 hover:border-primary/50 hover:bg-gray-50'
+                            ${
+                                dragActive
+                                    ? 'border-primary bg-primary/5'
+                                    : 'border-gray-300 hover:border-primary/50 hover:bg-gray-50'
                             }
                             ${selectedFile ? 'bg-primary/5 border-primary' : ''}
                         `}

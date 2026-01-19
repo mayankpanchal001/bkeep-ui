@@ -1,7 +1,5 @@
 import ThemeManager from './ThemeManager';
 
-
-
 const PreferencesTab = () => {
     return (
         <div>

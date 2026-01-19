@@ -7,7 +7,7 @@ import {
     useAccountsTemplatePreview,
     useApplyAccountsTemplate,
     useImportChartOfAccounts,
-    useImportFields
+    useImportFields,
 } from '../../services/apis/chartsAccountApi';
 import { useTemplates } from '../../services/apis/templatesApi';
 import { Button } from '../ui/button';
@@ -38,7 +38,9 @@ const ImportChartOfAccountsDrawer = ({
     onClose,
 }: ImportChartOfAccountsDrawerProps) => {
     const [step, setStep] = useState<ImportStep>('select');
-    const [importMethod, setImportMethod] = useState<'template' | 'file' | null>(null);
+    const [importMethod, setImportMethod] = useState<
+        'template' | 'file' | null
+    >(null);
     const [dragActive, setDragActive] = useState(false);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [selectedTemplateId, setSelectedTemplateId] = useState<string | null>(
@@ -49,7 +51,13 @@ const ImportChartOfAccountsDrawer = ({
     const inputRef = useRef<HTMLInputElement>(null);
 
     const { data: templatesData, isLoading: isTemplatesLoading } = useTemplates(
-        { type: 'accounts', isActive: true, limit: 50, sort: 'createdAt', order: 'asc' },
+        {
+            type: 'accounts',
+            isActive: true,
+            limit: 50,
+            sort: 'createdAt',
+            order: 'asc',
+        },
         isOpen
     );
     const templates = templatesData?.data?.items || [];
@@ -145,7 +153,7 @@ const ImportChartOfAccountsDrawer = ({
         // Validate file type
         if (
             file.type ===
-            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
             file.type === 'application/vnd.ms-excel' ||
             file.name.endsWith('.xlsx') ||
             file.name.endsWith('.xls') ||
@@ -176,9 +184,9 @@ const ImportChartOfAccountsDrawer = ({
                             const match = headers.find(
                                 (header) =>
                                     header.toLowerCase() ===
-                                    field.label.toLowerCase() ||
+                                        field.label.toLowerCase() ||
                                     header.toLowerCase() ===
-                                    field.key.toLowerCase()
+                                        field.key.toLowerCase()
                             );
                             if (match) {
                                 autoMapping[field.key] = match;
@@ -280,9 +288,15 @@ const ImportChartOfAccountsDrawer = ({
             });
 
             // Create workbook with headers as first row
-            const worksheet = XLSX.utils.json_to_sheet(rows, { header: headers });
+            const worksheet = XLSX.utils.json_to_sheet(rows, {
+                header: headers,
+            });
             const workbook = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(workbook, worksheet, 'Chart of Accounts');
+            XLSX.utils.book_append_sheet(
+                workbook,
+                worksheet,
+                'Chart of Accounts'
+            );
 
             // Convert to blob
             const excelBuffer = XLSX.write(workbook, {
@@ -324,11 +338,13 @@ const ImportChartOfAccountsDrawer = ({
             // Invert mapping: API expects {fileColumnName: systemFieldKey}
             // But we store {systemFieldKey: fileColumnName}
             const invertedMapping: Record<string, string> = {};
-            Object.entries(mapping).forEach(([systemFieldKey, fileColumnName]) => {
-                if (fileColumnName) {
-                    invertedMapping[fileColumnName] = systemFieldKey;
+            Object.entries(mapping).forEach(
+                ([systemFieldKey, fileColumnName]) => {
+                    if (fileColumnName) {
+                        invertedMapping[fileColumnName] = systemFieldKey;
+                    }
                 }
-            });
+            );
 
             importMutation.mutate(
                 { file: selectedFile, mapping: invertedMapping },
@@ -373,18 +389,15 @@ const ImportChartOfAccountsDrawer = ({
         step === 'select'
             ? false
             : step === 'template'
-                ? selectedTemplateId !== null
-                : step === 'file-upload'
-                    ? selectedFile !== null
-                    : importFields
-                        .filter((f) => f.required)
-                        .every((f) => mapping[f.key]);
+              ? selectedTemplateId !== null
+              : step === 'file-upload'
+                ? selectedFile !== null
+                : importFields
+                      .filter((f) => f.required)
+                      .every((f) => mapping[f.key]);
 
     const handleClose = () => {
-        if (
-            importMutation.isPending ||
-            applyTemplateMutation.isPending
-        ) {
+        if (importMutation.isPending || applyTemplateMutation.isPending) {
             return;
         }
         onClose();
@@ -416,10 +429,10 @@ const ImportChartOfAccountsDrawer = ({
                         {step === 'select'
                             ? 'Import Chart of Accounts'
                             : step === 'template'
-                                ? 'Import from Template'
-                                : step === 'file-upload'
-                                    ? 'Import from File'
-                                    : 'Map Import Fields'}
+                              ? 'Import from Template'
+                              : step === 'file-upload'
+                                ? 'Import from File'
+                                : 'Map Import Fields'}
                     </DrawerTitle>
                     <button
                         onClick={handleClose}
@@ -442,7 +455,8 @@ const ImportChartOfAccountsDrawer = ({
                                     Choose Import Method
                                 </p>
                                 <p className="text-sm text-primary/50">
-                                    Select how you want to import your chart of accounts
+                                    Select how you want to import your chart of
+                                    accounts
                                 </p>
                             </div>
 
@@ -450,7 +464,9 @@ const ImportChartOfAccountsDrawer = ({
                                 {/* Template Option */}
                                 <button
                                     type="button"
-                                    onClick={() => handleSelectMethod('template')}
+                                    onClick={() =>
+                                        handleSelectMethod('template')
+                                    }
                                     className="flex flex-col items-center justify-center p-6 border-2 border-primary/25 rounded-lg hover:border-primary hover:bg-primary/5 transition-all cursor-pointer group"
                                 >
                                     <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-3 group-hover:bg-primary/20">
@@ -460,7 +476,8 @@ const ImportChartOfAccountsDrawer = ({
                                         Import from Template
                                     </h3>
                                     <p className="text-xs text-primary/50 text-center">
-                                        Use a pre-configured template to quickly set up your chart of accounts
+                                        Use a pre-configured template to quickly
+                                        set up your chart of accounts
                                     </p>
                                 </button>
 
@@ -477,15 +494,14 @@ const ImportChartOfAccountsDrawer = ({
                                         Import from File
                                     </h3>
                                     <p className="text-xs text-primary/50 text-center">
-                                        Upload your own Excel or CSV file with account data
+                                        Upload your own Excel or CSV file with
+                                        account data
                                     </p>
                                 </button>
                             </div>
 
                             <div className="text-center pt-4">
-                                <Button
-                                    onClick={handleDownloadSample}
-                                >
+                                <Button onClick={handleDownloadSample}>
                                     Download Sample File
                                 </Button>
                             </div>
@@ -520,10 +536,11 @@ const ImportChartOfAccountsDrawer = ({
                                                 onClick={() =>
                                                     setSelectedTemplateId(t.id)
                                                 }
-                                                className={`px-3 py-1.5 rounded text-sm border transition-colors ${selectedTemplateId === t.id
-                                                    ? 'bg-primary text-white border-primary'
-                                                    : 'bg-card border-primary/10 text-primary hover:bg-primary/5'
-                                                    }`}
+                                                className={`px-3 py-1.5 rounded text-sm border transition-colors ${
+                                                    selectedTemplateId === t.id
+                                                        ? 'bg-primary text-white border-primary'
+                                                        : 'bg-card border-primary/10 text-primary hover:bg-primary/5'
+                                                }`}
                                             >
                                                 {t.name || 'Template'}
                                             </button>
@@ -656,7 +673,9 @@ const ImportChartOfAccountsDrawer = ({
                                                         <Button
                                                             variant="default"
                                                             size="sm"
-                                                            onClick={handleApplyTemplate}
+                                                            onClick={
+                                                                handleApplyTemplate
+                                                            }
                                                             disabled={
                                                                 applyTemplateMutation.isPending
                                                             }
@@ -665,7 +684,8 @@ const ImportChartOfAccountsDrawer = ({
                                                             }
                                                             className="flex-1"
                                                         >
-                                                            Apply Template Directly
+                                                            Apply Template
+                                                            Directly
                                                         </Button>
                                                         <Button
                                                             variant="outline"
@@ -675,26 +695,35 @@ const ImportChartOfAccountsDrawer = ({
                                                             }
                                                             disabled={
                                                                 !preview?.accounts ||
-                                                                preview.accounts.length === 0
+                                                                preview.accounts
+                                                                    .length ===
+                                                                    0
                                                             }
                                                             className="flex-1"
                                                         >
-                                                            Import & Map Template Data
+                                                            Import & Map
+                                                            Template Data
                                                         </Button>
                                                     </div>
                                                     <p className="text-[10px] text-primary/50">
-                                                        <strong>Apply Directly:</strong> Import
-                                                        accounts immediately without mapping.{' '}
-                                                        <strong>Import & Map:</strong> Convert
-                                                        template to file format for review and
+                                                        <strong>
+                                                            Apply Directly:
+                                                        </strong>{' '}
+                                                        Import accounts
+                                                        immediately without
+                                                        mapping.{' '}
+                                                        <strong>
+                                                            Import & Map:
+                                                        </strong>{' '}
+                                                        Convert template to file
+                                                        format for review and
                                                         custom mapping.
                                                     </p>
                                                 </div>
                                             </div>
                                         ) : templatePreviewError ? (
                                             <p className="text-xs text-primary/50">
-                                                Could not load template
-                                                preview.
+                                                Could not load template preview.
                                             </p>
                                         ) : (
                                             <p className="text-xs text-primary/50">
@@ -711,18 +740,20 @@ const ImportChartOfAccountsDrawer = ({
                             <div className="flex flex-col gap-2">
                                 <p className="text-sm text-primary/50">
                                     Upload your chart of accounts to quickly
-                                    populate your system. We support .xlsx, .xls,
-                                    and .csv files.
+                                    populate your system. We support .xlsx,
+                                    .xls, and .csv files.
                                 </p>
 
                                 <div
-                                    className={`relative flex flex-col items-center justify-center w-full h-48 border-2 border-dashed rounded-lg transition-colors cursor-pointer ${dragActive
-                                        ? 'border-primary bg-primary/10'
-                                        : 'border-primary/25 hover:border-primary/50 hover:bg-card'
-                                        } ${selectedFile
+                                    className={`relative flex flex-col items-center justify-center w-full h-48 border-2 border-dashed rounded-lg transition-colors cursor-pointer ${
+                                        dragActive
+                                            ? 'border-primary bg-primary/10'
+                                            : 'border-primary/25 hover:border-primary/50 hover:bg-card'
+                                    } ${
+                                        selectedFile
                                             ? 'bg-primary/20 border-primary'
                                             : ''
-                                        }`}
+                                    }`}
                                     onDragEnter={handleDrag}
                                     onDragLeave={handleDrag}
                                     onDragOver={handleDrag}
@@ -795,9 +826,13 @@ const ImportChartOfAccountsDrawer = ({
 
                             <div className="flex flex-col gap-4">
                                 <div className="grid grid-cols-12 gap-4 text-sm font-medium text-primary/50 border-b border-primary/10 pb-2 mb-2">
-                                    <div className="col-span-5">System Field</div>
+                                    <div className="col-span-5">
+                                        System Field
+                                    </div>
                                     <div className="col-span-2 flex justify-center"></div>
-                                    <div className="col-span-5">File Column</div>
+                                    <div className="col-span-5">
+                                        File Column
+                                    </div>
                                 </div>
 
                                 {importFields.map((field) => (
@@ -891,7 +926,9 @@ const ImportChartOfAccountsDrawer = ({
                         ) : step === 'mapping' ? (
                             <Button
                                 onClick={handleImport}
-                                disabled={!isFormValid || importMutation.isPending}
+                                disabled={
+                                    !isFormValid || importMutation.isPending
+                                }
                                 loading={importMutation.isPending}
                             >
                                 Import Data

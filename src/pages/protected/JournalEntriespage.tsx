@@ -489,7 +489,7 @@ export default function JournalEntriespage() {
                                 className={cn(
                                     'gap-2',
                                     filterStore.sort &&
-                                    'border-primary/30 bg-primary/5'
+                                        'border-primary/30 bg-primary/5'
                                 )}
                             >
                                 <ArrowUpDown className="h-4 w-4" />
@@ -606,8 +606,8 @@ export default function JournalEntriespage() {
                                     filterStore.filterMaxAmount ||
                                     filterStore.startDate ||
                                     filterStore.endDate) && (
-                                        <span className="ml-2 h-2 w-2 rounded-full bg-accent" />
-                                    )}
+                                    <span className="ml-2 h-2 w-2 rounded-full bg-accent" />
+                                )}
                             </Button>
                         </DrawerTrigger>
                         <DrawerContent className="h-full w-full sm:w-[400px]">
@@ -633,10 +633,10 @@ export default function JournalEntriespage() {
                                         onValueChange={(value) =>
                                             filterStore.setStatus(
                                                 value as
-                                                | 'draft'
-                                                | 'posted'
-                                                | 'voided'
-                                                | 'all'
+                                                    | 'draft'
+                                                    | 'posted'
+                                                    | 'voided'
+                                                    | 'all'
                                             )
                                         }
                                     >
@@ -953,10 +953,10 @@ export default function JournalEntriespage() {
                                             entry.isReversing
                                                 ? 'warning'
                                                 : entry.status === 'draft'
-                                                    ? 'secondary'
-                                                    : entry.status === 'posted'
-                                                        ? 'success'
-                                                        : 'destructive'
+                                                  ? 'secondary'
+                                                  : entry.status === 'posted'
+                                                    ? 'success'
+                                                    : 'destructive'
                                         }
                                     >
                                         {entry.isReversing
@@ -1304,8 +1304,8 @@ export default function JournalEntriespage() {
                             {isBulkLoading
                                 ? 'Processing...'
                                 : bulkDialog.type === 'post'
-                                    ? 'Post'
-                                    : 'Delete'}
+                                  ? 'Post'
+                                  : 'Delete'}
                         </AlertDialogAction>
                     </AlertDialogFooter>
                 </AlertDialogContent>

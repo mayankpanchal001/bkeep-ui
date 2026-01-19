@@ -166,10 +166,10 @@ const CreateInvoiceModal = ({
         const q = customerSearch.trim().toLowerCase();
         return q
             ? MOCK_CUSTOMERS.filter(
-                (c) =>
-                    c.name.toLowerCase().includes(q) ||
-                    c.email?.toLowerCase().includes(q)
-            )
+                  (c) =>
+                      c.name.toLowerCase().includes(q) ||
+                      c.email?.toLowerCase().includes(q)
+              )
             : MOCK_CUSTOMERS;
     }, [customerSearch]);
 
@@ -786,7 +786,7 @@ const CreateInvoiceModal = ({
                                                         <div className="h-10 px-3 flex items-center bg-muted rounded-md text-sm font-medium">
                                                             {formatCurrency(
                                                                 item.qty *
-                                                                item.price
+                                                                    item.price
                                                             )}
                                                         </div>
                                                     </div>
@@ -884,11 +884,11 @@ const CreateInvoiceModal = ({
                                         <span className="text-muted-foreground">
                                             Discount (
                                             {formData.discountType ===
-                                                'percentage'
+                                            'percentage'
                                                 ? `${formData.discount}%`
                                                 : formatCurrency(
-                                                    formData.discount
-                                                )}
+                                                      formData.discount
+                                                  )}
                                             )
                                         </span>
                                         <span className="font-medium text-destructive">
@@ -1261,7 +1261,7 @@ const CreateInvoiceModal = ({
                                                     <td className="py-3 text-right font-medium text-foreground">
                                                         {formatCurrency(
                                                             item.qty *
-                                                            item.price
+                                                                item.price
                                                         )}
                                                     </td>
                                                 </tr>
@@ -1286,11 +1286,11 @@ const CreateInvoiceModal = ({
                                         <span className="text-muted-foreground">
                                             Discount (
                                             {formData.discountType ===
-                                                'percentage'
+                                            'percentage'
                                                 ? `${formData.discount}%`
                                                 : formatCurrency(
-                                                    formData.discount
-                                                )}
+                                                      formData.discount
+                                                  )}
                                             )
                                         </span>
                                         <span className="text-destructive">

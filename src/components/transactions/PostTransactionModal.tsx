@@ -175,8 +175,8 @@ export function PostTransactionModal({
                                             value={
                                                 field.value
                                                     ? new Date(field.value)
-                                                        .toISOString()
-                                                        .split('T')[0]
+                                                          .toISOString()
+                                                          .split('T')[0]
                                                     : ''
                                             }
                                             onChange={(e) => {

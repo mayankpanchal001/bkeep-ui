@@ -103,10 +103,5 @@ export const NotificationsTabWrapper = () => {
 };
 
 export const PreferencesTabWrapper = () => {
-
-
-    return (
-        <PreferencesTab
-        />
-    );
+    return <PreferencesTab />;
 };

@@ -53,10 +53,11 @@ const SummaryCard = ({
                 <p className="text-3xl font-bold text-primary mb-2">{value}</p>
                 {trend && (
                     <div
-                        className={`flex items-center gap-2 text-sm ${trend.direction === 'up'
+                        className={`flex items-center gap-2 text-sm ${
+                            trend.direction === 'up'
                                 ? 'text-secondary'
                                 : 'text-destructive'
-                            }`}
+                        }`}
                     >
                         {trend.direction === 'up' ? (
                             <FaArrowUp className="w-3 h-3" />
