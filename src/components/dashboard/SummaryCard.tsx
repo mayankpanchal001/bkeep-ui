@@ -53,11 +53,10 @@ const SummaryCard = ({
                 <p className="text-3xl font-bold text-primary mb-2">{value}</p>
                 {trend && (
                     <div
-                        className={`flex items-center gap-2 text-sm ${
-                            trend.direction === 'up'
+                        className={`flex items-center gap-2 text-sm ${trend.direction === 'up'
                                 ? 'text-secondary'
                                 : 'text-destructive'
-                        }`}
+                            }`}
                     >
                         {trend.direction === 'up' ? (
                             <FaArrowUp className="w-3 h-3" />
@@ -72,7 +71,7 @@ const SummaryCard = ({
             </div>
 
             {breakdown && breakdown.length > 0 && (
-                <div className="mb-4 space-y-2">
+                <div className="mb-4 flex flex-col gap-2">
                     {breakdown.map((item, index) => (
                         <div
                             key={index}
@@ -91,7 +90,7 @@ const SummaryCard = ({
 
             {aiNotes && aiNotes.length > 0 && (
                 <div className="pt-4 border-t border-primary/10">
-                    <div className="space-y-2">
+                    <div className="flex flex-col gap-2">
                         {aiNotes.map((note, index) => (
                             <p
                                 key={index}

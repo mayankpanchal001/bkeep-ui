@@ -9,8 +9,7 @@ import {
     ChevronDown,
     ChevronLeft,
     ChevronRight,
-    ExternalLink,
-    MessageSquare,
+    ExternalLink
 } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Button } from '../ui/button';
@@ -181,24 +180,6 @@ export function TransactionHeader({
                     </DropdownMenu>
                 </div>
 
-                {/* Right Actions */}
-                <div className="flex items-center gap-4">
-                    <button className="flex items-center gap-2 text-sm font-medium text-green-700 hover:text-green-800">
-                        <MessageSquare className="w-4 h-4" />
-                        Give feedback
-                    </button>
-
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button variant="outline">
-                                Requests
-                                <ChevronDown className="w-4 h-4 ml-2" />
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent>
-                            <DropdownMenuItem>No new requests</DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
 
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -220,7 +201,6 @@ export function TransactionHeader({
                             </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
-                </div>
             </div>
 
             {/* Account Cards Row */}

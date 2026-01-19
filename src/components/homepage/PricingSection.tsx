@@ -3,7 +3,7 @@ import { PRICING_PLANS } from './constants.tsx';
 const PricingSection = () => {
     return (
         <section id="pricing" className="mx-auto max-w-6xl px-6 py-20">
-            <div className="space-y-4 text-center">
+            <div className="flex flex-col gap-4 text-center">
                 <p className="text-xs font-semibold uppercase tracking-[0.45em] text-muted-foreground">
                     Pricing options
                 </p>
@@ -19,11 +19,10 @@ const PricingSection = () => {
                 {PRICING_PLANS.map((plan) => (
                     <div
                         key={plan.name}
-                        className={`rounded-3xl border border-border p-8 ${
-                            plan.highlight
+                        className={`rounded-3xl border border-border p-8 ${plan.highlight
                                 ? 'bg-gradient-to-br from-primary/15 via-muted/20 to-background'
                                 : 'bg-background'
-                        }`}
+                            }`}
                     >
                         {plan.highlight && (
                             <span className="inline-flex rounded-full border border-border px-3 py-1 text-xs font-semibold uppercase tracking-[0.35em] text-muted-foreground">

@@ -190,7 +190,7 @@ export default function KeyboardShortcuts({
 
                 {
                     <ScrollArea className="h-[calc(80vh-160px)]">
-                        <div className="p-4 space-y-4">
+                        <div className="p-4 flex flex-col gap-4">
                             {sections.map((sec) => {
                                 const matches = sec.items.filter((i) =>
                                     filtered.some((f) => f.id === i.id)
@@ -205,7 +205,7 @@ export default function KeyboardShortcuts({
                                                 No matches
                                             </div>
                                         ) : (
-                                            <ul className="space-y-2">
+                                            <ul className="flex flex-col gap-2">
                                                 {matches.map((it) => (
                                                     <li
                                                         key={it.id}
@@ -244,11 +244,11 @@ export default function KeyboardShortcuts({
                                                                             it
                                                                                 .keys
                                                                                 .length -
-                                                                                1 && (
-                                                                            <span className="text-primary/30">
-                                                                                +
-                                                                            </span>
-                                                                        )}
+                                                                            1 && (
+                                                                                <span className="text-primary/30">
+                                                                                    +
+                                                                                </span>
+                                                                            )}
                                                                     </span>
                                                                 )
                                                             )}
@@ -261,9 +261,9 @@ export default function KeyboardShortcuts({
                                                                 className="ml-2 p-1 rounded-md text-primary/40 hover:text-primary"
                                                             >
                                                                 {copied ===
-                                                                it.keys.join(
-                                                                    '+'
-                                                                ) ? (
+                                                                    it.keys.join(
+                                                                        '+'
+                                                                    ) ? (
                                                                     <Check className="w-3.5 h-3.5" />
                                                                 ) : (
                                                                     <Copy className="w-3.5 h-3.5" />

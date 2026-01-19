@@ -38,7 +38,7 @@ const ThemeSwitcher = ({ className }: ThemeSwitcherProps) => {
     const hasMoreThemes = THEME_PALETTES.length > INITIAL_THEMES_TO_SHOW;
 
     return (
-        <div className={cn('space-y-4', className)}>
+        <div className={cn('flex flex-col gap-4', className)}>
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                     <Palette className="h-5 w-5 text-muted-foreground" />

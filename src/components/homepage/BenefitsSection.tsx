@@ -3,7 +3,7 @@ import { CAPABILITY_FEATURES } from './constants.tsx';
 export default function BenefitsSection() {
     return (
         <section id="benefits" className="mx-auto max-w-6xl px-6 py-20">
-            <div className="space-y-4 text-center">
+            <div className="flex flex-col gap-4 text-center">
                 <p className="text-xs font-semibold uppercase tracking-[0.45em] text-muted-foreground">
                     Modern accounting starts here
                 </p>

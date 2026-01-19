@@ -459,7 +459,7 @@ export default function JournalEntriespage() {
     };
 
     return (
-        <div className="space-y-4">
+        <div className="flex flex-col gap-4">
             <PageHeader
                 title="Journal Entries"
                 subtitle={`${total} total entries`}
@@ -489,7 +489,7 @@ export default function JournalEntriespage() {
                                 className={cn(
                                     'gap-2',
                                     filterStore.sort &&
-                                        'border-primary/30 bg-primary/5'
+                                    'border-primary/30 bg-primary/5'
                                 )}
                             >
                                 <ArrowUpDown className="h-4 w-4" />
@@ -606,8 +606,8 @@ export default function JournalEntriespage() {
                                     filterStore.filterMaxAmount ||
                                     filterStore.startDate ||
                                     filterStore.endDate) && (
-                                    <span className="ml-2 h-2 w-2 rounded-full bg-accent" />
-                                )}
+                                        <span className="ml-2 h-2 w-2 rounded-full bg-accent" />
+                                    )}
                             </Button>
                         </DrawerTrigger>
                         <DrawerContent className="h-full w-full sm:w-[400px]">
@@ -623,7 +623,7 @@ export default function JournalEntriespage() {
                                     </DrawerClose>
                                 </div>
                             </DrawerHeader>
-                            <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                            <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-4">
                                 <div>
                                     <label className="text-sm font-medium text-primary/70 mb-2 block">
                                         Status
@@ -633,10 +633,10 @@ export default function JournalEntriespage() {
                                         onValueChange={(value) =>
                                             filterStore.setStatus(
                                                 value as
-                                                    | 'draft'
-                                                    | 'posted'
-                                                    | 'voided'
-                                                    | 'all'
+                                                | 'draft'
+                                                | 'posted'
+                                                | 'voided'
+                                                | 'all'
                                             )
                                         }
                                     >
@@ -953,10 +953,10 @@ export default function JournalEntriespage() {
                                             entry.isReversing
                                                 ? 'warning'
                                                 : entry.status === 'draft'
-                                                  ? 'secondary'
-                                                  : entry.status === 'posted'
-                                                    ? 'success'
-                                                    : 'destructive'
+                                                    ? 'secondary'
+                                                    : entry.status === 'posted'
+                                                        ? 'success'
+                                                        : 'destructive'
                                         }
                                     >
                                         {entry.isReversing
@@ -1304,8 +1304,8 @@ export default function JournalEntriespage() {
                             {isBulkLoading
                                 ? 'Processing...'
                                 : bulkDialog.type === 'post'
-                                  ? 'Post'
-                                  : 'Delete'}
+                                    ? 'Post'
+                                    : 'Delete'}
                         </AlertDialogAction>
                     </AlertDialogFooter>
                 </AlertDialogContent>

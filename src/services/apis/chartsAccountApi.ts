@@ -452,7 +452,7 @@ export async function importChartOfAccounts(
     const formData = new FormData();
     formData.append('file', file);
     if (mapping) {
-        formData.append('mapping', JSON.stringify(mapping));
+        formData.append('fieldMappings', JSON.stringify(mapping));
     }
 
     const response = await axiosInstance.post('/accounts/import', formData, {
@@ -494,7 +494,9 @@ export const useApplyAccountsTemplate = () => {
                 data?.message ||
                     'Chart of accounts template applied successfully'
             );
+            // Invalidate and refetch all accounts queries to refresh the list
             queryClient.invalidateQueries({ queryKey: ['accounts'] });
+            queryClient.refetchQueries({ queryKey: ['accounts'] });
         },
         onError: (error) => {
             console.error('Apply accounts template failed:', error);
@@ -548,7 +550,9 @@ export const useImportChartOfAccounts = () => {
             showSuccessToast(
                 data?.message || 'Chart of accounts imported successfully'
             );
+            // Invalidate and refetch all accounts queries to refresh the list
             queryClient.invalidateQueries({ queryKey: ['accounts'] });
+            queryClient.refetchQueries({ queryKey: ['accounts'] });
         },
         onError: (error) => {
             console.error('Import chart of accounts failed:', error);

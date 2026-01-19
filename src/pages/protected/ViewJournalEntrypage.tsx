@@ -82,7 +82,7 @@ export default function ViewJournalEntrypage() {
             return entry as unknown as JournalEntry;
         if (
             typeof (entry as { journalEntry?: unknown }).journalEntry ===
-                'object' &&
+            'object' &&
             (entry as { journalEntry?: Record<string, unknown> }).journalEntry
         ) {
             const nested = (entry as { journalEntry: Record<string, unknown> })
@@ -430,8 +430,8 @@ export default function ViewJournalEntrypage() {
                                     reorderMutation.isPending
                                         ? 'cursor-not-allowed opacity-30'
                                         : isDragging
-                                          ? 'cursor-grabbing opacity-50'
-                                          : 'cursor-grab opacity-100 hover:opacity-80'
+                                            ? 'cursor-grabbing opacity-50'
+                                            : 'cursor-grab opacity-100 hover:opacity-80'
                                 )}
                                 title={
                                     reorderMutation.isPending
@@ -457,9 +457,8 @@ export default function ViewJournalEntrypage() {
                 <div>
                     <div className="font-medium text-primary">
                         {line.account?.accountNumber
-                            ? `${line.account.accountNumber} - ${
-                                  line.account.accountName || ''
-                              }`.trim()
+                            ? `${line.account.accountNumber} - ${line.account.accountName || ''
+                                }`.trim()
                             : line.accountName || line.accountId}
                     </div>
                     {(line.account?.accountType || line.name) && (
@@ -530,7 +529,7 @@ export default function ViewJournalEntrypage() {
     }
 
     return (
-        <div className="space-y-4">
+        <div className="flex flex-col gap-4">
             <PageHeader
                 title={`Journal Entry ${formatText(journalEntry.entryNumber)}`}
                 subtitle={formatDateOnly(journalEntry.entryDate)}
@@ -566,19 +565,19 @@ export default function ViewJournalEntrypage() {
                     }
                     onRowDragOver={
                         journalEntry.status === 'draft' &&
-                        !reorderMutation.isPending
+                            !reorderMutation.isPending
                             ? (e, line) => handleDragOver(e, line.id)
                             : undefined
                     }
                     onRowDragLeave={
                         journalEntry.status === 'draft' &&
-                        !reorderMutation.isPending
+                            !reorderMutation.isPending
                             ? handleDragLeave
                             : undefined
                     }
                     onRowDrop={
                         journalEntry.status === 'draft' &&
-                        !reorderMutation.isPending
+                            !reorderMutation.isPending
                             ? (e, line) => handleDrop(e, line.id)
                             : undefined
                     }
@@ -656,8 +655,8 @@ export default function ViewJournalEntrypage() {
                                 journalEntry.status === 'draft'
                                     ? 'secondary'
                                     : journalEntry.status === 'posted'
-                                      ? 'success'
-                                      : 'destructive'
+                                        ? 'success'
+                                        : 'destructive'
                             }
                             className="text-primary/70"
                         >
@@ -699,13 +698,12 @@ export default function ViewJournalEntrypage() {
                             Additional Details
                         </h3>
                         <ChevronDown
-                            className={`w-4 h-4 text-primary/50 transition-transform duration-200 ${
-                                isDetailsOpen ? 'rotate-180' : ''
-                            }`}
+                            className={`w-4 h-4 text-primary/50 transition-transform duration-200 ${isDetailsOpen ? 'rotate-180' : ''
+                                }`}
                         />
                     </CollapsibleTrigger>
                     <CollapsibleContent>
-                        <div className="px-4 pb-4 space-y-4">
+                        <div className="px-4 pb-4 flex flex-col gap-4">
                             {/*                            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 pt-4">
                                 <div>
                                     <label className="block text-sm font-medium text-primary/50 mb-1">
@@ -881,7 +879,7 @@ export default function ViewJournalEntrypage() {
                         <h3 className="text-sm font-medium text-primary mb-2">
                             Attachments
                         </h3>
-                        <div className="space-y-2">
+                        <div className="flex flex-col gap-2">
                             {attachments.map((attachment, index) => (
                                 <div
                                     key={index}

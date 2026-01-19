@@ -160,8 +160,8 @@ export default function TenantsTab() {
                 : '',
             dateOfIncorporation: tenant.dateOfIncorporation
                 ? new Date(tenant.dateOfIncorporation)
-                      .toISOString()
-                      .split('T')[0]
+                    .toISOString()
+                    .split('T')[0]
                 : '',
         });
         setEditErrors({});
@@ -233,8 +233,8 @@ export default function TenantsTab() {
                 : '',
             dateOfIncorporation: tenant.dateOfIncorporation
                 ? new Date(tenant.dateOfIncorporation)
-                      .toISOString()
-                      .split('T')[0]
+                    .toISOString()
+                    .split('T')[0]
                 : '',
         });
     }, [editingTenantResponse?.data]);
@@ -415,7 +415,7 @@ export default function TenantsTab() {
     }
 
     return (
-        <div className="w-full space-y-4">
+        <div className="w-full flex flex-col gap-4">
             <div className="flex items-center justify-between">
                 <div>
                     <h3 className="text-lg font-semibold text-primary">
@@ -503,10 +503,10 @@ export default function TenantsTab() {
                                         {header.isPlaceholder
                                             ? null
                                             : flexRender(
-                                                  header.column.columnDef
-                                                      .header,
-                                                  header.getContext()
-                                              )}
+                                                header.column.columnDef
+                                                    .header,
+                                                header.getContext()
+                                            )}
                                     </TableHead>
                                 );
                             })}
@@ -607,7 +607,7 @@ export default function TenantsTab() {
                         </AlertDialogTitle>
                     </AlertDialogHeader>
 
-                    <form onSubmit={handleEditSubmit} className="space-y-4">
+                    <form onSubmit={handleEditSubmit} className="flex flex-col gap-4">
                         {isLoadingEditTenant ? (
                             <div className="flex justify-center items-center gap-2 text-primary/50">
                                 <div className="animate-spin w-4 h-4 border-2 border-primary/50 border-t-transparent rounded-full" />
@@ -772,7 +772,7 @@ export default function TenantsTab() {
                             Loading...
                         </div>
                     ) : (
-                        <div className="space-y-4">
+                        <div className="flex flex-col gap-4">
                             <Input
                                 id="details-tenant-name"
                                 value={detailsTenantResponse?.data?.name || ''}
@@ -802,10 +802,10 @@ export default function TenantsTab() {
                                     value={
                                         detailsTenantResponse?.data?.fiscalYear
                                             ? new Date(
-                                                  detailsTenantResponse.data.fiscalYear
-                                              )
-                                                  .toISOString()
-                                                  .split('T')[0]
+                                                detailsTenantResponse.data.fiscalYear
+                                            )
+                                                .toISOString()
+                                                .split('T')[0]
                                             : ''
                                     }
                                     type="date"
@@ -817,10 +817,10 @@ export default function TenantsTab() {
                                         detailsTenantResponse?.data
                                             ?.dateOfIncorporation
                                             ? new Date(
-                                                  detailsTenantResponse.data.dateOfIncorporation
-                                              )
-                                                  .toISOString()
-                                                  .split('T')[0]
+                                                detailsTenantResponse.data.dateOfIncorporation
+                                            )
+                                                .toISOString()
+                                                .split('T')[0]
                                             : ''
                                     }
                                     type="date"

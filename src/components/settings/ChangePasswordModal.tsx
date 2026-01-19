@@ -62,15 +62,15 @@ const ChangePasswordModal = ({ isOpen, onClose }: ChangePasswordModalProps) => {
         } catch (error: unknown) {
             const message =
                 error &&
-                typeof error === 'object' &&
-                'response' in error &&
-                error.response &&
-                typeof error.response === 'object' &&
-                'data' in error.response &&
-                error.response.data &&
-                typeof error.response.data === 'object' &&
-                'message' in error.response.data &&
-                typeof error.response.data.message === 'string'
+                    typeof error === 'object' &&
+                    'response' in error &&
+                    error.response &&
+                    typeof error.response === 'object' &&
+                    'data' in error.response &&
+                    error.response.data &&
+                    typeof error.response.data === 'object' &&
+                    'message' in error.response.data &&
+                    typeof error.response.data.message === 'string'
                     ? error.response.data.message
                     : 'Failed to update password';
             setError(message);
@@ -98,7 +98,7 @@ const ChangePasswordModal = ({ isOpen, onClose }: ChangePasswordModalProps) => {
                 </div>
 
                 {/* Form */}
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                     <Input
                         id="current-password"
                         placeholder="Enter current password"

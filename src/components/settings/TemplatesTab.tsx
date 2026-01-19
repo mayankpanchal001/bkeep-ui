@@ -104,7 +104,7 @@ const TemplatesTab = () => {
     }
 
     return (
-        <div className="space-y-4 py-4">
+        <div className="flex flex-col gap-4 py-4">
             <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
                 <div className="flex-1">
                     <Input
@@ -168,11 +168,10 @@ const TemplatesTab = () => {
                                             onClick={() =>
                                                 setSelectedTemplateId(t.id)
                                             }
-                                            className={`w-full text-left px-4 py-3 transition-colors ${
-                                                isSelected
+                                            className={`w-full text-left px-4 py-3 transition-colors ${isSelected
                                                     ? 'bg-primary/5'
                                                     : 'hover:bg-primary/5'
-                                            }`}
+                                                }`}
                                         >
                                             <div className="flex items-start justify-between gap-3">
                                                 <div className="min-w-0">
@@ -184,11 +183,10 @@ const TemplatesTab = () => {
                                                     </p>
                                                 </div>
                                                 <span
-                                                    className={`shrink-0 text-[10px] px-2 py-1 rounded-full border ${
-                                                        t.isActive
+                                                    className={`shrink-0 text-[10px] px-2 py-1 rounded-full border ${t.isActive
                                                             ? 'border-green-600/20 bg-green-600/10 text-green-700'
                                                             : 'border-primary/10 bg-card text-primary/60'
-                                                    }`}
+                                                        }`}
                                                 >
                                                     {t.isActive
                                                         ? 'Active'
@@ -255,7 +253,7 @@ const TemplatesTab = () => {
                                     Loading preview...
                                 </div>
                             ) : accountsPreview ? (
-                                <div className="space-y-4">
+                                <div className="flex flex-col gap-4">
                                     <div className="flex items-start justify-between gap-3">
                                         <div>
                                             <p className="text-base font-medium text-primary">
@@ -355,7 +353,7 @@ const TemplatesTab = () => {
                                 Loading preview...
                             </div>
                         ) : taxPreviewData?.data ? (
-                            <div className="space-y-4">
+                            <div className="flex flex-col gap-4">
                                 <div className="flex items-start justify-between gap-3">
                                     <div>
                                         <p className="text-base font-medium text-primary">

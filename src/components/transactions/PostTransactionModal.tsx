@@ -129,7 +129,7 @@ export function PostTransactionModal({
                 <Form {...form}>
                     <form
                         onSubmit={form.handleSubmit(onSubmit)}
-                        className="space-y-4"
+                        className="flex flex-col gap-4"
                     >
                         <FormField
                             control={form.control}
@@ -175,8 +175,8 @@ export function PostTransactionModal({
                                             value={
                                                 field.value
                                                     ? new Date(field.value)
-                                                          .toISOString()
-                                                          .split('T')[0]
+                                                        .toISOString()
+                                                        .split('T')[0]
                                                     : ''
                                             }
                                             onChange={(e) => {

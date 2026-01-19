@@ -372,9 +372,9 @@ function Table({
     const containerClasses = cn(
         'relative w-full overflow-hidden max-h-full',
         borderStyle === 'default' &&
-            'rounded-md border border-border bg-background',
+        'rounded-md border border-border bg-background',
         borderStyle === 'minimal' &&
-            'rounded-md border border-border/60 bg-background',
+        'rounded-md border border-border/60 bg-background',
         borderStyle === 'none' && '',
         containerClassName
     );
@@ -406,12 +406,12 @@ function Table({
                         value={
                             hasResizableColumns
                                 ? {
-                                      columns,
-                                      registerColumn,
-                                      unregisterColumn,
-                                      columnLayout: computedLayout,
-                                      setColumnLayout,
-                                  }
+                                    columns,
+                                    registerColumn,
+                                    unregisterColumn,
+                                    columnLayout: computedLayout,
+                                    setColumnLayout,
+                                }
                                 : null
                         }
                     >
@@ -446,14 +446,14 @@ function Table({
                                                     Array.isArray(layout)
                                                         ? (layout as number[])
                                                         : columns.map(
-                                                              (c) =>
-                                                                  (
-                                                                      layout as Record<
-                                                                          string,
-                                                                          number
-                                                                      >
-                                                                  )[c.id] ?? 0
-                                                          );
+                                                            (c) =>
+                                                                (
+                                                                    layout as Record<
+                                                                        string,
+                                                                        number
+                                                                    >
+                                                                )[c.id] ?? 0
+                                                        );
                                                 setColumnLayout(next);
                                                 updateOverlayWidth();
                                             }}
@@ -468,7 +468,7 @@ function Table({
                                                             id={col.id}
                                                             defaultSize={
                                                                 computedLayout[
-                                                                    idx
+                                                                idx
                                                                 ]
                                                             }
                                                             minSize={
@@ -481,9 +481,9 @@ function Table({
                                                         />
                                                         {idx <
                                                             columns.length -
-                                                                1 && (
-                                                            <ResizableHandle className="pointer-events-auto w-2 bg-transparent after:w-1 after:bg-border/40 hover:after:bg-border" />
-                                                        )}
+                                                            1 && (
+                                                                <ResizableHandle className="pointer-events-auto w-2 bg-transparent after:w-1 after:bg-border/40 hover:after:bg-border" />
+                                                            )}
                                                     </React.Fragment>
                                                 );
                                             })}
@@ -1138,7 +1138,7 @@ function TableLoadingState({ colSpan, rows = 5 }: TableLoadingStateProps) {
                     <td colSpan={colSpan} className="px-3 py-3">
                         <div className="flex items-center gap-3">
                             <div className="h-4 w-4 rounded bg-muted" />
-                            <div className="flex-1 space-y-2">
+                            <div className="flex-1 flex flex-col gap-2">
                                 <div
                                     className="h-4 rounded bg-muted"
                                     style={{
@@ -1297,5 +1297,6 @@ export {
     TableRow,
     TableRowCheckbox,
     TableSelectAllCheckbox,
-    TableSelectionToolbar,
+    TableSelectionToolbar
 };
+

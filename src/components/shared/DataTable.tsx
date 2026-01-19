@@ -107,7 +107,7 @@ export function DataTable<T extends { [key: string]: any }>({
         : undefined;
 
     return (
-        <div className="w-full space-y-4">
+        <div className="w-full flex flex-col gap-4">
             <Table
                 enableSelection={!!onSelectionChange}
                 rowIds={rowIds}
@@ -209,48 +209,48 @@ export function DataTable<T extends { [key: string]: any }>({
                                     onDragOver={
                                         onRowDragOver
                                             ? (e) => {
-                                                  // Always prevent default to allow drop
-                                                  e.preventDefault();
-                                                  e.stopPropagation();
-                                                  onRowDragOver(e, item);
-                                              }
+                                                // Always prevent default to allow drop
+                                                e.preventDefault();
+                                                e.stopPropagation();
+                                                onRowDragOver(e, item);
+                                            }
                                             : undefined
                                     }
                                     onDragEnter={
                                         onRowDragOver
                                             ? (e) => {
-                                                  // Prevent default to allow drop
-                                                  e.preventDefault();
-                                                  e.stopPropagation();
-                                                  // Also trigger dragOver to ensure state is updated
-                                                  onRowDragOver(e, item);
-                                              }
+                                                // Prevent default to allow drop
+                                                e.preventDefault();
+                                                e.stopPropagation();
+                                                // Also trigger dragOver to ensure state is updated
+                                                onRowDragOver(e, item);
+                                            }
                                             : undefined
                                     }
                                     onDragLeave={
                                         onRowDragLeave
                                             ? (e) => {
-                                                  // Don't stop propagation - let the parent handle it
-                                                  // This ensures dragLeave works correctly with only 2 lines
-                                                  onRowDragLeave(e);
-                                              }
+                                                // Don't stop propagation - let the parent handle it
+                                                // This ensures dragLeave works correctly with only 2 lines
+                                                onRowDragLeave(e);
+                                            }
                                             : undefined
                                     }
                                     onDrop={
                                         onRowDrop
                                             ? (e) => {
-                                                  e.preventDefault();
-                                                  e.stopPropagation();
-                                                  onRowDrop(e, item);
-                                              }
+                                                e.preventDefault();
+                                                e.stopPropagation();
+                                                onRowDrop(e, item);
+                                            }
                                             : undefined
                                     }
                                     onDragEnd={
                                         onRowDragEnd
                                             ? (e) => {
-                                                  e.stopPropagation();
-                                                  onRowDragEnd(e);
-                                              }
+                                                e.stopPropagation();
+                                                onRowDragEnd(e);
+                                            }
                                             : undefined
                                     }
                                 >
@@ -272,10 +272,10 @@ export function DataTable<T extends { [key: string]: any }>({
                                             {column.cell
                                                 ? column.cell(item)
                                                 : column.accessorKey
-                                                  ? (item[
+                                                    ? (item[
                                                         column.accessorKey
                                                     ] as ReactNode)
-                                                  : null}
+                                                    : null}
                                         </TableCell>
                                     ))}
                                 </TableRow>

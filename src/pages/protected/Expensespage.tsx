@@ -316,7 +316,7 @@ const Expensespage = () => {
                                 ×
                             </button>
                         </div>
-                        <form className="space-y-4">
+                        <form className="flex flex-col gap-4">
                             <div className="grid grid-cols-2 gap-4">
                                 <Input id="expense-date" type="date" required />
                                 <Input

@@ -166,10 +166,10 @@ const CreateInvoiceModal = ({
         const q = customerSearch.trim().toLowerCase();
         return q
             ? MOCK_CUSTOMERS.filter(
-                  (c) =>
-                      c.name.toLowerCase().includes(q) ||
-                      c.email?.toLowerCase().includes(q)
-              )
+                (c) =>
+                    c.name.toLowerCase().includes(q) ||
+                    c.email?.toLowerCase().includes(q)
+            )
             : MOCK_CUSTOMERS;
     }, [customerSearch]);
 
@@ -367,7 +367,7 @@ const CreateInvoiceModal = ({
                             className="flex-1 p-6 space-y-6 mt-0"
                         >
                             {/* Invoice Number */}
-                            <div className="space-y-2">
+                            <div className="flex flex-col gap-2">
                                 <Label htmlFor="invoiceNumber">
                                     Invoice Number
                                 </Label>
@@ -386,7 +386,7 @@ const CreateInvoiceModal = ({
 
                             {/* Dates */}
                             <div className="grid grid-cols-2 gap-4">
-                                <div className="space-y-2">
+                                <div className="flex flex-col gap-2">
                                     <Label htmlFor="issueDate">
                                         Issue Date
                                     </Label>
@@ -405,7 +405,7 @@ const CreateInvoiceModal = ({
                                         }
                                     />
                                 </div>
-                                <div className="space-y-2">
+                                <div className="flex flex-col gap-2">
                                     <Label htmlFor="dueDate">Due Date</Label>
                                     <Input
                                         id="dueDate"
@@ -425,7 +425,7 @@ const CreateInvoiceModal = ({
                             </div>
 
                             {/* Customer Selection */}
-                            <div className="space-y-2">
+                            <div className="flex flex-col gap-2">
                                 <Label>Customer</Label>
                                 <Popover
                                     open={customerOpen}
@@ -607,7 +607,7 @@ const CreateInvoiceModal = ({
                             <Separator />
 
                             {/* CC Email */}
-                            <div className="space-y-2">
+                            <div className="flex flex-col gap-2">
                                 <Label htmlFor="ccEmail">
                                     CC Email (optional)
                                 </Label>
@@ -627,7 +627,7 @@ const CreateInvoiceModal = ({
                             </div>
 
                             {/* Memo */}
-                            <div className="space-y-2">
+                            <div className="flex flex-col gap-2">
                                 <Label htmlFor="memo">
                                     Internal Memo (optional)
                                 </Label>
@@ -646,7 +646,7 @@ const CreateInvoiceModal = ({
                             </div>
 
                             {/* Notes */}
-                            <div className="space-y-2">
+                            <div className="flex flex-col gap-2">
                                 <Label htmlFor="notes">
                                     Notes (shown on invoice)
                                 </Label>
@@ -701,7 +701,7 @@ const CreateInvoiceModal = ({
                                     </Button>
                                 </div>
                             ) : (
-                                <div className="space-y-4">
+                                <div className="flex flex-col gap-4">
                                     {formData.lineItems.map((item, index) => (
                                         <div
                                             key={item.id}
@@ -727,8 +727,8 @@ const CreateInvoiceModal = ({
                                                     <Trash2 className="h-4 w-4" />
                                                 </Button>
                                             </div>
-                                            <div className="space-y-4">
-                                                <div className="space-y-2">
+                                            <div className="flex flex-col gap-4">
+                                                <div className="flex flex-col gap-2">
                                                     <Label>Description</Label>
                                                     <Input
                                                         value={item.description}
@@ -743,7 +743,7 @@ const CreateInvoiceModal = ({
                                                     />
                                                 </div>
                                                 <div className="grid grid-cols-3 gap-3">
-                                                    <div className="space-y-2">
+                                                    <div className="flex flex-col gap-2">
                                                         <Label>Quantity</Label>
                                                         <Input
                                                             type="number"
@@ -762,7 +762,7 @@ const CreateInvoiceModal = ({
                                                             step="1"
                                                         />
                                                     </div>
-                                                    <div className="space-y-2">
+                                                    <div className="flex flex-col gap-2">
                                                         <Label>Price</Label>
                                                         <Input
                                                             type="number"
@@ -781,12 +781,12 @@ const CreateInvoiceModal = ({
                                                             step="0.01"
                                                         />
                                                     </div>
-                                                    <div className="space-y-2">
+                                                    <div className="flex flex-col gap-2">
                                                         <Label>Total</Label>
                                                         <div className="h-10 px-3 flex items-center bg-muted rounded-md text-sm font-medium">
                                                             {formatCurrency(
                                                                 item.qty *
-                                                                    item.price
+                                                                item.price
                                                             )}
                                                         </div>
                                                     </div>
@@ -800,7 +800,7 @@ const CreateInvoiceModal = ({
                             {/* Tax and Discount */}
                             <Separator />
                             <div className="grid grid-cols-2 gap-4">
-                                <div className="space-y-2">
+                                <div className="flex flex-col gap-2">
                                     <Label htmlFor="taxRate">Tax Rate</Label>
                                     <Input
                                         id="taxRate"
@@ -822,7 +822,7 @@ const CreateInvoiceModal = ({
                                         }
                                     />
                                 </div>
-                                <div className="space-y-2">
+                                <div className="flex flex-col gap-2">
                                     <Label htmlFor="discount">Discount</Label>
                                     <div className="flex gap-2">
                                         <Input
@@ -870,7 +870,7 @@ const CreateInvoiceModal = ({
                             </div>
 
                             {/* Totals Summary */}
-                            <div className="bg-muted/50 rounded-lg p-4 space-y-2">
+                            <div className="bg-muted/50 rounded-lg p-4 flex flex-col gap-2">
                                 <div className="flex justify-between text-sm">
                                     <span className="text-muted-foreground">
                                         Subtotal
@@ -884,11 +884,11 @@ const CreateInvoiceModal = ({
                                         <span className="text-muted-foreground">
                                             Discount (
                                             {formData.discountType ===
-                                            'percentage'
+                                                'percentage'
                                                 ? `${formData.discount}%`
                                                 : formatCurrency(
-                                                      formData.discount
-                                                  )}
+                                                    formData.discount
+                                                )}
                                             )
                                         </span>
                                         <span className="font-medium text-destructive">
@@ -928,8 +928,8 @@ const CreateInvoiceModal = ({
                                 </p>
 
                                 {/* Logo Upload */}
-                                <div className="space-y-4">
-                                    <div className="space-y-2">
+                                <div className="flex flex-col gap-4">
+                                    <div className="flex flex-col gap-2">
                                         <Label>Company Logo</Label>
                                         <div className="flex items-center gap-4">
                                             {companyInfo.logo ? (
@@ -977,7 +977,7 @@ const CreateInvoiceModal = ({
                                         </div>
                                     </div>
 
-                                    <div className="space-y-2">
+                                    <div className="flex flex-col gap-2">
                                         <Label htmlFor="companyName">
                                             Company Name
                                         </Label>
@@ -996,7 +996,7 @@ const CreateInvoiceModal = ({
                                         />
                                     </div>
 
-                                    <div className="space-y-2">
+                                    <div className="flex flex-col gap-2">
                                         <Label htmlFor="companyAddress">
                                             Address
                                         </Label>
@@ -1016,7 +1016,7 @@ const CreateInvoiceModal = ({
                                     </div>
 
                                     <div className="grid grid-cols-2 gap-4">
-                                        <div className="space-y-2">
+                                        <div className="flex flex-col gap-2">
                                             <Label htmlFor="companyCity">
                                                 City
                                             </Label>
@@ -1031,7 +1031,7 @@ const CreateInvoiceModal = ({
                                                 }
                                             />
                                         </div>
-                                        <div className="space-y-2">
+                                        <div className="flex flex-col gap-2">
                                             <Label htmlFor="companyPostal">
                                                 Postal Code
                                             </Label>
@@ -1049,7 +1049,7 @@ const CreateInvoiceModal = ({
                                         </div>
                                     </div>
 
-                                    <div className="space-y-2">
+                                    <div className="flex flex-col gap-2">
                                         <Label htmlFor="companyCountry">
                                             Country
                                         </Label>
@@ -1065,7 +1065,7 @@ const CreateInvoiceModal = ({
                                         />
                                     </div>
 
-                                    <div className="space-y-2">
+                                    <div className="flex flex-col gap-2">
                                         <Label htmlFor="companyEmail">
                                             Email
                                         </Label>
@@ -1121,7 +1121,7 @@ const CreateInvoiceModal = ({
                         <div className="p-8">
                             {/* Invoice Meta */}
                             <div className="grid grid-cols-2 gap-8 mb-8">
-                                <div className="space-y-4">
+                                <div className="flex flex-col gap-4">
                                     <div>
                                         <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1">
                                             From
@@ -1144,7 +1144,7 @@ const CreateInvoiceModal = ({
                                         </p>
                                     </div>
                                 </div>
-                                <div className="space-y-4">
+                                <div className="flex flex-col gap-4">
                                     <div>
                                         <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1">
                                             Bill To
@@ -1261,7 +1261,7 @@ const CreateInvoiceModal = ({
                                                     <td className="py-3 text-right font-medium text-foreground">
                                                         {formatCurrency(
                                                             item.qty *
-                                                                item.price
+                                                            item.price
                                                         )}
                                                     </td>
                                                 </tr>
@@ -1272,7 +1272,7 @@ const CreateInvoiceModal = ({
                             </div>
 
                             {/* Totals */}
-                            <div className="border-t border-border pt-4 space-y-2">
+                            <div className="border-t border-border pt-4 flex flex-col gap-2">
                                 <div className="flex justify-between text-sm">
                                     <span className="text-muted-foreground">
                                         Subtotal
@@ -1286,11 +1286,11 @@ const CreateInvoiceModal = ({
                                         <span className="text-muted-foreground">
                                             Discount (
                                             {formData.discountType ===
-                                            'percentage'
+                                                'percentage'
                                                 ? `${formData.discount}%`
                                                 : formatCurrency(
-                                                      formData.discount
-                                                  )}
+                                                    formData.discount
+                                                )}
                                             )
                                         </span>
                                         <span className="text-destructive">

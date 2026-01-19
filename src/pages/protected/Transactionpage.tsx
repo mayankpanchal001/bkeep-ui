@@ -516,8 +516,8 @@ const Transactionpage = () => {
                                         filterStore.filterEndDate ||
                                         filterStore.filterMinAmount ||
                                         filterStore.filterMaxAmount) && (
-                                        <span className="ml-2 h-2 w-2 rounded-full bg-accent" />
-                                    )}
+                                            <span className="ml-2 h-2 w-2 rounded-full bg-accent" />
+                                        )}
                                 </Button>
                             </DrawerTrigger>
                             <DrawerContent className="h-full w-full sm:w-[400px]">
@@ -533,7 +533,7 @@ const Transactionpage = () => {
                                         </DrawerClose>
                                     </div>
                                 </DrawerHeader>
-                                <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                                <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-4">
                                     <div>
                                         <label className="text-sm font-medium text-primary/70 mb-2 block">
                                             Date Range
@@ -819,7 +819,7 @@ const Transactionpage = () => {
                                                         const rate =
                                                             (value &&
                                                                 TAX_RATE_BY_ID[
-                                                                    value
+                                                                value
                                                                 ]) ||
                                                             0;
                                                         setTransactions(
@@ -871,8 +871,8 @@ const Transactionpage = () => {
                                                 value={
                                                     t.fromTo
                                                         ? contactNameById.get(
-                                                              t.fromTo
-                                                          ) || t.fromTo
+                                                            t.fromTo
+                                                        ) || t.fromTo
                                                         : ''
                                                 }
                                                 onChange={(value) => {
@@ -889,11 +889,11 @@ const Transactionpage = () => {
                                                         prev.map((tx) =>
                                                             tx.id === t.id
                                                                 ? {
-                                                                      ...tx,
-                                                                      fromTo:
-                                                                          contactId ||
-                                                                          undefined,
-                                                                  }
+                                                                    ...tx,
+                                                                    fromTo:
+                                                                        contactId ||
+                                                                        undefined,
+                                                                }
                                                                 : tx
                                                         )
                                                     );
@@ -916,13 +916,13 @@ const Transactionpage = () => {
                                                                 prev.map(
                                                                     (tx) =>
                                                                         tx.id ===
-                                                                        t.id
+                                                                            t.id
                                                                             ? {
-                                                                                  ...tx,
-                                                                                  category:
-                                                                                      value ||
-                                                                                      undefined,
-                                                                              }
+                                                                                ...tx,
+                                                                                category:
+                                                                                    value ||
+                                                                                    undefined,
+                                                                            }
                                                                             : tx
                                                                 )
                                                         );
@@ -944,10 +944,10 @@ const Transactionpage = () => {
                                                         prev.map((tx) =>
                                                             tx.id === t.id
                                                                 ? {
-                                                                      ...tx,
-                                                                      matched:
-                                                                          !tx.matched,
-                                                                  }
+                                                                    ...tx,
+                                                                    matched:
+                                                                        !tx.matched,
+                                                                }
                                                                 : tx
                                                         )
                                                     );

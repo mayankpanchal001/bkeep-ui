@@ -15,14 +15,14 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
+import { CurrencyInput } from '@/pages/protected/CreateJournalEntrypage';
+import { useChartOfAccounts } from '@/services/apis/chartsAccountApi';
 import { useContacts } from '@/services/apis/contactsApi';
 import { useTaxes } from '@/services/apis/taxApi';
 import type { CreateJournalEntryPayload } from '@/types/journal';
 import { Save } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { FaPlus, FaTrash } from 'react-icons/fa';
-import { CurrencyInput } from '@/pages/protected/CreateJournalEntrypage';
-import { useChartOfAccounts } from '@/services/apis/chartsAccountApi';
 
 type JournalEntryFormProps = {
     initialData?: Partial<CreateJournalEntryPayload>;
@@ -564,18 +564,17 @@ export function JournalEntryForm({
                         </span>
                     </span>
                     <span
-                        className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                            isBalanced
+                        className={`px-2 py-1 rounded-full text-xs font-semibold ${isBalanced
                                 ? 'bg-green-100 text-green-700'
                                 : 'bg-red-100 text-red-700'
-                        }`}
+                            }`}
                     >
                         {isBalanced ? 'Balanced' : 'Not balanced'}
                     </span>
                 </div>
             </div>
 
-            <div className="space-y-2">
+            <div className="flex flex-col gap-2">
                 <label className="input-label">Memo</label>
                 <div className="input-wrap">
                     <textarea

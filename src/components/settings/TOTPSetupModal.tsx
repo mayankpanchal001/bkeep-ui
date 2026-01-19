@@ -192,7 +192,7 @@ const TOTPSetupModal = ({
                                 <FaKey className="w-4 h-4" />
                                 Can't scan? Enter manually
                             </h4>
-                            <div className="space-y-2">
+                            <div className="flex flex-col gap-2">
                                 <p className="text-xs text-primary/50 mb-2">
                                     Secret Key:
                                 </p>

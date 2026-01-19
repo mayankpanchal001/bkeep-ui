@@ -350,7 +350,7 @@ function SidebarInput({
             inputSize={inputSize}
             endIcon={<Search />}
             className={cn(
-                'max-sm:hidden bg-sidebar-accent text-sidebar-foreground border-sidebar-border shadow-none placeholder:text-sidebar-foreground/60',
+                ' max-sm:hidden ',
                 className
             )}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -605,7 +605,7 @@ function SidebarMenuAction({
                 'peer-data-[size=lg]/menu-button:top-2.5',
                 'group-data-[collapsible=icon]:hidden',
                 showOnHover &&
-                    'peer-data-[active=true]/menu-button:text-sidebar-accent-foreground group-focus-within/menu-item:opacity-100 group-hover/menu-item:opacity-100 data-[state=open]:opacity-100 md:opacity-0',
+                'peer-data-[active=true]/menu-button:text-sidebar-accent-foreground group-focus-within/menu-item:opacity-100 group-hover/menu-item:opacity-100 data-[state=open]:opacity-100 md:opacity-0',
                 className
             )}
             {...props}
@@ -761,5 +761,5 @@ export {
     SidebarRail,
     SidebarSeparator,
     SidebarTrigger,
-    useSidebar,
+    useSidebar
 };

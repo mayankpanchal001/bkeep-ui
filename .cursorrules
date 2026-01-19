@@ -1,0 +1,367 @@
+# BKeep Accounting Frontend - Cursor Rules
+
+## Project Overview
+This is a React 19 + TypeScript accounting application built with Vite, using modern UI libraries and state management patterns.
+
+## Tech Stack
+- **Framework**: React 19.1.0 with TypeScript 5.8.3
+- **Build Tool**: Vite 7.0.4
+- **Styling**: Tailwind CSS 4.1.11 with `tailwind-merge` and `clsx`
+- **UI Components**: Radix UI primitives (comprehensive set)
+- **State Management**: Zustand 5.0.8
+- **Data Fetching**: TanStack React Query 5.90.7
+- **Routing**: React Router 7.8.2
+- **Forms**: React Hook Form 7.69.0 + Zod 4.3.4
+- **HTTP Client**: Axios 1.13.2
+- **Icons**: Lucide React 0.562.0
+- **Charts**: Recharts 3.3.0
+- **Theming**: next-themes 0.4.6
+
+## Code Style & Formatting
+- **Indentation**: 4 spaces (no tabs)
+- **Quotes**: Single quotes for strings
+- **Semicolons**: Always use semicolons
+- **Line Length**: 80 characters (printWidth: 80)
+- **Trailing Commas**: ES5 style
+- **Bracket Spacing**: true
+- **JSX Quotes**: Double quotes for JSX attributes
+
+## File Structure & Organization
+
+### Directory Structure
+```
+src/
+├── components/          # React components
+│   ├── ui/             # Reusable UI primitives (Radix-based)
+│   ├── shared/         # Shared components across features
+│   ├── auth/           # Authentication components
+│   ├── transactions/   # Transaction-specific components
+│   └── [feature]/      # Feature-specific components
+├── pages/              # Page components (route-level)
+│   ├── protected/      # Authenticated pages
+│   └── public/         # Public pages
+├── services/
+│   └── apis/           # API service functions
+├── stores/             # Zustand state stores
+├── types/              # TypeScript type definitions
+├── utils/              # Utility functions
+├── utills/             # Additional utilities (note: typo in folder name)
+├── hooks/              # Custom React hooks
+├── routes/             # Route definitions
+├── constants/          # Application constants
+└── config/             # Configuration files
+```
+
+### Naming Conventions
+- **Components**: PascalCase (e.g., `TransactionHeader.tsx`)
+- **Files**: PascalCase for components, camelCase for utilities
+- **Functions/Variables**: camelCase
+- **Types/Interfaces**: PascalCase
+- **Constants**: UPPER_SNAKE_CASE
+- **Hooks**: camelCase starting with `use` (e.g., `useTransactions`)
+
+## Component Patterns
+
+### Component Structure
+1. **Imports**: Group by type (external libs, internal components, types, utils)
+2. **Types/Interfaces**: Define at top of file or in separate types file
+3. **Component**: Export as named export
+4. **Props**: Use TypeScript interfaces extending React component props when needed
+
+### UI Components (Radix-based)
+- Located in `src/components/ui/`
+- Use `cn()` utility for className merging
+- Use `class-variance-authority` (CVA) for variant management
+- Follow Radix UI composition patterns
+- Support `asChild` prop pattern when appropriate
+- Include proper TypeScript types with `VariantProps`
+
+Example:
+```tsx
+import { cva, type VariantProps } from 'class-variance-authority';
+import { cn } from '../../utils/cn';
+
+const buttonVariants = cva(
+    'base-classes',
+    {
+        variants: { /* ... */ },
+        defaultVariants: { /* ... */ }
+    }
+);
+
+export interface ButtonProps
+    extends React.ComponentProps<'button'>,
+        VariantProps<typeof buttonVariants> {
+    // Additional props
+}
+```
+
+### Icons
+- Use Lucide React icons
+- Import from centralized `Icons` object in `src/components/shared/Icons.tsx`
+- Example: `<Icons.Transactions className="size-4" />`
+
+## API & Data Fetching Patterns
+
+### API Services
+- Located in `src/services/apis/`
+- Use `axiosInstance` from `src/services/axiosClient.ts`
+- Export async functions for API calls
+- Export React Query hooks using `useQuery`/`useMutation`
+- Use descriptive names: `getContacts`, `createContact`, `updateContact`, `deleteContact`
+- Handle query parameters with `URLSearchParams`
+- Return typed responses
+
+Example:
+```tsx
+export async function getContacts(
+    params: ContactsQueryParams = {}
+): Promise<ContactsListResponse> {
+    const queryParams = new URLSearchParams();
+    if (params.page !== undefined)
+        queryParams.append('page', String(params.page));
+    // ... more params
+    
+    const response = await axiosInstance.get(
+        `/contacts${queryParams.toString() ? `?${queryParams.toString()}` : ''}`
+    );
+    return response.data;
+}
+
+export const useContacts = (params?: ContactsQueryParams) =>
+    useQuery<ContactsListResponse>({
+        queryKey: ['contacts', params],
+        queryFn: () => getContacts(params),
+    });
+```
+
+### React Query Patterns
+- Use stable query keys that include all filter parameters
+- Use `useQuery` for GET requests
+- Use `useMutation` for POST/PUT/DELETE requests
+- Handle loading, error, and success states
+- Show toast notifications for mutations (success/error)
+
+## State Management (Zustand)
+
+### Store Structure
+- Stores in `src/stores/[feature]/[feature]Store.ts`
+- Selectors in `src/stores/[feature]/[feature]Selectore.ts` (note: typo in "Selectore")
+- Use `create` from zustand
+- Persist to localStorage when needed
+- Export typed stores and selectors
+
+Example:
+```tsx
+export const AuthStore = create<AuthState>((set, get) => ({
+    // Initial state
+    user: null,
+    isAuthenticated: false,
+    
+    // Actions
+    setAuth: (user, accessToken, refreshToken) => {
+        localStorage.setItem('user', JSON.stringify(user));
+        set({ user, isAuthenticated: true });
+    },
+    
+    clearAuth: () => {
+        localStorage.removeItem('user');
+        set({ user: null, isAuthenticated: false });
+    },
+}));
+```
+
+### Selector Pattern
+- Create separate selector files for accessing store state
+- Use custom hooks for selectors
+- Example: `useAuth()` from `authSelectore.ts`
+
+## TypeScript Patterns
+
+### Type Definitions
+- Types in `src/types/` directory
+- Use interfaces for object shapes
+- Use types for unions, intersections, and utility types
+- Export types from index files when appropriate
+- Use strict TypeScript settings
+
+### Common Patterns
+- Extend React component props: `extends React.ComponentProps<'button'>`
+- Use `VariantProps` for CVA variants
+- Use generic types for reusable utilities
+- Prefer type inference where possible, but be explicit for public APIs
+
+## Styling Patterns
+
+### Tailwind CSS
+- Use utility classes from Tailwind
+- Use `cn()` utility for conditional/merged classes
+- Use CSS variables for theme colors: `bg-primary`, `text-primary-foreground`
+- Follow responsive design patterns: `md:`, `lg:`, etc.
+- Use size utilities: `size-4` instead of `w-4 h-4`
+
+### Theme Colors
+- Access via CSS variables: `var(--color-primary)`
+- Use utility function `getThemeColor()` for inline styles (e.g., Recharts)
+- Theme colors defined in CSS, accessible via Tailwind classes
+
+## Form Handling
+
+### React Hook Form + Zod
+- Use `react-hook-form` for form state
+- Use `zod` for validation schemas
+- Use `@hookform/resolvers/zod` for validation
+- Handle loading states during submission
+- Show success/error toasts
+
+Example:
+```tsx
+const form = useForm<FormData>({
+    resolver: zodResolver(schema),
+    defaultValues: { /* ... */ }
+});
+
+const onSubmit = async (data: FormData) => {
+    try {
+        await createMutation.mutateAsync(data);
+        showSuccessToast('Created successfully');
+    } catch (error) {
+        showErrorToast('Failed to create');
+    }
+};
+```
+
+## Error Handling
+
+### Toast Notifications
+- Use `showSuccessToast()` and `showErrorToast()` from `src/utills/toast.tsx`
+- Show toasts for user actions (create, update, delete)
+- Handle API errors gracefully
+- Don't show toasts for every error (e.g., validation errors)
+
+### API Error Handling
+- Axios interceptors handle 401/403 responses
+- Use try-catch blocks for async operations
+- Log errors to console for debugging
+- Provide user-friendly error messages
+
+## Routing
+
+### Route Structure
+- Routes defined in `src/routes/routes.tsx`
+- Protected routes in `src/routes/ProtectedRoutes.tsx`
+- Public routes in `src/routes/PublicRoutes.tsx`
+- Use React Router 7 patterns
+- Use `Link` component for navigation
+- Use `useLocation` for active route detection
+
+## Path Aliases
+- Use `@/` alias for `src/` directory
+- Example: `import { Button } from '@/components/ui/button'`
+
+## Best Practices
+
+### Component Best Practices
+1. Keep components focused and single-purpose
+2. Extract reusable logic into custom hooks
+3. Use TypeScript for all components
+4. Handle loading and error states
+5. Use proper semantic HTML
+6. Ensure accessibility (Radix UI helps with this)
+
+### Performance
+1. Use React Query for caching and automatic refetching
+2. Use `useCallback` and `useMemo` when appropriate
+3. Lazy load heavy components when possible
+4. Optimize bundle size (already configured in vite.config.ts)
+
+### Code Quality
+1. Follow ESLint rules (configured in eslint.config.js)
+2. Use Prettier for formatting
+3. Write self-documenting code with clear variable names
+4. Add JSDoc comments for complex functions
+5. Handle edge cases and null/undefined values
+
+### State Management
+1. Use Zustand for global state
+2. Use React Query for server state
+3. Use local state (useState) for component-specific state
+4. Avoid prop drilling - use stores or context when needed
+
+### API Integration
+1. Always use typed responses
+2. Handle pagination properly
+3. Use query parameters for filtering
+4. Implement proper error handling
+5. Show loading states during API calls
+
+## Common Utilities
+
+### `cn()` Function
+- Located in `src/utils/cn.ts`
+- Merges Tailwind classes with clsx and tailwind-merge
+- Always use this for conditional classes
+
+### Theme Utilities
+- `getThemeColor()` - Get CSS variable values for inline styles
+- `getThemeColors()` - Get all theme colors as object
+- Located in `src/utils/themeColors.ts`
+
+## Testing & Development
+- Use Vite dev server for development
+- Hot module replacement enabled
+- TypeScript strict mode enabled
+- ESLint for code quality
+- Prettier for code formatting
+- Husky for git hooks
+
+## Environment Variables
+- Use `VITE_` prefix for environment variables
+- Access via `import.meta.env.VITE_*`
+- API endpoint configured in `src/config/env.ts`
+
+## When Writing Code
+
+1. **Always use TypeScript** - No `any` types unless absolutely necessary
+2. **Follow existing patterns** - Look at similar components/files for reference
+3. **Use existing UI components** - Don't create new ones if similar exists
+4. **Handle edge cases** - Check for null/undefined, empty arrays, etc.
+5. **Add proper types** - Define interfaces/types for all props and data
+6. **Use path aliases** - Use `@/` instead of relative paths when possible
+7. **Follow naming conventions** - Match existing codebase patterns
+8. **Handle loading states** - Show spinners/loading indicators
+9. **Handle errors gracefully** - Show user-friendly error messages
+10. **Use React Query** - For all data fetching, not direct API calls in components
+
+## Common Patterns to Follow
+
+### Creating a New Feature Component
+1. Create component in appropriate feature folder
+2. Use existing UI components from `components/ui/`
+3. Create API service functions if needed
+4. Create Zustand store if global state needed
+5. Add types to `types/` directory
+6. Use React Query hooks for data fetching
+7. Handle loading/error states
+8. Add proper TypeScript types
+
+### Creating a New API Service
+1. Create file in `src/services/apis/`
+2. Export async functions for API calls
+3. Export React Query hooks
+4. Use `axiosInstance` from `axiosClient.ts`
+5. Handle query parameters properly
+6. Return typed responses
+7. Handle errors appropriately
+
+### Creating a New Store
+1. Create store in `src/stores/[feature]/[feature]Store.ts`
+2. Create selector in `src/stores/[feature]/[feature]Selectore.ts`
+3. Use TypeScript interfaces for state
+4. Persist to localStorage if needed
+5. Export typed store and selectors
+
+## Notes
+- There's a typo in the codebase: `utills/` folder (should be `utils/`) - respect existing naming
+- There's a typo in selectors: `Selectore` (should be `Selector`) - respect existing naming
+- Use existing patterns and conventions, don't try to "fix" these typos as they're established

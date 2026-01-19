@@ -207,7 +207,7 @@ export function FullFeaturedTableExample() {
     };
 
     return (
-        <div className="p-6 space-y-4">
+        <div className="p-6 flex flex-col gap-4">
             <div className="flex items-center justify-between">
                 <h2 className="text-xl font-bold">Full Featured Table</h2>
                 <div className="flex gap-2">
@@ -420,11 +420,10 @@ function StatusBadge({ status }: { status: User['status'] }) {
     return (
         <div className="flex items-center gap-2">
             <div
-                className={`w-2 h-2 rounded-full ${
-                    status === 'active'
+                className={`w-2 h-2 rounded-full ${status === 'active'
                         ? 'bg-green-500'
                         : 'bg-muted-foreground/40'
-                }`}
+                    }`}
             />
             <span className="capitalize text-sm">{status}</span>
         </div>

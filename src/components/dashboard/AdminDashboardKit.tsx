@@ -94,7 +94,7 @@ export default function AdminDashboardKit() {
     ];
 
     return (
-        <div className="space-y-4">
+        <div className="flex flex-col gap-4">
             <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
                 <TabNav
                     items={[

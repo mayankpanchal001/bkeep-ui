@@ -1,12 +1,12 @@
+import { JournalEntryForm } from '@/components/journal/JournalEntryForm';
+import Loading from '@/components/shared/Loading';
+import PageHeader from '@/components/shared/PageHeader';
 import { useNavigate, useParams } from 'react-router';
 import {
     useJournalEntry,
     useUpdateJournalEntry,
 } from '../../services/apis/journalApi';
 import type { CreateJournalEntryPayload } from '../../types/journal';
-import { JournalEntryForm } from '@/components/journal/JournalEntryForm';
-import Loading from '@/components/shared/Loading';
-import PageHeader from '@/components/shared/PageHeader';
 
 export default function EditJournalEntrypage() {
     const { id } = useParams<{ id: string }>();
@@ -50,7 +50,7 @@ export default function EditJournalEntrypage() {
     }
 
     return (
-        <div className="space-y-4">
+        <div className="flex flex-col gap-4">
             <PageHeader
                 title={`Edit Journal Entry ${journalEntry.entryNumber}`}
                 subtitle="Update journal entry details"

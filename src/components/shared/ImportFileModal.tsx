@@ -70,7 +70,7 @@ const ImportFileModal = ({
         // Validate file type (basic check)
         if (
             file.type ===
-                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
             file.type === 'application/vnd.ms-excel' ||
             file.name.endsWith('.xlsx') ||
             file.name.endsWith('.xls') ||
@@ -158,8 +158,8 @@ const ImportFileModal = ({
                 </div>
             }
         >
-            <div className="space-y-4">
-                <div className="space-y-2">
+            <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-2">
                     <div className="flex items-center justify-between gap-2">
                         <p className="text-sm font-medium text-primary">
                             Templates
@@ -180,11 +180,10 @@ const ImportFileModal = ({
                                     key={t.id}
                                     type="button"
                                     onClick={() => setSelectedTemplateId(t.id)}
-                                    className={`px-3 py-1.5 rounded text-sm border ${
-                                        selectedTemplateId === t.id
-                                            ? 'bg-primary text-white border-primary'
-                                            : 'bg-card border-primary/10 text-primary hover:bg-primary/5'
-                                    }`}
+                                    className={`px-3 py-1.5 rounded text-sm border ${selectedTemplateId === t.id
+                                        ? 'bg-primary text-white border-primary'
+                                        : 'bg-card border-primary/10 text-primary hover:bg-primary/5'
+                                        }`}
                                 >
                                     {t.name || 'Template'}
                                 </button>
@@ -310,10 +309,9 @@ const ImportFileModal = ({
 
                 <div
                     className={`relative flex flex-col items-center justify-center w-full h-48 border-2 border-dashed rounded-lg transition-colors cursor-pointer
-                        ${
-                            dragActive
-                                ? 'border-primary bg-primary/50/10'
-                                : 'border-primary/25 hover:border-primary/50 hover:bg-card'
+                        ${dragActive
+                            ? 'border-primary bg-primary/50/10'
+                            : 'border-primary/25 hover:border-primary/50 hover:bg-card'
                         }
                         ${selectedFile ? 'bg-primary/50/20 border-primary' : ''}
                     `}

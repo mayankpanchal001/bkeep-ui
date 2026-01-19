@@ -1,6 +1,5 @@
 import ConfirmationDialog from '@/components/shared/ConfirmationDialog';
-import ImportFileModal from '@/components/shared/ImportFileModal';
-import ImportMappingModal from '@/components/shared/ImportMappingModal';
+import ImportChartOfAccountsDrawer from '@/components/shared/ImportChartOfAccountsDrawer';
 import { Button } from '@/components/ui/button';
 import {
     Drawer,
@@ -38,14 +37,11 @@ import {
 } from '@/components/ui/tooltip';
 import { FileUp, Filter, Pencil, Plus, Search, Trash2, X } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
-import * as XLSX from 'xlsx';
 import { ACCOUNT_HIERARCHY } from '../../components/homepage/constants';
 import {
     useChartOfAccounts,
     useCreateChartOfAccount,
     useDeleteChartOfAccount,
-    useImportChartOfAccounts,
-    useImportFields,
     useUpdateChartOfAccount,
     type AccountDetailType,
     type AccountType,
@@ -136,10 +132,7 @@ const ChartOfAccountspage = () => {
     >('all');
 
     // Import State
-    const [showUploadModal, setShowUploadModal] = useState(false);
-    const [showMappingModal, setShowMappingModal] = useState(false);
-    const [selectedFile, setSelectedFile] = useState<File | null>(null);
-    const [fileHeaders, setFileHeaders] = useState<string[]>([]);
+    const [showImportDrawer, setShowImportDrawer] = useState(false);
 
     // Form state
     const [formData, setFormData] = useState<CreateChartOfAccountPayload>({
@@ -171,11 +164,9 @@ const ChartOfAccountspage = () => {
         isActive: serverIsActiveParam,
     });
 
-    const { data: importFieldsData } = useImportFields();
     const createMutation = useCreateChartOfAccount();
     const updateMutation = useUpdateChartOfAccount();
     const deleteMutation = useDeleteChartOfAccount();
-    const importMutation = useImportChartOfAccounts();
 
     const accounts = useMemo(() => {
         let allAccounts = data?.data?.items || [];
@@ -318,76 +309,7 @@ const ChartOfAccountspage = () => {
 
     // --- Import Handlers ---
     const handleImportClick = () => {
-        setShowUploadModal(true);
-    };
-
-    const handleFileSelect = (file: File) => {
-        setSelectedFile(file);
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            const data = new Uint8Array(e.target?.result as ArrayBuffer);
-            const workbook = XLSX.read(data, { type: 'array' });
-            const sheetName = workbook.SheetNames[0];
-            const worksheet = workbook.Sheets[sheetName];
-            const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-
-            if (jsonData.length > 0) {
-                const headers = jsonData[0] as string[];
-                setFileHeaders(headers);
-
-                // Auto-map fields with matching names (case-insensitive)
-                const importFields = importFieldsData?.data || [];
-                const autoMapping: Record<string, string> = {};
-
-                importFields.forEach((field) => {
-                    const match = headers.find(
-                        (header) =>
-                            header.toLowerCase() ===
-                                field.label.toLowerCase() ||
-                            header.toLowerCase() === field.key.toLowerCase()
-                    );
-                    if (match) {
-                        autoMapping[field.key] = match;
-                    }
-                });
-
-                // Check if all required fields are mapped
-                const requiredFields = importFields.filter((f) => f.required);
-                const allRequiredMapped = requiredFields.every(
-                    (f) => autoMapping[f.key]
-                );
-
-                setShowUploadModal(false);
-
-                // If all required fields are auto-mapped, directly import
-                if (allRequiredMapped && requiredFields.length > 0) {
-                    handleImportConfirm(autoMapping);
-                } else {
-                    // Otherwise, show mapping modal
-                    setShowMappingModal(true);
-                }
-            }
-        };
-        reader.readAsArrayBuffer(file);
-    };
-
-    const handleImportModalClose = () => {
-        setShowMappingModal(false);
-        setSelectedFile(null);
-        setFileHeaders([]);
-    };
-
-    const handleImportConfirm = (mapping: Record<string, string>) => {
-        if (selectedFile) {
-            importMutation.mutate(
-                { file: selectedFile, mapping },
-                {
-                    onSuccess: () => {
-                        handleImportModalClose();
-                    },
-                }
-            );
-        }
+        setShowImportDrawer(true);
     };
 
     const handleBulkDelete = () => {
@@ -448,7 +370,6 @@ const ChartOfAccountspage = () => {
                     <Button
                         onClick={handleImportClick}
                         variant="outline"
-                        disabled={importMutation.isPending}
                     >
                         <FileUp size={16} className="mr-2" /> Import
                     </Button>
@@ -541,7 +462,7 @@ const ChartOfAccountspage = () => {
                                     <span className="text-sm text-primary">
                                         {
                                             ACCOUNT_TYPE_DISPLAY[
-                                                account.accountType
+                                            account.accountType
                                             ]
                                         }
                                     </span>
@@ -559,9 +480,9 @@ const ChartOfAccountspage = () => {
                                         {currencyFormatter.format(
                                             parseFloat(
                                                 account.currentBalance ||
-                                                    String(
-                                                        account.openingBalance
-                                                    )
+                                                String(
+                                                    account.openingBalance
+                                                )
                                             )
                                         )}
                                     </span>
@@ -654,14 +575,14 @@ const ChartOfAccountspage = () => {
                                                     setSelectedTypes((prev) =>
                                                         active
                                                             ? prev.filter(
-                                                                  (t) =>
-                                                                      t !==
-                                                                      opt.value
-                                                              )
+                                                                (t) =>
+                                                                    t !==
+                                                                    opt.value
+                                                            )
                                                             : [
-                                                                  ...prev,
-                                                                  opt.value,
-                                                              ]
+                                                                ...prev,
+                                                                opt.value,
+                                                            ]
                                                     );
                                                 }}
                                             >
@@ -725,14 +646,14 @@ const ChartOfAccountspage = () => {
                                                             (prev) =>
                                                                 active
                                                                     ? prev.filter(
-                                                                          (v) =>
-                                                                              v !==
-                                                                              dt.value
-                                                                      )
+                                                                        (v) =>
+                                                                            v !==
+                                                                            dt.value
+                                                                    )
                                                                     : [
-                                                                          ...prev,
-                                                                          dt.value,
-                                                                      ]
+                                                                        ...prev,
+                                                                        dt.value,
+                                                                    ]
                                                         );
                                                     }}
                                                 >
@@ -779,8 +700,8 @@ const ChartOfAccountspage = () => {
                                 type="button"
                                 variant={
                                     selectedTypes.length === 0 &&
-                                    selectedDetailTypes.length === 0 &&
-                                    isActiveFilter === 'all'
+                                        selectedDetailTypes.length === 0 &&
+                                        isActiveFilter === 'all'
                                         ? 'default'
                                         : 'outline'
                                 }
@@ -841,9 +762,9 @@ const ChartOfAccountspage = () => {
                         <form
                             id="chart-of-account-form"
                             onSubmit={handleSubmit}
-                            className="space-y-4 flex-1"
+                            className="flex flex-col gap-4 flex-1"
                         >
-                            <div className="space-y-2">
+                            <div className="flex flex-col gap-2">
                                 <Label htmlFor="account-name">
                                     Account Name{' '}
                                     <span className="text-red-500">*</span>
@@ -873,7 +794,7 @@ const ChartOfAccountspage = () => {
                                 )}
                             </div>
 
-                            <div className="space-y-2">
+                            <div className="flex flex-col gap-2">
                                 <Label htmlFor="account-type">
                                     Account Type{' '}
                                     <span className="text-red-500">*</span>
@@ -940,7 +861,7 @@ const ChartOfAccountspage = () => {
                                 )}
                             </div>
 
-                            <div className="space-y-2">
+                            <div className="flex flex-col gap-2">
                                 <Label htmlFor="account-detail-type">
                                     Account Detail Type{' '}
                                     <span className="text-red-500">*</span>
@@ -982,7 +903,7 @@ const ChartOfAccountspage = () => {
                                 )}
                             </div>
 
-                            <div className="space-y-2">
+                            <div className="flex flex-col gap-2">
                                 <Label htmlFor="opening-balance">
                                     Opening Balance{' '}
                                     <span className="text-red-500">*</span>
@@ -1016,7 +937,7 @@ const ChartOfAccountspage = () => {
                                 )}
                             </div>
 
-                            <div className="space-y-2">
+                            <div className="flex flex-col gap-2">
                                 <Label htmlFor="description">Description</Label>
                                 <Input
                                     id="description"
@@ -1072,20 +993,10 @@ const ChartOfAccountspage = () => {
                 loading={deleteMutation.isPending}
             />
 
-            {/* Import Mapping Modal */}
-            <ImportFileModal
-                isOpen={showUploadModal}
-                onClose={() => setShowUploadModal(false)}
-                onFileSelect={handleFileSelect}
-            />
-            <ImportMappingModal
-                isOpen={showMappingModal}
-                onClose={handleImportModalClose}
-                onConfirm={handleImportConfirm}
-                fileHeaders={fileHeaders}
-                importFields={importFieldsData?.data || []}
-                filename={selectedFile?.name || ''}
-                isUploading={importMutation.isPending}
+            {/* Import Drawer */}
+            <ImportChartOfAccountsDrawer
+                isOpen={showImportDrawer}
+                onClose={() => setShowImportDrawer(false)}
             />
         </div>
     );

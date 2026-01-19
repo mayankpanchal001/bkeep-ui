@@ -7,7 +7,7 @@ const DataPrivacyTab = () => {
             <h3 className="text-lg font-semibold text-primary mb-4">
                 Data & Privacy
             </h3>
-            <div className="space-y-4">
+            <div className="flex flex-col gap-4">
                 <div className="p-4 border border-primary/10 rounded">
                     <div className="flex items-center justify-between mb-2">
                         <div>
