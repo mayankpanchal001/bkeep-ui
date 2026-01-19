@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
-import { useAuth } from '../../stores/auth/authSelectore';
+import { useEffect, useState } from 'react';
 import { useUpdateProfile } from '../../services/apis/usersApi';
+import { useAuth } from '../../stores/auth/authSelectore';
 import {
     NotificationsTab,
     PreferencesTab,
@@ -103,34 +103,5 @@ export const NotificationsTabWrapper = () => {
 };
 
 export const PreferencesTabWrapper = () => {
-    const { user } = useAuth();
-    const [formData, setFormData] = useState<SettingsFormData>({
-        name: user?.name || '',
-        email: user?.email || '',
-        bio: '',
-        urls: [],
-        phone: '',
-        company: '',
-        timezone: 'America/New_York',
-        currency: 'USD',
-        dateFormat: 'MM/DD/YYYY',
-        notifications: {
-            email: true,
-            push: false,
-            sms: false,
-        },
-    });
-
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        console.log('Preferences saved:', formData);
-    };
-
-    return (
-        <PreferencesTab
-            formData={formData}
-            onFormDataChange={setFormData}
-            onSubmit={handleSubmit}
-        />
-    );
+    return <PreferencesTab />;
 };

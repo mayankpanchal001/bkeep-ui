@@ -188,7 +188,7 @@ const Invoicepage = () => {
     };
 
     return (
-        <div className="space-y-4">
+        <div className="flex flex-col gap-4">
             <PageHeader
                 title="Invoices"
                 subtitle={`${filteredInvoices.length} invoice${filteredInvoices.length !== 1 ? 's' : ''} • ${currencyFormatter.format(totalAmount)} total`}

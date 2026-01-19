@@ -59,7 +59,7 @@ const InputField: React.FC<InputFieldProps> = ({
     ...props
 }) => {
     return (
-        <div className="space-y-2">
+        <div className="flex flex-col gap-2">
             {labelShow && label && (
                 <Label htmlFor={id} className="text-sm font-medium">
                     {label}
@@ -92,7 +92,7 @@ const SelectField: React.FC<SelectFieldProps> = ({
     options,
 }) => {
     return (
-        <div className="space-y-2">
+        <div className="flex flex-col gap-2">
             {labelShow && label && (
                 <Label htmlFor={id} className="text-sm font-medium">
                     {label}
@@ -335,7 +335,7 @@ const ContactDetailPage = () => {
                         <CardHeader>
                             <CardTitle>Basic Information</CardTitle>
                         </CardHeader>
-                        <CardContent className="space-y-4">
+                        <CardContent className="flex flex-col gap-4">
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <SelectField
                                     id="type"
@@ -464,7 +464,7 @@ const ContactDetailPage = () => {
                                 </TabsList>
                                 <TabsContent
                                     value="billing"
-                                    className="space-y-4"
+                                    className="flex flex-col gap-4"
                                 >
                                     <div className="grid grid-cols-1 gap-4">
                                         <InputField
@@ -529,7 +529,7 @@ const ContactDetailPage = () => {
                                 </TabsContent>
                                 <TabsContent
                                     value="shipping"
-                                    className="space-y-4"
+                                    className="flex flex-col gap-4"
                                 >
                                     <div className="grid grid-cols-1 gap-4">
                                         <InputField
@@ -634,7 +634,7 @@ const ContactDetailPage = () => {
                         <CardHeader>
                             <CardTitle>Financial Details</CardTitle>
                         </CardHeader>
-                        <CardContent className="space-y-4">
+                        <CardContent className="flex flex-col gap-4">
                             <InputField
                                 id="defaultAccountId"
                                 label="Default Account ID"

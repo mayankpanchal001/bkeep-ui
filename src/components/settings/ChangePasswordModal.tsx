@@ -98,7 +98,7 @@ const ChangePasswordModal = ({ isOpen, onClose }: ChangePasswordModalProps) => {
                 </div>
 
                 {/* Form */}
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                     <Input
                         id="current-password"
                         placeholder="Enter current password"

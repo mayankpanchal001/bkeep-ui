@@ -121,7 +121,7 @@ export function ResetPasswordForm() {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="space-y-4">
+                <div className="flex flex-col gap-4">
                     <Input
                         id="reset-password"
                         type="password"
@@ -154,7 +154,7 @@ export function ResetPasswordForm() {
                     </div>
                 )}
 
-                <div className="space-y-2">
+                <div className="flex flex-col gap-2">
                     <Button
                         type="submit"
                         variant="default"

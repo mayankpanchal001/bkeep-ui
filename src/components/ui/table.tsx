@@ -1138,7 +1138,7 @@ function TableLoadingState({ colSpan, rows = 5 }: TableLoadingStateProps) {
                     <td colSpan={colSpan} className="px-3 py-3">
                         <div className="flex items-center gap-3">
                             <div className="h-4 w-4 rounded bg-muted" />
-                            <div className="flex-1 space-y-2">
+                            <div className="flex-1 flex flex-col gap-2">
                                 <div
                                     className="h-4 rounded bg-muted"
                                     style={{

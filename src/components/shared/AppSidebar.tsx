@@ -230,7 +230,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                     placeholder="Search"
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
-                    className="mt-2 group-data-[collapsible=icon]:hidden"
+                    className="group-data-[collapsible=icon]:hidden"
                 />
             </SidebarHeader>
             <SidebarContent>

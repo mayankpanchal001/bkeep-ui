@@ -436,7 +436,7 @@ const Reportpage = () => {
 
             {/* Favourites Section */}
             {favouriteItems.length > 0 && (
-                <div className="space-y-4">
+                <div className="flex flex-col gap-4">
                     <h2 className="text-sm font-semibold text-primary/70 uppercase tracking-wider flex items-center gap-2">
                         <Star className="w-4 h-4 text-amber-500 fill-current" />
                         Favourites
@@ -460,7 +460,7 @@ const Reportpage = () => {
             {/* Categories */}
             <div className="space-y-8">
                 {filteredCategories.map((category) => (
-                    <div key={category.key} className="space-y-4">
+                    <div key={category.key} className="flex flex-col gap-4">
                         <div className="flex items-center gap-3 px-1">
                             <div className="p-2 bg-primary/10 rounded-lg text-primary">
                                 {category.icon}

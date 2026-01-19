@@ -121,7 +121,7 @@ const ContactsPage = () => {
         navigate(`/expenses/contacts/${contact.id}`);
 
     return (
-        <div className="space-y-4">
+        <div className="flex flex-col gap-4">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
                 <div className="w-full sm:min-w-[320px]">
                     <Input

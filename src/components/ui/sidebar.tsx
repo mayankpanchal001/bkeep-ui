@@ -349,10 +349,7 @@ function SidebarInput({
             data-sidebar="input"
             inputSize={inputSize}
             endIcon={<Search />}
-            className={cn(
-                'max-sm:hidden bg-sidebar-accent text-sidebar-foreground border-sidebar-border shadow-none placeholder:text-sidebar-foreground/60',
-                className
-            )}
+            className={cn(' max-sm:hidden ', className)}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                 props.onChange?.(e);
             }}

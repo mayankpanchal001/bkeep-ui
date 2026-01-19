@@ -279,42 +279,40 @@ const Documentspage = () => {
             </div>
 
             {/* Filters */}
-            <div className="bg-card rounded shadow-sm border border-primary/10 p-4">
-                <div className="flex flex-col sm:flex-row gap-4">
-                    <div className="flex-1">
-                        <div className="relative">
-                            <Input
-                                id="search-documents"
-                                placeholder="Search documents..."
-                                value={searchQuery}
-                                onChange={(
-                                    e: React.ChangeEvent<HTMLInputElement>
-                                ) => setSearchQuery(e.target.value)}
-                                startIcon={<FaSearch className="w-4 h-4" />}
-                            />
-                        </div>
+            <div className="flex flex-col sm:flex-row gap-4">
+                <div className="flex-1">
+                    <div className="relative">
+                        <Input
+                            id="search-documents"
+                            placeholder="Search documents..."
+                            value={searchQuery}
+                            onChange={(
+                                e: React.ChangeEvent<HTMLInputElement>
+                            ) => setSearchQuery(e.target.value)}
+                            startIcon={<FaSearch className="w-4 h-4" />}
+                        />
                     </div>
-                    <div className="flex items-center gap-2">
-                        <Select
-                            value={categoryFilter}
-                            onValueChange={(value: string) =>
-                                setCategoryFilter(value)
-                            }
-                        >
-                            <SelectTrigger>
-                                <FilterIcon size={16} />
-                                <SelectValue placeholder="All Categories" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {CATEGORIES.map((category) => (
-                                    <SelectItem key={category} value={category}>
-                                        {category.charAt(0).toUpperCase() +
-                                            category.slice(1)}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-                    </div>
+                </div>
+                <div className="flex items-center gap-2">
+                    <Select
+                        value={categoryFilter}
+                        onValueChange={(value: string) =>
+                            setCategoryFilter(value)
+                        }
+                    >
+                        <SelectTrigger>
+                            <FilterIcon size={16} />
+                            <SelectValue placeholder="All Categories" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {CATEGORIES.map((category) => (
+                                <SelectItem key={category} value={category}>
+                                    {category.charAt(0).toUpperCase() +
+                                        category.slice(1)}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
                 </div>
             </div>
 
@@ -351,7 +349,7 @@ const Documentspage = () => {
                                     </div>
                                 </div>
                             </div>
-                            <div className="space-y-2 mb-3">
+                            <div className="flex flex-col gap-2 mb-3">
                                 <div className="flex items-center gap-2 text-xs text-primary/50">
                                     <FaFolder className="w-3 h-3" />
                                     <span>{doc.category}</span>

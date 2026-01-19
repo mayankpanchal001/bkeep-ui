@@ -3,7 +3,7 @@ import { FAQ_ITEMS } from './constants.tsx';
 const FAQSection = () => {
     return (
         <section id="faq" className="mx-auto max-w-5xl px-6 pb-20">
-            <div className="space-y-4 text-center">
+            <div className="flex flex-col gap-4 text-center">
                 <p className="text-xs font-semibold uppercase tracking-[0.45em] text-muted-foreground">
                     FAQ
                 </p>
@@ -11,7 +11,7 @@ const FAQSection = () => {
                     Answers for every stage of your journey.
                 </h2>
             </div>
-            <div className="mt-10 space-y-4">
+            <div className="mt-10 flex flex-col gap-4">
                 {FAQ_ITEMS.map((item) => (
                     <details
                         key={item.question}

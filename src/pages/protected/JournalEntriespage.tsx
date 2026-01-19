@@ -459,7 +459,7 @@ export default function JournalEntriespage() {
     };
 
     return (
-        <div className="space-y-4">
+        <div className="flex flex-col gap-4">
             <PageHeader
                 title="Journal Entries"
                 subtitle={`${total} total entries`}
@@ -623,7 +623,7 @@ export default function JournalEntriespage() {
                                     </DrawerClose>
                                 </div>
                             </DrawerHeader>
-                            <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                            <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-4">
                                 <div>
                                     <label className="text-sm font-medium text-primary/70 mb-2 block">
                                         Status

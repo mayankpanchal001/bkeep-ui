@@ -129,7 +129,7 @@ export function PostTransactionModal({
                 <Form {...form}>
                     <form
                         onSubmit={form.handleSubmit(onSubmit)}
-                        className="space-y-4"
+                        className="flex flex-col gap-4"
                     >
                         <FormField
                             control={form.control}

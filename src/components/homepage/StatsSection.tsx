@@ -8,7 +8,7 @@ export default function StatsSection() {
                     {PERFORMANCE_STATS.map((stat) => (
                         <div
                             key={stat.label}
-                            className="group space-y-2 roundedxl border border-transparent bg-transparent px-6 py-4 transition-all hover:border-border hover:bg-muted/50"
+                            className="group flex flex-col gap-2 roundedxl border border-transparent bg-transparent px-6 py-4 transition-all hover:border-border hover:bg-muted/50"
                         >
                             <p className="text-4xl font-bold tracking-tight text-foreground transition-transform group-hover:scale-110">
                                 {stat.value}

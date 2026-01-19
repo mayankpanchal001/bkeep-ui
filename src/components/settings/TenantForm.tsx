@@ -1,6 +1,7 @@
 import { SINGLE_TENANT_PREFIX } from '@/components/homepage/constants';
 import { useEffect, useState } from 'react';
 import {
+    extractFieldErrors,
     useCreateTenant,
     useUpdateTenant,
     type CreateTenantRequest,
@@ -81,6 +82,14 @@ const TenantForm = ({ onClose, initialData }: TenantFormProps) => {
                 ? prev.schemaName
                 : generateSchemaName(value),
         }));
+        // Clear error when user starts typing
+        if (errors.name) {
+            setErrors((prev) => {
+                const newErrors = { ...prev };
+                delete newErrors.name;
+                return newErrors;
+            });
+        }
     };
 
     const validateForm = () => {
@@ -149,13 +158,18 @@ const TenantForm = ({ onClose, initialData }: TenantFormProps) => {
             setErrors({});
             onClose();
         } catch (error) {
-            // Error is handled by the mutation's onError
+            // Extract field-level errors from API response
+            const fieldErrors = extractFieldErrors(error);
+            if (Object.keys(fieldErrors).length > 0) {
+                setErrors((prev) => ({ ...prev, ...fieldErrors }));
+            }
+            // Error toast is handled by the mutation's onError
             console.error(`Save ${SINGLE_TENANT_PREFIX} error:`, error);
         }
     };
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <div>
                 <Input
                     id="client-name"
@@ -178,12 +192,20 @@ const TenantForm = ({ onClose, initialData }: TenantFormProps) => {
                     id="schema-name"
                     placeholder="e.g., sun_medicose"
                     value={formData.schemaName}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                         setFormData({
                             ...formData,
                             schemaName: e.target.value.toLowerCase(),
-                        })
-                    }
+                        });
+                        // Clear error when user starts typing
+                        if (errors.schemaName) {
+                            setErrors((prev) => {
+                                const newErrors = { ...prev };
+                                delete newErrors.schemaName;
+                                return newErrors;
+                            });
+                        }
+                    }}
                     required
                     readOnly={isEditMode}
                 />
@@ -204,14 +226,27 @@ const TenantForm = ({ onClose, initialData }: TenantFormProps) => {
                     id="client-email"
                     placeholder="e.g., contact@acmecorp.com"
                     value={formData.email || ''}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                         setFormData({
                             ...formData,
                             email: e.target.value,
-                        })
-                    }
+                        });
+                        // Clear error when user starts typing
+                        if (errors.email) {
+                            setErrors((prev) => {
+                                const newErrors = { ...prev };
+                                delete newErrors.email;
+                                return newErrors;
+                            });
+                        }
+                    }}
                     type="email"
                 />
+                {errors.email && (
+                    <p className="text-destructive text-xs mt-1 pl-1">
+                        {errors.email}
+                    </p>
+                )}
             </div>
 
             <div>
@@ -241,13 +276,26 @@ const TenantForm = ({ onClose, initialData }: TenantFormProps) => {
                         type="date"
                         placeholder="Select fiscal year start date"
                         value={formData.fiscalYear || ''}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                             setFormData({
                                 ...formData,
                                 fiscalYear: e.target.value,
-                            })
-                        }
+                            });
+                            // Clear error when user starts typing
+                            if (errors.fiscalYear) {
+                                setErrors((prev) => {
+                                    const newErrors = { ...prev };
+                                    delete newErrors.fiscalYear;
+                                    return newErrors;
+                                });
+                            }
+                        }}
                     />
+                    {errors.fiscalYear && (
+                        <p className="text-destructive text-xs mt-1 pl-1">
+                            {errors.fiscalYear}
+                        </p>
+                    )}
                 </div>
                 <div>
                     <label
@@ -261,13 +309,26 @@ const TenantForm = ({ onClose, initialData }: TenantFormProps) => {
                         type="date"
                         placeholder="Select incorporation date"
                         value={formData.dateOfIncorporation || ''}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                             setFormData({
                                 ...formData,
                                 dateOfIncorporation: e.target.value,
-                            })
-                        }
+                            });
+                            // Clear error when user starts typing
+                            if (errors.dateOfIncorporation) {
+                                setErrors((prev) => {
+                                    const newErrors = { ...prev };
+                                    delete newErrors.dateOfIncorporation;
+                                    return newErrors;
+                                });
+                            }
+                        }}
                     />
+                    {errors.dateOfIncorporation && (
+                        <p className="text-destructive text-xs mt-1 pl-1">
+                            {errors.dateOfIncorporation}
+                        </p>
+                    )}
                 </div>
             </div>
 
@@ -301,6 +362,7 @@ const TenantForm = ({ onClose, initialData }: TenantFormProps) => {
                     variant="default"
                     className="flex-1 sm:flex-initial"
                     loading={isPending}
+                    disabled={isPending || Object.keys(errors).length > 0}
                     startIcon={<Icons.Save className="w-4 h-4" />}
                 >
                     Save

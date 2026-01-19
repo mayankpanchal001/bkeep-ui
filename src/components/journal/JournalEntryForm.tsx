@@ -15,14 +15,14 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
+import { CurrencyInput } from '@/pages/protected/CreateJournalEntrypage';
+import { useChartOfAccounts } from '@/services/apis/chartsAccountApi';
 import { useContacts } from '@/services/apis/contactsApi';
 import { useTaxes } from '@/services/apis/taxApi';
 import type { CreateJournalEntryPayload } from '@/types/journal';
 import { Save } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { FaPlus, FaTrash } from 'react-icons/fa';
-import { CurrencyInput } from '@/pages/protected/CreateJournalEntrypage';
-import { useChartOfAccounts } from '@/services/apis/chartsAccountApi';
 
 type JournalEntryFormProps = {
     initialData?: Partial<CreateJournalEntryPayload>;
@@ -575,7 +575,7 @@ export function JournalEntryForm({
                 </div>
             </div>
 
-            <div className="space-y-2">
+            <div className="flex flex-col gap-2">
                 <label className="input-label">Memo</label>
                 <div className="input-wrap">
                     <textarea
