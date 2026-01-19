@@ -9,8 +9,8 @@ import {
     ChevronDown,
     ChevronLeft,
     ChevronRight,
-    ExternalLink,
-    MessageSquare,
+    Landmark,
+    Import,
 } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Button } from '../ui/button';
@@ -183,7 +183,7 @@ export function TransactionHeader({
 
                 {/* Right Actions */}
                 <div className="flex items-center gap-4">
-                    <button className="flex items-center gap-2 text-sm font-medium text-green-700 hover:text-green-800">
+                   {/*  <button className="flex items-center gap-2 text-sm font-medium text-green-700 hover:text-green-800">
                         <MessageSquare className="w-4 h-4" />
                         Give feedback
                     </button>
@@ -198,7 +198,7 @@ export function TransactionHeader({
                         <DropdownMenuContent>
                             <DropdownMenuItem>No new requests</DropdownMenuItem>
                         </DropdownMenuContent>
-                    </DropdownMenu>
+                    </DropdownMenu> */}
 
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -209,14 +209,14 @@ export function TransactionHeader({
                         </DropdownMenuTrigger>
                         <DropdownMenuContent>
                             <DropdownMenuItem>
-                                <ExternalLink className="w-4 h-4 mr-2" />
+                                <Landmark className="w-4 h-4 mr-2" />
                                 Connect Bank
                             </DropdownMenuItem>
                             <DropdownMenuItem
                                 onClick={() => setIsImportModalOpen(true)}
                             >
-                                <ExternalLink className="w-4 h-4 mr-2" />
-                                Upload Statement
+                                <Import className="w-4 h-4 mr-2" />
+                                Import Data
                             </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>

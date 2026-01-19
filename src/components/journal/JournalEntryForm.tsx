@@ -335,7 +335,7 @@ export function JournalEntryForm({
                     }
                     placeholder="Optional"
                 />
-                <div className="flex items-end">
+                <div className="flex items-center">
                     <label className="flex items-center gap-3 text-sm text-primary/70 select-none">
                         <input
                             type="checkbox"

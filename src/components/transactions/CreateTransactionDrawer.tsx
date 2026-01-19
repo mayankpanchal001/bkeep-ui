@@ -29,6 +29,7 @@ import { Plus } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { useForm, type Resolver } from 'react-hook-form';
 import { z } from 'zod';
+import { CurrencyInput } from '../../pages/protected/CreateJournalEntrypage';
 import { useChartOfAccounts } from '../../services/apis/chartsAccountApi';
 import { useContacts } from '../../services/apis/contactsApi';
 import { useTaxes } from '../../services/apis/taxApi';
@@ -221,8 +222,8 @@ export function CreateTransactionDrawer() {
                                         <FormItem>
                                             <FormLabel>Amount</FormLabel>
                                             <FormControl>
-                                                <Input
-                                                    type="number"
+                                                <CurrencyInput
+                                                    placeholder="Amount"
                                                     step="0.01"
                                                     {...field}
                                                 />
@@ -244,7 +245,7 @@ export function CreateTransactionDrawer() {
                                                 defaultValue={field.value?.[0]}
                                             >
                                                 <FormControl>
-                                                    <SelectTrigger>
+                                                    <SelectTrigger className="w-full overflow-hidden">
                                                         <SelectValue placeholder="Select tax" />
                                                     </SelectTrigger>
                                                 </FormControl>
