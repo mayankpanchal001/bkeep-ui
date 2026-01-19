@@ -1,10 +1,10 @@
 import { JournalEntryForm } from '@/components/journal/JournalEntryForm';
 import PageHeader from '@/components/shared/PageHeader';
+import { cn } from '@/utils/cn';
 import { useQueryClient } from '@tanstack/react-query';
 import { useMemo } from 'react';
-import { useNavigate } from 'react-router';
-import { cn } from '@/utils/cn';
 import { NumericFormat, NumericFormatProps } from 'react-number-format';
+import { useNavigate } from 'react-router';
 import {
     useCreateJournalEntry,
     useJournalEntries,
@@ -46,7 +46,7 @@ export default function CreateJournalEntrypage() {
     };
 
     return (
-        <div className="space-y-4">
+        <div className="flex flex-col gap-4">
             <PageHeader
                 title="New Journal Entry"
                 subtitle="Create a new journal entry"

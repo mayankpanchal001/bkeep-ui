@@ -3,7 +3,7 @@ import { OUTCOME_CARDS } from './constants.tsx';
 export default function IndustriesSection() {
     return (
         <section className="mx-auto max-w-6xl px-6 pb-20">
-            <div className="space-y-4 text-center">
+            <div className="flex flex-col gap-4 text-center">
                 <p className="text-xs font-semibold uppercase tracking-[0.4em] text-muted-foreground">
                     Built for firms, finance teams, and startups
                 </p>

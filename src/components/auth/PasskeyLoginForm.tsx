@@ -197,7 +197,7 @@ export function PasskeyLoginForm() {
                 </div>
 
                 <div className="bg-blue-50 border border-blue-200 rounded p-4 text-left">
-                    <ol className="text-sm text-blue-900 space-y-2">
+                    <ol className="text-sm text-blue-900 flex flex-col gap-2">
                         <li className="flex gap-2">
                             <span className="font-semibold">1.</span>
                             <span>Sign in with your email and password</span>
@@ -328,7 +328,7 @@ export function PasskeyLoginForm() {
                 <p className="text-sm font-medium text-primary mb-3">
                     Other actions
                 </p>
-                <div className="space-y-2">
+                <div className="flex flex-col gap-2">
                     <button
                         onClick={handleUseDifferentAccount}
                         className="w-full flex items-center gap-3 px-4 py-3 rounded-lg border border-primary/10 bg-card hover:bg-primary/5 transition-colors text-left"

@@ -236,6 +236,19 @@ export async function reorderJournalEntryLines(
     return response.data;
 }
 
+/**
+ * Copy/Duplicate a journal entry
+ */
+export async function copyJournalEntry(
+    id: string
+): Promise<JournalEntryResponse> {
+    const response = await axiosInstance.post(
+        `/journal-entries/${id}/copy`,
+        {}
+    );
+    return response.data;
+}
+
 // ============= React Query Hooks =============
 
 /**
@@ -515,6 +528,33 @@ export const useReorderJournalEntryLines = () => {
             const message =
                 maybeAxiosError.response?.data?.message ||
                 'Failed to reorder journal entry lines';
+            showErrorToast(message);
+        },
+    });
+};
+
+/**
+ * Hook to copy/duplicate a journal entry
+ */
+export const useCopyJournalEntry = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: (id: string) => copyJournalEntry(id),
+        onSuccess: (data) => {
+            showSuccessToast(
+                data?.message || 'Journal entry copied successfully'
+            );
+            queryClient.invalidateQueries({ queryKey: ['journal-entries'] });
+        },
+        onError: (error) => {
+            console.error('Copy journal entry failed:', error);
+            const maybeAxiosError = error as {
+                response?: { data?: { message?: string } };
+            };
+            const message =
+                maybeAxiosError.response?.data?.message ||
+                'Failed to copy journal entry';
             showErrorToast(message);
         },
     });

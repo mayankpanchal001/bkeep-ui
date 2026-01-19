@@ -110,12 +110,12 @@ const Settingspage = () => {
         <div className="flex flex-col gap-4 w-full  lg:mx-auto">
             <PageHeader title={headerTitle} subtitle={headerSubtitle} />
             <div className="flex w-full flex-col gap-4 lg:flex-row min-h-0">
-                <aside className="w-full lg:w-1/5 shrink-0 overflow-hidden">
+                <aside className="w-full lg:w-1/5 shrink-0 overflow-hidden h-max sticky top-0">
                     <SettingsSidebar items={sidebarNavItems} />
                 </aside>
                 <div className="flex-1 min-w-0 max-w-4xl">
                     {/* <div className="bg-white rounded-md border border-primary/10 p-4 overflow-hidden"> */}
-                    <div className="bg-card  px-4 overflow-hidden">
+                    <div className="bg-card border border-primary/10 rounded-md p-4 overflow-hidden ">
                         <Outlet />
                     </div>
                 </div>

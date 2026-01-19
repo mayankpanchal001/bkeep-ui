@@ -415,7 +415,7 @@ export default function TenantsTab() {
     }
 
     return (
-        <div className="w-full space-y-4">
+        <div className="w-full flex flex-col gap-4">
             <div className="flex items-center justify-between">
                 <div>
                     <h3 className="text-lg font-semibold text-primary">
@@ -607,7 +607,10 @@ export default function TenantsTab() {
                         </AlertDialogTitle>
                     </AlertDialogHeader>
 
-                    <form onSubmit={handleEditSubmit} className="space-y-4">
+                    <form
+                        onSubmit={handleEditSubmit}
+                        className="flex flex-col gap-4"
+                    >
                         {isLoadingEditTenant ? (
                             <div className="flex justify-center items-center gap-2 text-primary/50">
                                 <div className="animate-spin w-4 h-4 border-2 border-primary/50 border-t-transparent rounded-full" />
@@ -772,7 +775,7 @@ export default function TenantsTab() {
                             Loading...
                         </div>
                     ) : (
-                        <div className="space-y-4">
+                        <div className="flex flex-col gap-4">
                             <Input
                                 id="details-tenant-name"
                                 value={detailsTenantResponse?.data?.name || ''}

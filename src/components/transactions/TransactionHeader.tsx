@@ -10,7 +10,6 @@ import {
     ChevronLeft,
     ChevronRight,
     ExternalLink,
-    MessageSquare,
 } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Button } from '../ui/button';
@@ -181,46 +180,26 @@ export function TransactionHeader({
                     </DropdownMenu>
                 </div>
 
-                {/* Right Actions */}
-                <div className="flex items-center gap-4">
-                    <button className="flex items-center gap-2 text-sm font-medium text-green-700 hover:text-green-800">
-                        <MessageSquare className="w-4 h-4" />
-                        Give feedback
-                    </button>
-
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button variant="outline">
-                                Requests
-                                <ChevronDown className="w-4 h-4 ml-2" />
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent>
-                            <DropdownMenuItem>No new requests</DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button>
-                                Link account
-                                <ChevronDown className="w-4 h-4 ml-2" />
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent>
-                            <DropdownMenuItem>
-                                <ExternalLink className="w-4 h-4 mr-2" />
-                                Connect Bank
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                                onClick={() => setIsImportModalOpen(true)}
-                            >
-                                <ExternalLink className="w-4 h-4 mr-2" />
-                                Upload Statement
-                            </DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-                </div>
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button>
+                            Link account
+                            <ChevronDown className="w-4 h-4 ml-2" />
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                        <DropdownMenuItem>
+                            <ExternalLink className="w-4 h-4 mr-2" />
+                            Connect Bank
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                            onClick={() => setIsImportModalOpen(true)}
+                        >
+                            <ExternalLink className="w-4 h-4 mr-2" />
+                            Upload Statement
+                        </DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
             </div>
 
             {/* Account Cards Row */}

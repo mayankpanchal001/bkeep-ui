@@ -62,7 +62,7 @@ export function ForgotPasswordForm() {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="space-y-4">
+                <div className="flex flex-col gap-4">
                     <Input
                         id="forgot-password-email"
                         type="email"

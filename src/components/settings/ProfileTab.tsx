@@ -193,7 +193,7 @@ const ProfileTab = ({
                             Add links to your website, blog, or social media
                             profiles.
                         </p>
-                        <div className="space-y-2">
+                        <div className="flex flex-col gap-2">
                             {(formData.urls || []).map((url, idx) => (
                                 <Input
                                     key={idx}

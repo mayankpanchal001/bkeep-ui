@@ -92,7 +92,7 @@ const ImportMappingModal = ({
 
                 {/* Body */}
                 <div className="p-4 overflow-y-auto flex-1">
-                    <div className="space-y-4">
+                    <div className="flex flex-col gap-4">
                         <div className="grid grid-cols-12 gap-4 text-sm font-medium text-primary/50 border-b border-primary/10 pb-2 mb-2">
                             <div className="col-span-5">System Field</div>
                             <div className="col-span-2 flex justify-center"></div>

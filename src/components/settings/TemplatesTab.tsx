@@ -104,7 +104,7 @@ const TemplatesTab = () => {
     }
 
     return (
-        <div className="space-y-4 py-4">
+        <div className="flex flex-col gap-4 py-4">
             <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
                 <div className="flex-1">
                     <Input
@@ -255,7 +255,7 @@ const TemplatesTab = () => {
                                     Loading preview...
                                 </div>
                             ) : accountsPreview ? (
-                                <div className="space-y-4">
+                                <div className="flex flex-col gap-4">
                                     <div className="flex items-start justify-between gap-3">
                                         <div>
                                             <p className="text-base font-medium text-primary">
@@ -355,7 +355,7 @@ const TemplatesTab = () => {
                                 Loading preview...
                             </div>
                         ) : taxPreviewData?.data ? (
-                            <div className="space-y-4">
+                            <div className="flex flex-col gap-4">
                                 <div className="flex items-start justify-between gap-3">
                                     <div>
                                         <p className="text-base font-medium text-primary">

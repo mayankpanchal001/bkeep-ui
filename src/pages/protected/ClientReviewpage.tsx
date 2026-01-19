@@ -278,7 +278,7 @@ const ClientReviewpage = () => {
             </div>
 
             {/* Filters */}
-            <div className="flex flex-col sm:flex-row gap-3 p-4 rounded-xl border border-border bg-card">
+            <div className="flex flex-col sm:flex-row gap-4">
                 <div className="flex-1">
                     <Input
                         placeholder="Search transactions..."
@@ -650,7 +650,7 @@ const ClientReviewpage = () => {
                             </div>
 
                             {/* Category Input */}
-                            <div className="space-y-2">
+                            <div className="flex flex-col gap-2">
                                 <Label htmlFor="category">Category</Label>
                                 <Input
                                     id="category"
@@ -685,7 +685,7 @@ const ClientReviewpage = () => {
                             </div>
 
                             {/* Comment Input */}
-                            <div className="space-y-2">
+                            <div className="flex flex-col gap-2">
                                 <Label htmlFor="comment">Your Comment</Label>
                                 <Textarea
                                     id="comment"

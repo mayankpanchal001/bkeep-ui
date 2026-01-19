@@ -83,7 +83,7 @@ export default function HeroSection() {
                                 <span>Live Updates</span>
                             </div>
                         </div>
-                        <div className="mt-6 space-y-4">
+                        <div className="mt-6 flex flex-col gap-4">
                             <div className="roundedxl border border-border bg-muted/50 p-5 transition-colors hover:bg-muted/70">
                                 <div className="flex items-start justify-between">
                                     <div>

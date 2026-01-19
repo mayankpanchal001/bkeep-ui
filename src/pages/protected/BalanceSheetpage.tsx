@@ -140,12 +140,12 @@ const BalanceSheetpage = () => {
                     <h3 className="text-lg font-semibold text-primary mb-4">
                         Assets
                     </h3>
-                    <div className="space-y-4">
+                    <div className="flex flex-col gap-4">
                         <div>
                             <h4 className="font-medium text-primary mb-2">
                                 Current Assets
                             </h4>
-                            <div className="space-y-2">
+                            <div className="flex flex-col gap-2">
                                 {assets.current.map((item, index) => (
                                     <div
                                         key={index}
@@ -179,7 +179,7 @@ const BalanceSheetpage = () => {
                             <h4 className="font-medium text-primary mb-2">
                                 Fixed Assets
                             </h4>
-                            <div className="space-y-2">
+                            <div className="flex flex-col gap-2">
                                 {assets.fixed.map((item, index) => (
                                     <div
                                         key={index}
@@ -221,12 +221,12 @@ const BalanceSheetpage = () => {
                     <h3 className="text-lg font-semibold text-primary mb-4">
                         Liabilities & Equity
                     </h3>
-                    <div className="space-y-4">
+                    <div className="flex flex-col gap-4">
                         <div>
                             <h4 className="font-medium text-primary mb-2">
                                 Current Liabilities
                             </h4>
-                            <div className="space-y-2">
+                            <div className="flex flex-col gap-2">
                                 {liabilities.current.map((item, index) => (
                                     <div
                                         key={index}
@@ -260,7 +260,7 @@ const BalanceSheetpage = () => {
                             <h4 className="font-medium text-primary mb-2">
                                 Long-term Liabilities
                             </h4>
-                            <div className="space-y-2">
+                            <div className="flex flex-col gap-2">
                                 {liabilities.longTerm.map((item, index) => (
                                     <div
                                         key={index}
@@ -294,7 +294,7 @@ const BalanceSheetpage = () => {
                             <h4 className="font-medium text-primary mb-2">
                                 Equity
                             </h4>
-                            <div className="space-y-2">
+                            <div className="flex flex-col gap-2">
                                 {equity.map((item, index) => (
                                     <div
                                         key={index}

@@ -246,7 +246,7 @@ const AcceptInvitationForm = () => {
                             Invitation Details
                         </h3>
                     </div>
-                    <div className="space-y-4">
+                    <div className="flex flex-col gap-4">
                         <div className="flex items-start gap-4 p-3 bg-card/60 rounded-lg backdrop-blur-sm">
                             <div className="w-12 h-12 rounded bg-primary/10 flex items-center justify-center shrink-0">
                                 <User className="w-5 h-5 text-primary" />
@@ -343,7 +343,7 @@ const AcceptInvitationForm = () => {
                                 <Lock className="w-3 h-3" />
                                 Password Requirements
                             </p>
-                            <ul className="space-y-2">
+                            <ul className="flex flex-col gap-2">
                                 {passwordValidation.map((req, index) => (
                                     <li
                                         key={index}

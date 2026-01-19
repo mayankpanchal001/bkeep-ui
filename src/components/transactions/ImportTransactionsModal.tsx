@@ -286,7 +286,7 @@ const ImportTransactionsModal = ({
             }
         >
             <div className="space-y-6">
-                <div className="space-y-2">
+                <div className="flex flex-col gap-2">
                     <label className="text-sm font-medium text-gray-700">
                         Target Account
                     </label>
@@ -312,7 +312,7 @@ const ImportTransactionsModal = ({
                     )}
                 </div>
 
-                <div className="space-y-2">
+                <div className="flex flex-col gap-2">
                     <label className="text-sm font-medium text-gray-700">
                         Upload File
                     </label>

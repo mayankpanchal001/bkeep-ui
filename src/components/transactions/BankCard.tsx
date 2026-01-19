@@ -36,7 +36,7 @@ export function BankCard({
             type="button"
             onClick={onClick}
             className={cn(
-                'w-96 h-56 flex-none rounded-xl relative text-white shadow-2xl transition-all duration-300 transform focus:outline-none focus-visible:ring-2 focus-visible:ring-green-600 focus-visible:ring-offset-2 overflow-hidden',
+                'w-72 h-52 flex-none rounded-xl relative text-white shadow-2xl transition-all duration-300 transform focus:outline-none focus-visible:ring-2 focus-visible:ring-green-600 focus-visible:ring-offset-2 overflow-hidden',
                 isSelected
                     ? 'ring-2 ring-primary hover:scale-105 blur-0 z-20'
                     : 'grayscale blur-[2px] scale-85 opacity-75 hover:scale-95 hover:blur-none hover:opacity-100 z-10'

@@ -7,7 +7,7 @@ export default function CTASection() {
         <section className="mx-auto max-w-6xl px-6 pb-24">
             <div className="relative overflow-hidden rounded-[32px] border border-border bg-background px-8 py-12 text-foreground shadow-xs">
                 <div className="grid gap-10 md:grid-cols-[1.1fr,0.9fr]">
-                    <div className="space-y-4 text-center md:text-left">
+                    <div className="flex flex-col gap-4 text-center md:text-left">
                         <p className="text-xs font-semibold uppercase tracking-[0.45em] text-muted-foreground">
                             Start modern accounting today
                         </p>

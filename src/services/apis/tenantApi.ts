@@ -216,6 +216,121 @@ export async function createTenantRequest(
     return response.data;
 }
 
+// Helper function to extract exact error message from API response
+const extractErrorMessage = (
+    error: unknown,
+    defaultMessage?: string
+): string => {
+    const axiosError = error as {
+        response?: {
+            data?: {
+                message?: string | string[];
+                errors?:
+                    | string[]
+                    | Record<string, string | string[]>
+                    | Array<{ field: string; message: string }>;
+                error?: string;
+            };
+        };
+        message?: string;
+    };
+
+    // Check for response data
+    if (axiosError.response?.data) {
+        const data = axiosError.response.data;
+
+        // Handle errors array with field and message objects (validation errors)
+        if (data.errors && Array.isArray(data.errors)) {
+            // Check if it's an array of error objects with field and message
+            if (
+                data.errors.length > 0 &&
+                typeof data.errors[0] === 'object' &&
+                'field' in data.errors[0] &&
+                'message' in data.errors[0]
+            ) {
+                const errorMessages = (
+                    data.errors as Array<{
+                        field: string;
+                        message: string;
+                    }>
+                ).map((err) => `${err.field}: ${err.message}`);
+                return errorMessages.join('; ');
+            }
+            // Handle simple string array
+            return data.errors.join(', ');
+        }
+
+        // Handle errors object (key-value pairs)
+        if (
+            data.errors &&
+            typeof data.errors === 'object' &&
+            !Array.isArray(data.errors)
+        ) {
+            const errorMessages: string[] = [];
+            Object.entries(data.errors).forEach(([field, messages]) => {
+                const fieldMessages = Array.isArray(messages)
+                    ? messages.join(', ')
+                    : messages;
+                errorMessages.push(`${field}: ${fieldMessages}`);
+            });
+            return errorMessages.join('; ');
+        }
+
+        // Handle array of messages
+        if (Array.isArray(data.message)) {
+            return data.message.join(', ');
+        }
+
+        // Handle single message
+        if (data.message) {
+            return data.message;
+        }
+
+        // Handle error field
+        if (data.error) {
+            return data.error;
+        }
+    }
+
+    // Fallback to axios error message or default
+    return (
+        axiosError.message ||
+        defaultMessage ||
+        `Failed to process ${SINGLE_TENANT_PREFIX}`
+    );
+};
+
+// Helper function to extract field-level errors from API response
+export const extractFieldErrors = (error: unknown): Record<string, string> => {
+    const axiosError = error as {
+        response?: {
+            data?: {
+                errors?: Array<{ field: string; message: string }>;
+            };
+        };
+    };
+
+    const fieldErrors: Record<string, string> = {};
+
+    if (
+        axiosError.response?.data?.errors &&
+        Array.isArray(axiosError.response.data.errors)
+    ) {
+        axiosError.response.data.errors.forEach((err) => {
+            if (err.field && err.message) {
+                // If field already has an error, append the new one
+                if (fieldErrors[err.field]) {
+                    fieldErrors[err.field] += `; ${err.message}`;
+                } else {
+                    fieldErrors[err.field] = err.message;
+                }
+            }
+        });
+    }
+
+    return fieldErrors;
+};
+
 export const useCreateTenant = () => {
     const queryClient = useQueryClient();
 
@@ -225,13 +340,11 @@ export const useCreateTenant = () => {
                 return await createTenantRequest(data);
             } catch (error) {
                 console.error('Create Tenant Failed:', error);
-                const maybeAxiosError = error as {
-                    response?: { data?: { message?: string } };
-                };
-                const message =
-                    maybeAxiosError.response?.data?.message ||
-                    `Failed to create ${SINGLE_TENANT_PREFIX}`;
-                showErrorToast(message);
+                const errorMessage = extractErrorMessage(
+                    error,
+                    `Failed to create ${SINGLE_TENANT_PREFIX}`
+                );
+                showErrorToast(errorMessage);
                 throw error;
             }
         },
@@ -267,13 +380,11 @@ export const useUpdateTenant = () => {
                 return await updateTenantRequest(id, data);
             } catch (error) {
                 console.error('Update Tenant Failed:', error);
-                const maybeAxiosError = error as {
-                    response?: { data?: { message?: string } };
-                };
-                const message =
-                    maybeAxiosError.response?.data?.message ||
-                    `Failed to update ${SINGLE_TENANT_PREFIX}`;
-                showErrorToast(message);
+                const errorMessage = extractErrorMessage(
+                    error,
+                    `Failed to update ${SINGLE_TENANT_PREFIX}`
+                );
+                showErrorToast(errorMessage);
                 throw error;
             }
         },
@@ -314,13 +425,11 @@ export const useSwitchTenant = () => {
                 return await switchTenantRequest(tenantId);
             } catch (error) {
                 console.error('Switch Tenant Failed:', error);
-                const maybeAxiosError = error as {
-                    response?: { data?: { message?: string } };
-                };
-                const message =
-                    maybeAxiosError.response?.data?.message ||
-                    `Failed to switch ${SINGLE_TENANT_PREFIX}`;
-                showErrorToast(message);
+                const errorMessage = extractErrorMessage(
+                    error,
+                    `Failed to switch ${SINGLE_TENANT_PREFIX}`
+                );
+                showErrorToast(errorMessage);
                 throw error;
             }
         },

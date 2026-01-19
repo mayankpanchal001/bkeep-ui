@@ -1,21 +1,37 @@
 import { Column, DataTable } from '@/components/shared/DataTable';
 import Loading from '@/components/shared/Loading';
 import PageHeader from '@/components/shared/PageHeader';
+import { Button } from '@/components/ui/button';
 import {
     Collapsible,
     CollapsibleContent,
     CollapsibleTrigger,
 } from '@/components/ui/collapsible';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog';
+import { useChartOfAccounts } from '@/services/apis/chartsAccountApi';
 import { useContacts } from '@/services/apis/contactsApi';
-import { ChevronDown, GripVertical } from 'lucide-react';
+import { ChevronDown, Copy, GripVertical } from 'lucide-react';
 import { useMemo, useRef, useState } from 'react';
-import { useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import { Badge } from '../../components/ui/badge';
 import {
+    useCreateJournalEntry,
+    useJournalEntries,
     useJournalEntry,
     useReorderJournalEntryLines,
 } from '../../services/apis/journalApi';
-import type { JournalEntry, JournalEntryLine } from '../../types/journal';
+import type {
+    CreateJournalEntryPayload,
+    JournalEntry,
+    JournalEntryLine,
+} from '../../types/journal';
 import { cn } from '../../utils/cn';
 
 const toNumber = (v: unknown) => {
@@ -53,14 +69,74 @@ const formatBoolean = (value: unknown) => {
     return value ? 'Yes' : 'No';
 };
 
+// Helper function to get next journal entry number
+function getNextJournalEntryNumber(current: string | undefined | null): string {
+    if (!current) return '1';
+
+    // Numbers
+    if (/^\d+$/.test(current)) {
+        const nextNum = parseInt(current, 10) + 1;
+
+        if (current.startsWith('0') && current.length > 1) {
+            return String(nextNum).padStart(current.length, '0');
+        }
+        return String(nextNum);
+    }
+
+    const match = current.match(/^(.*?)(\d+)$/);
+    if (match) {
+        const prefix = match[1];
+        const numberPart = match[2];
+        const nextNum = parseInt(numberPart, 10) + 1;
+
+        const nextNumStr = String(nextNum).padStart(numberPart.length, '0');
+        return prefix + nextNumStr;
+    }
+
+    // Letters updating
+    if (/^[a-zA-Z]+$/.test(current)) {
+        const chars = current.split('');
+        let i = chars.length - 1;
+        while (i >= 0) {
+            const charCode = chars[i].charCodeAt(0);
+            if (chars[i] === 'z') {
+                chars[i] = 'a';
+                i--;
+            } else if (chars[i] === 'Z') {
+                chars[i] = 'A';
+                i--;
+            } else {
+                chars[i] = String.fromCharCode(charCode + 1);
+                return chars.join('');
+            }
+        }
+    }
+    return '1';
+}
+
 export default function ViewJournalEntrypage() {
     const { id } = useParams<{ id: string }>();
+    const navigate = useNavigate();
     const { data, isLoading } = useJournalEntry(id!);
     const [isDetailsOpen, setIsDetailsOpen] = useState(false);
     const [selectedLineIds, setSelectedLineIds] = useState<string[]>([]);
     const [draggedLineId, setDraggedLineId] = useState<string | null>(null);
     const [dragOverLineId, setDragOverLineId] = useState<string | null>(null);
+    const [showCopyPreview, setShowCopyPreview] = useState(false);
+    const [copyPreviewData, setCopyPreviewData] =
+        useState<CreateJournalEntryPayload | null>(null);
     const reorderMutation = useReorderJournalEntryLines();
+    const createMutation = useCreateJournalEntry();
+
+    // Fetch journal entries sorted by entryNumber to find the highest one
+    // We'll get multiple entries to ensure we find the highest numeric value
+    const { data: allEntriesData } = useJournalEntries({
+        page: 1,
+        limit: 100, // Fetch enough entries to find the highest number
+        sort: 'entryNumber',
+        order: 'desc',
+    });
+
     const dragLeaveTimeoutRef = useRef<
         Map<HTMLElement, ReturnType<typeof setTimeout>>
     >(new Map());
@@ -101,6 +177,11 @@ export default function ViewJournalEntrypage() {
         order: 'asc',
     });
 
+    const { data: accountsData } = useChartOfAccounts({
+        page: 1,
+        limit: 200,
+    });
+
     const contactNameById = useMemo(() => {
         const items =
             (
@@ -116,6 +197,55 @@ export default function ViewJournalEntrypage() {
         }
         return map;
     }, [contactsData]);
+
+    // Create account name map for preview
+    const accountNameMap = useMemo(() => {
+        const accounts = accountsData?.data?.items || [];
+        const map = new Map<string, string>();
+        for (const account of accounts) {
+            if (account?.id) {
+                const label = account.accountNumber
+                    ? `${account.accountNumber} - ${account.accountName}`
+                    : account.accountName;
+                map.set(account.id, label);
+            }
+        }
+        return map;
+    }, [accountsData]);
+
+    // Get the highest entry number from all journal entries
+    // This must be called before any early returns to follow Rules of Hooks
+    const highestEntryNumber = useMemo(() => {
+        const entries = allEntriesData?.data?.journalEntries || [];
+        if (entries.length === 0) return null;
+
+        // Find the entry with the highest numeric value in entryNumber
+        let highest: string | null = null;
+        let highestNumeric = -1;
+
+        entries.forEach((entry) => {
+            if (!entry.entryNumber) return;
+
+            // Extract numeric part from entry number
+            const match = entry.entryNumber.match(/(\d+)$/);
+            if (match) {
+                const numeric = parseInt(match[1], 10);
+                if (numeric > highestNumeric) {
+                    highestNumeric = numeric;
+                    highest = entry.entryNumber;
+                }
+            } else if (/^\d+$/.test(entry.entryNumber)) {
+                // Pure number
+                const numeric = parseInt(entry.entryNumber, 10);
+                if (numeric > highestNumeric) {
+                    highestNumeric = numeric;
+                    highest = entry.entryNumber;
+                }
+            }
+        });
+
+        return highest;
+    }, [allEntriesData]);
 
     const handleDragStart = (e: React.DragEvent, lineId: string) => {
         if (journalEntry?.status !== 'draft' || reorderMutation.isPending) {
@@ -529,11 +659,87 @@ export default function ViewJournalEntrypage() {
         );
     }
 
+    const handleCopy = () => {
+        if (!id || !journalEntry) return;
+
+        // Get the next entry number by incrementing the highest entry number found
+        // If no entries found, use the current entry's number as fallback
+        const baseEntryNumber = highestEntryNumber || journalEntry.entryNumber;
+        const nextEntryNumber = getNextJournalEntryNumber(baseEntryNumber);
+
+        // Normalize date format
+        const normalizeDate = (value: string) => {
+            return value.includes('T') ? value.split('T')[0] : value;
+        };
+
+        // Create a preview payload with the same data, but with incremented entry number
+        const copyPayload: CreateJournalEntryPayload = {
+            entryNumber: nextEntryNumber,
+            entryDate: normalizeDate(journalEntry.entryDate),
+            entryType: journalEntry.entryType || 'standard',
+            isAdjusting: journalEntry.isAdjusting,
+            isClosing: journalEntry.isClosing || false,
+            isReversing: false, // Don't copy reversing status
+            reversalDate: null, // Don't copy reversal date
+            description: journalEntry.memo || '',
+            memo: journalEntry.memo || '',
+            reference: journalEntry.reference || '',
+            lines: journalEntry.lines.map((line) => ({
+                accountId: line.accountId,
+                lineNumber: line.lineNumber,
+                debit:
+                    typeof line.debit === 'string'
+                        ? parseFloat(line.debit) || 0
+                        : line.debit,
+                credit:
+                    typeof line.credit === 'string'
+                        ? parseFloat(line.credit) || 0
+                        : line.credit,
+                description: line.description || '',
+                memo: line.memo || line.description || '',
+                contactId: line.contactId || '',
+                taxId: line.taxId || '',
+            })),
+        };
+
+        // Show preview dialog
+        setCopyPreviewData(copyPayload);
+        setShowCopyPreview(true);
+    };
+
+    const handleConfirmCopy = () => {
+        if (!copyPreviewData) return;
+
+        createMutation.mutate(copyPreviewData, {
+            onSuccess: (data) => {
+                setShowCopyPreview(false);
+                setCopyPreviewData(null);
+                const newEntryId = data?.data?.journalEntry?.id;
+                if (newEntryId) {
+                    navigate(`/journal-entries/${newEntryId}/edit`);
+                } else {
+                    navigate('/journal-entries');
+                }
+            },
+        });
+    };
+
     return (
-        <div className="space-y-4">
+        <div className="flex flex-col gap-4">
             <PageHeader
                 title={`Journal Entry ${formatText(journalEntry.entryNumber)}`}
                 subtitle={formatDateOnly(journalEntry.entryDate)}
+                actions={
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={handleCopy}
+                        disabled={createMutation.isPending}
+                    >
+                        <Copy className="w-4 h-4 mr-2" />
+                        {createMutation.isPending ? 'Copying...' : 'Copy'}
+                    </Button>
+                }
             />
 
             <div className="bg-card rounded-lg border border-primary/10 overflow-hidden">
@@ -705,7 +911,7 @@ export default function ViewJournalEntrypage() {
                         />
                     </CollapsibleTrigger>
                     <CollapsibleContent>
-                        <div className="px-4 pb-4 space-y-4">
+                        <div className="px-4 pb-4 flex flex-col gap-4">
                             {/*                            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 pt-4">
                                 <div>
                                     <label className="block text-sm font-medium text-primary/50 mb-1">
@@ -881,7 +1087,7 @@ export default function ViewJournalEntrypage() {
                         <h3 className="text-sm font-medium text-primary mb-2">
                             Attachments
                         </h3>
-                        <div className="space-y-2">
+                        <div className="flex flex-col gap-2">
                             {attachments.map((attachment, index) => (
                                 <div
                                     key={index}
@@ -904,6 +1110,231 @@ export default function ViewJournalEntrypage() {
                     </div>
                 );
             })()}
+
+            {/* Copy Preview Dialog */}
+            <Dialog open={showCopyPreview} onOpenChange={setShowCopyPreview}>
+                <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                    <DialogHeader>
+                        <DialogTitle>Preview Copy Journal Entry</DialogTitle>
+                        <DialogDescription>
+                            Review the details of the journal entry that will be
+                            created. The new entry will be in Draft status.
+                        </DialogDescription>
+                    </DialogHeader>
+
+                    {copyPreviewData && (
+                        <div className="space-y-4">
+                            {/* Entry Details */}
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 bg-card rounded-lg border border-primary/10">
+                                <div>
+                                    <label className="block text-sm font-medium text-primary/50 mb-1">
+                                        New Entry Number
+                                    </label>
+                                    <p className="text-primary font-semibold">
+                                        {copyPreviewData.entryNumber}
+                                    </p>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-primary/50 mb-1">
+                                        Entry Date
+                                    </label>
+                                    <p className="text-primary font-medium">
+                                        {formatDateOnly(
+                                            copyPreviewData.entryDate
+                                        )}
+                                    </p>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-primary/50 mb-1">
+                                        Entry Type
+                                    </label>
+                                    <p className="text-primary font-medium capitalize">
+                                        {copyPreviewData.entryType ||
+                                            'standard'}
+                                    </p>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-primary/50 mb-1">
+                                        Status
+                                    </label>
+                                    <Badge
+                                        variant="secondary"
+                                        className="text-primary/70"
+                                    >
+                                        Draft
+                                    </Badge>
+                                </div>
+                            </div>
+
+                            {/* Memo/Description */}
+                            {(copyPreviewData.memo ||
+                                copyPreviewData.description) && (
+                                <div className="p-4 bg-card rounded-lg border border-primary/10">
+                                    <label className="block text-sm font-medium text-primary/50 mb-2">
+                                        Memo
+                                    </label>
+                                    <p className="text-primary text-sm whitespace-pre-wrap">
+                                        {copyPreviewData.memo ||
+                                            copyPreviewData.description ||
+                                            '—'}
+                                    </p>
+                                </div>
+                            )}
+
+                            {/* Journal Lines Preview */}
+                            <div className="border border-primary/10 rounded-lg overflow-hidden">
+                                <div className="px-4 py-2 bg-primary/5 border-b border-primary/10">
+                                    <h3 className="text-sm font-semibold text-primary">
+                                        Journal Lines (
+                                        {copyPreviewData.lines.length} lines)
+                                    </h3>
+                                </div>
+                                <div className="overflow-x-auto">
+                                    <table className="w-full">
+                                        <thead className="bg-primary/5">
+                                            <tr>
+                                                <th className="px-3 py-2 text-left text-xs font-medium text-primary/70">
+                                                    #
+                                                </th>
+                                                <th className="px-3 py-2 text-left text-xs font-medium text-primary/70">
+                                                    Account
+                                                </th>
+                                                <th className="px-3 py-2 text-left text-xs font-medium text-primary/70">
+                                                    Description
+                                                </th>
+                                                <th className="px-3 py-2 text-right text-xs font-medium text-primary/70">
+                                                    Debit
+                                                </th>
+                                                <th className="px-3 py-2 text-right text-xs font-medium text-primary/70">
+                                                    Credit
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {copyPreviewData.lines.map(
+                                                (line, index) => (
+                                                    <tr
+                                                        key={index}
+                                                        className="border-b border-primary/10 hover:bg-primary/5"
+                                                    >
+                                                        <td className="px-3 py-2 text-sm text-primary/50">
+                                                            {line.lineNumber}
+                                                        </td>
+                                                        <td className="px-3 py-2 text-sm text-primary">
+                                                            {line.accountId
+                                                                ? accountNameMap.get(
+                                                                      line.accountId
+                                                                  ) ||
+                                                                  line.accountId
+                                                                : '—'}
+                                                        </td>
+                                                        <td className="px-3 py-2 text-sm text-primary/75">
+                                                            {line.description ||
+                                                                '—'}
+                                                        </td>
+                                                        <td className="px-3 py-2 text-sm text-right font-medium text-primary">
+                                                            {toNumber(
+                                                                line.debit
+                                                            ).toLocaleString(
+                                                                'en-US',
+                                                                {
+                                                                    style: 'currency',
+                                                                    currency:
+                                                                        'USD',
+                                                                }
+                                                            )}
+                                                        </td>
+                                                        <td className="px-3 py-2 text-sm text-right font-medium text-primary">
+                                                            {toNumber(
+                                                                line.credit
+                                                            ).toLocaleString(
+                                                                'en-US',
+                                                                {
+                                                                    style: 'currency',
+                                                                    currency:
+                                                                        'USD',
+                                                                }
+                                                            )}
+                                                        </td>
+                                                    </tr>
+                                                )
+                                            )}
+                                        </tbody>
+                                        <tfoot className="bg-primary/5">
+                                            <tr>
+                                                <td
+                                                    colSpan={3}
+                                                    className="px-3 py-2 text-right font-semibold text-sm text-primary"
+                                                >
+                                                    Total
+                                                </td>
+                                                <td className="px-3 py-2 text-right font-semibold text-sm text-primary">
+                                                    {copyPreviewData.lines
+                                                        .reduce(
+                                                            (sum, line) =>
+                                                                sum +
+                                                                toNumber(
+                                                                    line.debit
+                                                                ),
+                                                            0
+                                                        )
+                                                        .toLocaleString(
+                                                            'en-US',
+                                                            {
+                                                                style: 'currency',
+                                                                currency: 'USD',
+                                                            }
+                                                        )}
+                                                </td>
+                                                <td className="px-3 py-2 text-right font-semibold text-sm text-primary">
+                                                    {copyPreviewData.lines
+                                                        .reduce(
+                                                            (sum, line) =>
+                                                                sum +
+                                                                toNumber(
+                                                                    line.credit
+                                                                ),
+                                                            0
+                                                        )
+                                                        .toLocaleString(
+                                                            'en-US',
+                                                            {
+                                                                style: 'currency',
+                                                                currency: 'USD',
+                                                            }
+                                                        )}
+                                                </td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    <DialogFooter>
+                        <Button
+                            variant="outline"
+                            onClick={() => {
+                                setShowCopyPreview(false);
+                                setCopyPreviewData(null);
+                            }}
+                            disabled={createMutation.isPending}
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            onClick={handleConfirmCopy}
+                            disabled={createMutation.isPending}
+                        >
+                            <Copy className="w-4 h-4 mr-2" />
+                            {createMutation.isPending
+                                ? 'Creating...'
+                                : 'Create Copy'}
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 }

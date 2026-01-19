@@ -18,7 +18,7 @@ const NotificationsTab = ({
             <h3 className="text-lg font-semibold text-primary mb-4">
                 Notification Preferences
             </h3>
-            <div className="space-y-4">
+            <div className="flex flex-col gap-4">
                 {Object.entries(formData.notifications).map(([key, value]) => (
                     <div
                         key={key}
