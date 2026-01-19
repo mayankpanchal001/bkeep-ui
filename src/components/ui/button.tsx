@@ -57,7 +57,7 @@ export interface ButtonProps
 function Button({
     className,
     variant,
-    size,
+    size = 'sm',
     asChild = false,
     startIcon,
     endIcon,

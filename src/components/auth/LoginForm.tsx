@@ -119,19 +119,19 @@ export function LoginForm() {
                     <input
                         id="remember-me"
                         type="checkbox"
-                        className="h-3.5 w-3.5 text-primary  border-primary/25 dark:border-gray-600 rounded focus:ring-primary dark:focus:ring-primary cursor-pointer accent-primary dark:accent-white"
+                        className="h-4 w-4 text-primary border-primary/25 dark:border-gray-600 rounded focus:ring-primary dark:focus:ring-primary cursor-pointer accent-primary dark:accent-white"
                     />
                     <label
                         htmlFor="remember-me"
-                        className="text-[12.5px] font-medium text-primary/50 dark:text-primary/40 cursor-pointer hover:text-primary/90 dark:hover:text-primary/20 transition-colors"
+                        className="text-xs sm:text-sm font-medium text-primary/70 dark:text-primary/65 cursor-pointer hover:text-primary dark:hover:text-primary/85 transition-colors leading-normal tracking-normal"
                     >
                         Remember me for 30 days
                     </label>
                 </div>
 
                 {error && (
-                    <div className="border border-red-100 bg-red-50/50 p-2.5 rounded-lg">
-                        <p className="text-[12px] text-center text-red-600 font-semibold tracking-tight">
+                    <div className="border border-red-100 bg-red-50/50 dark:bg-red-950/20 dark:border-red-900/50 p-3 rounded-lg">
+                        <p className="text-xs sm:text-sm text-center text-red-600 dark:text-red-400 font-semibold tracking-normal leading-relaxed">
                             {error}
                         </p>
                     </div>

@@ -126,18 +126,105 @@ const Transactionpage = () => {
             limit,
         };
 
-        // Check if search is a number - if so, use it for amountMin and amountMax
-        const searchAsNumber = search ? parseFloat(search.trim()) : NaN;
+        const isDatePattern = (str: string): boolean => {
+
+// YYYY, YYYY-MM, YYYY-MM-DD, YYYY/MM, YYYY/MM/DD
+            const datePattern = /^\d{4}(-|\/)?\d{0,2}(-|\/)?\d{0,2}$/;
+            return datePattern.test(str.trim());
+        };
+
+        const parseSearchAsDate = (str: string): string | null => {
+
+            const trimmed = str.trim();
+
+            // YYYY-MM-DD or YYYY/MM/DD
+            const fullDateMatch = trimmed.match(
+                /^(\d{4})[-/](\d{1,2})[-/](\d{1,2})$/
+            );
+            if (fullDateMatch) {
+                const [, year, month, day] = fullDateMatch;
+                const date = new Date(
+                    `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
+                );
+                if (!isNaN(date.getTime())) {
+                    return date.toISOString();
+                }
+            }
+            // YYYY-MM
+            const monthDateMatch = trimmed.match(/^(\d{4})[-/](\d{1,2})$/);
+            if (monthDateMatch) {
+                const [, year, month] = monthDateMatch;
+                const date = new Date(`${year}-${month.padStart(2, '0')}-01`);
+                if (!isNaN(date.getTime())) {
+                    return date.toISOString();
+                }
+            }
+
+            // YYYY (search for start of year)
+            const yearMatch = trimmed.match(/^(\d{4})$/);
+            if (yearMatch) {
+                const [, year] = yearMatch;
+                const date = new Date(`${year}-01-01`);
+                if (!isNaN(date.getTime())) {
+                    return date.toISOString();
+                }
+            }
+
+            return null;
+        };
+        const trimmedSearch = search?.trim() || '';
+        const searchAsNumber = trimmedSearch ? parseFloat(trimmedSearch) : NaN;
         const isNumericSearch =
-            !isNaN(searchAsNumber) && isFinite(searchAsNumber);
+            !isNaN(searchAsNumber) &&
+            isFinite(searchAsNumber) &&
+            !isDatePattern(trimmedSearch);
 
         if (search) {
-            if (isNumericSearch) {
-                // If search is a number, set both minAmount and maxAmount to that value
+
+            if (isDatePattern(trimmedSearch)) {
+                const isoDate = parseSearchAsDate(trimmedSearch);
+             if (isoDate) {
+
+                    // YYYY or YYYY-MM
+                    const fullDateMatch = trimmedSearch.match(
+                        /^(\d{4})[-/](\d{1,2})[-/](\d{1,2})$/
+                    );
+                    if (fullDateMatch) {
+                        // Exact date: filter for just that day
+                        const searchDate = new Date(isoDate);
+                        const startOfDay = new Date(
+                            searchDate.getFullYear(),
+                            searchDate.getMonth(),
+                            searchDate.getDate(),
+                            0,
+                            0,
+                            0,
+                            0
+                        );
+                        const endOfDay = new Date(
+                            searchDate.getFullYear(),
+                            searchDate.getMonth(),
+                            searchDate.getDate(),
+                            23,
+                            59,
+                            59,
+                            999
+                        );
+                        filters.startDate = startOfDay.toISOString();
+                        filters.endDate = endOfDay.toISOString();
+                    } else {
+
+                        filters.startDate = isoDate;
+                    }
+                } else {
+
+                    filters.search = search;
+                }
+            } else if (isNumericSearch) {
+
                 filters.minAmount = searchAsNumber;
                 filters.maxAmount = searchAsNumber;
             } else {
-                // Otherwise, use it as a regular text search
                 filters.search = search;
             }
         }
@@ -485,9 +572,17 @@ const Transactionpage = () => {
 
             <div className="p-4 border-b border-primary/10 sticky -top-4 z-30 bg-background">
                 <div className="flex items-center gap-2 flex-wrap">
-                    <Button>All ({allCount})</Button>
-                    <Button variant="outline">Pending ({pendingCount})</Button>
-                    <Button>Posted ({postedCount})</Button>
+                    <Button variant={status === 'all' ? 'default' : 'outline'}
+                         onClick={() => filterStore.setStatus('all')
+                    }>All ({allCount})</Button>
+
+                    <Button variant={status === 'pending' ? 'default' : 'outline'}
+                         onClick={() => filterStore.setStatus('pending')
+                    }>Pending ({pendingCount})</Button>
+
+                    <Button variant={status === 'posted' ? 'default' : 'outline'}
+                         onClick={() => filterStore.setStatus('posted')
+                    }>Posted ({postedCount})</Button>
 
                     <div className="ml-auto flex items-center gap-3">
                         <div className="relative w-[260px]">

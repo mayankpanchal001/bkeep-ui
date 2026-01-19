@@ -23,10 +23,10 @@ const Loginpage = () => {
                     {/* Login Form Card */}
                     <div className="p-8 lg:p-12">
                         <div className="mb-8 text-center">
-                            <h2 className="text-[24px] font-semibold leading-tight text-primary mb-1.5 tracking-tight">
+                            <h2 className="text-xl sm:text-2xl font-semibold leading-tight text-primary mb-2 tracking-tight">
                                 Login to your account
                             </h2>
-                            <p className="text-[14px] text-primary/60 font-medium">
+                            <p className="text-sm sm:text-base text-primary/70 dark:text-primary/65 font-medium leading-relaxed">
                                 Please enter your details to login.
                             </p>
                         </div>
@@ -34,20 +34,20 @@ const Loginpage = () => {
                     </div>
                 </div>
 
-                <div className="absolute bottom-8 left-8 right-8 flex items-center justify-between">
-                    <p className="text-[12px] text-primary/60 font-medium tracking-tight">
+                <div className="absolute bottom-8 left-8 right-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0">
+                    <p className="text-xs sm:text-sm text-primary/70 dark:text-primary/65 font-medium tracking-normal">
                         © 2025, Bkeep Accounting.
                     </p>
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-4 sm:gap-6">
                         <Link
                             to="/privacy"
-                            className="text-[12px] text-primary/60 font-medium hover:text-primary transition-colors"
+                            className="text-xs sm:text-sm text-primary/70 dark:text-primary/65 font-medium hover:text-primary dark:hover:text-primary/90 transition-colors tracking-normal"
                         >
                             Privacy Policy
                         </Link>
                         <Link
                             to="/terms"
-                            className="text-[12px] text-primary/60 font-medium hover:text-primary transition-colors"
+                            className="text-xs sm:text-sm text-primary/70 dark:text-primary/65 font-medium hover:text-primary dark:hover:text-primary/90 transition-colors tracking-normal"
                         >
                             Terms of Service
                         </Link>
@@ -66,10 +66,10 @@ const Loginpage = () => {
                                 className="h-24 w-24 object-contain"
                             />
                         </div>
-                        <h1 className="text-[30px] font-semibold leading-[36px] text-primary mb-2 tracking-tight">
+                        <h1 className="text-2xl lg:text-3xl font-semibold leading-tight text-primary mb-2 tracking-tight">
                             Bkeep Accounting
                         </h1>
-                        <p className="text-[16px] text-primary/60 font-medium tracking-tight">
+                        <p className="text-base lg:text-lg text-primary/70 dark:text-primary/65 font-medium tracking-normal leading-relaxed">
                             Manage. Track. Grow. Succeed.
                         </p>
                     </div>
@@ -82,10 +82,10 @@ const Loginpage = () => {
 
                             {/* Left Section */}
                             <div className="pr-9">
-                                <h3 className="text-primary text-[16px] font-semibold">
+                                <h3 className="text-primary text-base font-semibold mb-1">
                                     Ready to launch?
                                 </h3>
-                                <p className="text-primary/60 text-[14px] leading-relaxed">
+                                <p className="text-primary/70 dark:text-primary/65 text-sm leading-relaxed font-medium">
                                     Clone the repo, install dependencies, and
                                     your dashboard is live in minutes.
                                 </p>
@@ -93,10 +93,10 @@ const Loginpage = () => {
 
                             {/* Right Section */}
                             <div className="pl-6">
-                                <h3 className="text-primary text-[16px] font-semibold">
+                                <h3 className="text-primary text-base font-semibold mb-1">
                                     Need help?
                                 </h3>
-                                <p className="text-primary/60 text-[14px] leading-relaxed">
+                                <p className="text-primary/70 dark:text-primary/65 text-sm leading-relaxed font-medium">
                                     Check out the docs or open an issue on
                                     GitHub, community support is just a click
                                     away.
