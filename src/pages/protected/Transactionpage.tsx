@@ -1127,26 +1127,82 @@ const Transactionpage = () => {
                                                         setSplitModalOpen(true);
                                                     }}
                                                 >
-                                                    Split
-                                                </DropdownMenuItem>
-                                                <DropdownMenuItem
-                                                    onClick={() =>
-                                                        showSuccessToast(
-                                                            'Rule created (demo placeholder)'
-                                                        )
-                                                    }
-                                                >
-                                                    Create rule
-                                                </DropdownMenuItem>
-                                            </DropdownMenuContent>
-                                        </DropdownMenu>
-                                    </div>
-                                </TableCell>
-                            </TableRow>
-                        ))
-                    )}
-                </TableBody>
-            </Table>
+                                                    Post
+                                                </Button>
+                                            )}
+                                            <DropdownMenu>
+                                                <DropdownMenuTrigger asChild>
+                                                    <Button
+                                                        variant="outline"
+                                                        size="sm"
+                                                    >
+                                                        ⋯
+                                                    </Button>
+                                                </DropdownMenuTrigger>
+                                                <DropdownMenuContent align="end">
+                                                    <DropdownMenuItem
+                                                        onClick={() =>
+                                                            showSuccessToast(
+                                                                'Update coming soon'
+                                                            )
+                                                        }
+                                                    >
+                                                        Update
+                                                    </DropdownMenuItem>
+                                                    <DropdownMenuItem
+                                                        onClick={() =>
+                                                            reconcileTransaction(
+                                                                t.id
+                                                            )
+                                                        }
+                                                    >
+                                                        Reconcile
+                                                    </DropdownMenuItem>
+                                                    <DropdownMenuItem
+                                                        onClick={() =>
+                                                            voidTransaction(
+                                                                t.id
+                                                            )
+                                                        }
+                                                    >
+                                                        Void
+                                                    </DropdownMenuItem>
+                                                    <DropdownMenuItem
+                                                        onClick={() =>
+                                                            reverseTransaction(
+                                                                t.id
+                                                            )
+                                                        }
+                                                    >
+                                                        Reverse
+                                                    </DropdownMenuItem>
+                                                    <DropdownMenuItem
+                                                        onClick={() =>
+                                                            showSuccessToast(
+                                                                'Split editor coming soon'
+                                                            )
+                                                        }
+                                                    >
+                                                        Split
+                                                    </DropdownMenuItem>
+                                                    <DropdownMenuItem
+                                                        onClick={() =>
+                                                            showSuccessToast(
+                                                                'Rule created (demo placeholder)'
+                                                            )
+                                                        }
+                                                    >
+                                                        rule
+                                                    </DropdownMenuItem>
+                                                </DropdownMenuContent>
+                                            </DropdownMenu>
+                                        </div>
+                                    </TableCell>
+                                </TableRow>
+                            ))
+                        )}
+                    </TableBody>
+                </Table>
 
             {/* Pagination */}
             <TablePagination
