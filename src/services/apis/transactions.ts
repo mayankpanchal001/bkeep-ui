@@ -339,3 +339,52 @@ export const useReverseTransaction = () => {
         },
     });
 };
+
+// ========= Split Transaction =========
+export type SplitTransactionItem = {
+    amount: number;
+    categoryId: string;
+    description: string;
+    taxIds?: string[];
+};
+
+export type SplitTransactionPayload = {
+    splits: SplitTransactionItem[];
+};
+
+export const splitTransaction = async (
+    id: string,
+    payload: SplitTransactionPayload
+): Promise<CreateTransactionResponse> => {
+    const response = await axiosInstance.put(`/transactions/${id}/split`, payload);
+    console.log('Split Transaction API Response:', response.data);
+    return response.data;
+};
+
+export const useSplitTransaction = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: ({
+            id,
+            payload,
+        }: {
+            id: string;
+            payload: SplitTransactionPayload;
+        }) => splitTransaction(id, payload),
+        onSuccess: (data) => {
+            showSuccessToast(
+                data?.message || 'Transaction split successfully'
+            );
+            queryClient.invalidateQueries({ queryKey: ['transactions'] });
+        },
+        onError: (error) => {
+            const maybeAxiosError = error as {
+                response?: { data?: { message?: string } };
+            };
+            const message =
+                maybeAxiosError.response?.data?.message ||
+                'Failed to split transaction';
+            showErrorToast(message);
+        },
+    });
+};

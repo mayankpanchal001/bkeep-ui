@@ -153,7 +153,7 @@ const ImportChartOfAccountsDrawer = ({
         // Validate file type
         if (
             file.type ===
-                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
             file.type === 'application/vnd.ms-excel' ||
             file.name.endsWith('.xlsx') ||
             file.name.endsWith('.xls') ||
@@ -184,9 +184,9 @@ const ImportChartOfAccountsDrawer = ({
                             const match = headers.find(
                                 (header) =>
                                     header.toLowerCase() ===
-                                        field.label.toLowerCase() ||
+                                    field.label.toLowerCase() ||
                                     header.toLowerCase() ===
-                                        field.key.toLowerCase()
+                                    field.key.toLowerCase()
                             );
                             if (match) {
                                 autoMapping[field.key] = match;
@@ -242,96 +242,6 @@ const ImportChartOfAccountsDrawer = ({
         });
     };
 
-    // Convert template data to Excel file and proceed to mapping
-    const handleImportTemplateData = () => {
-        if (!preview || !selectedTemplateId) return;
-
-        try {
-            // Create worksheet data from template accounts
-            const accounts = preview.accounts || [];
-
-            // Get import fields to create proper headers
-            const headers = importFields.map((field) => field.label);
-
-            // Create data rows - map template account data to import field format
-            const rows = accounts.map((account) => {
-                const row: Record<string, string | number> = {};
-                importFields.forEach((field) => {
-                    // Map template account fields to import field keys
-                    switch (field.key) {
-                        case 'accountNumber':
-                            row[field.label] = account.accountNumber || '';
-                            break;
-                        case 'accountName':
-                            row[field.label] = account.accountName || '';
-                            break;
-                        case 'type':
-                        case 'accountType':
-                            row[field.label] = account.accountType || '';
-                            break;
-                        case 'detailType':
-                        case 'accountDetailType':
-                            row[field.label] = account.accountDetailType || '';
-                            break;
-                        case 'openingBalance':
-                            row[field.label] = account.openingBalance || 0;
-                            break;
-                        case 'description':
-                            row[field.label] = account.description || '';
-                            break;
-                        default:
-                            // For any other fields, set empty string
-                            row[field.label] = '';
-                    }
-                });
-                return row;
-            });
-
-            // Create workbook with headers as first row
-            const worksheet = XLSX.utils.json_to_sheet(rows, {
-                header: headers,
-            });
-            const workbook = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(
-                workbook,
-                worksheet,
-                'Chart of Accounts'
-            );
-
-            // Convert to blob
-            const excelBuffer = XLSX.write(workbook, {
-                bookType: 'xlsx',
-                type: 'array',
-            });
-            const blob = new Blob([excelBuffer], {
-                type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            });
-
-            // Create file from blob
-            const templateName = preview.template?.name || 'template';
-            const fileName = `${templateName.replace(/\s+/g, '_').toLowerCase()}_chart_of_accounts.xlsx`;
-            const file = new File([blob], fileName, {
-                type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            });
-
-            // Set as selected file and proceed to mapping
-            setSelectedFile(file);
-            setFileHeaders(headers);
-
-            // Auto-map fields (should match perfectly since we created the file with these headers)
-            const autoMapping: Record<string, string> = {};
-            importFields.forEach((field) => {
-                autoMapping[field.key] = field.label;
-            });
-            setMapping(autoMapping);
-
-            // Move to mapping step so user can review/modify mapping
-            setStep('mapping');
-            setImportMethod('file');
-        } catch (error) {
-            console.error('Failed to convert template to file:', error);
-        }
-    };
 
     const handleImport = () => {
         if (selectedFile) {
@@ -389,12 +299,12 @@ const ImportChartOfAccountsDrawer = ({
         step === 'select'
             ? false
             : step === 'template'
-              ? selectedTemplateId !== null
-              : step === 'file-upload'
-                ? selectedFile !== null
-                : importFields
-                      .filter((f) => f.required)
-                      .every((f) => mapping[f.key]);
+                ? selectedTemplateId !== null
+                : step === 'file-upload'
+                    ? selectedFile !== null
+                    : importFields
+                        .filter((f) => f.required)
+                        .every((f) => mapping[f.key]);
 
     const handleClose = () => {
         if (importMutation.isPending || applyTemplateMutation.isPending) {
@@ -429,10 +339,10 @@ const ImportChartOfAccountsDrawer = ({
                         {step === 'select'
                             ? 'Import Chart of Accounts'
                             : step === 'template'
-                              ? 'Import from Template'
-                              : step === 'file-upload'
-                                ? 'Import from File'
-                                : 'Map Import Fields'}
+                                ? 'Import from Template'
+                                : step === 'file-upload'
+                                    ? 'Import from File'
+                                    : 'Map Import Fields'}
                     </DrawerTitle>
                     <button
                         onClick={handleClose}
@@ -536,11 +446,10 @@ const ImportChartOfAccountsDrawer = ({
                                                 onClick={() =>
                                                     setSelectedTemplateId(t.id)
                                                 }
-                                                className={`px-3 py-1.5 rounded text-sm border transition-colors ${
-                                                    selectedTemplateId === t.id
-                                                        ? 'bg-primary text-white border-primary'
-                                                        : 'bg-card border-primary/10 text-primary hover:bg-primary/5'
-                                                }`}
+                                                className={`px-3 py-1.5 rounded text-sm border transition-colors ${selectedTemplateId === t.id
+                                                    ? 'bg-primary text-white border-primary'
+                                                    : 'bg-card border-primary/10 text-primary hover:bg-primary/5'
+                                                    }`}
                                             >
                                                 {t.name || 'Template'}
                                             </button>
@@ -682,12 +591,12 @@ const ImportChartOfAccountsDrawer = ({
                                                             loading={
                                                                 applyTemplateMutation.isPending
                                                             }
-                                                            className="flex-1"
+                                                            className=""
                                                         >
                                                             Apply Template
                                                             Directly
                                                         </Button>
-                                                        <Button
+                                                        {/* <Button
                                                             variant="outline"
                                                             size="sm"
                                                             onClick={
@@ -703,7 +612,7 @@ const ImportChartOfAccountsDrawer = ({
                                                         >
                                                             Import & Map
                                                             Template Data
-                                                        </Button>
+                                                        </Button> */}
                                                     </div>
                                                     <p className="text-[10px] text-primary/50">
                                                         <strong>
@@ -745,15 +654,13 @@ const ImportChartOfAccountsDrawer = ({
                                 </p>
 
                                 <div
-                                    className={`relative flex flex-col items-center justify-center w-full h-48 border-2 border-dashed rounded-lg transition-colors cursor-pointer ${
-                                        dragActive
-                                            ? 'border-primary bg-primary/10'
-                                            : 'border-primary/25 hover:border-primary/50 hover:bg-card'
-                                    } ${
-                                        selectedFile
+                                    className={`relative flex flex-col items-center justify-center w-full h-48 border-2 border-dashed rounded-lg transition-colors cursor-pointer ${dragActive
+                                        ? 'border-primary bg-primary/10'
+                                        : 'border-primary/25 hover:border-primary/50 hover:bg-card'
+                                        } ${selectedFile
                                             ? 'bg-primary/20 border-primary'
                                             : ''
-                                    }`}
+                                        }`}
                                     onDragEnter={handleDrag}
                                     onDragLeave={handleDrag}
                                     onDragOver={handleDrag}

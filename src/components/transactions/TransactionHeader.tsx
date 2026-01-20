@@ -86,7 +86,7 @@ export function TransactionHeader({
         setCanScrollLeft(container.scrollLeft > 0);
         setCanScrollRight(
             container.scrollLeft <
-                container.scrollWidth - container.clientWidth - 10
+            container.scrollWidth - container.clientWidth - 10
         );
     }, []);
 
@@ -132,7 +132,7 @@ export function TransactionHeader({
     };
 
     return (
-        <div className="space-y-6">
+        <div className="flex flex-col gap-4">
             {/* Top Header Row */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 {/* Account Selector */}
@@ -228,7 +228,7 @@ export function TransactionHeader({
 
                 <div
                     ref={scrollContainerRef}
-                    className="flex overflow-x-auto p-4 gap-4 scrollbar-hide relative"
+                    className="flex overflow-x-auto gap-4 scrollbar-hide relative"
                 >
                     {displayAccounts
                         .sort((a, b) => {
