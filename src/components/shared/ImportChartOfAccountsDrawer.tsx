@@ -242,97 +242,6 @@ const ImportChartOfAccountsDrawer = ({
         });
     };
 
-    // Convert template data to Excel file and proceed to mapping
-    const handleImportTemplateData = () => {
-        if (!preview || !selectedTemplateId) return;
-
-        try {
-            // Create worksheet data from template accounts
-            const accounts = preview.accounts || [];
-
-            // Get import fields to create proper headers
-            const headers = importFields.map((field) => field.label);
-
-            // Create data rows - map template account data to import field format
-            const rows = accounts.map((account) => {
-                const row: Record<string, string | number> = {};
-                importFields.forEach((field) => {
-                    // Map template account fields to import field keys
-                    switch (field.key) {
-                        case 'accountNumber':
-                            row[field.label] = account.accountNumber || '';
-                            break;
-                        case 'accountName':
-                            row[field.label] = account.accountName || '';
-                            break;
-                        case 'type':
-                        case 'accountType':
-                            row[field.label] = account.accountType || '';
-                            break;
-                        case 'detailType':
-                        case 'accountDetailType':
-                            row[field.label] = account.accountDetailType || '';
-                            break;
-                        case 'openingBalance':
-                            row[field.label] = account.openingBalance || 0;
-                            break;
-                        case 'description':
-                            row[field.label] = account.description || '';
-                            break;
-                        default:
-                            // For any other fields, set empty string
-                            row[field.label] = '';
-                    }
-                });
-                return row;
-            });
-
-            // Create workbook with headers as first row
-            const worksheet = XLSX.utils.json_to_sheet(rows, {
-                header: headers,
-            });
-            const workbook = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(
-                workbook,
-                worksheet,
-                'Chart of Accounts'
-            );
-
-            // Convert to blob
-            const excelBuffer = XLSX.write(workbook, {
-                bookType: 'xlsx',
-                type: 'array',
-            });
-            const blob = new Blob([excelBuffer], {
-                type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            });
-
-            // Create file from blob
-            const templateName = preview.template?.name || 'template';
-            const fileName = `${templateName.replace(/\s+/g, '_').toLowerCase()}_chart_of_accounts.xlsx`;
-            const file = new File([blob], fileName, {
-                type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            });
-
-            // Set as selected file and proceed to mapping
-            setSelectedFile(file);
-            setFileHeaders(headers);
-
-            // Auto-map fields (should match perfectly since we created the file with these headers)
-            const autoMapping: Record<string, string> = {};
-            importFields.forEach((field) => {
-                autoMapping[field.key] = field.label;
-            });
-            setMapping(autoMapping);
-
-            // Move to mapping step so user can review/modify mapping
-            setStep('mapping');
-            setImportMethod('file');
-        } catch (error) {
-            console.error('Failed to convert template to file:', error);
-        }
-    };
-
     const handleImport = () => {
         if (selectedFile) {
             // Invert mapping: API expects {fileColumnName: systemFieldKey}
@@ -682,12 +591,12 @@ const ImportChartOfAccountsDrawer = ({
                                                             loading={
                                                                 applyTemplateMutation.isPending
                                                             }
-                                                            className="flex-1"
+                                                            className=""
                                                         >
                                                             Apply Template
                                                             Directly
                                                         </Button>
-                                                        <Button
+                                                        {/* <Button
                                                             variant="outline"
                                                             size="sm"
                                                             onClick={
@@ -703,7 +612,7 @@ const ImportChartOfAccountsDrawer = ({
                                                         >
                                                             Import & Map
                                                             Template Data
-                                                        </Button>
+                                                        </Button> */}
                                                     </div>
                                                     <p className="text-[10px] text-primary/50">
                                                         <strong>

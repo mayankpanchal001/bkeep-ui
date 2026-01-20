@@ -56,6 +56,7 @@ const TableColumnResizeContext = React.createContext<{
 } | null>(null);
 
 const TableCompactContext = React.createContext<boolean>(false);
+const TableTransposeMobileContext = React.createContext<boolean>(false);
 
 // ============================================================================
 // Custom Hooks
@@ -122,6 +123,8 @@ interface TableProps extends React.ComponentProps<'table'> {
     enableColumnResize?: boolean;
     /** Class name applied to the table container */
     containerClassName?: string;
+    /** Transpose table axis on mobile (rows become columns, columns become rows) */
+    transposeOnMobile?: boolean;
 }
 
 function Table({
@@ -139,6 +142,7 @@ function Table({
     borderStyle = 'default',
     enableColumnResize = true,
     containerClassName,
+    transposeOnMobile = false,
     children,
     ...props
 }: TableProps) {
@@ -402,123 +406,140 @@ function Table({
         >
             <TableSortContext.Provider value={sortContextValue}>
                 <TableCompactContext.Provider value={compact}>
-                    <TableColumnResizeContext.Provider
-                        value={
-                            hasResizableColumns
-                                ? {
-                                      columns,
-                                      registerColumn,
-                                      unregisterColumn,
-                                      columnLayout: computedLayout,
-                                      setColumnLayout,
-                                  }
-                                : null
-                        }
+                    <TableTransposeMobileContext.Provider
+                        value={transposeOnMobile}
                     >
-                        {/* Render toolbar OUTSIDE the table container */}
-                        {toolbarChildren}
-
-                        <div
-                            data-slot="table-container"
-                            data-compact={compact || undefined}
-                            data-striped={striped || undefined}
-                            data-hover={hoverStyle}
-                            className={containerClasses}
+                        <TableColumnResizeContext.Provider
+                            value={
+                                hasResizableColumns
+                                    ? {
+                                          columns,
+                                          registerColumn,
+                                          unregisterColumn,
+                                          columnLayout: computedLayout,
+                                          setColumnLayout,
+                                      }
+                                    : null
+                            }
                         >
+                            {/* Render toolbar OUTSIDE the table container */}
+                            {toolbarChildren}
+
                             <div
-                                ref={scrollRef}
-                                className="relative overflow-auto h-full"
+                                data-slot="table-container"
+                                data-compact={compact || undefined}
+                                data-striped={striped || undefined}
+                                data-hover={hoverStyle}
+                                data-transpose-mobile={
+                                    transposeOnMobile || undefined
+                                }
+                                className={containerClasses}
                             >
-                                {hasResizableColumns && computedLayout && (
-                                    <div
-                                        className="pointer-events-none absolute left-0 top-0 z-20 h-10"
-                                        style={{
-                                            width: overlayWidth,
-                                            transform: `translateX(-${scrollLeft}px)`,
-                                        }}
-                                    >
-                                        <ResizablePanelGroup
-                                            orientation="horizontal"
-                                            onLayoutChange={(
-                                                layout: Layout
-                                            ) => {
-                                                const next: number[] =
-                                                    Array.isArray(layout)
-                                                        ? (layout as number[])
-                                                        : columns.map(
-                                                              (c) =>
-                                                                  (
-                                                                      layout as Record<
-                                                                          string,
-                                                                          number
-                                                                      >
-                                                                  )[c.id] ?? 0
-                                                          );
-                                                setColumnLayout(next);
-                                                updateOverlayWidth();
-                                            }}
-                                            className="h-full w-full pointer-events-none"
-                                        >
-                                            {columns.map((col, idx) => {
-                                                return (
-                                                    <React.Fragment
-                                                        key={col.id}
-                                                    >
-                                                        <ResizablePanel
-                                                            id={col.id}
-                                                            defaultSize={
-                                                                computedLayout[
-                                                                    idx
-                                                                ]
-                                                            }
-                                                            minSize={
-                                                                col.minWidth
-                                                            }
-                                                            maxSize={
-                                                                col.maxWidth
-                                                            }
-                                                            className="pointer-events-none"
-                                                        />
-                                                        {idx <
-                                                            columns.length -
-                                                                1 && (
-                                                            <ResizableHandle className="pointer-events-auto w-2 bg-transparent after:w-1 after:bg-border/40 hover:after:bg-border" />
-                                                        )}
-                                                    </React.Fragment>
-                                                );
-                                            })}
-                                        </ResizablePanelGroup>
-                                    </div>
-                                )}
-                                <table
-                                    ref={tableRef}
-                                    data-slot="table"
-                                    data-compact={compact || undefined}
+                                <div
+                                    ref={scrollRef}
                                     className={cn(
-                                        'w-full caption-bottom text-sm table-auto',
-                                        className
+                                        'relative overflow-auto h-full',
+                                        transposeOnMobile &&
+                                            'md:overflow-auto overflow-visible'
                                     )}
-                                    {...props}
                                 >
                                     {hasResizableColumns && computedLayout && (
-                                        <colgroup>
-                                            {computedLayout.map((size, idx) => (
-                                                <col
-                                                    key={
-                                                        columns[idx]?.id ?? idx
-                                                    }
-                                                    style={{
-                                                        width: `${size}%`,
-                                                    }}
-                                                />
-                                            ))}
-                                        </colgroup>
+                                        <div
+                                            className="pointer-events-none absolute left-0 top-0 z-20 h-10"
+                                            style={{
+                                                width: overlayWidth,
+                                                transform: `translateX(-${scrollLeft}px)`,
+                                            }}
+                                        >
+                                            <ResizablePanelGroup
+                                                orientation="horizontal"
+                                                onLayoutChange={(
+                                                    layout: Layout
+                                                ) => {
+                                                    const next: number[] =
+                                                        Array.isArray(layout)
+                                                            ? (layout as number[])
+                                                            : columns.map(
+                                                                  (c) =>
+                                                                      (
+                                                                          layout as Record<
+                                                                              string,
+                                                                              number
+                                                                          >
+                                                                      )[c.id] ??
+                                                                      0
+                                                              );
+                                                    setColumnLayout(next);
+                                                    updateOverlayWidth();
+                                                }}
+                                                className="h-full w-full pointer-events-none"
+                                            >
+                                                {columns.map((col, idx) => {
+                                                    return (
+                                                        <React.Fragment
+                                                            key={col.id}
+                                                        >
+                                                            <ResizablePanel
+                                                                id={col.id}
+                                                                defaultSize={
+                                                                    computedLayout[
+                                                                        idx
+                                                                    ]
+                                                                }
+                                                                minSize={
+                                                                    col.minWidth
+                                                                }
+                                                                maxSize={
+                                                                    col.maxWidth
+                                                                }
+                                                                className="pointer-events-none"
+                                                            />
+                                                            {idx <
+                                                                columns.length -
+                                                                    1 && (
+                                                                <ResizableHandle className="pointer-events-auto w-2 bg-transparent after:w-1 after:bg-border/40 hover:after:bg-border" />
+                                                            )}
+                                                        </React.Fragment>
+                                                    );
+                                                })}
+                                            </ResizablePanelGroup>
+                                        </div>
                                     )}
-                                    {tableChildren}
-                                </table>
+                                    <table
+                                        ref={tableRef}
+                                        data-slot="table"
+                                        data-compact={compact || undefined}
+                                        className={cn(
+                                            'w-full caption-bottom text-sm table-auto',
+                                            className
+                                        )}
+                                        {...props}
+                                    >
+                                        {hasResizableColumns &&
+                                            computedLayout && (
+                                                <colgroup>
+                                                    {computedLayout.map(
+                                                        (size, idx) => (
+                                                            <col
+                                                                key={
+                                                                    columns[idx]
+                                                                        ?.id ??
+                                                                    idx
+                                                                }
+                                                                style={{
+                                                                    width: `${size}%`,
+                                                                }}
+                                                            />
+                                                        )
+                                                    )}
+                                                </colgroup>
+                                            )}
+                                        {tableChildren}
+                                    </table>
+                                </div>
                             </div>
-                        </div>
-                    </TableColumnResizeContext.Provider>
+                        </TableColumnResizeContext.Provider>
+                    </TableTransposeMobileContext.Provider>
                 </TableCompactContext.Provider>
             </TableSortContext.Provider>
         </TableSelectionContext.Provider>
@@ -534,19 +555,20 @@ interface TableHeaderProps extends React.ComponentProps<'thead'> {
 }
 
 function TableHeader({ className, sticky = true, ...props }: TableHeaderProps) {
+    const transposeOnMobile = React.useContext(TableTransposeMobileContext);
     return (
         <thead
             data-slot="table-header"
             className={cn(
                 sticky && 'sticky top-0 z-10',
                 // Modern gradient background using theme colors
-
                 'backdrop-blur-md backdrop-saturate-150',
                 // Enhanced border with subtle shadow using theme border color
                 'border-b-2',
                 'border-border',
                 // Smooth transitions
                 'transition-all duration-200',
+                transposeOnMobile && 'hidden md:table-header-group',
                 className
             )}
             {...props}
@@ -605,6 +627,7 @@ interface TableRowProps extends React.ComponentProps<'tr'> {
 
 function TableRow({ className, rowId, onClick, ...props }: TableRowProps) {
     const selectionContext = React.useContext(TableSelectionContext);
+    const transposeOnMobile = React.useContext(TableTransposeMobileContext);
     const isSelected =
         rowId !== undefined && selectionContext?.selectedRows.has(rowId);
 
@@ -639,6 +662,8 @@ function TableRow({ className, rowId, onClick, ...props }: TableRowProps) {
                 'group-data-[hover=none]/table:hover:bg-transparent',
                 'group-data-[striped=true]/table:odd:bg-muted/30',
                 onClick && 'cursor-pointer',
+                transposeOnMobile &&
+                    'block md:table-row mb-2 md:mb-0 border-b border-primary/10 md:border-b-0 last:mb-0',
                 className
             )}
             {...props}
@@ -679,6 +704,7 @@ function TableHead({
     const sortContext = useTableSort();
     const colResizeContext = React.useContext(TableColumnResizeContext);
     const isCompact = React.useContext(TableCompactContext);
+    const transposeOnMobile = React.useContext(TableTransposeMobileContext);
     const colId = React.useId();
     const sortKey =
         columnSortKey || (typeof children === 'string' ? children : '');
@@ -710,11 +736,21 @@ function TableHead({
         right: 'text-right',
     }[align];
 
+    // Get label text for mobile transpose
+    const labelText =
+        typeof children === 'string'
+            ? children
+            : React.isValidElement(children) &&
+                typeof children.props.children === 'string'
+              ? children.props.children
+              : '';
+
     return (
         <th
             data-slot="table-head"
             data-sortable={sortable || undefined}
             data-sorted={isCurrentSort || undefined}
+            data-label={transposeOnMobile ? labelText : undefined}
             className={cn(
                 // Compact spacing and sizing
                 'relative align-middle',
@@ -724,6 +760,7 @@ function TableHead({
                 'text-muted-foreground',
                 'whitespace-nowrap select-none',
                 alignClass,
+                transposeOnMobile && 'hidden md:table-cell',
                 // Checkbox column styling
                 isCompact
                     ? '[&:has([role=checkbox])]:w-8 [&:has([role=checkbox])]:px-1.5 [&:has([role=checkbox])>div]:justify-center'
@@ -843,14 +880,18 @@ function TableCell({
     className,
     align = 'left',
     noTruncate,
+    children,
     ...props
 }: TableCellProps) {
     const isCompact = React.useContext(TableCompactContext);
+    const transposeOnMobile = React.useContext(TableTransposeMobileContext);
     const alignClass = {
         left: 'text-left',
         center: 'text-center',
         right: 'text-right',
     }[align];
+
+    const label = (props as { 'data-label'?: string })['data-label'];
 
     return (
         <td
@@ -860,16 +901,31 @@ function TableCell({
                 'align-middle text-foreground',
                 isCompact ? 'px-1.5 py-1 text-xs' : 'px-2 py-1.5 text-sm',
                 noTruncate
-                    ? 'whitespace-normal break-words'
+                    ? 'whitespace-normal wrap-break-word'
                     : 'whitespace-nowrap',
                 alignClass,
                 isCompact
                     ? '[&:has([role=checkbox])]:w-8 [&:has([role=checkbox])]:px-1.5'
                     : '[&:has([role=checkbox])]:w-10 [&:has([role=checkbox])]:px-2',
+                transposeOnMobile &&
+                    'flex md:table-cell items-start md:items-middle gap-2 md:gap-0 py-2.5 md:py-1.5 border-b border-primary/5 md:border-b-0 last:border-b-0',
                 className
             )}
             {...props}
-        />
+        >
+            {transposeOnMobile && label && (
+                <span className="md:hidden font-medium text-primary/70 text-xs min-w-[100px] mr-2 shrink-0">
+                    {label}
+                </span>
+            )}
+            <span
+                className={
+                    transposeOnMobile ? 'md:contents flex-1 min-w-0' : ''
+                }
+            >
+                {children}
+            </span>
+        </td>
     );
 }
 
