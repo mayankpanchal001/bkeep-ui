@@ -1141,7 +1141,7 @@ const Transactionpage = () => {
                                                             )
                                                         }
                                                     >
-                                                        Create rule
+                                                        rule
                                                     </DropdownMenuItem>
                                                 </DropdownMenuContent>
                                             </DropdownMenu>

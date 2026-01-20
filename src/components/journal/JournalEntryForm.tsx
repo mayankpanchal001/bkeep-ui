@@ -101,7 +101,14 @@ export function JournalEntryForm({
     );
 
     const accountOptions = useMemo(() => {
-        return accounts.map((account) => ({
+
+        const sorted = [...accounts].sort((a, b) => {
+            const numA = parseInt(a.accountNumber || '0', 10);
+            const numB = parseInt(b.accountNumber || '0', 10);
+            return numA - numB;
+        });
+
+        return sorted.map((account) => ({
             value: account.id,
             label: `${account.accountNumber} - ${account.accountName}`,
         }));
@@ -359,16 +366,17 @@ export function JournalEntryForm({
                     <tr>
                         <TableHead className="w-12">#</TableHead>
                         <TableHead className="min-w-[260px]">Account</TableHead>
+                        <TableHead align="right" className="w-44">
+                            Debit
+                        </TableHead>
+                        <TableHead align="right" className="w-44">
+                            Credit
+                        </TableHead>
                         <TableHead className="min-w-[260px]">
                             Description
                         </TableHead>
                         <TableHead className="w-56">Contact</TableHead>
-                        <TableHead align="right" className="w-36">
-                            Debit
-                        </TableHead>
-                        <TableHead align="right" className="w-36">
-                            Credit
-                        </TableHead>
+
                         <TableHead className="w-56">Tax</TableHead>
                         <TableHead className="w-20"></TableHead>
                     </tr>
@@ -408,6 +416,32 @@ export function JournalEntryForm({
                                             ))}
                                         </SelectContent>
                                     </Select>
+                                </TableCell>
+                                <TableCell align="right">
+                                    <CurrencyInput
+                                        className="text-right"
+                                        value={line.debit}
+                                        onValueChange={(val) => {
+                                            updateLine(index, {
+                                                debit: val,
+                                                credit: val ? '' : line.credit,
+                                            });
+                                        }}
+                                        placeholder="$0.00"
+                                    />
+                                </TableCell>
+                                <TableCell align="right" noTruncate>
+                                    <CurrencyInput
+                                        className="text-right"
+                                        value={line.credit}
+                                        onValueChange={(val) => {
+                                            updateLine(index, {
+                                                credit: val,
+                                                debit: val ? '' : line.debit,
+                                            });
+                                        }}
+                                        placeholder="$0.00"
+                                    />
                                 </TableCell>
                                 <TableCell noTruncate>
                                     <div className="input-wrap">
@@ -455,30 +489,6 @@ export function JournalEntryForm({
                                             ))}
                                         </SelectContent>
                                     </Select>
-                                </TableCell>
-                                <TableCell align="right">
-                                    <CurrencyInput
-                                        value={line.debit}
-                                        onValueChange={(val) => {
-                                            updateLine(index, {
-                                                debit: val,
-                                                credit: val ? '' : line.credit,
-                                            });
-                                        }}
-                                        placeholder="$0.00"
-                                    />
-                                </TableCell>
-                                <TableCell align="right" noTruncate>
-                                    <CurrencyInput
-                                        value={line.credit}
-                                        onValueChange={(val) => {
-                                            updateLine(index, {
-                                                credit: val,
-                                                debit: val ? '' : line.debit,
-                                            });
-                                        }}
-                                        placeholder="$0.00"
-                                    />
                                 </TableCell>
                                 <TableCell noTruncate>
                                     <Select
@@ -564,11 +574,10 @@ export function JournalEntryForm({
                         </span>
                     </span>
                     <span
-                        className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                            isBalanced
-                                ? 'bg-green-100 text-green-700'
-                                : 'bg-red-100 text-red-700'
-                        }`}
+                        className={`px-2 py-1 rounded-full text-xs font-semibold ${isBalanced
+                            ? 'bg-green-100 text-green-700'
+                            : 'bg-red-100 text-red-700'
+                            }`}
                     >
                         {isBalanced ? 'Balanced' : 'Not balanced'}
                     </span>
