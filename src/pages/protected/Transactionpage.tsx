@@ -615,7 +615,9 @@ const Transactionpage = () => {
                         direction="right"
                     >
                         <DrawerTrigger asChild>
-                            <Button variant="outline" size="sm"
+                            <Button
+                                variant="outline"
+                                size="sm"
                                 className="flex-1 sm:flex-initial"
                             >
                                 <Filter className="mr-2 h-4 w-4" /> Filters
@@ -626,8 +628,8 @@ const Transactionpage = () => {
                                     filterStore.filterEndDate ||
                                     filterStore.filterMinAmount ||
                                     filterStore.filterMaxAmount) && (
-                                        <span className="ml-2 h-2 w-2 rounded-full bg-accent" />
-                                    )}
+                                    <span className="ml-2 h-2 w-2 rounded-full bg-accent" />
+                                )}
                             </Button>
                         </DrawerTrigger>
                         <DrawerContent className="h-full w-full sm:w-[400px]">
@@ -652,9 +654,7 @@ const Transactionpage = () => {
                                         <Input
                                             type="date"
                                             placeholder="Start Date"
-                                            value={
-                                                filterStore.filterStartDate
-                                            }
+                                            value={filterStore.filterStartDate}
                                             onChange={(e) =>
                                                 filterStore.setFilterStartDate(
                                                     e.target.value
@@ -664,9 +664,7 @@ const Transactionpage = () => {
                                         <Input
                                             type="date"
                                             placeholder="End Date"
-                                            value={
-                                                filterStore.filterEndDate
-                                            }
+                                            value={filterStore.filterEndDate}
                                             onChange={(e) =>
                                                 filterStore.setFilterEndDate(
                                                     e.target.value
@@ -738,9 +736,7 @@ const Transactionpage = () => {
                                         <Input
                                             type="number"
                                             placeholder="Min"
-                                            value={
-                                                filterStore.filterMinAmount
-                                            }
+                                            value={filterStore.filterMinAmount}
                                             onChange={(e) =>
                                                 filterStore.setFilterMinAmount(
                                                     e.target.value
@@ -750,9 +746,7 @@ const Transactionpage = () => {
                                         <Input
                                             type="number"
                                             placeholder="Max"
-                                            value={
-                                                filterStore.filterMaxAmount
-                                            }
+                                            value={filterStore.filterMaxAmount}
                                             onChange={(e) =>
                                                 filterStore.setFilterMaxAmount(
                                                     e.target.value
@@ -840,10 +834,7 @@ const Transactionpage = () => {
                             disabled={isBulkProcessing}
                             className="border border-red-200 bg-red-50 text-red-700 hover:bg-red-100 hover:text-red-900 shadow-none"
                             onClick={() =>
-                                handleBulkAction(
-                                    'voided',
-                                    voidTransactionAsync
-                                )
+                                handleBulkAction('voided', voidTransactionAsync)
                             }
                         >
                             Void ({selectedItems.length})
@@ -889,9 +880,7 @@ const Transactionpage = () => {
                                 </TableCell>
                                 <TableCell>
                                     <span className="text-sm font-medium text-primary">
-                                        {new Date(
-                                            t.date
-                                        ).toLocaleDateString()}
+                                        {new Date(t.date).toLocaleDateString()}
                                     </span>
                                 </TableCell>
                                 <TableCell>
@@ -906,9 +895,7 @@ const Transactionpage = () => {
                                 </TableCell>
                                 <TableCell>
                                     <span className="text-red-600 font-semibold">
-                                        {t.spent
-                                            ? `-${currency(t.spent)}`
-                                            : ''}
+                                        {t.spent ? `-${currency(t.spent)}` : ''}
                                     </span>
                                 </TableCell>
                                 <TableCell>
@@ -928,42 +915,33 @@ const Transactionpage = () => {
                                                     const rate =
                                                         (value &&
                                                             TAX_RATE_BY_ID[
-                                                            value
+                                                                value
                                                             ]) ||
                                                         0;
-                                                    setTransactions(
-                                                        (prev) =>
-                                                            prev.map(
-                                                                (tx) => {
-                                                                    if (
-                                                                        tx.id !==
-                                                                        t.id
-                                                                    )
-                                                                        return tx;
-                                                                    const base =
-                                                                        tx.spent ??
-                                                                        0;
-                                                                    const taxAmount =
-                                                                        Number(
-                                                                            (
-                                                                                base *
-                                                                                rate
-                                                                            ).toFixed(
-                                                                                2
-                                                                            )
-                                                                        );
-                                                                    return {
-                                                                        ...tx,
-                                                                        taxId:
-                                                                            value ||
-                                                                            undefined,
-                                                                        taxRate:
-                                                                            rate ||
-                                                                            undefined,
-                                                                        tax: taxAmount,
-                                                                    };
-                                                                }
-                                                            )
+                                                    setTransactions((prev) =>
+                                                        prev.map((tx) => {
+                                                            if (tx.id !== t.id)
+                                                                return tx;
+                                                            const base =
+                                                                tx.spent ?? 0;
+                                                            const taxAmount =
+                                                                Number(
+                                                                    (
+                                                                        base *
+                                                                        rate
+                                                                    ).toFixed(2)
+                                                                );
+                                                            return {
+                                                                ...tx,
+                                                                taxId:
+                                                                    value ||
+                                                                    undefined,
+                                                                taxRate:
+                                                                    rate ||
+                                                                    undefined,
+                                                                tax: taxAmount,
+                                                            };
+                                                        })
                                                     );
                                                 }}
                                                 placeholder="Select tax..."
@@ -980,8 +958,8 @@ const Transactionpage = () => {
                                             value={
                                                 t.fromTo
                                                     ? contactNameById.get(
-                                                        t.fromTo
-                                                    ) || t.fromTo
+                                                          t.fromTo
+                                                      ) || t.fromTo
                                                     : ''
                                             }
                                             onChange={(value) => {
@@ -998,11 +976,11 @@ const Transactionpage = () => {
                                                     prev.map((tx) =>
                                                         tx.id === t.id
                                                             ? {
-                                                                ...tx,
-                                                                fromTo:
-                                                                    contactId ||
-                                                                    undefined,
-                                                            }
+                                                                  ...tx,
+                                                                  fromTo:
+                                                                      contactId ||
+                                                                      undefined,
+                                                              }
                                                             : tx
                                                     )
                                                 );
@@ -1020,20 +998,17 @@ const Transactionpage = () => {
                                                 options={CATEGORY_OPTIONS}
                                                 value={t.category || ''}
                                                 onChange={(value) => {
-                                                    setTransactions(
-                                                        (prev) =>
-                                                            prev.map(
-                                                                (tx) =>
-                                                                    tx.id ===
-                                                                        t.id
-                                                                        ? {
-                                                                            ...tx,
-                                                                            category:
-                                                                                value ||
-                                                                                undefined,
-                                                                        }
-                                                                        : tx
-                                                            )
+                                                    setTransactions((prev) =>
+                                                        prev.map((tx) =>
+                                                            tx.id === t.id
+                                                                ? {
+                                                                      ...tx,
+                                                                      category:
+                                                                          value ||
+                                                                          undefined,
+                                                                  }
+                                                                : tx
+                                                        )
                                                     );
                                                     if (value) {
                                                         showSuccessToast(
@@ -1053,10 +1028,10 @@ const Transactionpage = () => {
                                                     prev.map((tx) =>
                                                         tx.id === t.id
                                                             ? {
-                                                                ...tx,
-                                                                matched:
-                                                                    !tx.matched,
-                                                            }
+                                                                  ...tx,
+                                                                  matched:
+                                                                      !tx.matched,
+                                                              }
                                                             : tx
                                                     )
                                                 );
@@ -1067,9 +1042,7 @@ const Transactionpage = () => {
                                                 );
                                             }}
                                         >
-                                            {t.matched
-                                                ? 'Matched'
-                                                : 'Match'}
+                                            {t.matched ? 'Matched' : 'Match'}
                                         </Button>
                                     </div>
                                 </TableCell>
@@ -1119,18 +1092,14 @@ const Transactionpage = () => {
                                                 </DropdownMenuItem>
                                                 <DropdownMenuItem
                                                     onClick={() =>
-                                                        voidTransaction(
-                                                            t.id
-                                                        )
+                                                        voidTransaction(t.id)
                                                     }
                                                 >
                                                     Void
                                                 </DropdownMenuItem>
                                                 <DropdownMenuItem
                                                     onClick={() =>
-                                                        reverseTransaction(
-                                                            t.id
-                                                        )
+                                                        reverseTransaction(t.id)
                                                     }
                                                 >
                                                     Reverse
@@ -1141,16 +1110,20 @@ const Transactionpage = () => {
                                                         const transactionAmount =
                                                             Math.abs(
                                                                 t.spent ||
-                                                                t.received ||
-                                                                0
+                                                                    t.received ||
+                                                                    0
                                                             );
-                                                        setSelectedTransactionForSplit({
-                                                            id: t.id,
-                                                            amount: transactionAmount,
-                                                            category: t.category,
-                                                            taxId: t.taxId,
-                                                            description: t.description,
-                                                        });
+                                                        setSelectedTransactionForSplit(
+                                                            {
+                                                                id: t.id,
+                                                                amount: transactionAmount,
+                                                                category:
+                                                                    t.category,
+                                                                taxId: t.taxId,
+                                                                description:
+                                                                    t.description,
+                                                            }
+                                                        );
                                                         setSplitModalOpen(true);
                                                     }}
                                                 >
@@ -1242,7 +1215,9 @@ const Transactionpage = () => {
                     transactionAmount={selectedTransactionForSplit.amount}
                     transactionCategoryId={selectedTransactionForSplit.category}
                     transactionTaxId={selectedTransactionForSplit.taxId}
-                    transactionDescription={selectedTransactionForSplit.description}
+                    transactionDescription={
+                        selectedTransactionForSplit.description
+                    }
                     onSuccess={() => {
                         setSelectedTransactionForSplit(null);
                     }}

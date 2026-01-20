@@ -103,7 +103,7 @@ export function SplitTransactionDrawer({
         const matchingAccount = splitAccounts.find(
             (account) =>
                 account.accountName.toLowerCase() ===
-                transactionCategoryId.toLowerCase() ||
+                    transactionCategoryId.toLowerCase() ||
                 `${account.accountNumber || ''} - ${account.accountName}`
                     .toLowerCase()
                     .includes(transactionCategoryId.toLowerCase())
@@ -112,7 +112,9 @@ export function SplitTransactionDrawer({
         return matchingAccount?.id || '';
     }, [transactionCategoryId, splitAccounts]);
 
-    const [splits, setSplits] = useState<Array<SplitTransactionItem & { id: string }>>([
+    const [splits, setSplits] = useState<
+        Array<SplitTransactionItem & { id: string }>
+    >([
         {
             id: '1',
             amount: 0,
@@ -147,7 +149,13 @@ export function SplitTransactionDrawer({
                 },
             ]);
         }
-    }, [open, transactionAmount, resolvedCategoryId, transactionTaxId, transactionDescription]);
+    }, [
+        open,
+        transactionAmount,
+        resolvedCategoryId,
+        transactionTaxId,
+        transactionDescription,
+    ]);
 
     // Reset splits when modal closes
     const handleClose = (open: boolean) => {
@@ -181,8 +189,14 @@ export function SplitTransactionDrawer({
 
     const addSplit = () => {
         // Calculate remaining amount to pre-fill
-        const otherSplitsTotal = splits.reduce((sum, s) => sum + (s.amount || 0), 0);
-        const remainingAmount = Math.max(0, transactionAmount - otherSplitsTotal);
+        const otherSplitsTotal = splits.reduce(
+            (sum, s) => sum + (s.amount || 0),
+            0
+        );
+        const remainingAmount = Math.max(
+            0,
+            transactionAmount - otherSplitsTotal
+        );
 
         setSplits([
             ...splits,
@@ -213,7 +227,6 @@ export function SplitTransactionDrawer({
             )
         );
     };
-
 
     // Auto-fill remaining amount to a specific split
     const fillRemainingAmount = (splitId: string) => {
@@ -246,15 +259,24 @@ export function SplitTransactionDrawer({
                 } = {
                     amount: split.amount,
                     categoryId: split.categoryId,
-                    description: split.description.trim() || transactionDescription || '',
-                    taxIds: split.taxIds && split.taxIds.length > 0 ? split.taxIds : [],
+                    description:
+                        split.description.trim() ||
+                        transactionDescription ||
+                        '',
+                    taxIds:
+                        split.taxIds && split.taxIds.length > 0
+                            ? split.taxIds
+                            : [],
                 };
                 return splitItem;
             }),
         };
 
         // Log payload for debugging
-        console.log('Split Transaction Payload:', JSON.stringify(payload, null, 2));
+        console.log(
+            'Split Transaction Payload:',
+            JSON.stringify(payload, null, 2)
+        );
 
         splitTransaction(
             { id: transactionId, payload },
@@ -296,9 +318,12 @@ export function SplitTransactionDrawer({
         <Drawer direction="bottom" open={open} onOpenChange={handleClose}>
             <DrawerContent className="max-h-[90vh] flex flex-col">
                 <DrawerHeader className="border-b border-primary/10 pb-3 px-3 sm:px-6">
-                    <DrawerTitle className="text-base sm:text-lg">Split Transaction</DrawerTitle>
+                    <DrawerTitle className="text-base sm:text-lg">
+                        Split Transaction
+                    </DrawerTitle>
                     <DrawerDescription className="text-xs sm:text-sm">
-                        Total: {formatCurrency(transactionAmount)} • Split into multiple categories
+                        Total: {formatCurrency(transactionAmount)} • Split into
+                        multiple categories
                     </DrawerDescription>
                 </DrawerHeader>
 
@@ -307,21 +332,26 @@ export function SplitTransactionDrawer({
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-3 sm:p-4 bg-card rounded-lg border border-primary/10">
                         <div className="flex flex-wrap items-center gap-3 sm:gap-4">
                             <div>
-                                <span className="text-xs text-primary/60">Total Amount</span>
+                                <span className="text-xs text-primary/60">
+                                    Total Amount
+                                </span>
                                 <p className="text-base sm:text-lg font-semibold text-primary">
                                     {formatCurrency(transactionAmount)}
                                 </p>
                             </div>
                             <div className="hidden sm:block h-8 w-px bg-primary/20" />
                             <div>
-                                <span className="text-xs text-primary/60">Allocated</span>
+                                <span className="text-xs text-primary/60">
+                                    Allocated
+                                </span>
                                 <p
-                                    className={`text-base sm:text-lg font-semibold ${isFullyAllocated
-                                        ? 'text-green-600'
-                                        : hasOverAllocation
-                                            ? 'text-red-600'
-                                            : 'text-orange-600'
-                                        }`}
+                                    className={`text-base sm:text-lg font-semibold ${
+                                        isFullyAllocated
+                                            ? 'text-green-600'
+                                            : hasOverAllocation
+                                              ? 'text-red-600'
+                                              : 'text-orange-600'
+                                    }`}
                                 >
                                     {formatCurrency(totalSplit)}
                                 </p>
@@ -330,10 +360,15 @@ export function SplitTransactionDrawer({
                                 <>
                                     <div className="hidden sm:block h-8 w-px bg-primary/20" />
                                     <div>
-                                        <span className="text-xs text-primary/60">Remaining</span>
+                                        <span className="text-xs text-primary/60">
+                                            Remaining
+                                        </span>
                                         <p
-                                            className={`text-sm font-semibold ${remaining > 0 ? 'text-orange-600' : 'text-red-600'
-                                                }`}
+                                            className={`text-sm font-semibold ${
+                                                remaining > 0
+                                                    ? 'text-orange-600'
+                                                    : 'text-red-600'
+                                            }`}
                                         >
                                             {remaining > 0 ? '+' : ''}
                                             {formatCurrency(remaining)}
@@ -367,12 +402,20 @@ export function SplitTransactionDrawer({
 
                     {/* Desktop Table Layout with Mobile Transpose */}
                     <div className="border border-primary/10 rounded-lg overflow-hidden">
-                        <Table borderStyle="default" className="w-full" transposeOnMobile>
+                        <Table
+                            borderStyle="default"
+                            className="w-full"
+                            transposeOnMobile
+                        >
                             <TableHeader sticky>
                                 <tr>
                                     <TableHead className="w-12">#</TableHead>
-                                    <TableHead className="min-w-[200px]">Category</TableHead>
-                                    <TableHead className="min-w-[200px]">Description</TableHead>
+                                    <TableHead className="min-w-[200px]">
+                                        Category
+                                    </TableHead>
+                                    <TableHead className="min-w-[200px]">
+                                        Description
+                                    </TableHead>
                                     <TableHead align="right" className="w-40">
                                         Amount
                                     </TableHead>
@@ -390,13 +433,17 @@ export function SplitTransactionDrawer({
                                             >
                                                 {index + 1}
                                             </TableCell>
-                                            <TableCell noTruncate data-label="Category">
+                                            <TableCell
+                                                noTruncate
+                                                data-label="Category"
+                                            >
                                                 <Combobox
                                                     options={accountOptions}
                                                     value={split.categoryId}
                                                     onChange={(value) => {
                                                         updateSplit(split.id, {
-                                                            categoryId: value || '',
+                                                            categoryId:
+                                                                value || '',
                                                         });
                                                     }}
                                                     placeholder="Select category..."
@@ -404,62 +451,91 @@ export function SplitTransactionDrawer({
                                                     className="h-10 text-sm"
                                                 />
                                             </TableCell>
-                                            <TableCell noTruncate data-label="Description">
+                                            <TableCell
+                                                noTruncate
+                                                data-label="Description"
+                                            >
                                                 <Input
                                                     value={split.description}
                                                     onChange={(e) => {
                                                         updateSplit(split.id, {
-                                                            description: e.target.value,
+                                                            description:
+                                                                e.target.value,
                                                         });
                                                     }}
                                                     placeholder="Enter description..."
                                                     className="h-10 text-sm"
                                                 />
                                             </TableCell>
-                                            <TableCell align="right" noTruncate data-label="Amount">
+                                            <TableCell
+                                                align="right"
+                                                noTruncate
+                                                data-label="Amount"
+                                            >
                                                 <div className="flex items-center gap-2 justify-end md:justify-end">
                                                     <CurrencyInput
                                                         value={
                                                             split.amount > 0
-                                                                ? String(split.amount)
+                                                                ? String(
+                                                                      split.amount
+                                                                  )
                                                                 : ''
                                                         }
-                                                        onValueChange={(value) => {
-                                                            const numValue = parseFloat(value) || 0;
-                                                            updateSplit(split.id, {
-                                                                amount: numValue,
-                                                            });
+                                                        onValueChange={(
+                                                            value
+                                                        ) => {
+                                                            const numValue =
+                                                                parseFloat(
+                                                                    value
+                                                                ) || 0;
+                                                            updateSplit(
+                                                                split.id,
+                                                                {
+                                                                    amount: numValue,
+                                                                }
+                                                            );
                                                         }}
                                                         className="h-10 w-full md:w-auto text-right text-sm"
                                                         placeholder="0.00"
                                                     />
-                                                    {remaining > 0.01 && index === splits.length - 1 && (
-                                                        <Button
-                                                            type="button"
-                                                            variant="ghost"
-                                                            size="sm"
-                                                            onClick={() =>
-                                                                fillRemainingAmount(split.id)
-                                                            }
-                                                            className="h-8 px-2 text-xs hidden md:inline-flex"
-                                                            title={`Fill remaining ${formatCurrency(remaining)}`}
-                                                        >
-                                                            Fill
-                                                        </Button>
-                                                    )}
+                                                    {remaining > 0.01 &&
+                                                        index ===
+                                                            splits.length -
+                                                                1 && (
+                                                            <Button
+                                                                type="button"
+                                                                variant="ghost"
+                                                                size="sm"
+                                                                onClick={() =>
+                                                                    fillRemainingAmount(
+                                                                        split.id
+                                                                    )
+                                                                }
+                                                                className="h-8 px-2 text-xs hidden md:inline-flex"
+                                                                title={`Fill remaining ${formatCurrency(remaining)}`}
+                                                            >
+                                                                Fill
+                                                            </Button>
+                                                        )}
                                                 </div>
                                             </TableCell>
-                                            <TableCell noTruncate data-label="Tax">
+                                            <TableCell
+                                                noTruncate
+                                                data-label="Tax"
+                                            >
                                                 <Combobox
                                                     options={taxOptions}
                                                     value={
-                                                        split.taxIds && split.taxIds.length > 0
+                                                        split.taxIds &&
+                                                        split.taxIds.length > 0
                                                             ? split.taxIds[0]
                                                             : ''
                                                     }
                                                     onChange={(value) => {
                                                         updateSplit(split.id, {
-                                                            taxIds: value ? [value] : [],
+                                                            taxIds: value
+                                                                ? [value]
+                                                                : [],
                                                         });
                                                     }}
                                                     placeholder="Select tax..."
@@ -473,7 +549,11 @@ export function SplitTransactionDrawer({
                                                         type="button"
                                                         variant="ghost"
                                                         size="sm"
-                                                        onClick={() => removeSplit(split.id)}
+                                                        onClick={() =>
+                                                            removeSplit(
+                                                                split.id
+                                                            )
+                                                        }
                                                         className="text-destructive hover:text-destructive hover:bg-destructive/10 h-8 w-8 p-0"
                                                     >
                                                         <Trash2 className="w-4 h-4" />
@@ -486,7 +566,6 @@ export function SplitTransactionDrawer({
                             </TableBody>
                         </Table>
                     </div>
-
 
                     {/* Add Split Button */}
                     <Button
@@ -543,7 +622,9 @@ export function SplitTransactionDrawer({
                                 disabled={!isValid || isPending}
                                 className="flex-1 sm:flex-initial h-11 sm:h-9"
                             >
-                                {isPending ? 'Splitting...' : 'Split Transaction'}
+                                {isPending
+                                    ? 'Splitting...'
+                                    : 'Split Transaction'}
                             </Button>
                         </div>
                     </div>

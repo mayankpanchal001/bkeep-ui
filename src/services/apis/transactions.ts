@@ -356,7 +356,10 @@ export const splitTransaction = async (
     id: string,
     payload: SplitTransactionPayload
 ): Promise<CreateTransactionResponse> => {
-    const response = await axiosInstance.put(`/transactions/${id}/split`, payload);
+    const response = await axiosInstance.put(
+        `/transactions/${id}/split`,
+        payload
+    );
     console.log('Split Transaction API Response:', response.data);
     return response.data;
 };
@@ -372,9 +375,7 @@ export const useSplitTransaction = () => {
             payload: SplitTransactionPayload;
         }) => splitTransaction(id, payload),
         onSuccess: (data) => {
-            showSuccessToast(
-                data?.message || 'Transaction split successfully'
-            );
+            showSuccessToast(data?.message || 'Transaction split successfully');
             queryClient.invalidateQueries({ queryKey: ['transactions'] });
         },
         onError: (error) => {

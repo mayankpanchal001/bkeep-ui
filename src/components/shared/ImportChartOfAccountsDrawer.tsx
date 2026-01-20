@@ -153,7 +153,7 @@ const ImportChartOfAccountsDrawer = ({
         // Validate file type
         if (
             file.type ===
-            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
             file.type === 'application/vnd.ms-excel' ||
             file.name.endsWith('.xlsx') ||
             file.name.endsWith('.xls') ||
@@ -184,9 +184,9 @@ const ImportChartOfAccountsDrawer = ({
                             const match = headers.find(
                                 (header) =>
                                     header.toLowerCase() ===
-                                    field.label.toLowerCase() ||
+                                        field.label.toLowerCase() ||
                                     header.toLowerCase() ===
-                                    field.key.toLowerCase()
+                                        field.key.toLowerCase()
                             );
                             if (match) {
                                 autoMapping[field.key] = match;
@@ -241,7 +241,6 @@ const ImportChartOfAccountsDrawer = ({
             },
         });
     };
-
 
     const handleImport = () => {
         if (selectedFile) {
@@ -299,12 +298,12 @@ const ImportChartOfAccountsDrawer = ({
         step === 'select'
             ? false
             : step === 'template'
-                ? selectedTemplateId !== null
-                : step === 'file-upload'
-                    ? selectedFile !== null
-                    : importFields
-                        .filter((f) => f.required)
-                        .every((f) => mapping[f.key]);
+              ? selectedTemplateId !== null
+              : step === 'file-upload'
+                ? selectedFile !== null
+                : importFields
+                      .filter((f) => f.required)
+                      .every((f) => mapping[f.key]);
 
     const handleClose = () => {
         if (importMutation.isPending || applyTemplateMutation.isPending) {
@@ -339,10 +338,10 @@ const ImportChartOfAccountsDrawer = ({
                         {step === 'select'
                             ? 'Import Chart of Accounts'
                             : step === 'template'
-                                ? 'Import from Template'
-                                : step === 'file-upload'
-                                    ? 'Import from File'
-                                    : 'Map Import Fields'}
+                              ? 'Import from Template'
+                              : step === 'file-upload'
+                                ? 'Import from File'
+                                : 'Map Import Fields'}
                     </DrawerTitle>
                     <button
                         onClick={handleClose}
@@ -446,10 +445,11 @@ const ImportChartOfAccountsDrawer = ({
                                                 onClick={() =>
                                                     setSelectedTemplateId(t.id)
                                                 }
-                                                className={`px-3 py-1.5 rounded text-sm border transition-colors ${selectedTemplateId === t.id
-                                                    ? 'bg-primary text-white border-primary'
-                                                    : 'bg-card border-primary/10 text-primary hover:bg-primary/5'
-                                                    }`}
+                                                className={`px-3 py-1.5 rounded text-sm border transition-colors ${
+                                                    selectedTemplateId === t.id
+                                                        ? 'bg-primary text-white border-primary'
+                                                        : 'bg-card border-primary/10 text-primary hover:bg-primary/5'
+                                                }`}
                                             >
                                                 {t.name || 'Template'}
                                             </button>
@@ -654,13 +654,15 @@ const ImportChartOfAccountsDrawer = ({
                                 </p>
 
                                 <div
-                                    className={`relative flex flex-col items-center justify-center w-full h-48 border-2 border-dashed rounded-lg transition-colors cursor-pointer ${dragActive
-                                        ? 'border-primary bg-primary/10'
-                                        : 'border-primary/25 hover:border-primary/50 hover:bg-card'
-                                        } ${selectedFile
+                                    className={`relative flex flex-col items-center justify-center w-full h-48 border-2 border-dashed rounded-lg transition-colors cursor-pointer ${
+                                        dragActive
+                                            ? 'border-primary bg-primary/10'
+                                            : 'border-primary/25 hover:border-primary/50 hover:bg-card'
+                                    } ${
+                                        selectedFile
                                             ? 'bg-primary/20 border-primary'
                                             : ''
-                                        }`}
+                                    }`}
                                     onDragEnter={handleDrag}
                                     onDragLeave={handleDrag}
                                     onDragOver={handleDrag}

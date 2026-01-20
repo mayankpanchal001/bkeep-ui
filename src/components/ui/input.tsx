@@ -44,17 +44,20 @@ export default function Input({
     const [open, setOpen] = React.useState(false);
     const [showPassword, setShowPassword] = React.useState(false);
     const inputRef = React.useRef<HTMLInputElement>(null);
-    
+
     // Date input state - always declared to follow Rules of Hooks
-    const dateValue = type === 'date' ? (value as string | undefined) : undefined;
-    const [inputValue, setInputValue] = React.useState(
-        dateValue || ''
-    );
+    const dateValue =
+        type === 'date' ? (value as string | undefined) : undefined;
+    const [inputValue, setInputValue] = React.useState(dateValue || '');
     const [isValidDate, setIsValidDate] = React.useState(true);
 
     // Update input value when external value changes (only for date type)
     React.useEffect(() => {
-        if (type === 'date' && dateValue !== undefined && dateValue !== inputValue) {
+        if (
+            type === 'date' &&
+            dateValue !== undefined &&
+            dateValue !== inputValue
+        ) {
             setInputValue(dateValue || '');
             setIsValidDate(true);
         }
@@ -152,9 +155,7 @@ export default function Input({
             setOpen(false);
         };
 
-        const handleManualInput = (
-            e: React.ChangeEvent<HTMLInputElement>
-        ) => {
+        const handleManualInput = (e: React.ChangeEvent<HTMLInputElement>) => {
             const inputVal = e.target.value;
             setInputValue(inputVal);
 
@@ -251,9 +252,7 @@ export default function Input({
             <Popover open={open} onOpenChange={setOpen}>
                 <div className="relative w-full">
                     {startIcon && (
-                        <span className={iconStartClasses}>
-                            {startIcon}
-                        </span>
+                        <span className={iconStartClasses}>{startIcon}</span>
                     )}
                     <input
                         ref={inputRef}
@@ -269,7 +268,9 @@ export default function Input({
                             baseClasses,
                             startIcon && iconPadding[inputSize].start,
                             iconPadding[inputSize].end,
-                            !isValidDate && error !== false && 'border-destructive',
+                            !isValidDate &&
+                            error !== false &&
+                            'border-destructive',
                             className
                         )}
                         {...(props as Omit<

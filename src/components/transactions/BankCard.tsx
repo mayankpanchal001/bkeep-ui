@@ -178,20 +178,15 @@ export function BankCard({
                         </p>
                     </div>
 
-
                     <div className="flex justify-between">
                         <div className="">
-                            <p className="font-light text-white">
-                                Valid
-                            </p>
+                            <p className="font-light text-white">Valid</p>
                             <p className="font-medium tracking-wider text-white">
                                 {valid}
                             </p>
                         </div>
                         <div className="">
-                            <p className="font-light text-white">
-                                Expiry
-                            </p>
+                            <p className="font-light text-white">Expiry</p>
                             <p className="font-medium tracking-wider text-white">
                                 {expiry}
                             </p>
@@ -203,7 +198,6 @@ export function BankCard({
                             </p>
                         </div>
                     </div>
-
                 </div>
             </div>
         </button>
