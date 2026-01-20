@@ -283,6 +283,7 @@ export default function JournalEntriespage() {
 
     const ACCOUNT_OPTIONS: ComboboxOption[] = useMemo(() => {
         const items = accountsData?.data?.items || [];
+        // Sort accounts by account number (ascending) for standard chart of accounts ordering
         return items.map((account) => ({
             value: account.id,
             label: `${account.accountNumber || ''} - ${account.accountName}`.trim(),
@@ -488,7 +489,7 @@ export default function JournalEntriespage() {
             />
 
             {/* Filters */}
-            <div className="p-4 border-b border-primary/10">
+            <div className="p-4 border-b border-primary/10 sticky -top-4 z-30 bg-background">
                 <div className="flex items-center gap-3">
                     <div className="w-[260px]">
                         <Input
@@ -499,296 +500,300 @@ export default function JournalEntriespage() {
                             startIcon={<Search className="w-4 h-4" />}
                         />
                     </div>
-                    <Button size="sm" onClick={handleCreateNew}>
-                        <Icons.Plus className="w-2 h-2 mr-1" />
-                        New
-                    </Button>
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                className={cn(
-                                    'gap-2',
-                                    filterStore.sort &&
+
+
+                    <div className="ml-auto flex items-center gap-3">
+                        <Button size="sm" onClick={handleCreateNew}>
+                            <Icons.Plus className="w-2 h-2 mr-1" />
+                            New
+                        </Button>
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    className={cn(
+                                        'gap-2',
+                                        filterStore.sort &&
                                         'border-primary/30 bg-primary/5'
-                                )}
-                            >
-                                <ArrowUpDown className="h-4 w-4" />
-                                <span>{getSortLabel(filterStore.sort)}</span>
-                                <ChevronUp className="h-3 w-3" />
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="w-56">
-                            <DropdownMenuRadioGroup
-                                value={filterStore.sort || 'none'}
-                                onValueChange={(value) => {
-                                    if (value === 'none') {
-                                        filterStore.setSort(null);
-                                    } else {
-                                        filterStore.setSort(value);
-                                    }
-                                }}
-                            >
-                                <DropdownMenuRadioItem value="none">
-                                    <span>No sorting</span>
-                                </DropdownMenuRadioItem>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuRadioItem value="entryNumber">
-                                    <span>Entry Number</span>
-                                    <span className="ml-auto text-xs text-muted-foreground">
-                                        {filterStore.order === 'asc'
-                                            ? 'A → Z'
-                                            : 'Z → A'}
-                                    </span>
-                                </DropdownMenuRadioItem>
-                                <DropdownMenuRadioItem value="entryDate">
-                                    <span>Entry Date</span>
-                                    <span className="ml-auto text-xs text-muted-foreground">
-                                        {filterStore.order === 'asc'
-                                            ? '1 → 9'
-                                            : '9 → 1'}
-                                    </span>
-                                </DropdownMenuRadioItem>
-                                <DropdownMenuRadioItem value="status">
-                                    <span>Status</span>
-                                    <span className="ml-auto text-xs text-muted-foreground">
-                                        {filterStore.order === 'asc'
-                                            ? 'A → Z'
-                                            : 'Z → A'}
-                                    </span>
-                                </DropdownMenuRadioItem>
-                                <DropdownMenuRadioItem value="totalDebit">
-                                    <span>Total Debit</span>
-                                    <span className="ml-auto text-xs text-muted-foreground">
-                                        {filterStore.order === 'asc'
-                                            ? 'Low → High'
-                                            : 'High → Low'}
-                                    </span>
-                                </DropdownMenuRadioItem>
-                                <DropdownMenuRadioItem value="totalCredit">
-                                    <span>Total Credit</span>
-                                    <span className="ml-auto text-xs text-muted-foreground">
-                                        {filterStore.order === 'asc'
-                                            ? 'Low → High'
-                                            : 'High → Low'}
-                                    </span>
-                                </DropdownMenuRadioItem>
-                                <DropdownMenuRadioItem value="createdAt">
-                                    <span>Created At</span>
-                                    <span className="ml-auto text-xs text-muted-foreground">
-                                        {filterStore.order === 'asc'
-                                            ? '1 → 9'
-                                            : '9 → 1'}
-                                    </span>
-                                </DropdownMenuRadioItem>
-                                <DropdownMenuRadioItem value="updatedAt">
-                                    <span>Updated At</span>
-                                    <span className="ml-auto text-xs text-muted-foreground">
-                                        {filterStore.order === 'asc'
-                                            ? '1 → 9'
-                                            : '9 → 1'}
-                                    </span>
-                                </DropdownMenuRadioItem>
-                            </DropdownMenuRadioGroup>
-                            {filterStore.sort && (
-                                <>
+                                    )}
+                                >
+                                    <ArrowUpDown className="h-4 w-4" />
+                                    <span>{getSortLabel(filterStore.sort)}</span>
+                                    <ChevronUp className="h-3 w-3" />
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" className="w-56">
+                                <DropdownMenuRadioGroup
+                                    value={filterStore.sort || 'none'}
+                                    onValueChange={(value) => {
+                                        if (value === 'none') {
+                                            filterStore.setSort(null);
+                                        } else {
+                                            filterStore.setSort(value);
+                                        }
+                                    }}
+                                >
+                                    <DropdownMenuRadioItem value="none">
+                                        <span>No sorting</span>
+                                    </DropdownMenuRadioItem>
                                     <DropdownMenuSeparator />
-                                    <div className="px-2 py-1.5">
-                                        <button
-                                            onClick={() => {
-                                                filterStore.setSortOrder(
-                                                    filterStore.order === 'asc'
-                                                        ? 'desc'
-                                                        : 'asc'
-                                                );
-                                            }}
-                                            className="w-full text-left text-xs text-muted-foreground hover:text-foreground transition-colors"
-                                        >
+                                    <DropdownMenuRadioItem value="entryNumber">
+                                        <span>Entry Number</span>
+                                        <span className="ml-auto text-xs text-muted-foreground">
                                             {filterStore.order === 'asc'
-                                                ? 'Switch to Descending'
-                                                : 'Switch to Ascending'}
-                                        </button>
-                                    </div>
-                                </>
-                            )}
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-                    <Drawer
-                        open={isFilterDrawerOpen}
-                        onOpenChange={setIsFilterDrawerOpen}
-                        direction="right"
-                    >
-                        <DrawerTrigger asChild>
-                            <Button variant="outline" size="sm">
-                                <Filter className="mr-2 h-4 w-4" /> Filters
-                                {(filterStore.filterContact ||
-                                    filterStore.filterAccountId ||
-                                    filterStore.filterMinAmount ||
-                                    filterStore.filterMaxAmount ||
-                                    filterStore.startDate ||
-                                    filterStore.endDate) && (
-                                    <span className="ml-2 h-2 w-2 rounded-full bg-accent" />
+                                                ? 'A → Z'
+                                                : 'Z → A'}
+                                        </span>
+                                    </DropdownMenuRadioItem>
+                                    <DropdownMenuRadioItem value="entryDate">
+                                        <span>Entry Date</span>
+                                        <span className="ml-auto text-xs text-muted-foreground">
+                                            {filterStore.order === 'asc'
+                                                ? '1 → 9'
+                                                : '9 → 1'}
+                                        </span>
+                                    </DropdownMenuRadioItem>
+                                    <DropdownMenuRadioItem value="status">
+                                        <span>Status</span>
+                                        <span className="ml-auto text-xs text-muted-foreground">
+                                            {filterStore.order === 'asc'
+                                                ? 'A → Z'
+                                                : 'Z → A'}
+                                        </span>
+                                    </DropdownMenuRadioItem>
+                                    <DropdownMenuRadioItem value="totalDebit">
+                                        <span>Total Debit</span>
+                                        <span className="ml-auto text-xs text-muted-foreground">
+                                            {filterStore.order === 'asc'
+                                                ? 'Low → High'
+                                                : 'High → Low'}
+                                        </span>
+                                    </DropdownMenuRadioItem>
+                                    <DropdownMenuRadioItem value="totalCredit">
+                                        <span>Total Credit</span>
+                                        <span className="ml-auto text-xs text-muted-foreground">
+                                            {filterStore.order === 'asc'
+                                                ? 'Low → High'
+                                                : 'High → Low'}
+                                        </span>
+                                    </DropdownMenuRadioItem>
+                                    <DropdownMenuRadioItem value="createdAt">
+                                        <span>Created At</span>
+                                        <span className="ml-auto text-xs text-muted-foreground">
+                                            {filterStore.order === 'asc'
+                                                ? '1 → 9'
+                                                : '9 → 1'}
+                                        </span>
+                                    </DropdownMenuRadioItem>
+                                    <DropdownMenuRadioItem value="updatedAt">
+                                        <span>Updated At</span>
+                                        <span className="ml-auto text-xs text-muted-foreground">
+                                            {filterStore.order === 'asc'
+                                                ? '1 → 9'
+                                                : '9 → 1'}
+                                        </span>
+                                    </DropdownMenuRadioItem>
+                                </DropdownMenuRadioGroup>
+                                {filterStore.sort && (
+                                    <>
+                                        <DropdownMenuSeparator />
+                                        <div className="px-2 py-1.5">
+                                            <button
+                                                onClick={() => {
+                                                    filterStore.setSortOrder(
+                                                        filterStore.order === 'asc'
+                                                            ? 'desc'
+                                                            : 'asc'
+                                                    );
+                                                }}
+                                                className="w-full text-left text-xs text-muted-foreground hover:text-foreground transition-colors"
+                                            >
+                                                {filterStore.order === 'asc'
+                                                    ? 'Switch to Descending'
+                                                    : 'Switch to Ascending'}
+                                            </button>
+                                        </div>
+                                    </>
                                 )}
-                            </Button>
-                        </DrawerTrigger>
-                        <DrawerContent className="h-full w-full sm:w-[400px]">
-                            <DrawerHeader className="border-b border-primary/10">
-                                <div className="flex items-center justify-between">
-                                    <DrawerTitle>
-                                        Filter Journal Entries
-                                    </DrawerTitle>
-                                    <DrawerClose asChild>
-                                        <button className="p-2 hover:bg-primary/5 rounded-full transition-colors">
-                                            <X className="h-4 w-4 text-primary/70" />
-                                        </button>
-                                    </DrawerClose>
-                                </div>
-                            </DrawerHeader>
-                            <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-4">
-                                <div>
-                                    <label className="text-sm font-medium text-primary/70 mb-2 block">
-                                        Status
-                                    </label>
-                                    <Select
-                                        value={filterStore.status}
-                                        onValueChange={(value) =>
-                                            filterStore.setStatus(
-                                                value as
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                        <Drawer
+                            open={isFilterDrawerOpen}
+                            onOpenChange={setIsFilterDrawerOpen}
+                            direction="right"
+                        >
+                            <DrawerTrigger asChild>
+                                <Button variant="outline" size="sm">
+                                    <Filter className="mr-2 h-4 w-4" /> Filters
+                                    {(filterStore.filterContact ||
+                                        filterStore.filterAccountId ||
+                                        filterStore.filterMinAmount ||
+                                        filterStore.filterMaxAmount ||
+                                        filterStore.startDate ||
+                                        filterStore.endDate) && (
+                                            <span className="ml-2 h-2 w-2 rounded-full bg-accent" />
+                                        )}
+                                </Button>
+                            </DrawerTrigger>
+                            <DrawerContent className="h-full w-full sm:w-[400px]">
+                                <DrawerHeader className="border-b border-primary/10">
+                                    <div className="flex items-center justify-between">
+                                        <DrawerTitle>
+                                            Filter Journal Entries
+                                        </DrawerTitle>
+                                        <DrawerClose asChild>
+                                            <button className="p-2 hover:bg-primary/5 rounded-full transition-colors">
+                                                <X className="h-4 w-4 text-primary/70" />
+                                            </button>
+                                        </DrawerClose>
+                                    </div>
+                                </DrawerHeader>
+                                <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-4">
+                                    <div>
+                                        <label className="text-sm font-medium text-primary/70 mb-2 block">
+                                            Status
+                                        </label>
+                                        <Select
+                                            value={filterStore.status}
+                                            onValueChange={(value) =>
+                                                filterStore.setStatus(
+                                                    value as
                                                     | 'draft'
                                                     | 'posted'
                                                     | 'voided'
                                                     | 'all'
-                                            )
-                                        }
-                                    >
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="All" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="all">
-                                                All
-                                            </SelectItem>
-                                            <SelectItem value="draft">
-                                                Draft
-                                            </SelectItem>
-                                            <SelectItem value="posted">
-                                                Posted
-                                            </SelectItem>
-                                            <SelectItem value="voided">
-                                                Voided
-                                            </SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                </div>
+                                                )
+                                            }
+                                        >
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="All" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="all">
+                                                    All
+                                                </SelectItem>
+                                                <SelectItem value="draft">
+                                                    Draft
+                                                </SelectItem>
+                                                <SelectItem value="posted">
+                                                    Posted
+                                                </SelectItem>
+                                                <SelectItem value="voided">
+                                                    Voided
+                                                </SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
 
-                                <div>
-                                    <label className="text-sm font-medium text-primary/70 mb-2 block">
-                                        Date Range
-                                    </label>
-                                    <div className="grid grid-cols-2 gap-2">
-                                        <Input
-                                            type="date"
-                                            placeholder="Start Date"
-                                            value={filterStore.startDate}
-                                            onChange={(e) =>
-                                                filterStore.setStartDate(
-                                                    e.target.value
+                                    <div>
+                                        <label className="text-sm font-medium text-primary/70 mb-2 block">
+                                            Date Range
+                                        </label>
+                                        <div className="grid grid-cols-2 gap-2">
+                                            <Input
+                                                type="date"
+                                                placeholder="Start Date"
+                                                value={filterStore.startDate}
+                                                onChange={(e) =>
+                                                    filterStore.setStartDate(
+                                                        e.target.value
+                                                    )
+                                                }
+                                            />
+                                            <Input
+                                                type="date"
+                                                placeholder="End Date"
+                                                value={filterStore.endDate}
+                                                onChange={(e) =>
+                                                    filterStore.setEndDate(
+                                                        e.target.value
+                                                    )
+                                                }
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label className="text-sm font-medium text-primary/70 mb-2 block">
+                                            Contact
+                                        </label>
+                                        <Combobox
+                                            options={CONTACT_OPTIONS}
+                                            value={filterStore.filterContact}
+                                            onChange={(value) =>
+                                                filterStore.setFilterContact(
+                                                    value || ''
                                                 )
                                             }
-                                        />
-                                        <Input
-                                            type="date"
-                                            placeholder="End Date"
-                                            value={filterStore.endDate}
-                                            onChange={(e) =>
-                                                filterStore.setEndDate(
-                                                    e.target.value
-                                                )
-                                            }
+                                            placeholder="All contacts"
+                                            searchPlaceholder="Search contact..."
+                                            className="h-9"
                                         />
                                     </div>
-                                </div>
 
-                                <div>
-                                    <label className="text-sm font-medium text-primary/70 mb-2 block">
-                                        Contact
-                                    </label>
-                                    <Combobox
-                                        options={CONTACT_OPTIONS}
-                                        value={filterStore.filterContact}
-                                        onChange={(value) =>
-                                            filterStore.setFilterContact(
-                                                value || ''
-                                            )
-                                        }
-                                        placeholder="All contacts"
-                                        searchPlaceholder="Search contact..."
-                                        className="h-9"
-                                    />
-                                </div>
-
-                                <div>
-                                    <label className="text-sm font-medium text-primary/70 mb-2 block">
-                                        Account
-                                    </label>
-                                    <Combobox
-                                        options={ACCOUNT_OPTIONS}
-                                        value={filterStore.filterAccountId}
-                                        onChange={(value) =>
-                                            filterStore.setFilterAccountId(
-                                                value || ''
-                                            )
-                                        }
-                                        placeholder="All accounts"
-                                        searchPlaceholder="Search account..."
-                                        className="h-9"
-                                    />
-                                </div>
-
-                                <div>
-                                    <label className="text-sm font-medium text-primary/70 mb-2 block">
-                                        Amount Range
-                                    </label>
-                                    <div className="grid grid-cols-2 gap-2">
-                                        <Input
-                                            type="number"
-                                            placeholder="Min"
-                                            value={filterStore.filterMinAmount}
-                                            onChange={(e) =>
-                                                filterStore.setFilterMinAmount(
-                                                    e.target.value
+                                    <div>
+                                        <label className="text-sm font-medium text-primary/70 mb-2 block">
+                                            Account
+                                        </label>
+                                        <Combobox
+                                            options={ACCOUNT_OPTIONS}
+                                            value={filterStore.filterAccountId}
+                                            onChange={(value) =>
+                                                filterStore.setFilterAccountId(
+                                                    value || ''
                                                 )
                                             }
-                                        />
-                                        <Input
-                                            type="number"
-                                            placeholder="Max"
-                                            value={filterStore.filterMaxAmount}
-                                            onChange={(e) =>
-                                                filterStore.setFilterMaxAmount(
-                                                    e.target.value
-                                                )
-                                            }
+                                            placeholder="All accounts"
+                                            searchPlaceholder="Search account..."
+                                            className="h-9"
                                         />
                                     </div>
+
+                                    <div>
+                                        <label className="text-sm font-medium text-primary/70 mb-2 block">
+                                            Amount Range
+                                        </label>
+                                        <div className="grid grid-cols-2 gap-2">
+                                            <Input
+                                                type="number"
+                                                placeholder="Min"
+                                                value={filterStore.filterMinAmount}
+                                                onChange={(e) =>
+                                                    filterStore.setFilterMinAmount(
+                                                        e.target.value
+                                                    )
+                                                }
+                                            />
+                                            <Input
+                                                type="number"
+                                                placeholder="Max"
+                                                value={filterStore.filterMaxAmount}
+                                                onChange={(e) =>
+                                                    filterStore.setFilterMaxAmount(
+                                                        e.target.value
+                                                    )
+                                                }
+                                            />
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                            <DrawerFooter className="border-t border-primary/10">
-                                <DrawerClose asChild>
-                                    <Button
-                                        variant="outline"
-                                        className="w-full"
-                                        onClick={() =>
-                                            filterStore.resetFilters()
-                                        }
-                                    >
-                                        Clear All Filters
-                                    </Button>
-                                </DrawerClose>
-                            </DrawerFooter>
-                        </DrawerContent>
-                    </Drawer>
+                                <DrawerFooter className="border-t border-primary/10">
+                                    <DrawerClose asChild>
+                                        <Button
+                                            variant="outline"
+                                            className="w-full"
+                                            onClick={() =>
+                                                filterStore.resetFilters()
+                                            }
+                                        >
+                                            Clear All Filters
+                                        </Button>
+                                    </DrawerClose>
+                                </DrawerFooter>
+                            </DrawerContent>
+                        </Drawer>
+                    </div>
                 </div>
             </div>
 
@@ -975,10 +980,10 @@ export default function JournalEntriespage() {
                                             entry.isReversing
                                                 ? 'warning'
                                                 : entry.status === 'draft'
-                                                  ? 'secondary'
-                                                  : entry.status === 'posted'
-                                                    ? 'success'
-                                                    : 'destructive'
+                                                    ? 'secondary'
+                                                    : entry.status === 'posted'
+                                                        ? 'success'
+                                                        : 'destructive'
                                         }
                                     >
                                         {entry.isReversing
@@ -1328,8 +1333,8 @@ export default function JournalEntriespage() {
                             {isBulkLoading
                                 ? 'Processing...'
                                 : bulkDialog.type === 'post'
-                                  ? 'Post'
-                                  : 'Delete'}
+                                    ? 'Post'
+                                    : 'Delete'}
                         </AlertDialogAction>
                     </AlertDialogFooter>
                 </AlertDialogContent>

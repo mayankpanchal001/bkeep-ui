@@ -9,7 +9,8 @@ import {
     ChevronDown,
     ChevronLeft,
     ChevronRight,
-    ExternalLink,
+    Landmark,
+    Import,
 } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Button } from '../ui/button';
@@ -189,14 +190,14 @@ export function TransactionHeader({
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>
                         <DropdownMenuItem>
-                            <ExternalLink className="w-4 h-4 mr-2" />
+                            <Landmark className="w-4 h-4 mr-2" />
                             Connect Bank
                         </DropdownMenuItem>
                         <DropdownMenuItem
                             onClick={() => setIsImportModalOpen(true)}
                         >
-                            <ExternalLink className="w-4 h-4 mr-2" />
-                            Upload Statement
+                            <Import className="w-4 h-4 mr-2" />
+                            Import Data
                         </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
@@ -231,12 +232,12 @@ export function TransactionHeader({
                     className="flex overflow-x-auto p-4 gap-4 scrollbar-hide relative"
                 >
                     {displayAccounts
-                        .sort((a, b) => {
+/*                         .sort((a, b) => {
                             // Put selected account first
                             if (selectedAccountId === a.id) return -1;
                             if (selectedAccountId === b.id) return 1;
                             return 0;
-                        })
+                        }) */
                         .map((account) => {
                             const isSelected = selectedAccountId === account.id;
 
