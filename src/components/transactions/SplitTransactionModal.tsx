@@ -103,7 +103,7 @@ export function SplitTransactionDrawer({
         const matchingAccount = splitAccounts.find(
             (account) =>
                 account.accountName.toLowerCase() ===
-                transactionCategoryId.toLowerCase() ||
+                    transactionCategoryId.toLowerCase() ||
                 `${account.accountNumber || ''} - ${account.accountName}`
                     .toLowerCase()
                     .includes(transactionCategoryId.toLowerCase())
@@ -323,8 +323,8 @@ export function SplitTransactionDrawer({
                             Split Transaction
                         </DrawerTitle>
                         <DrawerDescription className="text-xs sm:text-sm">
-                            Total: {formatCurrency(transactionAmount)} • Split into
-                            multiple categories
+                            Total: {formatCurrency(transactionAmount)} • Split
+                            into multiple categories
                         </DrawerDescription>
                     </DrawerHeader>
 
@@ -346,12 +346,13 @@ export function SplitTransactionDrawer({
                                         Allocated
                                     </span>
                                     <p
-                                        className={`text-base sm:text-lg font-semibold ${isFullyAllocated
-                                            ? 'text-green-600'
-                                            : hasOverAllocation
-                                                ? 'text-red-600'
-                                                : 'text-orange-600'
-                                            }`}
+                                        className={`text-base sm:text-lg font-semibold ${
+                                            isFullyAllocated
+                                                ? 'text-green-600'
+                                                : hasOverAllocation
+                                                  ? 'text-red-600'
+                                                  : 'text-orange-600'
+                                        }`}
                                     >
                                         {formatCurrency(totalSplit)}
                                     </p>
@@ -364,10 +365,11 @@ export function SplitTransactionDrawer({
                                                 Remaining
                                             </span>
                                             <p
-                                                className={`text-sm font-semibold ${remaining > 0
-                                                    ? 'text-orange-600'
-                                                    : 'text-red-600'
-                                                    }`}
+                                                className={`text-sm font-semibold ${
+                                                    remaining > 0
+                                                        ? 'text-orange-600'
+                                                        : 'text-red-600'
+                                                }`}
                                             >
                                                 {remaining > 0 ? '+' : ''}
                                                 {formatCurrency(remaining)}
@@ -393,7 +395,8 @@ export function SplitTransactionDrawer({
                                     </>
                                 ) : (
                                     <span className="text-xs sm:text-sm text-primary/70">
-                                        {allocationPercentage.toFixed(0)}% allocated
+                                        {allocationPercentage.toFixed(0)}%
+                                        allocated
                                     </span>
                                 )}
                             </div>
@@ -408,7 +411,9 @@ export function SplitTransactionDrawer({
                             >
                                 <TableHeader sticky>
                                     <tr>
-                                        <TableHead className="w-12">#</TableHead>
+                                        <TableHead className="w-12">
+                                            #
+                                        </TableHead>
                                         <TableHead className="min-w-[200px]">
                                             Category
                                         </TableHead>
@@ -418,7 +423,9 @@ export function SplitTransactionDrawer({
                                         <TableHead className="w-40">
                                             Amount
                                         </TableHead>
-                                        <TableHead className="w-40">Tax</TableHead>
+                                        <TableHead className="w-40">
+                                            Tax
+                                        </TableHead>
                                         <TableHead className="w-20"></TableHead>
                                     </tr>
                                 </TableHeader>
@@ -440,10 +447,14 @@ export function SplitTransactionDrawer({
                                                         options={accountOptions}
                                                         value={split.categoryId}
                                                         onChange={(value) => {
-                                                            updateSplit(split.id, {
-                                                                categoryId:
-                                                                    value || '',
-                                                            });
+                                                            updateSplit(
+                                                                split.id,
+                                                                {
+                                                                    categoryId:
+                                                                        value ||
+                                                                        '',
+                                                                }
+                                                            );
                                                         }}
                                                         placeholder="Select category..."
                                                         searchPlaceholder="Search account..."
@@ -455,12 +466,18 @@ export function SplitTransactionDrawer({
                                                     data-label="Description"
                                                 >
                                                     <Input
-                                                        value={split.description}
+                                                        value={
+                                                            split.description
+                                                        }
                                                         onChange={(e) => {
-                                                            updateSplit(split.id, {
-                                                                description:
-                                                                    e.target.value,
-                                                            });
+                                                            updateSplit(
+                                                                split.id,
+                                                                {
+                                                                    description:
+                                                                        e.target
+                                                                            .value,
+                                                                }
+                                                            );
                                                         }}
                                                         placeholder="Enter description..."
                                                         className="h-10 text-sm"
@@ -476,8 +493,8 @@ export function SplitTransactionDrawer({
                                                             value={
                                                                 split.amount > 0
                                                                     ? String(
-                                                                        split.amount
-                                                                    )
+                                                                          split.amount
+                                                                      )
                                                                     : ''
                                                             }
                                                             onValueChange={(
@@ -499,8 +516,8 @@ export function SplitTransactionDrawer({
                                                         />
                                                         {remaining > 0.01 &&
                                                             index ===
-                                                            splits.length -
-                                                            1 && (
+                                                                splits.length -
+                                                                    1 && (
                                                                 <Button
                                                                     type="button"
                                                                     variant="ghost"
@@ -526,16 +543,23 @@ export function SplitTransactionDrawer({
                                                         options={taxOptions}
                                                         value={
                                                             split.taxIds &&
-                                                                split.taxIds.length > 0
-                                                                ? split.taxIds[0]
+                                                            split.taxIds
+                                                                .length > 0
+                                                                ? split
+                                                                      .taxIds[0]
                                                                 : ''
                                                         }
                                                         onChange={(value) => {
-                                                            updateSplit(split.id, {
-                                                                taxIds: value
-                                                                    ? [value]
-                                                                    : [],
-                                                            });
+                                                            updateSplit(
+                                                                split.id,
+                                                                {
+                                                                    taxIds: value
+                                                                        ? [
+                                                                              value,
+                                                                          ]
+                                                                        : [],
+                                                                }
+                                                            );
                                                         }}
                                                         placeholder="Select tax..."
                                                         searchPlaceholder="Search tax..."
@@ -600,7 +624,8 @@ export function SplitTransactionDrawer({
                                     <>
                                         <AlertCircle className="w-4 h-4 text-orange-600" />
                                         <span className="text-orange-600 font-medium">
-                                            {formatCurrency(remaining)} remaining
+                                            {formatCurrency(remaining)}{' '}
+                                            remaining
                                         </span>
                                     </>
                                 )}

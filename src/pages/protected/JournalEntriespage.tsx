@@ -501,7 +501,6 @@ export default function JournalEntriespage() {
                         />
                     </div>
 
-
                     <div className="ml-auto flex items-center gap-3">
                         <Button size="sm" onClick={handleCreateNew}>
                             <Icons.Plus className="w-2 h-2 mr-1" />
@@ -515,11 +514,13 @@ export default function JournalEntriespage() {
                                     className={cn(
                                         'gap-2',
                                         filterStore.sort &&
-                                        'border-primary/30 bg-primary/5'
+                                            'border-primary/30 bg-primary/5'
                                     )}
                                 >
                                     <ArrowUpDown className="h-4 w-4" />
-                                    <span>{getSortLabel(filterStore.sort)}</span>
+                                    <span>
+                                        {getSortLabel(filterStore.sort)}
+                                    </span>
                                     <ChevronUp className="h-3 w-3" />
                                 </Button>
                             </DropdownMenuTrigger>
@@ -602,7 +603,8 @@ export default function JournalEntriespage() {
                                             <button
                                                 onClick={() => {
                                                     filterStore.setSortOrder(
-                                                        filterStore.order === 'asc'
+                                                        filterStore.order ===
+                                                            'asc'
                                                             ? 'desc'
                                                             : 'asc'
                                                     );
@@ -632,8 +634,8 @@ export default function JournalEntriespage() {
                                         filterStore.filterMaxAmount ||
                                         filterStore.startDate ||
                                         filterStore.endDate) && (
-                                            <span className="ml-2 h-2 w-2 rounded-full bg-accent" />
-                                        )}
+                                        <span className="ml-2 h-2 w-2 rounded-full bg-accent" />
+                                    )}
                                 </Button>
                             </DrawerTrigger>
                             <DrawerContent className="h-full w-full sm:w-[400px]">
@@ -659,10 +661,10 @@ export default function JournalEntriespage() {
                                             onValueChange={(value) =>
                                                 filterStore.setStatus(
                                                     value as
-                                                    | 'draft'
-                                                    | 'posted'
-                                                    | 'voided'
-                                                    | 'all'
+                                                        | 'draft'
+                                                        | 'posted'
+                                                        | 'voided'
+                                                        | 'all'
                                                 )
                                             }
                                         >
@@ -758,7 +760,9 @@ export default function JournalEntriespage() {
                                             <Input
                                                 type="number"
                                                 placeholder="Min"
-                                                value={filterStore.filterMinAmount}
+                                                value={
+                                                    filterStore.filterMinAmount
+                                                }
                                                 onChange={(e) =>
                                                     filterStore.setFilterMinAmount(
                                                         e.target.value
@@ -768,7 +772,9 @@ export default function JournalEntriespage() {
                                             <Input
                                                 type="number"
                                                 placeholder="Max"
-                                                value={filterStore.filterMaxAmount}
+                                                value={
+                                                    filterStore.filterMaxAmount
+                                                }
                                                 onChange={(e) =>
                                                     filterStore.setFilterMaxAmount(
                                                         e.target.value
@@ -980,10 +986,10 @@ export default function JournalEntriespage() {
                                             entry.isReversing
                                                 ? 'warning'
                                                 : entry.status === 'draft'
-                                                    ? 'secondary'
-                                                    : entry.status === 'posted'
-                                                        ? 'success'
-                                                        : 'destructive'
+                                                  ? 'secondary'
+                                                  : entry.status === 'posted'
+                                                    ? 'success'
+                                                    : 'destructive'
                                         }
                                     >
                                         {entry.isReversing
@@ -1333,8 +1339,8 @@ export default function JournalEntriespage() {
                             {isBulkLoading
                                 ? 'Processing...'
                                 : bulkDialog.type === 'post'
-                                    ? 'Post'
-                                    : 'Delete'}
+                                  ? 'Post'
+                                  : 'Delete'}
                         </AlertDialogAction>
                     </AlertDialogFooter>
                 </AlertDialogContent>

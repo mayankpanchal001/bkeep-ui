@@ -64,7 +64,7 @@ export function Combobox({
                     <span className="truncate flex-1 text-left">
                         {value
                             ? options.find((option) => option.value === value)
-                                ?.label
+                                  ?.label
                             : placeholder}
                     </span>
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />

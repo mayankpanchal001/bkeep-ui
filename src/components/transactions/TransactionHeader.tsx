@@ -232,7 +232,7 @@ export function TransactionHeader({
                     className="flex overflow-x-auto gap-4 scrollbar-hide relative"
                 >
                     {displayAccounts
-/*                         .sort((a, b) => {
+                        /*                         .sort((a, b) => {
                             // Put selected account first
                             if (selectedAccountId === a.id) return -1;
                             if (selectedAccountId === b.id) return 1;
