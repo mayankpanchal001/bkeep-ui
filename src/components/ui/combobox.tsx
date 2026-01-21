@@ -1,5 +1,5 @@
+import { ChevronsUpDown } from 'lucide-react';
 import * as React from 'react';
-import { Check, ChevronsUpDown } from 'lucide-react';
 
 import { cn } from '../../utils/cn';
 import { Button } from './button';
@@ -64,7 +64,7 @@ export function Combobox({
                     <span className="truncate flex-1 text-left">
                         {value
                             ? options.find((option) => option.value === value)
-                                  ?.label
+                                ?.label
                             : placeholder}
                     </span>
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -97,15 +97,15 @@ export function Combobox({
                                         setOpen(false);
                                     }}
                                 >
-                                    <Check
+                                    {/* <Check
                                         className={cn(
                                             'mr-2 h-4 w-4 shrink-0',
                                             value === option.value
                                                 ? 'opacity-100'
-                                                : 'invisible'
+                                                : 'opacity-100'
                                         )}
                                         aria-hidden="true"
-                                    />
+                                    /> */}
                                     <span className="flex-1 text-left break-words">
                                         {option.label}
                                     </span>

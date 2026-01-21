@@ -628,8 +628,8 @@ const Transactionpage = () => {
                                     filterStore.filterEndDate ||
                                     filterStore.filterMinAmount ||
                                     filterStore.filterMaxAmount) && (
-                                    <span className="ml-2 h-2 w-2 rounded-full bg-accent" />
-                                )}
+                                        <span className="ml-2 h-2 w-2 rounded-full bg-accent" />
+                                    )}
                             </Button>
                         </DrawerTrigger>
                         <DrawerContent className="h-full w-full sm:w-[400px]">
@@ -787,6 +787,7 @@ const Transactionpage = () => {
                         direction || undefined
                     );
                 }}
+                transposeOnMobile
             >
                 {/* Bulk Actions Toolbar */}
                 <TableSelectionToolbar>
@@ -875,15 +876,15 @@ const Transactionpage = () => {
                     ) : (
                         pageData.map((t) => (
                             <TableRow key={t.id} rowId={t.id}>
-                                <TableCell>
+                                <TableCell data-label="">
                                     <TableRowCheckbox rowId={t.id} />
                                 </TableCell>
-                                <TableCell>
+                                <TableCell data-label="Date">
                                     <span className="text-sm font-medium text-primary">
                                         {new Date(t.date).toLocaleDateString()}
                                     </span>
                                 </TableCell>
-                                <TableCell>
+                                <TableCell data-label="Bank Description" noTruncate>
                                     <div className="flex flex-col">
                                         <span className="text-sm font-medium text-primary">
                                             {t.description}
@@ -893,19 +894,19 @@ const Transactionpage = () => {
                                         </span>
                                     </div>
                                 </TableCell>
-                                <TableCell>
+                                <TableCell data-label="Spent">
                                     <span className="text-red-600 font-semibold">
                                         {t.spent ? `-${currency(t.spent)}` : ''}
                                     </span>
                                 </TableCell>
-                                <TableCell>
+                                <TableCell data-label="Received">
                                     <span className="text-green-600 font-semibold">
                                         {t.received
                                             ? `+${currency(t.received)}`
                                             : ''}
                                     </span>
                                 </TableCell>
-                                <TableCell>
+                                <TableCell data-label="Tax" noTruncate>
                                     <div className="flex items-center gap-3">
                                         <div className="min-w-[200px]">
                                             <Combobox
@@ -915,7 +916,7 @@ const Transactionpage = () => {
                                                     const rate =
                                                         (value &&
                                                             TAX_RATE_BY_ID[
-                                                                value
+                                                            value
                                                             ]) ||
                                                         0;
                                                     setTransactions((prev) =>
@@ -951,15 +952,15 @@ const Transactionpage = () => {
                                         </div>
                                     </div>
                                 </TableCell>
-                                <TableCell>
+                                <TableCell data-label="From/To" noTruncate>
                                     <div className="min-w-[200px]">
                                         <Combobox
                                             options={SUPPLIER_OPTIONS}
                                             value={
                                                 t.fromTo
                                                     ? contactNameById.get(
-                                                          t.fromTo
-                                                      ) || t.fromTo
+                                                        t.fromTo
+                                                    ) || t.fromTo
                                                     : ''
                                             }
                                             onChange={(value) => {
@@ -976,11 +977,11 @@ const Transactionpage = () => {
                                                     prev.map((tx) =>
                                                         tx.id === t.id
                                                             ? {
-                                                                  ...tx,
-                                                                  fromTo:
-                                                                      contactId ||
-                                                                      undefined,
-                                                              }
+                                                                ...tx,
+                                                                fromTo:
+                                                                    contactId ||
+                                                                    undefined,
+                                                            }
                                                             : tx
                                                     )
                                                 );
@@ -991,7 +992,7 @@ const Transactionpage = () => {
                                         />
                                     </div>
                                 </TableCell>
-                                <TableCell>
+                                <TableCell data-label="Match/Categorize" noTruncate>
                                     <div className="flex items-center gap-2">
                                         <div className="min-w-[220px]">
                                             <Combobox
@@ -1002,11 +1003,11 @@ const Transactionpage = () => {
                                                         prev.map((tx) =>
                                                             tx.id === t.id
                                                                 ? {
-                                                                      ...tx,
-                                                                      category:
-                                                                          value ||
-                                                                          undefined,
-                                                                  }
+                                                                    ...tx,
+                                                                    category:
+                                                                        value ||
+                                                                        undefined,
+                                                                }
                                                                 : tx
                                                         )
                                                     );
@@ -1028,10 +1029,10 @@ const Transactionpage = () => {
                                                     prev.map((tx) =>
                                                         tx.id === t.id
                                                             ? {
-                                                                  ...tx,
-                                                                  matched:
-                                                                      !tx.matched,
-                                                              }
+                                                                ...tx,
+                                                                matched:
+                                                                    !tx.matched,
+                                                            }
                                                             : tx
                                                     )
                                                 );
@@ -1046,7 +1047,7 @@ const Transactionpage = () => {
                                         </Button>
                                     </div>
                                 </TableCell>
-                                <TableCell>
+                                <TableCell data-label="Action" noTruncate>
                                     <div className="flex items-center gap-2">
                                         {t.status === 'pending' && (
                                             <Button
@@ -1110,8 +1111,8 @@ const Transactionpage = () => {
                                                         const transactionAmount =
                                                             Math.abs(
                                                                 t.spent ||
-                                                                    t.received ||
-                                                                    0
+                                                                t.received ||
+                                                                0
                                                             );
                                                         setSelectedTransactionForSplit(
                                                             {
@@ -1127,82 +1128,26 @@ const Transactionpage = () => {
                                                         setSplitModalOpen(true);
                                                     }}
                                                 >
-                                                    Post
-                                                </Button>
-                                            )}
-                                            <DropdownMenu>
-                                                <DropdownMenuTrigger asChild>
-                                                    <Button
-                                                        variant="outline"
-                                                        size="sm"
-                                                    >
-                                                        ⋯
-                                                    </Button>
-                                                </DropdownMenuTrigger>
-                                                <DropdownMenuContent align="end">
-                                                    <DropdownMenuItem
-                                                        onClick={() =>
-                                                            showSuccessToast(
-                                                                'Update coming soon'
-                                                            )
-                                                        }
-                                                    >
-                                                        Update
-                                                    </DropdownMenuItem>
-                                                    <DropdownMenuItem
-                                                        onClick={() =>
-                                                            reconcileTransaction(
-                                                                t.id
-                                                            )
-                                                        }
-                                                    >
-                                                        Reconcile
-                                                    </DropdownMenuItem>
-                                                    <DropdownMenuItem
-                                                        onClick={() =>
-                                                            voidTransaction(
-                                                                t.id
-                                                            )
-                                                        }
-                                                    >
-                                                        Void
-                                                    </DropdownMenuItem>
-                                                    <DropdownMenuItem
-                                                        onClick={() =>
-                                                            reverseTransaction(
-                                                                t.id
-                                                            )
-                                                        }
-                                                    >
-                                                        Reverse
-                                                    </DropdownMenuItem>
-                                                    <DropdownMenuItem
-                                                        onClick={() =>
-                                                            showSuccessToast(
-                                                                'Split editor coming soon'
-                                                            )
-                                                        }
-                                                    >
-                                                        Split
-                                                    </DropdownMenuItem>
-                                                    <DropdownMenuItem
-                                                        onClick={() =>
-                                                            showSuccessToast(
-                                                                'Rule created (demo placeholder)'
-                                                            )
-                                                        }
-                                                    >
-                                                        rule
-                                                    </DropdownMenuItem>
-                                                </DropdownMenuContent>
-                                            </DropdownMenu>
-                                        </div>
-                                    </TableCell>
-                                </TableRow>
-                            ))
-                        )}
-                    </TableBody>
-                </Table>
+                                                    Split
+                                                </DropdownMenuItem>
+                                                <DropdownMenuItem
+                                                    onClick={() =>
+                                                        showSuccessToast(
+                                                            'Rule created (demo placeholder)'
+                                                        )
+                                                    }
+                                                >
+                                                    Create rule
+                                                </DropdownMenuItem>
+                                            </DropdownMenuContent>
+                                        </DropdownMenu>
+                                    </div>
+                                </TableCell>
+                            </TableRow>
+                        ))
+                    )}
+                </TableBody>
+            </Table>
 
             {/* Pagination */}
             <TablePagination
