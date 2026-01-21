@@ -73,15 +73,9 @@ export function CreateTransactionDrawer({
     const filteredAccounts = useMemo(() => {
         const items = accountsData?.data?.items;
         if (!items) return [];
-        const allowedTypes = [
-            'checking',
-            'savings',
-            'cash',
-            'credit-card',
-            'money-market',
-        ];
+        const allowedAccountTypes = ['asset', 'liability', 'equity'];
         return items.filter((account) =>
-            allowedTypes.includes(account.accountDetailType)
+            allowedAccountTypes.includes(account.accountType)
         );
     }, [accountsData]);
 
@@ -100,6 +94,12 @@ export function CreateTransactionDrawer({
     // Update form when selectedAccountId changes or drawer opens
     useEffect(() => {
         if (open) {
+            const isValidAccount =
+                selectedAccountId &&
+                filteredAccounts.some((a) => a.id === selectedAccountId);
+
+            const defaultAccountId = isValidAccount ? selectedAccountId : '';
+
             // Reset form with default values
             form.reset({
                 type: 'expense',
@@ -107,23 +107,13 @@ export function CreateTransactionDrawer({
                 currencyRate: 1,
                 paidAt: new Date().toISOString().split('T')[0],
                 amount: 0,
-                accountId: selectedAccountId || '',
+                accountId: defaultAccountId || '',
                 contactId: '',
                 description: '',
                 reference: '',
                 paymentMethod: undefined,
                 taxIds: [],
             });
-
-            // Set the selected account if it exists in filtered accounts
-            if (selectedAccountId) {
-                const accountExists = filteredAccounts.some(
-                    (account) => account.id === selectedAccountId
-                );
-                if (accountExists) {
-                    form.setValue('accountId', selectedAccountId);
-                }
-            }
         }
     }, [open, selectedAccountId, filteredAccounts, form]);
 
