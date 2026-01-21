@@ -491,7 +491,7 @@ export default function JournalEntriespage() {
             {/* Filters */}
             <div className="p-4 border-b border-primary/10 sticky -top-4 z-30 bg-background">
                 <div className="flex items-center gap-3">
-                    <div className="w-[260px]">
+                    <div className="flex-1 sm:flex-none sm:w-[260px]">
                         <Input
                             type="text"
                             value={searchInput}
@@ -501,125 +501,13 @@ export default function JournalEntriespage() {
                         />
                     </div>
 
-                    <div className="ml-auto flex items-center gap-3">
+
+                    <div className="ml-auto flex items-center gap-2 sm:gap-3">
                         <Button size="sm" onClick={handleCreateNew}>
-                            <Icons.Plus className="w-2 h-2 mr-1" />
-                            New
+                            <Icons.Plus className="w-4 h-4 sm:mr-1" />
+                            <span className="hidden sm:inline">New</span>
                         </Button>
-                        <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                                <Button
-                                    variant="outline"
-                                    size="sm"
-                                    className={cn(
-                                        'gap-2',
-                                        filterStore.sort &&
-                                            'border-primary/30 bg-primary/5'
-                                    )}
-                                >
-                                    <ArrowUpDown className="h-4 w-4" />
-                                    <span>
-                                        {getSortLabel(filterStore.sort)}
-                                    </span>
-                                    <ChevronUp className="h-3 w-3" />
-                                </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end" className="w-56">
-                                <DropdownMenuRadioGroup
-                                    value={filterStore.sort || 'none'}
-                                    onValueChange={(value) => {
-                                        if (value === 'none') {
-                                            filterStore.setSort(null);
-                                        } else {
-                                            filterStore.setSort(value);
-                                        }
-                                    }}
-                                >
-                                    <DropdownMenuRadioItem value="none">
-                                        <span>No sorting</span>
-                                    </DropdownMenuRadioItem>
-                                    <DropdownMenuSeparator />
-                                    <DropdownMenuRadioItem value="entryNumber">
-                                        <span>Entry Number</span>
-                                        <span className="ml-auto text-xs text-muted-foreground">
-                                            {filterStore.order === 'asc'
-                                                ? 'A → Z'
-                                                : 'Z → A'}
-                                        </span>
-                                    </DropdownMenuRadioItem>
-                                    <DropdownMenuRadioItem value="entryDate">
-                                        <span>Entry Date</span>
-                                        <span className="ml-auto text-xs text-muted-foreground">
-                                            {filterStore.order === 'asc'
-                                                ? '1 → 9'
-                                                : '9 → 1'}
-                                        </span>
-                                    </DropdownMenuRadioItem>
-                                    <DropdownMenuRadioItem value="status">
-                                        <span>Status</span>
-                                        <span className="ml-auto text-xs text-muted-foreground">
-                                            {filterStore.order === 'asc'
-                                                ? 'A → Z'
-                                                : 'Z → A'}
-                                        </span>
-                                    </DropdownMenuRadioItem>
-                                    <DropdownMenuRadioItem value="totalDebit">
-                                        <span>Total Debit</span>
-                                        <span className="ml-auto text-xs text-muted-foreground">
-                                            {filterStore.order === 'asc'
-                                                ? 'Low → High'
-                                                : 'High → Low'}
-                                        </span>
-                                    </DropdownMenuRadioItem>
-                                    <DropdownMenuRadioItem value="totalCredit">
-                                        <span>Total Credit</span>
-                                        <span className="ml-auto text-xs text-muted-foreground">
-                                            {filterStore.order === 'asc'
-                                                ? 'Low → High'
-                                                : 'High → Low'}
-                                        </span>
-                                    </DropdownMenuRadioItem>
-                                    <DropdownMenuRadioItem value="createdAt">
-                                        <span>Created At</span>
-                                        <span className="ml-auto text-xs text-muted-foreground">
-                                            {filterStore.order === 'asc'
-                                                ? '1 → 9'
-                                                : '9 → 1'}
-                                        </span>
-                                    </DropdownMenuRadioItem>
-                                    <DropdownMenuRadioItem value="updatedAt">
-                                        <span>Updated At</span>
-                                        <span className="ml-auto text-xs text-muted-foreground">
-                                            {filterStore.order === 'asc'
-                                                ? '1 → 9'
-                                                : '9 → 1'}
-                                        </span>
-                                    </DropdownMenuRadioItem>
-                                </DropdownMenuRadioGroup>
-                                {filterStore.sort && (
-                                    <>
-                                        <DropdownMenuSeparator />
-                                        <div className="px-2 py-1.5">
-                                            <button
-                                                onClick={() => {
-                                                    filterStore.setSortOrder(
-                                                        filterStore.order ===
-                                                            'asc'
-                                                            ? 'desc'
-                                                            : 'asc'
-                                                    );
-                                                }}
-                                                className="w-full text-left text-xs text-muted-foreground hover:text-foreground transition-colors"
-                                            >
-                                                {filterStore.order === 'asc'
-                                                    ? 'Switch to Descending'
-                                                    : 'Switch to Ascending'}
-                                            </button>
-                                        </div>
-                                    </>
-                                )}
-                            </DropdownMenuContent>
-                        </DropdownMenu>
+
                         <Drawer
                             open={isFilterDrawerOpen}
                             onOpenChange={setIsFilterDrawerOpen}
@@ -627,7 +515,8 @@ export default function JournalEntriespage() {
                         >
                             <DrawerTrigger asChild>
                                 <Button variant="outline" size="sm">
-                                    <Filter className="mr-2 h-4 w-4" /> Filters
+                                    <Filter className="h-4 w-4 sm:mr-2" />
+                                    <span className="hidden sm:inline">Filters</span>
                                     {(filterStore.filterContact ||
                                         filterStore.filterAccountId ||
                                         filterStore.filterMinAmount ||
@@ -783,6 +672,122 @@ export default function JournalEntriespage() {
                                             />
                                         </div>
                                     </div>
+
+                                    <div>
+                                        <label className="text-sm font-medium text-primary/70 mb-2 block">
+                                            Sort by
+                                        </label>
+                                        <DropdownMenu>
+                                            <DropdownMenuTrigger asChild>
+                                                <Button
+                                                    variant="outline"
+                                                    className="w-full justify-between h-9"
+                                                >
+                                                    <span className="flex items-center gap-2">
+                                                        <ArrowUpDown className="h-4 w-4" />
+                                                        <span>{getSortLabel(filterStore.sort)}</span>
+                                                    </span>
+                                                    <ChevronUp className="h-3 w-3" />
+                                                </Button>
+                                            </DropdownMenuTrigger>
+                                            <DropdownMenuContent align="end" className="w-56">
+                                                <DropdownMenuRadioGroup
+                                                    value={filterStore.sort || 'none'}
+                                                    onValueChange={(value) => {
+                                                        if (value === 'none') {
+                                                            filterStore.setSort(null);
+                                                        } else {
+                                                            filterStore.setSort(value);
+                                                        }
+                                                    }}
+                                                >
+                                                    <DropdownMenuRadioItem value="none">
+                                                        <span>No sorting</span>
+                                                    </DropdownMenuRadioItem>
+                                                    <DropdownMenuSeparator />
+                                                    <DropdownMenuRadioItem value="entryNumber">
+                                                        <span>Entry Number</span>
+                                                        <span className="ml-auto text-xs text-muted-foreground">
+                                                            {filterStore.order === 'asc'
+                                                                ? 'A → Z'
+                                                                : 'Z → A'}
+                                                        </span>
+                                                    </DropdownMenuRadioItem>
+                                                    <DropdownMenuRadioItem value="entryDate">
+                                                        <span>Entry Date</span>
+                                                        <span className="ml-auto text-xs text-muted-foreground">
+                                                            {filterStore.order === 'asc'
+                                                                ? '1 → 9'
+                                                                : '9 → 1'}
+                                                        </span>
+                                                    </DropdownMenuRadioItem>
+                                                    <DropdownMenuRadioItem value="status">
+                                                        <span>Status</span>
+                                                        <span className="ml-auto text-xs text-muted-foreground">
+                                                            {filterStore.order === 'asc'
+                                                                ? 'A → Z'
+                                                                : 'Z → A'}
+                                                        </span>
+                                                    </DropdownMenuRadioItem>
+                                                    <DropdownMenuRadioItem value="totalDebit">
+                                                        <span>Total Debit</span>
+                                                        <span className="ml-auto text-xs text-muted-foreground">
+                                                            {filterStore.order === 'asc'
+                                                                ? 'Low → High'
+                                                                : 'High → Low'}
+                                                        </span>
+                                                    </DropdownMenuRadioItem>
+                                                    <DropdownMenuRadioItem value="totalCredit">
+                                                        <span>Total Credit</span>
+                                                        <span className="ml-auto text-xs text-muted-foreground">
+                                                            {filterStore.order === 'asc'
+                                                                ? 'Low → High'
+                                                                : 'High → Low'}
+                                                        </span>
+                                                    </DropdownMenuRadioItem>
+                                                    <DropdownMenuRadioItem value="createdAt">
+                                                        <span>Created At</span>
+                                                        <span className="ml-auto text-xs text-muted-foreground">
+                                                            {filterStore.order === 'asc'
+                                                                ? '1 → 9'
+                                                                : '9 → 1'}
+                                                        </span>
+                                                    </DropdownMenuRadioItem>
+                                                    <DropdownMenuRadioItem value="updatedAt">
+                                                        <span>Updated At</span>
+                                                        <span className="ml-auto text-xs text-muted-foreground">
+                                                            {filterStore.order === 'asc'
+                                                                ? '1 → 9'
+                                                                : '9 → 1'}
+                                                        </span>
+                                                    </DropdownMenuRadioItem>
+                                                </DropdownMenuRadioGroup>
+                                                {filterStore.sort && (
+                                                    <>
+                                                        <DropdownMenuSeparator />
+                                                        <div className="px-2 py-1.5">
+                                                            <button
+                                                                onClick={() => {
+                                                                    filterStore.setSortOrder(
+                                                                        filterStore.order === 'asc'
+                                                                            ? 'desc'
+                                                                            : 'asc'
+                                                                    );
+                                                                }}
+                                                                className="w-full text-left text-xs text-muted-foreground hover:text-foreground transition-colors"
+                                                            >
+                                                                {filterStore.order === 'asc'
+                                                                    ? 'Switch to Descending'
+                                                                    : 'Switch to Ascending'}
+                                                            </button>
+                                                        </div>
+                                                    </>
+                                                )}
+                                            </DropdownMenuContent>
+                                        </DropdownMenu>
+                                    </div>
+
+
                                 </div>
                                 <DrawerFooter className="border-t border-primary/10">
                                     <DrawerClose asChild>
