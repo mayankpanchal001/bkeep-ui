@@ -1,5 +1,6 @@
 import { CreateTransactionDrawer } from '@/components/transactions/CreateTransactionDrawer';
 import { PostTransactionModal } from '@/components/transactions/PostTransactionModal';
+import { SplitTransactionDrawer } from '@/components/transactions/SplitTransactionModal';
 import { TransactionHeader } from '@/components/transactions/TransactionHeader';
 
 import { Combobox, type ComboboxOption } from '@/components/ui/combobox';
@@ -337,6 +338,15 @@ const Transactionpage = () => {
     const [postModalOpen, setPostModalOpen] = useState(false);
     const [selectedTransactionForPost, setSelectedTransactionForPost] =
         useState<string | null>(null);
+    const [splitModalOpen, setSplitModalOpen] = useState(false);
+    const [selectedTransactionForSplit, setSelectedTransactionForSplit] =
+        useState<{
+            id: string;
+            amount: number;
+            category?: string;
+            taxId?: string;
+            description?: string;
+        } | null>(null);
     const {
         mutate: reconcileTransaction,
         mutateAsync: reconcileTransactionAsync,
@@ -547,7 +557,7 @@ const Transactionpage = () => {
         }).format(n || 0);
 
     return (
-        <div className="space-y-6">
+        <div className="flex flex-col gap-4">
             <TransactionHeader
                 selectedAccountId={filterStore.selectedAccountId}
                 onAccountSelect={(id) => filterStore.setSelectedAccountId(id)}
@@ -563,605 +573,596 @@ const Transactionpage = () => {
                 onStatusSelect={(status) => filterStore.setStatus(status)}
             />
 
-            <div className="p-4 border-b border-primary/10 sticky -top-4 z-30 bg-background">
-                <div className="flex items-center gap-2 flex-wrap">
-                    <Button
-                        variant={status === 'all' ? 'default' : 'outline'}
-                        onClick={() => filterStore.setStatus('all')}
-                    >
-                        All ({allCount})
-                    </Button>
+            <div className="flex items-center gap-2 flex-wrap">
+                <Button
+                    variant={status === 'all' ? 'default' : 'outline'}
+                    onClick={() => filterStore.setStatus('all')}
+                >
+                    All ({allCount})
+                </Button>
 
-                    <Button
-                        variant={status === 'pending' ? 'default' : 'outline'}
-                        onClick={() => filterStore.setStatus('pending')}
-                    >
-                        Pending ({pendingCount})
-                    </Button>
+                <Button
+                    variant={status === 'pending' ? 'default' : 'outline'}
+                    onClick={() => filterStore.setStatus('pending')}
+                >
+                    Pending ({pendingCount})
+                </Button>
 
-                    <Button
-                        variant={status === 'posted' ? 'default' : 'outline'}
-                        onClick={() => filterStore.setStatus('posted')}
-                    >
-                        Posted ({postedCount})
-                    </Button>
+                <Button
+                    variant={status === 'posted' ? 'default' : 'outline'}
+                    onClick={() => filterStore.setStatus('posted')}
+                >
+                    Posted ({postedCount})
+                </Button>
 
-                    <div className="ml-auto flex items-center gap-3">
-                        <div className="relative w-[260px]">
-                            <Input
-                                value={filterStore.search}
-                                onChange={(e) =>
-                                    filterStore.setSearch(e.target.value)
-                                }
-                                placeholder="Search"
-                                startIcon={<Search className="w-4 h-4" />}
-                            />
-                        </div>
-                        <CreateTransactionDrawer
-                            selectedAccountId={selectedAccountId}
+                <div className="sm:ml-auto flex items-center gap-3 flex-wrap">
+                    <div className="relative w-full sm:w-[260px]">
+                        <Input
+                            value={filterStore.search}
+                            onChange={(e) =>
+                                filterStore.setSearch(e.target.value)
+                            }
+                            placeholder="Search"
+                            startIcon={<Search className="w-4 h-4" />}
                         />
-                        <Drawer
-                            open={isFilterDrawerOpen}
-                            onOpenChange={setIsFilterDrawerOpen}
-                            direction="right"
-                        >
-                            <DrawerTrigger asChild>
-                                <Button variant="outline" size="sm">
-                                    <Filter className="mr-2 h-4 w-4" /> Filters
-                                    {(filterStore.filterSupplier ||
-                                        filterStore.filterCategory ||
-                                        filterStore.filterTax ||
-                                        filterStore.filterStartDate ||
-                                        filterStore.filterEndDate ||
-                                        filterStore.filterMinAmount ||
-                                        filterStore.filterMaxAmount) && (
-                                        <span className="ml-2 h-2 w-2 rounded-full bg-accent" />
-                                    )}
-                                </Button>
-                            </DrawerTrigger>
-                            <DrawerContent className="h-full w-full sm:w-[400px]">
-                                <DrawerHeader className="border-b border-primary/10">
-                                    <div className="flex items-center justify-between">
-                                        <DrawerTitle>
-                                            Filter Transactions
-                                        </DrawerTitle>
-                                        <DrawerClose asChild>
-                                            <button className="p-2 hover:bg-primary/5 rounded-full transition-colors">
-                                                <X className="h-4 w-4 text-primary/70" />
-                                            </button>
-                                        </DrawerClose>
-                                    </div>
-                                </DrawerHeader>
-                                <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-4">
-                                    <div>
-                                        <label className="text-sm font-medium text-primary/70 mb-2 block">
-                                            Date Range
-                                        </label>
-                                        <div className="grid grid-cols-2 gap-2">
-                                            <Input
-                                                type="date"
-                                                placeholder="Start Date"
-                                                value={
-                                                    filterStore.filterStartDate
-                                                }
-                                                onChange={(e) =>
-                                                    filterStore.setFilterStartDate(
-                                                        e.target.value
-                                                    )
-                                                }
-                                            />
-                                            <Input
-                                                type="date"
-                                                placeholder="End Date"
-                                                value={
-                                                    filterStore.filterEndDate
-                                                }
-                                                onChange={(e) =>
-                                                    filterStore.setFilterEndDate(
-                                                        e.target.value
-                                                    )
-                                                }
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div>
-                                        <label className="text-sm font-medium text-primary/70 mb-2 block">
-                                            Supplier
-                                        </label>
-                                        <Combobox
-                                            options={SUPPLIER_OPTIONS}
-                                            value={filterStore.filterSupplier}
-                                            onChange={(value) =>
-                                                filterStore.setFilterSupplier(
-                                                    value || ''
+                    </div>
+                    <CreateTransactionDrawer
+                        selectedAccountId={selectedAccountId}
+                    />
+                    <Drawer
+                        open={isFilterDrawerOpen}
+                        onOpenChange={setIsFilterDrawerOpen}
+                        direction="right"
+                    >
+                        <DrawerTrigger asChild>
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                className="flex-1 sm:flex-initial"
+                            >
+                                <Filter className="mr-2 h-4 w-4" /> Filters
+                                {(filterStore.filterSupplier ||
+                                    filterStore.filterCategory ||
+                                    filterStore.filterTax ||
+                                    filterStore.filterStartDate ||
+                                    filterStore.filterEndDate ||
+                                    filterStore.filterMinAmount ||
+                                    filterStore.filterMaxAmount) && (
+                                    <span className="ml-2 h-2 w-2 rounded-full bg-accent" />
+                                )}
+                            </Button>
+                        </DrawerTrigger>
+                        <DrawerContent className="h-full w-full sm:w-[400px]">
+                            <DrawerHeader className="border-b border-primary/10">
+                                <div className="flex items-center justify-between">
+                                    <DrawerTitle>
+                                        Filter Transactions
+                                    </DrawerTitle>
+                                    <DrawerClose asChild>
+                                        <button className="p-2 hover:bg-primary/5 rounded-full transition-colors">
+                                            <X className="h-4 w-4 text-primary/70" />
+                                        </button>
+                                    </DrawerClose>
+                                </div>
+                            </DrawerHeader>
+                            <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-4">
+                                <div>
+                                    <label className="text-sm font-medium text-primary/70 mb-2 block">
+                                        Date Range
+                                    </label>
+                                    <div className="grid grid-cols-2 gap-2">
+                                        <Input
+                                            type="date"
+                                            placeholder="Start Date"
+                                            value={filterStore.filterStartDate}
+                                            onChange={(e) =>
+                                                filterStore.setFilterStartDate(
+                                                    e.target.value
                                                 )
                                             }
-                                            placeholder="All suppliers"
-                                            searchPlaceholder="Search supplier..."
-                                            className="h-9"
                                         />
-                                    </div>
-
-                                    <div>
-                                        <label className="text-sm font-medium text-primary/70 mb-2 block">
-                                            Category
-                                        </label>
-                                        <Combobox
-                                            options={CATEGORY_OPTIONS}
-                                            value={filterStore.filterCategory}
-                                            onChange={(value) =>
-                                                filterStore.setFilterCategory(
-                                                    value || ''
+                                        <Input
+                                            type="date"
+                                            placeholder="End Date"
+                                            value={filterStore.filterEndDate}
+                                            onChange={(e) =>
+                                                filterStore.setFilterEndDate(
+                                                    e.target.value
                                                 )
                                             }
-                                            placeholder="All categories"
-                                            searchPlaceholder="Search category..."
-                                            className="h-9"
                                         />
-                                    </div>
-
-                                    <div>
-                                        <label className="text-sm font-medium text-primary/70 mb-2 block">
-                                            Tax
-                                        </label>
-                                        <Combobox
-                                            options={TAX_OPTIONS}
-                                            value={filterStore.filterTax}
-                                            onChange={(value) =>
-                                                filterStore.setFilterTax(
-                                                    value || ''
-                                                )
-                                            }
-                                            placeholder="All taxes"
-                                            searchPlaceholder="Search tax..."
-                                            className="h-9"
-                                        />
-                                    </div>
-
-                                    <div>
-                                        <label className="text-sm font-medium text-primary/70 mb-2 block">
-                                            Amount Range
-                                        </label>
-                                        <div className="grid grid-cols-2 gap-2">
-                                            <Input
-                                                type="number"
-                                                placeholder="Min"
-                                                value={
-                                                    filterStore.filterMinAmount
-                                                }
-                                                onChange={(e) =>
-                                                    filterStore.setFilterMinAmount(
-                                                        e.target.value
-                                                    )
-                                                }
-                                            />
-                                            <Input
-                                                type="number"
-                                                placeholder="Max"
-                                                value={
-                                                    filterStore.filterMaxAmount
-                                                }
-                                                onChange={(e) =>
-                                                    filterStore.setFilterMaxAmount(
-                                                        e.target.value
-                                                    )
-                                                }
-                                            />
-                                        </div>
                                     </div>
                                 </div>
-                                <DrawerFooter className="border-t border-primary/10">
-                                    <DrawerClose asChild>
-                                        <Button
-                                            variant="outline"
-                                            className="w-full"
-                                            onClick={() =>
-                                                filterStore.resetFilters()
+
+                                <div>
+                                    <label className="text-sm font-medium text-primary/70 mb-2 block">
+                                        Supplier
+                                    </label>
+                                    <Combobox
+                                        options={SUPPLIER_OPTIONS}
+                                        value={filterStore.filterSupplier}
+                                        onChange={(value) =>
+                                            filterStore.setFilterSupplier(
+                                                value || ''
+                                            )
+                                        }
+                                        placeholder="All suppliers"
+                                        searchPlaceholder="Search supplier..."
+                                        className="h-9"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="text-sm font-medium text-primary/70 mb-2 block">
+                                        Category
+                                    </label>
+                                    <Combobox
+                                        options={CATEGORY_OPTIONS}
+                                        value={filterStore.filterCategory}
+                                        onChange={(value) =>
+                                            filterStore.setFilterCategory(
+                                                value || ''
+                                            )
+                                        }
+                                        placeholder="All categories"
+                                        searchPlaceholder="Search category..."
+                                        className="h-9"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="text-sm font-medium text-primary/70 mb-2 block">
+                                        Tax
+                                    </label>
+                                    <Combobox
+                                        options={TAX_OPTIONS}
+                                        value={filterStore.filterTax}
+                                        onChange={(value) =>
+                                            filterStore.setFilterTax(
+                                                value || ''
+                                            )
+                                        }
+                                        placeholder="All taxes"
+                                        searchPlaceholder="Search tax..."
+                                        className="h-9"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="text-sm font-medium text-primary/70 mb-2 block">
+                                        Amount Range
+                                    </label>
+                                    <div className="grid grid-cols-2 gap-2">
+                                        <Input
+                                            type="number"
+                                            placeholder="Min"
+                                            value={filterStore.filterMinAmount}
+                                            onChange={(e) =>
+                                                filterStore.setFilterMinAmount(
+                                                    e.target.value
+                                                )
                                             }
-                                        >
-                                            Clear All Filters
-                                        </Button>
-                                    </DrawerClose>
-                                </DrawerFooter>
-                            </DrawerContent>
-                        </Drawer>
-                    </div>
+                                        />
+                                        <Input
+                                            type="number"
+                                            placeholder="Max"
+                                            value={filterStore.filterMaxAmount}
+                                            onChange={(e) =>
+                                                filterStore.setFilterMaxAmount(
+                                                    e.target.value
+                                                )
+                                            }
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                            <DrawerFooter className="border-t border-primary/10">
+                                <DrawerClose asChild>
+                                    <Button
+                                        variant="outline"
+                                        className="w-full"
+                                        onClick={() =>
+                                            filterStore.resetFilters()
+                                        }
+                                    >
+                                        Clear All Filters
+                                    </Button>
+                                </DrawerClose>
+                            </DrawerFooter>
+                        </DrawerContent>
+                    </Drawer>
                 </div>
             </div>
-            <div className="p-4">
-                <Table
-                    enableSelection={true}
-                    onSelectionChange={setSelectedItems}
-                    rowIds={pageData.map((t) => t.id)}
-                    selectedIds={selectedItems}
-                    sortKey={filterStore.sort}
-                    sortDirection={filterStore.order}
-                    onSortChange={(key, direction) => {
-                        filterStore.setSort(
-                            direction ? key : null,
-                            direction || undefined
-                        );
-                    }}
-                >
-                    {/* Bulk Actions Toolbar */}
-                    <TableSelectionToolbar>
-                        <div className="flex items-center gap-2">
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                disabled={isBulkProcessing}
-                                className="border border-green-200 bg-green-50 text-green-700 hover:bg-green-100 hover:text-green-900 shadow-none"
-                                onClick={handleBulkPost}
-                            >
-                                Post ({selectedItems.length})
-                            </Button>
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                disabled={isBulkProcessing}
-                                className="border border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100 hover:text-blue-900 shadow-none"
-                                onClick={() =>
-                                    handleBulkAction(
-                                        'reconciled',
-                                        reconcileTransactionAsync
-                                    )
-                                }
-                            >
-                                Reconcile ({selectedItems.length})
-                            </Button>
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                disabled={isBulkProcessing}
-                                className="border border-orange-200 bg-orange-50 text-orange-700 hover:bg-orange-100 hover:text-orange-900 shadow-none"
-                                onClick={() =>
-                                    handleBulkAction(
-                                        'reversed',
-                                        reverseTransactionAsync
-                                    )
-                                }
-                            >
-                                Reverse ({selectedItems.length})
-                            </Button>
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                disabled={isBulkProcessing}
-                                className="border border-red-200 bg-red-50 text-red-700 hover:bg-red-100 hover:text-red-900 shadow-none"
-                                onClick={() =>
-                                    handleBulkAction(
-                                        'voided',
-                                        voidTransactionAsync
-                                    )
-                                }
-                            >
-                                Void ({selectedItems.length})
-                            </Button>
-                        </div>
-                    </TableSelectionToolbar>
 
-                    <TableHeader>
-                        <tr>
-                            <TableHead>
-                                <TableSelectAllCheckbox />
-                            </TableHead>
-                            <TableHead sortable sortKey="date">
-                                Date
-                            </TableHead>
-                            <TableHead>Bank Description</TableHead>
-                            <TableHead sortable sortKey="spent">
-                                Spent
-                            </TableHead>
-                            <TableHead sortable sortKey="received">
-                                Received
-                            </TableHead>
-                            <TableHead sortable sortKey="tax">
-                                Tax
-                            </TableHead>
-                            <TableHead>From/To</TableHead>
-                            <TableHead>Match/Categorize</TableHead>
-                            <TableHead>Action</TableHead>
-                        </tr>
-                    </TableHeader>
-                    <TableBody>
-                        {pageData.length === 0 ? (
-                            <TableEmptyState
-                                colSpan={9}
-                                message="No transactions found"
-                                description="Try adjusting your filters or add new transactions."
-                            />
-                        ) : (
-                            pageData.map((t) => (
-                                <TableRow key={t.id} rowId={t.id}>
-                                    <TableCell>
-                                        <TableRowCheckbox rowId={t.id} />
-                                    </TableCell>
-                                    <TableCell>
+            <Table
+                enableSelection={true}
+                onSelectionChange={setSelectedItems}
+                rowIds={pageData.map((t) => t.id)}
+                selectedIds={selectedItems}
+                sortKey={filterStore.sort}
+                sortDirection={filterStore.order}
+                onSortChange={(key, direction) => {
+                    filterStore.setSort(
+                        direction ? key : null,
+                        direction || undefined
+                    );
+                }}
+                transposeOnMobile
+            >
+                {/* Bulk Actions Toolbar */}
+                <TableSelectionToolbar>
+                    <div className="flex items-center gap-2">
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            disabled={isBulkProcessing}
+                            className="border border-green-200 bg-green-50 text-green-700 hover:bg-green-100 hover:text-green-900 shadow-none"
+                            onClick={handleBulkPost}
+                        >
+                            Post ({selectedItems.length})
+                        </Button>
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            disabled={isBulkProcessing}
+                            className="border border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100 hover:text-blue-900 shadow-none"
+                            onClick={() =>
+                                handleBulkAction(
+                                    'reconciled',
+                                    reconcileTransactionAsync
+                                )
+                            }
+                        >
+                            Reconcile ({selectedItems.length})
+                        </Button>
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            disabled={isBulkProcessing}
+                            className="border border-orange-200 bg-orange-50 text-orange-700 hover:bg-orange-100 hover:text-orange-900 shadow-none"
+                            onClick={() =>
+                                handleBulkAction(
+                                    'reversed',
+                                    reverseTransactionAsync
+                                )
+                            }
+                        >
+                            Reverse ({selectedItems.length})
+                        </Button>
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            disabled={isBulkProcessing}
+                            className="border border-red-200 bg-red-50 text-red-700 hover:bg-red-100 hover:text-red-900 shadow-none"
+                            onClick={() =>
+                                handleBulkAction('voided', voidTransactionAsync)
+                            }
+                        >
+                            Void ({selectedItems.length})
+                        </Button>
+                    </div>
+                </TableSelectionToolbar>
+
+                <TableHeader>
+                    <tr>
+                        <TableHead>
+                            <TableSelectAllCheckbox />
+                        </TableHead>
+                        <TableHead sortable sortKey="date">
+                            Date
+                        </TableHead>
+                        <TableHead>Bank Description</TableHead>
+                        <TableHead sortable sortKey="spent">
+                            Spent
+                        </TableHead>
+                        <TableHead sortable sortKey="received">
+                            Received
+                        </TableHead>
+                        <TableHead sortable sortKey="tax">
+                            Tax
+                        </TableHead>
+                        <TableHead>From/To</TableHead>
+                        <TableHead>Match/Categorize</TableHead>
+                        <TableHead>Action</TableHead>
+                    </tr>
+                </TableHeader>
+                <TableBody>
+                    {pageData.length === 0 ? (
+                        <TableEmptyState
+                            colSpan={9}
+                            message="No transactions found"
+                            description="Try adjusting your filters or add new transactions."
+                        />
+                    ) : (
+                        pageData.map((t) => (
+                            <TableRow key={t.id} rowId={t.id}>
+                                <TableCell data-label="">
+                                    <TableRowCheckbox rowId={t.id} />
+                                </TableCell>
+                                <TableCell data-label="Date">
+                                    <span className="text-sm font-medium text-primary">
+                                        {new Date(t.date).toLocaleDateString()}
+                                    </span>
+                                </TableCell>
+                                <TableCell
+                                    data-label="Bank Description"
+                                    noTruncate
+                                >
+                                    <div className="flex flex-col">
                                         <span className="text-sm font-medium text-primary">
-                                            {new Date(
-                                                t.date
-                                            ).toLocaleDateString()}
+                                            {t.description}
                                         </span>
-                                    </TableCell>
-                                    <TableCell>
-                                        <div className="flex flex-col">
-                                            <span className="text-sm font-medium text-primary">
-                                                {t.description}
-                                            </span>
-                                            <span className="text-xs text-primary/50">
-                                                {t.account}
-                                            </span>
-                                        </div>
-                                    </TableCell>
-                                    <TableCell>
-                                        <span className="text-red-600 font-semibold">
-                                            {t.spent
-                                                ? `-${currency(t.spent)}`
-                                                : ''}
+                                        <span className="text-xs text-primary/50">
+                                            {t.account}
                                         </span>
-                                    </TableCell>
-                                    <TableCell>
-                                        <span className="text-green-600 font-semibold">
-                                            {t.received
-                                                ? `+${currency(t.received)}`
-                                                : ''}
-                                        </span>
-                                    </TableCell>
-                                    <TableCell>
-                                        <div className="flex items-center gap-3">
-                                            <div className="min-w-[200px]">
-                                                <Combobox
-                                                    options={TAX_OPTIONS}
-                                                    value={t.taxId || ''}
-                                                    onChange={(value) => {
-                                                        const rate =
-                                                            (value &&
-                                                                TAX_RATE_BY_ID[
-                                                                    value
-                                                                ]) ||
-                                                            0;
-                                                        setTransactions(
-                                                            (prev) =>
-                                                                prev.map(
-                                                                    (tx) => {
-                                                                        if (
-                                                                            tx.id !==
-                                                                            t.id
-                                                                        )
-                                                                            return tx;
-                                                                        const base =
-                                                                            tx.spent ??
-                                                                            0;
-                                                                        const taxAmount =
-                                                                            Number(
-                                                                                (
-                                                                                    base *
-                                                                                    rate
-                                                                                ).toFixed(
-                                                                                    2
-                                                                                )
-                                                                            );
-                                                                        return {
-                                                                            ...tx,
-                                                                            taxId:
-                                                                                value ||
-                                                                                undefined,
-                                                                            taxRate:
-                                                                                rate ||
-                                                                                undefined,
-                                                                            tax: taxAmount,
-                                                                        };
-                                                                    }
-                                                                )
-                                                        );
-                                                    }}
-                                                    placeholder="Select tax..."
-                                                    searchPlaceholder="Search tax..."
-                                                    className="h-8"
-                                                />
-                                            </div>
-                                        </div>
-                                    </TableCell>
-                                    <TableCell>
+                                    </div>
+                                </TableCell>
+                                <TableCell data-label="Spent">
+                                    <span className="text-red-600 font-semibold">
+                                        {t.spent ? `-${currency(t.spent)}` : ''}
+                                    </span>
+                                </TableCell>
+                                <TableCell data-label="Received">
+                                    <span className="text-green-600 font-semibold">
+                                        {t.received
+                                            ? `+${currency(t.received)}`
+                                            : ''}
+                                    </span>
+                                </TableCell>
+                                <TableCell data-label="Tax" noTruncate>
+                                    <div className="flex items-center gap-3">
                                         <div className="min-w-[200px]">
                                             <Combobox
-                                                options={SUPPLIER_OPTIONS}
-                                                value={
-                                                    t.fromTo
-                                                        ? contactNameById.get(
-                                                              t.fromTo
-                                                          ) || t.fromTo
-                                                        : ''
-                                                }
+                                                options={TAX_OPTIONS}
+                                                value={t.taxId || ''}
                                                 onChange={(value) => {
-                                                    // Find contactId by displayName
-                                                    const contactId =
-                                                        Array.from(
-                                                            contactNameById.entries()
-                                                        ).find(
-                                                            ([, name]) =>
-                                                                name === value
-                                                        )?.[0] || value;
+                                                    const rate =
+                                                        (value &&
+                                                            TAX_RATE_BY_ID[
+                                                                value
+                                                            ]) ||
+                                                        0;
+                                                    setTransactions((prev) =>
+                                                        prev.map((tx) => {
+                                                            if (tx.id !== t.id)
+                                                                return tx;
+                                                            const base =
+                                                                tx.spent ?? 0;
+                                                            const taxAmount =
+                                                                Number(
+                                                                    (
+                                                                        base *
+                                                                        rate
+                                                                    ).toFixed(2)
+                                                                );
+                                                            return {
+                                                                ...tx,
+                                                                taxId:
+                                                                    value ||
+                                                                    undefined,
+                                                                taxRate:
+                                                                    rate ||
+                                                                    undefined,
+                                                                tax: taxAmount,
+                                                            };
+                                                        })
+                                                    );
+                                                }}
+                                                placeholder="Select tax..."
+                                                searchPlaceholder="Search tax..."
+                                                className="h-8"
+                                            />
+                                        </div>
+                                    </div>
+                                </TableCell>
+                                <TableCell data-label="From/To" noTruncate>
+                                    <div className="min-w-[200px]">
+                                        <Combobox
+                                            options={SUPPLIER_OPTIONS}
+                                            value={
+                                                t.fromTo
+                                                    ? contactNameById.get(
+                                                          t.fromTo
+                                                      ) || t.fromTo
+                                                    : ''
+                                            }
+                                            onChange={(value) => {
+                                                // Find contactId by displayName
+                                                const contactId =
+                                                    Array.from(
+                                                        contactNameById.entries()
+                                                    ).find(
+                                                        ([, name]) =>
+                                                            name === value
+                                                    )?.[0] || value;
 
+                                                setTransactions((prev) =>
+                                                    prev.map((tx) =>
+                                                        tx.id === t.id
+                                                            ? {
+                                                                  ...tx,
+                                                                  fromTo:
+                                                                      contactId ||
+                                                                      undefined,
+                                                              }
+                                                            : tx
+                                                    )
+                                                );
+                                            }}
+                                            placeholder="Select supplier..."
+                                            searchPlaceholder="Search supplier..."
+                                            className="h-8"
+                                        />
+                                    </div>
+                                </TableCell>
+                                <TableCell
+                                    data-label="Match/Categorize"
+                                    noTruncate
+                                >
+                                    <div className="flex items-center gap-2">
+                                        <div className="min-w-[220px]">
+                                            <Combobox
+                                                options={CATEGORY_OPTIONS}
+                                                value={t.category || ''}
+                                                onChange={(value) => {
                                                     setTransactions((prev) =>
                                                         prev.map((tx) =>
                                                             tx.id === t.id
                                                                 ? {
                                                                       ...tx,
-                                                                      fromTo:
-                                                                          contactId ||
+                                                                      category:
+                                                                          value ||
                                                                           undefined,
                                                                   }
                                                                 : tx
                                                         )
                                                     );
+                                                    if (value) {
+                                                        showSuccessToast(
+                                                            `Category set to ${value}`
+                                                        );
+                                                    }
                                                 }}
-                                                placeholder="Select supplier..."
-                                                searchPlaceholder="Search supplier..."
+                                                placeholder="Select category..."
+                                                searchPlaceholder="Search category..."
                                                 className="h-8"
                                             />
                                         </div>
-                                    </TableCell>
-                                    <TableCell>
-                                        <div className="flex items-center gap-2">
-                                            <div className="min-w-[220px]">
-                                                <Combobox
-                                                    options={CATEGORY_OPTIONS}
-                                                    value={t.category || ''}
-                                                    onChange={(value) => {
-                                                        setTransactions(
-                                                            (prev) =>
-                                                                prev.map(
-                                                                    (tx) =>
-                                                                        tx.id ===
-                                                                        t.id
-                                                                            ? {
-                                                                                  ...tx,
-                                                                                  category:
-                                                                                      value ||
-                                                                                      undefined,
-                                                                              }
-                                                                            : tx
-                                                                )
-                                                        );
-                                                        if (value) {
-                                                            showSuccessToast(
-                                                                `Category set to ${value}`
-                                                            );
-                                                        }
-                                                    }}
-                                                    placeholder="Select category..."
-                                                    searchPlaceholder="Search category..."
-                                                    className="h-8"
-                                                />
-                                            </div>
+                                        <Button
+                                            size="sm"
+                                            onClick={() => {
+                                                setTransactions((prev) =>
+                                                    prev.map((tx) =>
+                                                        tx.id === t.id
+                                                            ? {
+                                                                  ...tx,
+                                                                  matched:
+                                                                      !tx.matched,
+                                                              }
+                                                            : tx
+                                                    )
+                                                );
+                                                showSuccessToast(
+                                                    t.matched
+                                                        ? 'Unmatched'
+                                                        : 'Matched'
+                                                );
+                                            }}
+                                        >
+                                            {t.matched ? 'Matched' : 'Match'}
+                                        </Button>
+                                    </div>
+                                </TableCell>
+                                <TableCell data-label="Action" noTruncate>
+                                    <div className="flex items-center gap-2">
+                                        {t.status === 'pending' && (
                                             <Button
+                                                variant="outline"
                                                 size="sm"
                                                 onClick={() => {
-                                                    setTransactions((prev) =>
-                                                        prev.map((tx) =>
-                                                            tx.id === t.id
-                                                                ? {
-                                                                      ...tx,
-                                                                      matched:
-                                                                          !tx.matched,
-                                                                  }
-                                                                : tx
-                                                        )
+                                                    setSelectedTransactionForPost(
+                                                        t.id
                                                     );
-                                                    showSuccessToast(
-                                                        t.matched
-                                                            ? 'Unmatched'
-                                                            : 'Matched'
-                                                    );
+                                                    setPostModalOpen(true);
                                                 }}
                                             >
-                                                {t.matched
-                                                    ? 'Matched'
-                                                    : 'Match'}
+                                                Post
                                             </Button>
-                                        </div>
-                                    </TableCell>
-                                    <TableCell>
-                                        <div className="flex items-center gap-2">
-                                            {t.status === 'pending' && (
+                                        )}
+                                        <DropdownMenu>
+                                            <DropdownMenuTrigger asChild>
                                                 <Button
                                                     variant="outline"
                                                     size="sm"
-                                                    onClick={() => {
-                                                        setSelectedTransactionForPost(
+                                                >
+                                                    ⋯
+                                                </Button>
+                                            </DropdownMenuTrigger>
+                                            <DropdownMenuContent align="end">
+                                                <DropdownMenuItem
+                                                    onClick={() =>
+                                                        showSuccessToast(
+                                                            'Update coming soon'
+                                                        )
+                                                    }
+                                                >
+                                                    Update
+                                                </DropdownMenuItem>
+                                                <DropdownMenuItem
+                                                    onClick={() =>
+                                                        reconcileTransaction(
                                                             t.id
+                                                        )
+                                                    }
+                                                >
+                                                    Reconcile
+                                                </DropdownMenuItem>
+                                                <DropdownMenuItem
+                                                    onClick={() =>
+                                                        voidTransaction(t.id)
+                                                    }
+                                                >
+                                                    Void
+                                                </DropdownMenuItem>
+                                                <DropdownMenuItem
+                                                    onClick={() =>
+                                                        reverseTransaction(t.id)
+                                                    }
+                                                >
+                                                    Reverse
+                                                </DropdownMenuItem>
+                                                <DropdownMenuItem
+                                                    onClick={() => {
+                                                        // Get the absolute amount (spent or received)
+                                                        const transactionAmount =
+                                                            Math.abs(
+                                                                t.spent ||
+                                                                    t.received ||
+                                                                    0
+                                                            );
+                                                        setSelectedTransactionForSplit(
+                                                            {
+                                                                id: t.id,
+                                                                amount: transactionAmount,
+                                                                category:
+                                                                    t.category,
+                                                                taxId: t.taxId,
+                                                                description:
+                                                                    t.description,
+                                                            }
                                                         );
-                                                        setPostModalOpen(true);
+                                                        setSplitModalOpen(true);
                                                     }}
                                                 >
-                                                    Post
-                                                </Button>
-                                            )}
-                                            <DropdownMenu>
-                                                <DropdownMenuTrigger asChild>
-                                                    <Button
-                                                        variant="outline"
-                                                        size="sm"
-                                                    >
-                                                        ⋯
-                                                    </Button>
-                                                </DropdownMenuTrigger>
-                                                <DropdownMenuContent align="end">
-                                                    <DropdownMenuItem
-                                                        onClick={() =>
-                                                            showSuccessToast(
-                                                                'Update coming soon'
-                                                            )
-                                                        }
-                                                    >
-                                                        Update
-                                                    </DropdownMenuItem>
-                                                    <DropdownMenuItem
-                                                        onClick={() =>
-                                                            reconcileTransaction(
-                                                                t.id
-                                                            )
-                                                        }
-                                                    >
-                                                        Reconcile
-                                                    </DropdownMenuItem>
-                                                    <DropdownMenuItem
-                                                        onClick={() =>
-                                                            voidTransaction(
-                                                                t.id
-                                                            )
-                                                        }
-                                                    >
-                                                        Void
-                                                    </DropdownMenuItem>
-                                                    <DropdownMenuItem
-                                                        onClick={() =>
-                                                            reverseTransaction(
-                                                                t.id
-                                                            )
-                                                        }
-                                                    >
-                                                        Reverse
-                                                    </DropdownMenuItem>
-                                                    <DropdownMenuItem
-                                                        onClick={() =>
-                                                            showSuccessToast(
-                                                                'Split editor coming soon'
-                                                            )
-                                                        }
-                                                    >
-                                                        Split
-                                                    </DropdownMenuItem>
-                                                    <DropdownMenuItem
-                                                        onClick={() =>
-                                                            showSuccessToast(
-                                                                'Rule created (demo placeholder)'
-                                                            )
-                                                        }
-                                                    >
-                                                        Create rule
-                                                    </DropdownMenuItem>
-                                                </DropdownMenuContent>
-                                            </DropdownMenu>
-                                        </div>
-                                    </TableCell>
-                                </TableRow>
-                            ))
-                        )}
-                    </TableBody>
-                </Table>
+                                                    Split
+                                                </DropdownMenuItem>
+                                                <DropdownMenuItem
+                                                    onClick={() =>
+                                                        showSuccessToast(
+                                                            'Rule created (demo placeholder)'
+                                                        )
+                                                    }
+                                                >
+                                                    Create rule
+                                                </DropdownMenuItem>
+                                            </DropdownMenuContent>
+                                        </DropdownMenu>
+                                    </div>
+                                </TableCell>
+                            </TableRow>
+                        ))
+                    )}
+                </TableBody>
+            </Table>
 
-                {/* Pagination */}
-                <TablePagination
-                    page={filterStore.page}
-                    totalPages={totalPages}
-                    totalItems={totalItems}
-                    itemsPerPage={itemsPerPage}
-                    onPageChange={(page) => filterStore.setPage(page)}
-                />
-            </div>
+            {/* Pagination */}
+            <TablePagination
+                page={filterStore.page}
+                totalPages={totalPages}
+                totalItems={totalItems}
+                itemsPerPage={itemsPerPage}
+                onPageChange={(page) => filterStore.setPage(page)}
+            />
 
             {/* Post Transaction Modal */}
             {selectedTransactionForPost && (
@@ -1203,6 +1204,29 @@ const Transactionpage = () => {
                                 (id) => id !== selectedTransactionForPost
                             )
                         );
+                    }}
+                />
+            )}
+
+            {/* Split Transaction Drawer */}
+            {selectedTransactionForSplit && (
+                <SplitTransactionDrawer
+                    open={splitModalOpen}
+                    onOpenChange={(open) => {
+                        setSplitModalOpen(open);
+                        if (!open) {
+                            setSelectedTransactionForSplit(null);
+                        }
+                    }}
+                    transactionId={selectedTransactionForSplit.id}
+                    transactionAmount={selectedTransactionForSplit.amount}
+                    transactionCategoryId={selectedTransactionForSplit.category}
+                    transactionTaxId={selectedTransactionForSplit.taxId}
+                    transactionDescription={
+                        selectedTransactionForSplit.description
+                    }
+                    onSuccess={() => {
+                        setSelectedTransactionForSplit(null);
                     }}
                 />
             )}

@@ -73,15 +73,9 @@ export function CreateTransactionDrawer({
     const filteredAccounts = useMemo(() => {
         const items = accountsData?.data?.items;
         if (!items) return [];
-        const allowedTypes = [
-            'checking',
-            'savings',
-            'cash',
-            'credit-card',
-            'money-market',
-        ];
+        const allowedAccountTypes = ['asset', 'liability', 'equity'];
         return items.filter((account) =>
-            allowedTypes.includes(account.accountDetailType)
+            allowedAccountTypes.includes(account.accountType)
         );
     }, [accountsData]);
 
@@ -100,6 +94,12 @@ export function CreateTransactionDrawer({
     // Update form when selectedAccountId changes or drawer opens
     useEffect(() => {
         if (open) {
+            const isValidAccount =
+                selectedAccountId &&
+                filteredAccounts.some((a) => a.id === selectedAccountId);
+
+            const defaultAccountId = isValidAccount ? selectedAccountId : '';
+
             // Reset form with default values
             form.reset({
                 type: 'expense',
@@ -107,25 +107,40 @@ export function CreateTransactionDrawer({
                 currencyRate: 1,
                 paidAt: new Date().toISOString().split('T')[0],
                 amount: 0,
-                accountId: selectedAccountId || '',
+                accountId: defaultAccountId || '',
                 contactId: '',
                 description: '',
                 reference: '',
                 paymentMethod: undefined,
                 taxIds: [],
             });
-
-            // Set the selected account if it exists in filtered accounts
-            if (selectedAccountId) {
-                const accountExists = filteredAccounts.some(
-                    (account) => account.id === selectedAccountId
-                );
-                if (accountExists) {
-                    form.setValue('accountId', selectedAccountId);
-                }
-            }
         }
     }, [open, selectedAccountId, filteredAccounts, form]);
+
+    const watchedAccountId = form.watch('accountId');
+
+    useEffect(() => {
+        if (!watchedAccountId) return;
+
+        const selectedAccount = filteredAccounts.find((account) => account.id === watchedAccountId);
+
+        if (!selectedAccount) return;
+        const accountType = selectedAccount.accountDetailType;
+        let paymentMethod: FormValues['paymentMethod'];
+
+        if (accountType === 'cash-on-hand' || accountType === 'undeposited-funds') {
+            paymentMethod = 'cash';
+        }
+        else if (accountType === 'chequing' || accountType === 'savings' || accountType === 'money-market' || accountType === 'trust-account') {
+            paymentMethod = 'bank';
+        }
+        else if (accountType === 'credit-card') {
+            paymentMethod = 'card';
+        }
+        if (paymentMethod) {
+            form.setValue('paymentMethod', paymentMethod);
+        }
+    }, [watchedAccountId, filteredAccounts, form]);
 
     const onSubmit = (values: FormValues) => {
         // Ensure date is in ISO format with time to avoid timezone issues

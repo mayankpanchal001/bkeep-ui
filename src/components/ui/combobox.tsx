@@ -1,5 +1,5 @@
+import { ChevronsUpDown } from 'lucide-react';
 import * as React from 'react';
-import { Check, ChevronsUpDown } from 'lucide-react';
 
 import { cn } from '../../utils/cn';
 import { Button } from './button';
@@ -55,17 +55,25 @@ export function Combobox({
                     variant="outline"
                     role="combobox"
                     aria-expanded={open}
-                    className={cn('w-full justify-between', className)}
+                    className={cn(
+                        'w-full justify-between text-left font-normal',
+                        className
+                    )}
                     disabled={disabled}
                 >
-                    {value
-                        ? options.find((option) => option.value === value)
-                              ?.label
-                        : placeholder}
+                    <span className="truncate flex-1 text-left">
+                        {value
+                            ? options.find((option) => option.value === value)
+                                  ?.label
+                            : placeholder}
+                    </span>
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-[200px] p-0" align="start">
+            <PopoverContent
+                className="w-[var(--radix-popover-trigger-width)] min-w-[250px] max-w-[400px] p-0"
+                align="start"
+            >
                 <Command>
                     <CommandInput
                         placeholder={searchPlaceholder}
@@ -89,15 +97,18 @@ export function Combobox({
                                         setOpen(false);
                                     }}
                                 >
-                                    <Check
+                                    {/* <Check
                                         className={cn(
-                                            'mr-2 h-4 w-4',
+                                            'mr-2 h-4 w-4 shrink-0',
                                             value === option.value
                                                 ? 'opacity-100'
-                                                : 'opacity-0'
+                                                : 'opacity-100'
                                         )}
-                                    />
-                                    {option.label}
+                                        aria-hidden="true"
+                                    /> */}
+                                    <span className="flex-1 text-left break-words">
+                                        {option.label}
+                                    </span>
                                 </CommandItem>
                             ))}
                         </CommandGroup>

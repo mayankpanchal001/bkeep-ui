@@ -370,9 +370,11 @@ const ChartOfAccountspage = () => {
                     <Button onClick={handleImportClick} variant="outline">
                         <FileUp size={16} className="mr-2" /> Import
                     </Button>
-                    <div className="h-6 w-px bg-gray-300 mx-2"></div>
-                    <Button onClick={handleOpenAddModal} variant="default">
-                        <Plus size={16} className="mr-2" /> New Chart of Account
+                    <div className="hidden h-6 md:block w-px bg-gray-300 mx-2"></div>
+                    <Button onClick={handleOpenAddModal} variant="default" className="flex items-center gap-0 md:gap-2">
+                        <Plus size={16} className="mr-2" />
+                        <span className="hidden md:inline">New Chart of Account</span>
+                        <span className="md:hidden">New Account</span>
                     </Button>
                 </div>
             </div>
