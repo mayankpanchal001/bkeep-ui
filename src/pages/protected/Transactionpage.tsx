@@ -628,8 +628,8 @@ const Transactionpage = () => {
                                     filterStore.filterEndDate ||
                                     filterStore.filterMinAmount ||
                                     filterStore.filterMaxAmount) && (
-                                        <span className="ml-2 h-2 w-2 rounded-full bg-accent" />
-                                    )}
+                                    <span className="ml-2 h-2 w-2 rounded-full bg-accent" />
+                                )}
                             </Button>
                         </DrawerTrigger>
                         <DrawerContent className="h-full w-full sm:w-[400px]">
@@ -919,7 +919,7 @@ const Transactionpage = () => {
                                                     const rate =
                                                         (value &&
                                                             TAX_RATE_BY_ID[
-                                                            value
+                                                                value
                                                             ]) ||
                                                         0;
                                                     setTransactions((prev) =>
@@ -962,8 +962,8 @@ const Transactionpage = () => {
                                             value={
                                                 t.fromTo
                                                     ? contactNameById.get(
-                                                        t.fromTo
-                                                    ) || t.fromTo
+                                                          t.fromTo
+                                                      ) || t.fromTo
                                                     : ''
                                             }
                                             onChange={(value) => {
@@ -980,11 +980,11 @@ const Transactionpage = () => {
                                                     prev.map((tx) =>
                                                         tx.id === t.id
                                                             ? {
-                                                                ...tx,
-                                                                fromTo:
-                                                                    contactId ||
-                                                                    undefined,
-                                                            }
+                                                                  ...tx,
+                                                                  fromTo:
+                                                                      contactId ||
+                                                                      undefined,
+                                                              }
                                                             : tx
                                                     )
                                                 );
@@ -1009,11 +1009,11 @@ const Transactionpage = () => {
                                                         prev.map((tx) =>
                                                             tx.id === t.id
                                                                 ? {
-                                                                    ...tx,
-                                                                    category:
-                                                                        value ||
-                                                                        undefined,
-                                                                }
+                                                                      ...tx,
+                                                                      category:
+                                                                          value ||
+                                                                          undefined,
+                                                                  }
                                                                 : tx
                                                         )
                                                     );
@@ -1035,10 +1035,10 @@ const Transactionpage = () => {
                                                     prev.map((tx) =>
                                                         tx.id === t.id
                                                             ? {
-                                                                ...tx,
-                                                                matched:
-                                                                    !tx.matched,
-                                                            }
+                                                                  ...tx,
+                                                                  matched:
+                                                                      !tx.matched,
+                                                              }
                                                             : tx
                                                     )
                                                 );
@@ -1117,8 +1117,8 @@ const Transactionpage = () => {
                                                         const transactionAmount =
                                                             Math.abs(
                                                                 t.spent ||
-                                                                t.received ||
-                                                                0
+                                                                    t.received ||
+                                                                    0
                                                             );
                                                         setSelectedTransactionForSplit(
                                                             {

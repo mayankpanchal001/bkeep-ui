@@ -36,7 +36,6 @@ export default defineConfig(({ mode }) => {
             rollupOptions: {
                 output: {
                     manualChunks: (id) => {
-
                         if (id.includes('node_modules')) {
                             // React core - separate from other React libs
                             if (
@@ -92,7 +91,6 @@ export default defineConfig(({ mode }) => {
                             // All other node_modules go into vendor chunk
                             return 'vendor';
                         }
-
                     },
                 },
             },

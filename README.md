@@ -72,6 +72,7 @@ docker run -d -p 80:80 --name bkeep-frontend YOUR_USERNAME/bkeep-frontend:latest
 ## 🛠️ Available Scripts
 
 ### Development
+
 ```bash
 npm run dev              # Start dev server
 npm run build            # Build for production
@@ -82,6 +83,7 @@ npm run format           # Format code with Prettier
 ```
 
 ### Docker
+
 ```bash
 npm run docker:build           # Build Docker image
 npm run docker:build:clean     # Build without cache
@@ -127,6 +129,7 @@ VITE_ENVIRONMENT=development
 ```
 
 For production (Docker builds):
+
 ```env
 VITE_API_ENDPOINT=https://api.example.com/v1
 VITE_ENVIRONMENT=production
@@ -194,6 +197,7 @@ npx serve -s dist -l 80
 - **Trailing Commas**: ES5 style
 
 Format code with:
+
 ```bash
 npm run format
 ```
@@ -275,6 +279,7 @@ Proprietary - BKeep Team
 ## 🆘 Support
 
 For issues or questions:
+
 - Check the documentation in the repo
 - Review Docker logs: `docker-compose logs -f`
 - Verify configuration: Check environment variables
