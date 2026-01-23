@@ -22,7 +22,7 @@ export default function Homepage() {
             <div className="fixed inset-0 -z-20 bg-background" />
             <div className="fixed inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,var(--tw-gradient-stops))] from-primary/10 via-background to-background opacity-60" />
             <div className="bg-noise" />
-
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Veniam voluptatibus, ex magni exercitationem laboriosam iure nulla omnis minima est nisi, placeat, accusamus dicta consequuntur enim. Soluta ut itaque eligendi. Optio?
             <Navigation />
 
             <main className="relative flex flex-col gap-0">
