@@ -117,6 +117,31 @@ export function CreateTransactionDrawer({
         }
     }, [open, selectedAccountId, filteredAccounts, form]);
 
+    const watchedAccountId = form.watch('accountId');
+
+    useEffect(() => {
+        if (!watchedAccountId) return;
+
+        const selectedAccount = filteredAccounts.find((account) => account.id === watchedAccountId);
+
+        if (!selectedAccount) return;
+        const accountType = selectedAccount.accountDetailType;
+        let paymentMethod: FormValues['paymentMethod'];
+
+        if (accountType === 'cash-on-hand' || accountType === 'undeposited-funds') {
+            paymentMethod = 'cash';
+        }
+        else if (accountType === 'chequing' || accountType === 'savings' || accountType === 'money-market' || accountType === 'trust-account') {
+            paymentMethod = 'bank';
+        }
+        else if (accountType === 'credit-card') {
+            paymentMethod = 'card';
+        }
+        if (paymentMethod) {
+            form.setValue('paymentMethod', paymentMethod);
+        }
+    }, [watchedAccountId, filteredAccounts, form]);
+
     const onSubmit = (values: FormValues) => {
         // Ensure date is in ISO format with time to avoid timezone issues
         const date = new Date(values.paidAt);
