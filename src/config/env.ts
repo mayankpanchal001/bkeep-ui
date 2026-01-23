@@ -9,7 +9,7 @@ const getApiEndpoint = () => {
     }
 
     // Default endpoint for both development and production
-    return 'http://72.62.161.70:4000/api/v1';
+    return 'http://150.241.247.80:4000/api/v1';
 };
 
 export const API_ENDPOINT = getApiEndpoint();

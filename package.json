@@ -11,8 +11,16 @@
         "format": "prettier --write .",
         "preview": "vite preview",
         "prepare": "husky",
-        "build:docker": "docker-compose build --no-cache",
-        "deploy": "npm run build:docker && docker-compose up -d"
+        "docker:build": "./vps-build.sh build",
+        "docker:deploy": "./vps-build.sh deploy",
+        "docker:push": "./vps-build.sh push",
+        "docker:update": "./vps-build.sh update",
+        "docker:logs": "./vps-build.sh logs",
+        "docker:status": "./vps-build.sh status",
+        "docker:stop": "./vps-build.sh stop",
+        "docker:start": "./vps-build.sh start",
+        "docker:restart": "./vps-build.sh restart",
+        "deploy": "./vps-build.sh push"
     },
     "dependencies": {
         "@hookform/resolvers": "^5.2.2",
