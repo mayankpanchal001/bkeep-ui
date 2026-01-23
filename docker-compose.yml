@@ -5,17 +5,11 @@ services:
         build:
             context: .
             dockerfile: Dockerfile
-            platforms:
-                - linux/amd64 # Build for AMD64 (required for most servers)
             args:
-                # Default API endpoint (can be overridden via environment)
                 VITE_API_ENDPOINT: ${VITE_API_ENDPOINT:-http://150.241.247.80:4000/api/v1}
                 VITE_ENVIRONMENT: ${VITE_ENVIRONMENT:-production}
-                VITE_BUILD_DATE: ${VITE_BUILD_DATE:-}
-                VITE_GIT_COMMIT: ${VITE_GIT_COMMIT:-local}
         image: bkeep-frontend:latest
         container_name: bkeep-frontend
-        platform: linux/amd64 # Run on AMD64 platform
         ports:
             - '80:80'
         restart: unless-stopped
