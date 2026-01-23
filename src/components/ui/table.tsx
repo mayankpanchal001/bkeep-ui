@@ -746,10 +746,10 @@ function TableHead({
         typeof children === 'string'
             ? children
             : React.isValidElement(children) &&
-                typeof children.props.children === 'string'
-              ? children.props.children
+                typeof (children.props as { children?: unknown }).children ===
+                    'string'
+              ? ((children.props as { children?: unknown }).children as string)
               : '';
-
     return (
         <th
             data-slot="table-head"

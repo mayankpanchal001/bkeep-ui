@@ -501,7 +501,6 @@ export default function JournalEntriespage() {
                         />
                     </div>
 
-
                     <div className="ml-auto flex items-center gap-2 sm:gap-3">
                         <Button size="sm" onClick={handleCreateNew}>
                             <Icons.Plus className="w-4 h-4 sm:mr-1" />
@@ -516,7 +515,9 @@ export default function JournalEntriespage() {
                             <DrawerTrigger asChild>
                                 <Button variant="outline" size="sm">
                                     <Filter className="h-4 w-4 sm:mr-2" />
-                                    <span className="hidden sm:inline">Filters</span>
+                                    <span className="hidden sm:inline">
+                                        Filters
+                                    </span>
                                     {(filterStore.filterContact ||
                                         filterStore.filterAccountId ||
                                         filterStore.filterMinAmount ||
@@ -685,19 +686,33 @@ export default function JournalEntriespage() {
                                                 >
                                                     <span className="flex items-center gap-2">
                                                         <ArrowUpDown className="h-4 w-4" />
-                                                        <span>{getSortLabel(filterStore.sort)}</span>
+                                                        <span>
+                                                            {getSortLabel(
+                                                                filterStore.sort
+                                                            )}
+                                                        </span>
                                                     </span>
                                                     <ChevronUp className="h-3 w-3" />
                                                 </Button>
                                             </DropdownMenuTrigger>
-                                            <DropdownMenuContent align="end" className="w-56">
+                                            <DropdownMenuContent
+                                                align="end"
+                                                className="w-56"
+                                            >
                                                 <DropdownMenuRadioGroup
-                                                    value={filterStore.sort || 'none'}
+                                                    value={
+                                                        filterStore.sort ||
+                                                        'none'
+                                                    }
                                                     onValueChange={(value) => {
                                                         if (value === 'none') {
-                                                            filterStore.setSort(null);
+                                                            filterStore.setSort(
+                                                                null
+                                                            );
                                                         } else {
-                                                            filterStore.setSort(value);
+                                                            filterStore.setSort(
+                                                                value
+                                                            );
                                                         }
                                                     }}
                                                 >
@@ -706,9 +721,12 @@ export default function JournalEntriespage() {
                                                     </DropdownMenuRadioItem>
                                                     <DropdownMenuSeparator />
                                                     <DropdownMenuRadioItem value="entryNumber">
-                                                        <span>Entry Number</span>
+                                                        <span>
+                                                            Entry Number
+                                                        </span>
                                                         <span className="ml-auto text-xs text-muted-foreground">
-                                                            {filterStore.order === 'asc'
+                                                            {filterStore.order ===
+                                                            'asc'
                                                                 ? 'A → Z'
                                                                 : 'Z → A'}
                                                         </span>
@@ -716,7 +734,8 @@ export default function JournalEntriespage() {
                                                     <DropdownMenuRadioItem value="entryDate">
                                                         <span>Entry Date</span>
                                                         <span className="ml-auto text-xs text-muted-foreground">
-                                                            {filterStore.order === 'asc'
+                                                            {filterStore.order ===
+                                                            'asc'
                                                                 ? '1 → 9'
                                                                 : '9 → 1'}
                                                         </span>
@@ -724,7 +743,8 @@ export default function JournalEntriespage() {
                                                     <DropdownMenuRadioItem value="status">
                                                         <span>Status</span>
                                                         <span className="ml-auto text-xs text-muted-foreground">
-                                                            {filterStore.order === 'asc'
+                                                            {filterStore.order ===
+                                                            'asc'
                                                                 ? 'A → Z'
                                                                 : 'Z → A'}
                                                         </span>
@@ -732,15 +752,19 @@ export default function JournalEntriespage() {
                                                     <DropdownMenuRadioItem value="totalDebit">
                                                         <span>Total Debit</span>
                                                         <span className="ml-auto text-xs text-muted-foreground">
-                                                            {filterStore.order === 'asc'
+                                                            {filterStore.order ===
+                                                            'asc'
                                                                 ? 'Low → High'
                                                                 : 'High → Low'}
                                                         </span>
                                                     </DropdownMenuRadioItem>
                                                     <DropdownMenuRadioItem value="totalCredit">
-                                                        <span>Total Credit</span>
+                                                        <span>
+                                                            Total Credit
+                                                        </span>
                                                         <span className="ml-auto text-xs text-muted-foreground">
-                                                            {filterStore.order === 'asc'
+                                                            {filterStore.order ===
+                                                            'asc'
                                                                 ? 'Low → High'
                                                                 : 'High → Low'}
                                                         </span>
@@ -748,7 +772,8 @@ export default function JournalEntriespage() {
                                                     <DropdownMenuRadioItem value="createdAt">
                                                         <span>Created At</span>
                                                         <span className="ml-auto text-xs text-muted-foreground">
-                                                            {filterStore.order === 'asc'
+                                                            {filterStore.order ===
+                                                            'asc'
                                                                 ? '1 → 9'
                                                                 : '9 → 1'}
                                                         </span>
@@ -756,7 +781,8 @@ export default function JournalEntriespage() {
                                                     <DropdownMenuRadioItem value="updatedAt">
                                                         <span>Updated At</span>
                                                         <span className="ml-auto text-xs text-muted-foreground">
-                                                            {filterStore.order === 'asc'
+                                                            {filterStore.order ===
+                                                            'asc'
                                                                 ? '1 → 9'
                                                                 : '9 → 1'}
                                                         </span>
@@ -769,14 +795,16 @@ export default function JournalEntriespage() {
                                                             <button
                                                                 onClick={() => {
                                                                     filterStore.setSortOrder(
-                                                                        filterStore.order === 'asc'
+                                                                        filterStore.order ===
+                                                                            'asc'
                                                                             ? 'desc'
                                                                             : 'asc'
                                                                     );
                                                                 }}
                                                                 className="w-full text-left text-xs text-muted-foreground hover:text-foreground transition-colors"
                                                             >
-                                                                {filterStore.order === 'asc'
+                                                                {filterStore.order ===
+                                                                'asc'
                                                                     ? 'Switch to Descending'
                                                                     : 'Switch to Ascending'}
                                                             </button>
@@ -786,8 +814,6 @@ export default function JournalEntriespage() {
                                             </DropdownMenuContent>
                                         </DropdownMenu>
                                     </div>
-
-
                                 </div>
                                 <DrawerFooter className="border-t border-primary/10">
                                     <DrawerClose asChild>

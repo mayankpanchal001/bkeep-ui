@@ -1,40 +1,34 @@
+version: '3.8'
+
 services:
     frontend:
         build:
             context: .
             dockerfile: Dockerfile
+            platforms:
+                - linux/amd64 # Build for AMD64 (required for most servers)
             args:
-                # API endpoint - same for both local and production
-                # Can be overridden with: VITE_API_ENDPOINT=<url> docker-compose build
-                VITE_API_ENDPOINT: http://72.62.161.70:4000/api/v1
-                # Environment type
-                VITE_ENVIRONMENT: production
-
+                # Default API endpoint (can be overridden via environment)
+                VITE_API_ENDPOINT: ${VITE_API_ENDPOINT:-http://150.241.247.80:4000/api/v1}
+                VITE_ENVIRONMENT: ${VITE_ENVIRONMENT:-production}
+                VITE_BUILD_DATE: ${VITE_BUILD_DATE:-}
+                VITE_GIT_COMMIT: ${VITE_GIT_COMMIT:-local}
         image: bkeep-frontend:latest
         container_name: bkeep-frontend
+        platform: linux/amd64 # Run on AMD64 platform
         ports:
-            # Map host port to container port 80
-            # Override with: PORT=3000 docker-compose up
             - '80:80'
         restart: unless-stopped
+
         healthcheck:
             test: ['CMD', 'curl', '-f', 'http://localhost/health']
             interval: 30s
             timeout: 3s
             retries: 3
-            start_period: 10s
-        networks:
-            - bkeep-network
-        # Resource limits (optional, uncomment if needed)
-        # deploy:
-        #     resources:
-        #         limits:
-        #             cpus: '1'
-        #             memory: 512M
-        #         reservations:
-        #             cpus: '0.5'
-        #             memory: 256M
-
-networks:
-    bkeep-network:
-        driver: bridge
+            start_period: 5s
+        # Logging configuration
+        logging:
+            driver: 'json-file'
+            options:
+                max-size: '10m'
+                max-file: '3'

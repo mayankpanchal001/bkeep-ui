@@ -25,7 +25,7 @@ export default defineConfig(({ mode }) => {
                     // Use the same API endpoint for both local and production
                     target:
                         env.VITE_API_ENDPOINT ||
-                        'http://72.62.161.70:4000/api/v1',
+                        'http://150.241.247.80:4000/api/v1',
                     changeOrigin: true,
                     secure: false,
                     rewrite: (path) => path.replace(/^\/api/, ''),
@@ -36,7 +36,6 @@ export default defineConfig(({ mode }) => {
             rollupOptions: {
                 output: {
                     manualChunks: (id) => {
-                        // Split vendor code into smaller, more manageable chunks
                         if (id.includes('node_modules')) {
                             // React core - separate from other React libs
                             if (
@@ -95,9 +94,7 @@ export default defineConfig(({ mode }) => {
                     },
                 },
             },
-            // Set chunk size warning limit
             // Note: Some chunks (like recharts, xlsx) are inherently large libraries
-            // This is normal for modern applications with rich features
             chunkSizeWarningLimit: 1000,
             // Disable source maps for smaller production builds
             sourcemap: false,

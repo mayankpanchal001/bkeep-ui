@@ -22,18 +22,16 @@ coverage
 *~
 .DS_Store
 
-# Build outputs
+# Build outputs (don't copy existing builds)
 dist
 build
 .next
 out
 
-# Environment files
-.env
+# Environment files (will be set via build args)
 .env.local
 .env.development
 .env.test
-.env.production
 .env*.local
 
 # Git
@@ -46,20 +44,20 @@ out
 .gitlab-ci.yml
 .travis.yml
 
-# Documentation
+# Documentation (keep essential ones, ignore rest)
 README.md
-*.md
+DOCKER.md
 docs
+backend-docs
 
 # Docker
-# Note: Keep docker/nginx.conf - it's needed for the build
 docker-compose*.yml
 .dockerignore
+Dockerfile
+# Note: Keep docker/nginx.conf - it's needed for the build
+!docker/nginx.conf
 
 # Misc
 .husky
-.prettierrc*
-.eslintrc*
-.editorconfig
 *.log
 .cache
