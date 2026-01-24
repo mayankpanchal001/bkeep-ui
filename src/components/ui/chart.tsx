@@ -146,8 +146,8 @@ const ChartTooltip = React.forwardRef<HTMLDivElement, ChartTooltipProps>(
                                     number,
                                     string
                                 > extends { payload?: (infer U)[] }
-                                    ? U
-                                    : never
+                                ? U
+                                : never
                             >
                         )}
                     </div>
@@ -191,7 +191,7 @@ const ChartTooltip = React.forwardRef<HTMLDivElement, ChartTooltipProps>(
             <div
                 ref={ref}
                 className={cn(
-                    'grid min-w-32 items-start gap-1.5 rounded-lg border border-border/50 bg-card px-2.5 py-1.5 text-xs shadow-md',
+                    'grid min-w-32 items-start gap-1.5 rounded-lg border border-border/50 bg-card px-2.5 py-1.5 text-xs ',
                     className
                 )}
                 {...props}
@@ -217,7 +217,7 @@ const ChartTooltip = React.forwardRef<HTMLDivElement, ChartTooltipProps>(
                                 )}
                             >
                                 {formatter !== undefined &&
-                                item?.value !== undefined ? (
+                                    item?.value !== undefined ? (
                                     typeof formatter === 'function' ? (
                                         (
                                             formatter as unknown as (
@@ -270,7 +270,7 @@ const ChartTooltip = React.forwardRef<HTMLDivElement, ChartTooltipProps>(
                                                         'my-0.5':
                                                             nestLabel &&
                                                             indicator ===
-                                                                'dashed',
+                                                            'dashed',
                                                     }
                                                 )}
                                                 style={
@@ -301,20 +301,20 @@ const ChartTooltip = React.forwardRef<HTMLDivElement, ChartTooltipProps>(
                                                     >
                                                         {labelFormatter !==
                                                             undefined &&
-                                                        label !== undefined
+                                                            label !== undefined
                                                             ? labelFormatter(
-                                                                  label,
-                                                                  payload as unknown as Array<
-                                                                      RechartsPrimitive.TooltipProps<
-                                                                          number,
-                                                                          string
-                                                                      > extends {
-                                                                          payload?: (infer U)[];
-                                                                      }
-                                                                          ? U
-                                                                          : never
-                                                                  >
-                                                              )
+                                                                label,
+                                                                payload as unknown as Array<
+                                                                    RechartsPrimitive.TooltipProps<
+                                                                        number,
+                                                                        string
+                                                                    > extends {
+                                                                        payload?: (infer U)[];
+                                                                    }
+                                                                    ? U
+                                                                    : never
+                                                                >
+                                                            )
                                                             : label}
                                                     </div>
                                                 ) : null}
@@ -326,7 +326,7 @@ const ChartTooltip = React.forwardRef<HTMLDivElement, ChartTooltipProps>(
                                             {item.value !== undefined && (
                                                 <span className="font-mono font-medium tabular-nums text-foreground">
                                                     {typeof item.value ===
-                                                    'number'
+                                                        'number'
                                                         ? item.value.toLocaleString()
                                                         : String(item.value)}
                                                 </span>

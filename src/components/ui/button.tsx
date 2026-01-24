@@ -11,19 +11,19 @@ const buttonVariants = cva(
         variants: {
             variant: {
                 default:
-                    'bg-primary text-primary-foreground shadow hover:bg-primary/90',
+                    'bg-primary text-primary-foreground hover:bg-primary/90',
                 destructive:
-                    'bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90',
+                    'bg-destructive text-destructive-foreground  hover:bg-destructive/90',
                 outline:
-                    'border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground',
+                    'border border-input bg-background  hover:bg-accent hover:text-accent-foreground',
                 secondary:
-                    'bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80',
+                    'bg-secondary text-secondary-foreground  hover:bg-secondary/80',
                 ghost: 'hover:bg-accent hover:text-accent-foreground',
                 link: 'text-primary underline-offset-4 hover:underline',
             },
             size: {
                 default: 'h-9 px-3 py-2 [&_svg]:size-3',
-                sm: 'h-7 rounded-md px-3 text-xs [&_svg]:size-3.5',
+                sm: 'h-9 min-w-20 rounded-md px-3 text-xs [&_svg]:size-3.5',
                 lg: 'h-10 rounded-md px-8 [&_svg]:size-5',
                 icon: 'h-9 w-9 [&_svg]:size-4',
                 'icon-sm': 'h-8 w-8 [&_svg]:size-3.5',
@@ -39,7 +39,7 @@ const buttonVariants = cva(
 
 export interface ButtonProps
     extends React.ComponentProps<'button'>,
-        VariantProps<typeof buttonVariants> {
+    VariantProps<typeof buttonVariants> {
     /** Render as child component */
     asChild?: boolean;
     /** Icon to display before the button text */

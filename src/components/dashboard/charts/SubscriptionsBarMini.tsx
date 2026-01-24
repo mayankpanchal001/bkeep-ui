@@ -67,7 +67,7 @@ export default function SubscriptionsBarMini({
                     }) => {
                         if (active && payload && payload.length) {
                             return (
-                                <div className="rounded-lg border border-border/50 bg-card p-2 shadow-sm">
+                                <div className="rounded-lg border border-border/50 bg-card p-2 ">
                                     <div className="grid gap-2">
                                         <div className="font-medium">
                                             {
@@ -90,7 +90,7 @@ export default function SubscriptionsBarMini({
                                                             backgroundColor:
                                                                 item.color ||
                                                                 (item.dataKey ===
-                                                                'previous'
+                                                                    'previous'
                                                                     ? destructiveColor
                                                                     : secondaryColor),
                                                         }}

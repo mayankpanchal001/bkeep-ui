@@ -73,7 +73,7 @@ const ProtectedLayout = ({
                         <Navbar
                             onSearchClick={() => setShowCommandPalette(true)}
                             onShortcutsClick={() => setShowShortcuts(true)}
-                            // onToggleSidebar is handled by SidebarTrigger/Provider now
+                        // onToggleSidebar is handled by SidebarTrigger/Provider now
                         />
 
                         <CommandPalette
@@ -96,7 +96,7 @@ const ProtectedLayout = ({
                         <div className="fixed bottom-4 right-4 z-30">
                             <button
                                 onClick={() => setShowAddNewModal(true)}
-                                className="cursor-pointer group flex items-center justify-center bg-primary text-white rounded-full p-2 shadow-lg hover:shadow-xl transition-all duration-300 ease-in-out hover:pr-5"
+                                className="cursor-pointer group flex items-center justify-center bg-primary text-white rounded-full p-2  transition-all duration-300 ease-in-out hover:pr-5"
                             >
                                 <Plus className="w-3 h-3" />
                                 <span className="max-w-0 overflow-hidden whitespace-nowrap opacity-0 group-hover:max-w-[100px] group-hover:ml-2 group-hover:opacity-100 transition-all duration-300 ease-in-out font-medium text-xs">

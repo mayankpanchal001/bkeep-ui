@@ -621,15 +621,12 @@ export const ThemeTransitionAnimation = () => {
 
                         {/* Glassmorphic container */}
                         <div
-                            className="relative p-10 rounded-3xl backdrop-blur-2xl border-2 animate-theme-icon-container"
+                            className="relative p-10 rounded-3xl backdrop-blur-xl border-2 animate-theme-icon-container"
                             style={{
                                 background: themeColors
                                     ? `${themeColors.primary}15`
                                     : 'rgba(255,255,255,0.1)',
                                 borderColor: `${themeColors?.primary || 'currentColor'}40`,
-                                boxShadow: themeColors
-                                    ? `0 20px 60px ${themeColors.primary}40, inset 0 1px 0 ${themeColors.primary}30`
-                                    : undefined,
                             }}
                         >
                             {/* Icon with rotation */}
@@ -671,9 +668,6 @@ export const ThemeTransitionAnimation = () => {
                                 className="text-4xl font-bold tracking-tight animate-theme-text"
                                 style={{
                                     color: themeColors?.primary,
-                                    textShadow: themeColors
-                                        ? `0 0 40px ${themeColors.primary}60, 0 4px 20px ${themeColors.primary}40`
-                                        : undefined,
                                 }}
                             >
                                 {palette.name}

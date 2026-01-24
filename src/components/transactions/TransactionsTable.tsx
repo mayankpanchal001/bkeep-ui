@@ -59,7 +59,7 @@ const TransactionsTable = () => {
 
     if (isLoading) {
         return (
-            <div className="bg-card rounded shadow-sm border border-primary/10 p-12">
+            <div className="bg-card rounded  border border-primary/10 p-12">
                 <div className="flex flex-col items-center justify-center gap-4">
                     <div className="w-12 h-12 border-4 border-primary/25 border-t-primary rounded-full animate-spin"></div>
                     <p className="text-sm text-primary/50">
@@ -86,7 +86,7 @@ const TransactionsTable = () => {
     };
 
     return (
-        <div className="bg-card max-h-[calc(100vh-100px)] rounded shadow-sm border border-primary/10 overflow-y-auto">
+        <div className="bg-card max-h-[calc(100vh-100px)] rounded  border border-primary/10 overflow-y-auto">
             {/* Table Header with Search */}
             <div className="p-4 border-b border-primary/10 sticky top-0 bg-card z-10">
                 <div className="flex items-center justify-between gap-4">
@@ -191,16 +191,15 @@ const TransactionsTable = () => {
                                         <TableCell>
                                             <div className="flex items-center gap-2">
                                                 <div
-                                                    className={`w-2 h-2 rounded-full ${
-                                                        isCredit
+                                                    className={`w-2 h-2 rounded-full ${isCredit
                                                             ? 'bg-green-500'
                                                             : 'bg-red-500'
-                                                    }`}
+                                                        }`}
                                                 ></div>
                                                 <span className="text-sm font-medium text-primary">
                                                     {new Date(
                                                         transaction.latestPostedDate ||
-                                                            transaction.createdAt
+                                                        transaction.createdAt
                                                     ).toLocaleDateString(
                                                         'en-US',
                                                         {
@@ -231,11 +230,10 @@ const TransactionsTable = () => {
                                         </TableCell>
                                         <TableCell align="right">
                                             <div
-                                                className={`flex items-center justify-end gap-1 font-semibold ${
-                                                    isCredit
+                                                className={`flex items-center justify-end gap-1 font-semibold ${isCredit
                                                         ? 'text-secondary'
                                                         : 'text-destructive'
-                                                }`}
+                                                    }`}
                                             >
                                                 {isCredit ? (
                                                     <ArrowUp className="w-3 h-3" />

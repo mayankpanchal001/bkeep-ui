@@ -72,7 +72,7 @@ export default function HeroSection() {
                 </div>
 
                 <div className="relative">
-                    <div className="relative rounded-[32px] border border-border bg-background/80 p-6 shadow-2xl backdrop-blur-sm">
+                    <div className="relative rounded-[32px] border border-border bg-background/80 p-6 backdrop-blur-sm">
                         <div className="flex items-center justify-between text-xs font-medium text-muted-foreground">
                             <span>Financial Overview</span>
                             <div className="flex items-center gap-1.5">
@@ -143,7 +143,7 @@ export default function HeroSection() {
                             </div>
                         </div>
                     </div>
-                    <div className="absolute -bottom-6 -left-8 hidden w-48 roundedxl border border-border bg-background p-5 shadow-xl backdrop-blur lg:block">
+                    <div className="absolute -bottom-6 -left-8 hidden w-48 roundedxl border border-border bg-background p-5 backdrop-blur lg:block">
                         <div className="flex items-center gap-3">
                             <div className="flex -space-x-2">
                                 <div className="h-8 w-8 rounded-full border-2 border-background bg-gray-300"></div>

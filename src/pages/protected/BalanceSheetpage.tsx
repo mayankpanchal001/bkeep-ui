@@ -81,7 +81,7 @@ const BalanceSheetpage = () => {
             </div>
 
             {/* Date Selector */}
-            <div className="bg-card rounded shadow-sm border border-primary/10 p-4">
+            <div className="bg-card rounded  border border-primary/10 p-4">
                 <div className="flex flex-col sm:flex-row gap-4 items-end">
                     <div className="flex-1">
                         <label className="block text-sm font-medium text-primary mb-2">
@@ -101,11 +101,10 @@ const BalanceSheetpage = () => {
                                 onClick={() =>
                                     setDateRange(range.toLowerCase())
                                 }
-                                className={`px-4 py-2 text-sm font-medium rounded transition-all ${
-                                    dateRange === range.toLowerCase()
+                                className={`px-4 py-2 text-sm font-medium rounded transition-all ${dateRange === range.toLowerCase()
                                         ? 'bg-primary text-white'
                                         : 'bg-primary/10 text-primary hover:bg-primary/25'
-                                }`}
+                                    }`}
                             >
                                 {range}
                             </button>
@@ -136,7 +135,7 @@ const BalanceSheetpage = () => {
             {/* Balance Sheet Sections */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 {/* Assets */}
-                <div className="bg-card rounded shadow-sm border border-primary/10 p-4">
+                <div className="bg-card rounded  border border-primary/10 p-4">
                     <h3 className="text-lg font-semibold text-primary mb-4">
                         Assets
                     </h3>
@@ -217,7 +216,7 @@ const BalanceSheetpage = () => {
                 </div>
 
                 {/* Liabilities & Equity */}
-                <div className="bg-card rounded shadow-sm border border-primary/10 p-4">
+                <div className="bg-card rounded  border border-primary/10 p-4">
                     <h3 className="text-lg font-semibold text-primary mb-4">
                         Liabilities & Equity
                     </h3>

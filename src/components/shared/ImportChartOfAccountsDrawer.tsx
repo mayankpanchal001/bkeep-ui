@@ -50,7 +50,7 @@ const ImportChartOfAccountsDrawer = ({
     const [mapping, setMapping] = useState<Record<string, string>>({});
     const inputRef = useRef<HTMLInputElement>(null);
 
-    const { data: templatesData, isLoading: isTemplatesLoading } = useTemplates(
+    const { data: templatesData } = useTemplates(
         {
             type: 'accounts',
             isActive: true,
@@ -153,7 +153,7 @@ const ImportChartOfAccountsDrawer = ({
         // Validate file type
         if (
             file.type ===
-                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
             file.type === 'application/vnd.ms-excel' ||
             file.name.endsWith('.xlsx') ||
             file.name.endsWith('.xls') ||
@@ -184,9 +184,9 @@ const ImportChartOfAccountsDrawer = ({
                             const match = headers.find(
                                 (header) =>
                                     header.toLowerCase() ===
-                                        field.label.toLowerCase() ||
+                                    field.label.toLowerCase() ||
                                     header.toLowerCase() ===
-                                        field.key.toLowerCase()
+                                    field.key.toLowerCase()
                             );
                             if (match) {
                                 autoMapping[field.key] = match;
@@ -298,12 +298,12 @@ const ImportChartOfAccountsDrawer = ({
         step === 'select'
             ? false
             : step === 'template'
-              ? selectedTemplateId !== null
-              : step === 'file-upload'
-                ? selectedFile !== null
-                : importFields
-                      .filter((f) => f.required)
-                      .every((f) => mapping[f.key]);
+                ? selectedTemplateId !== null
+                : step === 'file-upload'
+                    ? selectedFile !== null
+                    : importFields
+                        .filter((f) => f.required)
+                        .every((f) => mapping[f.key]);
 
     const handleClose = () => {
         if (importMutation.isPending || applyTemplateMutation.isPending) {
@@ -338,10 +338,10 @@ const ImportChartOfAccountsDrawer = ({
                         {step === 'select'
                             ? 'Import Chart of Accounts'
                             : step === 'template'
-                              ? 'Import from Template'
-                              : step === 'file-upload'
-                                ? 'Import from File'
-                                : 'Map Import Fields'}
+                                ? 'Import from Template'
+                                : step === 'file-upload'
+                                    ? 'Import from File'
+                                    : 'Map Import Fields'}
                     </DrawerTitle>
                     <button
                         onClick={handleClose}
@@ -419,50 +419,10 @@ const ImportChartOfAccountsDrawer = ({
                         <div className="flex flex-col gap-4">
                             {/* Templates Section */}
                             <div className="flex flex-col gap-2">
-                                <div className="flex items-center justify-between gap-2">
-                                    <p className="text-sm font-medium text-primary">
-                                        Templates
-                                    </p>
-                                    <Button
-                                        onClick={handleDownloadSample}
-                                        variant="outline"
-                                        size="sm"
-                                    >
-                                        Download Sample File
-                                    </Button>
-                                </div>
 
-                                {isTemplatesLoading ? (
-                                    <p className="text-xs text-primary/50">
-                                        Loading templates...
-                                    </p>
-                                ) : templates.length ? (
-                                    <div className="flex flex-wrap gap-2">
-                                        {templates.map((t) => (
-                                            <button
-                                                key={t.id}
-                                                type="button"
-                                                onClick={() =>
-                                                    setSelectedTemplateId(t.id)
-                                                }
-                                                className={`px-3 py-1.5 rounded text-sm border transition-colors ${
-                                                    selectedTemplateId === t.id
-                                                        ? 'bg-primary text-white border-primary'
-                                                        : 'bg-card border-primary/10 text-primary hover:bg-primary/5'
-                                                }`}
-                                            >
-                                                {t.name || 'Template'}
-                                            </button>
-                                        ))}
-                                    </div>
-                                ) : (
-                                    <p className="text-xs text-primary/50">
-                                        No templates available.
-                                    </p>
-                                )}
 
                                 {selectedTemplateId && (
-                                    <div className="rounded border border-primary/10 bg-card p-3">
+                                    <div className="">
                                         {isTemplatePreviewLoading ? (
                                             <p className="text-xs text-primary/50">
                                                 Loading template preview...
@@ -482,19 +442,7 @@ const ImportChartOfAccountsDrawer = ({
                                                                 '—'}
                                                         </p>
                                                     </div>
-                                                    <div className="flex gap-2">
-                                                        <Button
-                                                            variant="outline"
-                                                            size="sm"
-                                                            onClick={() =>
-                                                                setSelectedTemplateId(
-                                                                    null
-                                                                )
-                                                            }
-                                                        >
-                                                            Clear
-                                                        </Button>
-                                                    </div>
+
                                                 </div>
 
                                                 <div className="grid grid-cols-3 gap-2">
@@ -580,8 +528,6 @@ const ImportChartOfAccountsDrawer = ({
                                                     </p>
                                                     <div className="flex gap-2">
                                                         <Button
-                                                            variant="default"
-                                                            size="sm"
                                                             onClick={
                                                                 handleApplyTemplate
                                                             }
@@ -592,9 +538,9 @@ const ImportChartOfAccountsDrawer = ({
                                                                 applyTemplateMutation.isPending
                                                             }
                                                             className=""
+                                                            tooltip={"Apply Template Directly"}
                                                         >
-                                                            Apply Template
-                                                            Directly
+                                                            Apply
                                                         </Button>
                                                         {/* <Button
                                                             variant="outline"
@@ -654,15 +600,13 @@ const ImportChartOfAccountsDrawer = ({
                                 </p>
 
                                 <div
-                                    className={`relative flex flex-col items-center justify-center w-full h-48 border-2 border-dashed rounded-lg transition-colors cursor-pointer ${
-                                        dragActive
-                                            ? 'border-primary bg-primary/10'
-                                            : 'border-primary/25 hover:border-primary/50 hover:bg-card'
-                                    } ${
-                                        selectedFile
+                                    className={`relative flex flex-col items-center justify-center w-full h-48 border-2 border-dashed rounded-lg transition-colors cursor-pointer ${dragActive
+                                        ? 'border-primary bg-primary/10'
+                                        : 'border-primary/25 hover:border-primary/50 hover:bg-card'
+                                        } ${selectedFile
                                             ? 'bg-primary/20 border-primary'
                                             : ''
-                                    }`}
+                                        }`}
                                     onDragEnter={handleDrag}
                                     onDragLeave={handleDrag}
                                     onDragOver={handleDrag}

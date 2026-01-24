@@ -29,6 +29,7 @@
     * {
         @apply border-border outline-ring/50;
     }
+
     body {
         @apply bg-background text-foreground;
     }
@@ -58,7 +59,6 @@
             fill var(--theme-transition),
             stroke var(--theme-transition),
             opacity var(--theme-transition),
-            box-shadow var(--theme-transition),
             outline-color var(--theme-transition);
     }
 
@@ -113,6 +113,7 @@
 
     /* Respect reduced motion preference */
     @media (prefers-reduced-motion: reduce) {
+
         *,
         *::before,
         *::after {

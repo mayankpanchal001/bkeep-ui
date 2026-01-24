@@ -42,7 +42,11 @@ const getTransactions = async (
     if (filters?.page) params.append('page', filters.page.toString());
     if (filters?.limit) params.append('limit', filters.limit.toString());
     if (filters?.search) params.append('search', filters.search);
-    if (filters?.status) params.append('status', filters.status);
+    if (filters?.status) {
+        // Map 'pending' to 'draft' for API
+        const apiStatus = filters.status === 'pending' ? 'draft' : filters.status;
+        params.append('status', apiStatus);
+    }
     if (filters?.accountId) params.append('accountId', filters.accountId);
     if (filters?.startDate) params.append('startDate', filters.startDate);
     if (filters?.endDate) params.append('endDate', filters.endDate);

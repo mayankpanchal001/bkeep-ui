@@ -190,7 +190,7 @@ const Navbar = ({ onSearchClick, onShortcutsClick }: NavbarProps) => {
                         >
                             <Search className="w-3.5 h-3.5 group-hover:text-primary" />
                             <span className="text-xs font-medium">Search</span>
-                            <kbd className="ml-auto inline-block px-1.5 py-0.5 text-[10px] font-bold text-primary/40 bg-card dark:bg-muted border border-primary/10 rounded shadow-sm">
+                            <kbd className="ml-auto inline-block px-1.5 py-0.5 text-[10px] font-bold text-primary/40 bg-card dark:bg-muted border border-primary/10 rounded ">
                                 {isMac ? '⌘' : 'Ctrl'}
                             </kbd>
                         </button>
@@ -209,7 +209,7 @@ const Navbar = ({ onSearchClick, onShortcutsClick }: NavbarProps) => {
                             <span className="text-xs font-medium">
                                 Shortcuts
                             </span>
-                            <kbd className="ml-auto inline-block px-1.5 py-0.5 text-[10px] font-bold text-primary/40 bg-card dark:bg-muted border border-primary/10 rounded shadow-sm">
+                            <kbd className="ml-auto inline-block px-1.5 py-0.5 text-[10px] font-bold text-primary/40 bg-card dark:bg-muted border border-primary/10 rounded ">
                                 ?
                             </kbd>
                         </button>
@@ -230,13 +230,13 @@ const Navbar = ({ onSearchClick, onShortcutsClick }: NavbarProps) => {
                                     'relative p-2 rounded-lg transition-all duration-200',
                                     'hover:bg-primary/10 text-primary/70 hover:text-primary',
                                     isNotificationsOpen &&
-                                        'bg-primary/10 text-primary'
+                                    'bg-primary/10 text-primary'
                                 )}
                                 aria-label="Notifications"
                             >
                                 <Bell className="w-5 h-5" />
                                 {unreadCount > 0 && (
-                                    <span className="absolute top-1 right-1 flex items-center justify-center rounded-full bg-red-500 text-white text-[10px] font-bold leading-none h-4 min-w-4 px-1 animate-in zoom-in duration-200 shadow-sm border border-white dark:border-slate-900">
+                                    <span className="absolute top-1 right-1 flex items-center justify-center rounded-full bg-red-500 text-white text-[10px] font-bold leading-none h-4 min-w-4 px-1 animate-in zoom-in duration-200  border border-white dark:border-slate-900">
                                         {unreadCount > 9 ? '9+' : unreadCount}
                                     </span>
                                 )}
@@ -312,13 +312,13 @@ const Navbar = ({ onSearchClick, onShortcutsClick }: NavbarProps) => {
                                                         className={cn(
                                                             'flex items-center justify-center w-9 h-9 rounded-lg shrink-0',
                                                             notificationColors[
-                                                                n.type
+                                                            n.type
                                                             ]
                                                         )}
                                                     >
                                                         {
                                                             notificationIcons[
-                                                                n.type
+                                                            n.type
                                                             ]
                                                         }
                                                     </div>
@@ -402,13 +402,13 @@ const Navbar = ({ onSearchClick, onShortcutsClick }: NavbarProps) => {
                                             'relative p-2 rounded-lg transition-all duration-200',
                                             'hover:bg-primary/10 text-primary/70 hover:text-primary',
                                             isNotificationsOpen &&
-                                                'bg-primary/10 text-primary'
+                                            'bg-primary/10 text-primary'
                                         )}
                                         aria-label="Notifications"
                                     >
                                         <Bell className="w-5 h-5" />
                                         {unreadCount > 0 && (
-                                            <span className="absolute top-1 right-1 flex items-center justify-center rounded-full bg-red-500 text-white text-[10px] font-bold leading-none h-4 min-w-4 px-1 animate-in zoom-in duration-200 shadow-sm border border-white dark:border-slate-900">
+                                            <span className="absolute top-1 right-1 flex items-center justify-center rounded-full bg-red-500 text-white text-[10px] font-bold leading-none h-4 min-w-4 px-1 animate-in zoom-in duration-200  border border-white dark:border-slate-900">
                                                 {unreadCount > 9
                                                     ? '9+'
                                                     : unreadCount}
@@ -424,7 +424,7 @@ const Navbar = ({ onSearchClick, onShortcutsClick }: NavbarProps) => {
                         </Tooltip>
 
                         <PopoverContent
-                            className="w-[calc(100vw-32px)] sm:w-96 p-0 shadow-2xl border-slate-200/80 dark:border-slate-700/80 overflow-hidden"
+                            className="w-[calc(100vw-32px)] sm:w-96 p-0  border-slate-200/80 dark:border-slate-700/80 overflow-hidden"
                             align="end"
                             sideOffset={8}
                         >
@@ -522,13 +522,13 @@ const Navbar = ({ onSearchClick, onShortcutsClick }: NavbarProps) => {
                                                         className={cn(
                                                             'flex items-center justify-center w-9 h-9 rounded-lg shrink-0',
                                                             notificationColors[
-                                                                n.type
+                                                            n.type
                                                             ]
                                                         )}
                                                     >
                                                         {
                                                             notificationIcons[
-                                                                n.type
+                                                            n.type
                                                             ]
                                                         }
                                                     </div>

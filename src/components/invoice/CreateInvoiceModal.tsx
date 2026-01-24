@@ -166,10 +166,10 @@ const CreateInvoiceModal = ({
         const q = customerSearch.trim().toLowerCase();
         return q
             ? MOCK_CUSTOMERS.filter(
-                  (c) =>
-                      c.name.toLowerCase().includes(q) ||
-                      c.email?.toLowerCase().includes(q)
-              )
+                (c) =>
+                    c.name.toLowerCase().includes(q) ||
+                    c.email?.toLowerCase().includes(q)
+            )
             : MOCK_CUSTOMERS;
     }, [customerSearch]);
 
@@ -335,14 +335,14 @@ const CreateInvoiceModal = ({
                         <TabsList className="w-full justify-start rounded-none border-b border-border bg-transparent p-0 h-auto">
                             <TabsTrigger
                                 value="details"
-                                className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none px-6 py-3"
+                                className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent  px-6 py-3"
                             >
                                 <Receipt className="h-4 w-4 mr-2" />
                                 Details
                             </TabsTrigger>
                             <TabsTrigger
                                 value="items"
-                                className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none px-6 py-3"
+                                className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent  px-6 py-3"
                             >
                                 <Package className="h-4 w-4 mr-2" />
                                 Items
@@ -354,7 +354,7 @@ const CreateInvoiceModal = ({
                             </TabsTrigger>
                             <TabsTrigger
                                 value="settings"
-                                className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none px-6 py-3"
+                                className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent  px-6 py-3"
                             >
                                 <Settings className="h-4 w-4 mr-2" />
                                 Settings
@@ -786,7 +786,7 @@ const CreateInvoiceModal = ({
                                                         <div className="h-10 px-3 flex items-center bg-muted rounded-md text-sm font-medium">
                                                             {formatCurrency(
                                                                 item.qty *
-                                                                    item.price
+                                                                item.price
                                                             )}
                                                         </div>
                                                     </div>
@@ -884,11 +884,11 @@ const CreateInvoiceModal = ({
                                         <span className="text-muted-foreground">
                                             Discount (
                                             {formData.discountType ===
-                                            'percentage'
+                                                'percentage'
                                                 ? `${formData.discount}%`
                                                 : formatCurrency(
-                                                      formData.discount
-                                                  )}
+                                                    formData.discount
+                                                )}
                                             )
                                         </span>
                                         <span className="font-medium text-destructive">
@@ -1092,9 +1092,9 @@ const CreateInvoiceModal = ({
 
                 {/* Right Side - Invoice Preview */}
                 <div className="hidden md:flex flex-1 bg-muted/30 items-start justify-center p-8 overflow-y-auto">
-                    <div className="w-full max-w-xl bg-card rounded-xl shadow-lg border border-border overflow-hidden">
+                    <div className="w-full max-w-xl bg-card rounded-xl border border-border overflow-hidden">
                         {/* Preview Header */}
-                        <div className="bg-gradient-to-r from-primary/10 to-primary/5 px-8 py-6 border-b border-border">
+                        <div className="bg-linear-to-r from-primary/10 to-primary/5 px-8 py-6 border-b border-border">
                             <div className="flex justify-between items-start">
                                 {companyInfo.logo ? (
                                     <img
@@ -1261,7 +1261,7 @@ const CreateInvoiceModal = ({
                                                     <td className="py-3 text-right font-medium text-foreground">
                                                         {formatCurrency(
                                                             item.qty *
-                                                                item.price
+                                                            item.price
                                                         )}
                                                     </td>
                                                 </tr>
@@ -1286,11 +1286,11 @@ const CreateInvoiceModal = ({
                                         <span className="text-muted-foreground">
                                             Discount (
                                             {formData.discountType ===
-                                            'percentage'
+                                                'percentage'
                                                 ? `${formData.discount}%`
                                                 : formatCurrency(
-                                                      formData.discount
-                                                  )}
+                                                    formData.discount
+                                                )}
                                             )
                                         </span>
                                         <span className="text-destructive">

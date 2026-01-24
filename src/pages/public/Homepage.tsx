@@ -22,7 +22,7 @@ export default function Homepage() {
             <div className="fixed inset-0 -z-20 bg-background" />
             <div className="fixed inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,var(--tw-gradient-stops))] from-primary/10 via-background to-background opacity-60" />
             <div className="bg-noise" />
-
+            {/* test */}
             <Navigation />
             <main className="relative flex flex-col gap-0">
                 <HeroSection />
@@ -36,7 +36,7 @@ export default function Homepage() {
                 </RevealOnScroll>
 
                 <div className="relative">
-                    <div className="absolute inset-0 -z-10 bg-gradient-to-b from-transparent via-muted/30 to-transparent blur-3xl" />
+                    <div className="absolute inset-0 -z-10 bg-linear-to-b from-transparent via-muted/30 to-transparent blur-3xl" />
                     <RevealOnScroll>
                         <FeaturesSection />
                     </RevealOnScroll>

@@ -146,7 +146,7 @@ const TOTPSetupModal = ({
                 onClose()
             }
         >
-            <div className="w-full max-w-2xl rounded bg-card p-4 shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div className="w-full max-w-2xl rounded bg-card p-4  max-h-[90vh] overflow-y-auto">
                 <div className="flex items-center justify-between mb-6">
                     <h3 className="text-xl font-semibold text-primary">
                         {step === 'setup'

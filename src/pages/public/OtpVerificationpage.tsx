@@ -112,7 +112,7 @@ const OtpVerificationpage = () => {
 
                     showSuccessToast(
                         response?.message ||
-                            'Successfully verified. Welcome back!'
+                        'Successfully verified. Welcome back!'
                     );
                     navigate('/dashboard');
                 }
@@ -169,7 +169,7 @@ const OtpVerificationpage = () => {
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-muted px-4">
-            <div className="w-full max-w-md bg-card rounded shadow-xl p-4 lg:p-8 border border-primary/10">
+            <div className="w-full max-w-md bg-card rounded p-4 lg:p-8 border border-primary/10">
                 <h1 className="text-2xl font-bold text-primary mb-2">
                     {getTitle()}
                 </h1>

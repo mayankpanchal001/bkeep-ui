@@ -38,7 +38,7 @@ const AcceptInvitationpage = () => {
                     </div>
 
                     {/* Accept Invitation Form Card */}
-                    <div className="bg-card rounded shadow-xl p-4 lg:p-8 border border-primary/10">
+                    <div className="bg-card rounded p-4 lg:p-8 border border-primary/10">
                         <AcceptInvitationForm />
                     </div>
 

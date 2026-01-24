@@ -319,7 +319,7 @@ const Reportpage = () => {
         return (
             <div
                 onClick={() => goToReport(categoryKey, report.key)}
-                className="group flex items-center gap-4 p-4 bg-card rounded-lg border border-primary/10 hover:border-primary/20 hover:shadow-sm cursor-pointer transition-all"
+                className="group flex items-center gap-4 p-4 bg-card rounded-lg border border-primary/10 hover:border-primary/20 hover: cursor-pointer transition-all"
             >
                 <div className="shrink-0 text-primary/40 group-hover:text-primary transition-colors">
                     <FileText className="w-5 h-5" />
@@ -396,7 +396,7 @@ const Reportpage = () => {
                 </div>
 
                 {suggestOpen && suggestions.length > 0 && (
-                    <div className="absolute top-full left-0 right-0 mt-2 bg-card rounded-lg border border-primary/10 shadow-lg z-50 overflow-hidden">
+                    <div className="absolute top-full left-0 right-0 mt-2 bg-card rounded-lg border border-primary/10 z-50 overflow-hidden">
                         {suggestions.map((s, idx) => (
                             <div
                                 key={s.id}
