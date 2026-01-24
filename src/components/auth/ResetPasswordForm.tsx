@@ -147,7 +147,7 @@ export function ResetPasswordForm() {
                 </div>
 
                 {error && (
-                    <div className="border border-red-300 bg-red-50 p-3 rounded-lg shadow-sm">
+                    <div className="border border-red-300 bg-red-50 p-3 rounded-lg ">
                         <p className="text-sm text-balance text-center text-red-700 font-medium">
                             {error}
                         </p>

@@ -447,7 +447,7 @@ const ContactDetailPage = () => {
                                 variant="outline"
                                 size="sm"
                                 onClick={copyBillingToShipping}
-                                className="bg-transparent shadow-none text-primary/70 hover:text-primary hover:bg-primary/5"
+                                className="bg-transparent text-primary/70 hover:text-primary hover:bg-primary/5"
                             >
                                 Copy billing to shipping
                             </Button>

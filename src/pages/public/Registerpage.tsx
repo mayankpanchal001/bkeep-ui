@@ -69,7 +69,7 @@ const Registerpage = () => {
             </div>
             {/* Right Side - Branding Section */}
             <div className="hidden lg:flex p-1 h-full">
-                <div className="w-full bg-primary rounded-[24px] p-10 relative overflow-hidden h-full shadow-[0_0_50px_-12px_rgba(59,130,246,0.3)]">
+                <div className="w-full bg-primary rounded-[24px] p-10 relative overflow-hidden h-full ">
                     <div className="relative z-10 w-full flex flex-col items-start">
                         <div className="mb-4">
                             <img

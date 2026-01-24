@@ -9,8 +9,8 @@ import {
     ChevronDown,
     ChevronLeft,
     ChevronRight,
-    Landmark,
     Import,
+    Landmark,
 } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Button } from '../ui/button';
@@ -30,6 +30,7 @@ interface TransactionHeaderProps {
     onStatusSelect?: (
         status: 'pending' | 'posted' | 'voided' | 'reversed'
     ) => void;
+    currentStatus?: 'pending' | 'posted' | 'voided' | 'reversed' | 'all';
 }
 
 function hashStringToHue(input: string) {
@@ -209,7 +210,7 @@ export function TransactionHeader({
                 {canScrollLeft && (
                     <button
                         onClick={scrollLeft}
-                        className="absolute left-2 top-1/2 -translate-y-1/2 z-30 bg-card/90 hover:bg-card shadow-lg rounded-full p-2 transition-all duration-200 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-green-600"
+                        className="absolute left-2 top-1/2 -translate-y-1/2 z-30 bg-card/90 hover:bg-card  rounded-full p-2 transition-all duration-200 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-green-600"
                         aria-label="Scroll left"
                     >
                         <ChevronLeft className="w-6 h-6 text-green-700" />
@@ -220,7 +221,7 @@ export function TransactionHeader({
                 {canScrollRight && (
                     <button
                         onClick={scrollRight}
-                        className="absolute right-2 top-1/2 -translate-y-1/2 z-30 bg-card/90 hover:bg-card shadow-lg rounded-full p-2 transition-all duration-200 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-green-600"
+                        className="absolute right-2 top-1/2 -translate-y-1/2 z-30 bg-card/90 hover:bg-card  rounded-full p-2 transition-all duration-200 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-green-600"
                         aria-label="Scroll right"
                     >
                         <ChevronRight className="w-6 h-6 text-green-700" />

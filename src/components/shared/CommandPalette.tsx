@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import { ArrowRight, Keyboard, Search } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
-import { ArrowRight, Search, Keyboard } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import { LOGOUT_ITEM, SIDEBAR_ITEMS } from '../../constants';
 import { useLogout } from '../../services/apis/authApi';
@@ -120,7 +120,7 @@ const CommandPalette = ({
             />
 
             {/* Modal */}
-            <div className="relative w-full max-w-lg bg-card rounded-xl shadow-2xl overflow-hidden flex flex-col animate-in fade-in zoom-in-95 duration-200 border border-primary/10">
+            <div className="relative w-full max-w-lg bg-card rounded-xl  overflow-hidden flex flex-col animate-in fade-in zoom-in-95 duration-200 border border-primary/10">
                 {/* Search Input */}
                 <div className="flex items-center px-4 py-3 border-b border-primary/10">
                     <Search className="text-primary/40 w-5 h-5 mr-3" />

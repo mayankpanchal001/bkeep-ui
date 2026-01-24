@@ -156,6 +156,15 @@ export const createRule = async (
     payload: CreateRulePayload
 ): Promise<RuleResponse> => {
     const response = await axiosInstance.post('/rules', payload);
+    // Handle nested response structure if needed
+    if (response.data?.data && typeof response.data.data === 'object') {
+        return {
+            success: response.data.success ?? true,
+            statusCode: response.data.statusCode ?? 200,
+            message: response.data.message || 'Rule created successfully',
+            data: response.data.data,
+        };
+    }
     return response.data;
 };
 
@@ -164,7 +173,18 @@ export const useCreateRule = () => {
     return useMutation({
         mutationFn: (payload: CreateRulePayload) => createRule(payload),
         onSuccess: (data) => {
-            showSuccessToast(data?.message || 'Rule created successfully');
+            // Check if message is a placeholder/dummy and use proper message
+            const apiMessage = data?.message || '';
+            const isPlaceholder =
+                apiMessage.toLowerCase().includes('dummy') ||
+                apiMessage.toLowerCase().includes('placeholder') ||
+                !apiMessage.trim();
+
+            const successMessage = isPlaceholder
+                ? 'Rule created successfully'
+                : apiMessage;
+
+            showSuccessToast(successMessage);
             queryClient.invalidateQueries({ queryKey: ['rules'] });
         },
         onError: (error) => {

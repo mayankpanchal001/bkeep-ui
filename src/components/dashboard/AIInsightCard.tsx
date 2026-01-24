@@ -35,7 +35,7 @@ const AIInsightCard = ({
 
     return (
         <div
-            className={`rounded-lg border p-4 ${typeStyles[type]} transition-all hover:shadow-md`}
+            className={`rounded-lg border p-4 ${typeStyles[type]} transition-all`}
         >
             <div className="flex items-start justify-between mb-2">
                 <h4 className="font-semibold text-sm text-primary">{title}</h4>

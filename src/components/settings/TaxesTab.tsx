@@ -230,20 +230,20 @@ const TaxesTab = () => {
             </div>
 
             {/* <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div className="bg-card rounded shadow-sm border border-primary/10 p-4">
+                <div className="bg-card rounded  border border-primary/10 p-4">
                     <p className="text-xs text-primary/50 uppercase">Total</p>
                     <p className="text-lg font-bold text-primary">
                         {statsData?.data?.total ?? taxes.length}
                     </p>
                 </div>
-                <div className="bg-card rounded shadow-sm border border-primary/10 p-4">
+                <div className="bg-card rounded  border border-primary/10 p-4">
                     <p className="text-xs text-primary/50 uppercase">Active</p>
                     <p className="text-lg font-bold text-primary">
                         {statsData?.data?.active ??
                             taxes.filter((t) => t.isActive).length}
                     </p>
                 </div>
-                <div className="bg-card rounded shadow-sm border border-primary/10 p-4">
+                <div className="bg-card rounded  border border-primary/10 p-4">
                     <p className="text-xs text-primary/50 uppercase">
                         Inactive
                     </p>

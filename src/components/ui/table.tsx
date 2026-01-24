@@ -565,7 +565,6 @@ function TableHeader({ className, sticky = true, ...props }: TableHeaderProps) {
                 sticky && 'sticky top-0 z-10',
                 // Modern gradient background using theme colors
                 'backdrop-blur-md backdrop-saturate-150',
-                // Enhanced border with subtle shadow using theme border color
                 'border-b-2',
                 'border-border',
                 // Smooth transitions
