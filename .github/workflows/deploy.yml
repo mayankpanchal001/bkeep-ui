@@ -64,52 +64,52 @@ jobs:
                   timeout: 30s
                   script: |
                       set -e
-                      
+
                       echo "🚀 Starting deployment..."
-                      
+
                       # Navigate to project directory (adjust path if needed)
                       PROJECT_DIR="${PROJECT_DIR:-/root/bkeep-frontend}"
                       if [ ! -d "$PROJECT_DIR" ]; then
                           PROJECT_DIR="."
                       fi
                       cd "$PROJECT_DIR" || cd ~ || cd /
-                      
+
                       # Login to Docker Hub
                       echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ env.DOCKER_USERNAME }}" --password-stdin || true
-                      
+
                       # Pull latest image
                       echo "📥 Pulling latest image..."
                       docker pull ${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:latest
-                      
+
                       # Deploy using docker run (matches vps-build.sh update command)
                       echo "🐳 Deploying container..."
-                      
+
                       # Stop and remove existing container
                       docker stop ${{ env.CONTAINER_NAME }} 2>/dev/null || true
                       docker rm ${{ env.CONTAINER_NAME }} 2>/dev/null || true
-                      
+
                       # Run new container with same configuration as docker-compose
                       docker run -d \
                           --name ${{ env.CONTAINER_NAME }} \
                           -p 80:80 \
                           --restart unless-stopped \
                           ${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:latest
-                      
+
                       # Wait for container to start
                       echo "⏳ Waiting for container to start..."
                       sleep 5
-                      
+
                       # Check container status
                       echo "📊 Container status:"
                       docker ps --filter "name=${{ env.CONTAINER_NAME }}" --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
-                      
+
                       # Health check
                       echo "🏥 Performing health check..."
                       sleep 3
                       MAX_RETRIES=5
                       RETRY_COUNT=0
                       HEALTH_CHECK_PASSED=false
-                      
+
                       while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
                           if curl -f http://localhost/health > /dev/null 2>&1; then
                               echo "✅ Health check passed!"
@@ -121,20 +121,20 @@ jobs:
                               sleep 3
                           fi
                       done
-                      
+
                       if [ "$HEALTH_CHECK_PASSED" = false ]; then
                           echo "⚠️  Health check did not pass after $MAX_RETRIES attempts"
                           echo "📋 Container logs:"
                           docker logs --tail=50 ${{ env.CONTAINER_NAME }} || true
                       fi
-                      
+
                       # Clean up old images (keep last 2 versions)
                       echo "🧹 Cleaning up old Docker images..."
                       docker image prune -f || true
-                      
+
                       # Remove dangling images
                       docker images --filter "dangling=true" -q | xargs -r docker rmi || true
-                      
+
                       echo "✅ Deployment completed successfully!"
                       echo "🌐 Application available at: http://${{ env.VPS_IP }}"
 

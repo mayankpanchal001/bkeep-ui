@@ -90,7 +90,7 @@ export default function SubscriptionsBarMini({
                                                             backgroundColor:
                                                                 item.color ||
                                                                 (item.dataKey ===
-                                                                    'previous'
+                                                                'previous'
                                                                     ? destructiveColor
                                                                     : secondaryColor),
                                                         }}

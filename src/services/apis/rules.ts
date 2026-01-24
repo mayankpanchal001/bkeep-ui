@@ -179,11 +179,11 @@ export const useCreateRule = () => {
                 apiMessage.toLowerCase().includes('dummy') ||
                 apiMessage.toLowerCase().includes('placeholder') ||
                 !apiMessage.trim();
-            
+
             const successMessage = isPlaceholder
                 ? 'Rule created successfully'
                 : apiMessage;
-            
+
             showSuccessToast(successMessage);
             queryClient.invalidateQueries({ queryKey: ['rules'] });
         },

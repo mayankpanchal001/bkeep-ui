@@ -158,7 +158,7 @@ export default function ViewJournalEntrypage() {
             return entry as unknown as JournalEntry;
         if (
             typeof (entry as { journalEntry?: unknown }).journalEntry ===
-            'object' &&
+                'object' &&
             (entry as { journalEntry?: Record<string, unknown> }).journalEntry
         ) {
             const nested = (entry as { journalEntry: Record<string, unknown> })
@@ -560,8 +560,8 @@ export default function ViewJournalEntrypage() {
                                     reorderMutation.isPending
                                         ? 'cursor-not-allowed opacity-30'
                                         : isDragging
-                                            ? 'cursor-grabbing opacity-50'
-                                            : 'cursor-grab opacity-100 hover:opacity-80'
+                                          ? 'cursor-grabbing opacity-50'
+                                          : 'cursor-grab opacity-100 hover:opacity-80'
                                 )}
                                 title={
                                     reorderMutation.isPending
@@ -587,8 +587,9 @@ export default function ViewJournalEntrypage() {
                 <div>
                     <div className="font-medium text-primary">
                         {line.account?.accountNumber
-                            ? `${line.account.accountNumber} - ${line.account.accountName || ''
-                                }`.trim()
+                            ? `${line.account.accountNumber} - ${
+                                  line.account.accountName || ''
+                              }`.trim()
                             : line.accountName || line.accountId}
                     </div>
                     {(line.account?.accountType || line.name) && (
@@ -771,19 +772,19 @@ export default function ViewJournalEntrypage() {
                     }
                     onRowDragOver={
                         journalEntry.status === 'draft' &&
-                            !reorderMutation.isPending
+                        !reorderMutation.isPending
                             ? (e, line) => handleDragOver(e, line.id)
                             : undefined
                     }
                     onRowDragLeave={
                         journalEntry.status === 'draft' &&
-                            !reorderMutation.isPending
+                        !reorderMutation.isPending
                             ? handleDragLeave
                             : undefined
                     }
                     onRowDrop={
                         journalEntry.status === 'draft' &&
-                            !reorderMutation.isPending
+                        !reorderMutation.isPending
                             ? (e, line) => handleDrop(e, line.id)
                             : undefined
                     }
@@ -861,8 +862,8 @@ export default function ViewJournalEntrypage() {
                                 journalEntry.status === 'draft'
                                     ? 'secondary'
                                     : journalEntry.status === 'posted'
-                                        ? 'success'
-                                        : 'destructive'
+                                      ? 'success'
+                                      : 'destructive'
                             }
                             className="text-primary/70"
                         >
@@ -904,8 +905,9 @@ export default function ViewJournalEntrypage() {
                             Additional Details
                         </h3>
                         <ChevronDown
-                            className={`w-4 h-4 text-primary/50 transition-transform duration-200 ${isDetailsOpen ? 'rotate-180' : ''
-                                }`}
+                            className={`w-4 h-4 text-primary/50 transition-transform duration-200 ${
+                                isDetailsOpen ? 'rotate-180' : ''
+                            }`}
                         />
                     </CollapsibleTrigger>
                     <CollapsibleContent>
@@ -1167,17 +1169,17 @@ export default function ViewJournalEntrypage() {
                             {/* Memo/Description */}
                             {(copyPreviewData.memo ||
                                 copyPreviewData.description) && (
-                                    <div className="p-4 bg-card rounded-lg border border-primary/10">
-                                        <label className="block text-sm font-medium text-primary/50 mb-2">
-                                            Memo
-                                        </label>
-                                        <p className="text-primary text-sm whitespace-pre-wrap">
-                                            {copyPreviewData.memo ||
-                                                copyPreviewData.description ||
-                                                '—'}
-                                        </p>
-                                    </div>
-                                )}
+                                <div className="p-4 bg-card rounded-lg border border-primary/10">
+                                    <label className="block text-sm font-medium text-primary/50 mb-2">
+                                        Memo
+                                    </label>
+                                    <p className="text-primary text-sm whitespace-pre-wrap">
+                                        {copyPreviewData.memo ||
+                                            copyPreviewData.description ||
+                                            '—'}
+                                    </p>
+                                </div>
+                            )}
 
                             {/* Journal Lines Preview */}
                             <div className="border border-primary/10 rounded-lg overflow-hidden">
@@ -1221,9 +1223,9 @@ export default function ViewJournalEntrypage() {
                                                         <td className="px-3 py-2 text-sm text-primary">
                                                             {line.accountId
                                                                 ? accountNameMap.get(
-                                                                    line.accountId
-                                                                ) ||
-                                                                line.accountId
+                                                                      line.accountId
+                                                                  ) ||
+                                                                  line.accountId
                                                                 : '—'}
                                                         </td>
                                                         <td className="px-3 py-2 text-sm text-primary/75">

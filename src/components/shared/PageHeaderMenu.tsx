@@ -141,10 +141,11 @@ const PageHeaderMenu = () => {
                                     to={item.to || ''}
                                     key={`${item.label}-${index}`}
                                     onClick={item.onClick}
-                                    className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm transition-colors ${item.isDanger
+                                    className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm transition-colors ${
+                                        item.isDanger
                                             ? 'text-red-600 hover:bg-red-50 hover:text-red-700'
                                             : 'text-primary/75 hover:bg-primary/10 hover:text-primary'
-                                        }`}
+                                    }`}
                                 >
                                     <span className="shrink-0">
                                         {item.icon}

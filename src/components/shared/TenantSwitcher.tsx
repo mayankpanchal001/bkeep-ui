@@ -111,10 +111,10 @@ const TenantSwitcher = ({ compact = false }: TenantSwitcherProps) => {
                         'group pl-1 inline-flex items-center gap-2 rounded-full bg-card border border-primary/25  transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-card cursor-pointer',
                         buttonClasses,
                         (isSwitching || isLoadingTenants) &&
-                        'opacity-60 cursor-not-allowed',
+                            'opacity-60 cursor-not-allowed',
                         !isSwitching &&
-                        !isLoadingTenants &&
-                        'hover:border-primary/20',
+                            !isLoadingTenants &&
+                            'hover:border-primary/20',
                         isOpen && 'ring-1 ring-primary/25'
                     )}
                 >

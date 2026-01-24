@@ -85,7 +85,7 @@ const ProfitabilityLineChart = ({ data }: ProfitabilityLineChartProps) => {
                                                             backgroundColor:
                                                                 item.color ||
                                                                 (item.dataKey ===
-                                                                    'profitMargin'
+                                                                'profitMargin'
                                                                     ? accentColor
                                                                     : textColor),
                                                         }}

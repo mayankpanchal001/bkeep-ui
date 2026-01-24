@@ -371,9 +371,13 @@ const ChartOfAccountspage = () => {
                         <FileUp size={16} className="mr-2" /> Import
                     </Button>
                     <div className="hidden h-6 md:block w-px bg-gray-300 mx-2"></div>
-                    <Button onClick={handleOpenAddModal} variant="default" className="flex items-center gap-0 md:gap-2">
+                    <Button
+                        onClick={handleOpenAddModal}
+                        variant="default"
+                        className="flex items-center gap-0 md:gap-2"
+                    >
                         <Plus size={16} className="mr-2" />
-                        <span >New Account</span>
+                        <span>New Account</span>
                     </Button>
                 </div>
             </div>
@@ -460,7 +464,7 @@ const ChartOfAccountspage = () => {
                                     <span className="text-sm text-primary">
                                         {
                                             ACCOUNT_TYPE_DISPLAY[
-                                            account.accountType
+                                                account.accountType
                                             ]
                                         }
                                     </span>
@@ -478,9 +482,9 @@ const ChartOfAccountspage = () => {
                                         {currencyFormatter.format(
                                             parseFloat(
                                                 account.currentBalance ||
-                                                String(
-                                                    account.openingBalance
-                                                )
+                                                    String(
+                                                        account.openingBalance
+                                                    )
                                             )
                                         )}
                                     </span>
@@ -573,14 +577,14 @@ const ChartOfAccountspage = () => {
                                                     setSelectedTypes((prev) =>
                                                         active
                                                             ? prev.filter(
-                                                                (t) =>
-                                                                    t !==
-                                                                    opt.value
-                                                            )
+                                                                  (t) =>
+                                                                      t !==
+                                                                      opt.value
+                                                              )
                                                             : [
-                                                                ...prev,
-                                                                opt.value,
-                                                            ]
+                                                                  ...prev,
+                                                                  opt.value,
+                                                              ]
                                                     );
                                                 }}
                                             >
@@ -644,14 +648,14 @@ const ChartOfAccountspage = () => {
                                                             (prev) =>
                                                                 active
                                                                     ? prev.filter(
-                                                                        (v) =>
-                                                                            v !==
-                                                                            dt.value
-                                                                    )
+                                                                          (v) =>
+                                                                              v !==
+                                                                              dt.value
+                                                                      )
                                                                     : [
-                                                                        ...prev,
-                                                                        dt.value,
-                                                                    ]
+                                                                          ...prev,
+                                                                          dt.value,
+                                                                      ]
                                                         );
                                                     }}
                                                 >
@@ -698,8 +702,8 @@ const ChartOfAccountspage = () => {
                                 type="button"
                                 variant={
                                     selectedTypes.length === 0 &&
-                                        selectedDetailTypes.length === 0 &&
-                                        isActiveFilter === 'all'
+                                    selectedDetailTypes.length === 0 &&
+                                    isActiveFilter === 'all'
                                         ? 'default'
                                         : 'outline'
                                 }

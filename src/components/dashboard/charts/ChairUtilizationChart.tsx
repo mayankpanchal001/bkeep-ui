@@ -89,7 +89,7 @@ const ChairUtilizationChart = ({ data }: ChairUtilizationChartProps) => {
                                                 style={{
                                                     backgroundColor: getColor(
                                                         (data.utilization as number) ||
-                                                        0
+                                                            0
                                                     ),
                                                 }}
                                             />
@@ -106,7 +106,7 @@ const ChairUtilizationChart = ({ data }: ChairUtilizationChartProps) => {
                                                 style={{
                                                     backgroundColor: getColor(
                                                         (data.utilization as number) ||
-                                                        0
+                                                            0
                                                     ),
                                                 }}
                                             />

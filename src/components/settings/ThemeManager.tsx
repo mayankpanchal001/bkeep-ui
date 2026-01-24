@@ -198,10 +198,10 @@ const ThemeManager = () => {
                                                     'flex items-center justify-between gap-3 px-3 py-3 rounded-lg cursor-pointer transition-all',
                                                     'hover:bg-accent/50',
                                                     selectedPaletteId ===
-                                                    theme.id &&
-                                                    'bg-primary/10 border border-primary/20',
+                                                        theme.id &&
+                                                        'bg-primary/10 border border-primary/20',
                                                     isTransitioning &&
-                                                    'opacity-60 pointer-events-none'
+                                                        'opacity-60 pointer-events-none'
                                                 )}
                                             >
                                                 <div className="flex items-center gap-3 flex-1 min-w-0">
@@ -214,10 +214,10 @@ const ThemeManager = () => {
                                                             {theme.name}
                                                             {selectedPaletteId ===
                                                                 theme.id && (
-                                                                    <span className="text-xs px-1.5 py-0.5 rounded bg-primary/20 text-primary font-medium">
-                                                                        Active
-                                                                    </span>
-                                                                )}
+                                                                <span className="text-xs px-1.5 py-0.5 rounded bg-primary/20 text-primary font-medium">
+                                                                    Active
+                                                                </span>
+                                                            )}
                                                         </div>
                                                         {theme.description && (
                                                             <div className="text-left text-xs text-muted-foreground mt-0.5 line-clamp-1">
@@ -230,8 +230,8 @@ const ThemeManager = () => {
                                                 </div>
                                                 {selectedPaletteId ===
                                                     theme.id && (
-                                                        <Check className="h-4 w-4 shrink-0 text-primary" />
-                                                    )}
+                                                    <Check className="h-4 w-4 shrink-0 text-primary" />
+                                                )}
                                             </CommandItem>
                                         ))}
                                     </div>
@@ -270,7 +270,7 @@ const ThemeManager = () => {
                                             ? 'border-primary  bg-primary/5'
                                             : 'border-border bg-card hover:bg-accent/30',
                                         isTransitioning &&
-                                        'opacity-60 pointer-events-none'
+                                            'opacity-60 pointer-events-none'
                                     )}
                                     disabled={isTransitioning}
                                     title={theme.name}

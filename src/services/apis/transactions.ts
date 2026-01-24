@@ -44,7 +44,8 @@ const getTransactions = async (
     if (filters?.search) params.append('search', filters.search);
     if (filters?.status) {
         // Map 'pending' to 'draft' for API
-        const apiStatus = filters.status === 'pending' ? 'draft' : filters.status;
+        const apiStatus =
+            filters.status === 'pending' ? 'draft' : filters.status;
         params.append('status', apiStatus);
     }
     if (filters?.accountId) params.append('accountId', filters.accountId);

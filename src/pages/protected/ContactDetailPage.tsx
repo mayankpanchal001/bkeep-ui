@@ -188,7 +188,7 @@ const ContactDetailPage = () => {
             defaultTaxId: (formData.get('defaultTaxId') as string) || null,
             openingBalance:
                 formData.get('openingBalance') !== null &&
-                    formData.get('openingBalance') !== ''
+                formData.get('openingBalance') !== ''
                     ? Number(formData.get('openingBalance'))
                     : null,
             openingBalanceDate:
@@ -663,8 +663,8 @@ const ContactDetailPage = () => {
                                 defaultValue={
                                     contact?.openingBalanceDate
                                         ? new Date(contact.openingBalanceDate)
-                                            .toISOString()
-                                            .split('T')[0]
+                                              .toISOString()
+                                              .split('T')[0]
                                         : ''
                                 }
                             />

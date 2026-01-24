@@ -191,15 +191,16 @@ const TransactionsTable = () => {
                                         <TableCell>
                                             <div className="flex items-center gap-2">
                                                 <div
-                                                    className={`w-2 h-2 rounded-full ${isCredit
+                                                    className={`w-2 h-2 rounded-full ${
+                                                        isCredit
                                                             ? 'bg-green-500'
                                                             : 'bg-red-500'
-                                                        }`}
+                                                    }`}
                                                 ></div>
                                                 <span className="text-sm font-medium text-primary">
                                                     {new Date(
                                                         transaction.latestPostedDate ||
-                                                        transaction.createdAt
+                                                            transaction.createdAt
                                                     ).toLocaleDateString(
                                                         'en-US',
                                                         {
@@ -230,10 +231,11 @@ const TransactionsTable = () => {
                                         </TableCell>
                                         <TableCell align="right">
                                             <div
-                                                className={`flex items-center justify-end gap-1 font-semibold ${isCredit
+                                                className={`flex items-center justify-end gap-1 font-semibold ${
+                                                    isCredit
                                                         ? 'text-secondary'
                                                         : 'text-destructive'
-                                                    }`}
+                                                }`}
                                             >
                                                 {isCredit ? (
                                                     <ArrowUp className="w-3 h-3" />

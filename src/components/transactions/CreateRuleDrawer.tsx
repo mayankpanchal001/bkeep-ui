@@ -85,16 +85,17 @@ export function CreateRuleDrawer({
     trigger,
     transaction,
     open: controlledOpen,
-    onOpenChange: controlledOnOpenChange
+    onOpenChange: controlledOnOpenChange,
 }: CreateRuleDrawerProps) {
     const [internalOpen, setInternalOpen] = useState(false);
     const open = controlledOpen !== undefined ? controlledOpen : internalOpen;
     const setOpen = controlledOnOpenChange || setInternalOpen;
     const { mutate: createRule, isPending } = useCreateRule();
-    const { data: accountsData, isLoading: isLoadingAccounts } = useChartOfAccounts({
-        isActive: true,
-        limit: 1000,
-    });
+    const { data: accountsData, isLoading: isLoadingAccounts } =
+        useChartOfAccounts({
+            isActive: true,
+            limit: 1000,
+        });
     const { data: contactsData, isLoading: isLoadingContacts } = useContacts({
         isActive: true,
         limit: 1000,
@@ -116,7 +117,8 @@ export function CreateRuleDrawer({
     // Filter categories from Chart of Accounts (expense and income accounts)
     const categories = useMemo(() => {
         return accounts.filter(
-            (acc) => acc.accountType === 'expense' || acc.accountType === 'income'
+            (acc) =>
+                acc.accountType === 'expense' || acc.accountType === 'income'
         );
     }, [accounts]);
 
@@ -222,8 +224,14 @@ export function CreateRuleDrawer({
             autoApply: values.autoApply,
             stopOnMatch: true,
             priority: 100,
-            accountScope: values.accountId && values.accountId !== 'all' ? 'selected' : 'all',
-            accountIds: values.accountId && values.accountId !== 'all' ? [values.accountId] : [],
+            accountScope:
+                values.accountId && values.accountId !== 'all'
+                    ? 'selected'
+                    : 'all',
+            accountIds:
+                values.accountId && values.accountId !== 'all'
+                    ? [values.accountId]
+                    : [],
             conditions: [condition],
             actions: [],
         };
@@ -343,7 +351,10 @@ export function CreateRuleDrawer({
                                         render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel>
-                                                    Rule Name <span className="text-destructive">*</span>
+                                                    Rule Name{' '}
+                                                    <span className="text-destructive">
+                                                        *
+                                                    </span>
                                                 </FormLabel>
                                                 <FormControl>
                                                     <Input
@@ -361,7 +372,9 @@ export function CreateRuleDrawer({
                                         name="description"
                                         render={({ field }) => (
                                             <FormItem>
-                                                <FormLabel>Description</FormLabel>
+                                                <FormLabel>
+                                                    Description
+                                                </FormLabel>
                                                 <FormControl>
                                                     <Input
                                                         {...field}
@@ -391,7 +404,9 @@ export function CreateRuleDrawer({
                                                 render={({ field }) => (
                                                     <FormItem className="flex-1">
                                                         <Select
-                                                            onValueChange={field.onChange}
+                                                            onValueChange={
+                                                                field.onChange
+                                                            }
                                                             value={field.value}
                                                         >
                                                             <FormControl>
@@ -427,8 +442,13 @@ export function CreateRuleDrawer({
                                                 render={({ field }) => (
                                                     <FormItem className="flex-1">
                                                         <Select
-                                                            onValueChange={field.onChange}
-                                                            value={field.value || 'all'}
+                                                            onValueChange={
+                                                                field.onChange
+                                                            }
+                                                            value={
+                                                                field.value ||
+                                                                'all'
+                                                            }
                                                         >
                                                             <FormControl>
                                                                 <SelectTrigger>
@@ -439,14 +459,24 @@ export function CreateRuleDrawer({
                                                                 <SelectItem value="all">
                                                                     All accounts
                                                                 </SelectItem>
-                                                                {accounts.map((account) => (
-                                                                    <SelectItem
-                                                                        key={account.id}
-                                                                        value={account.id}
-                                                                    >
-                                                                        {account.accountName}
-                                                                    </SelectItem>
-                                                                ))}
+                                                                {accounts.map(
+                                                                    (
+                                                                        account
+                                                                    ) => (
+                                                                        <SelectItem
+                                                                            key={
+                                                                                account.id
+                                                                            }
+                                                                            value={
+                                                                                account.id
+                                                                            }
+                                                                        >
+                                                                            {
+                                                                                account.accountName
+                                                                            }
+                                                                        </SelectItem>
+                                                                    )
+                                                                )}
                                                             </SelectContent>
                                                         </Select>
                                                         <FormMessage />
@@ -485,7 +515,9 @@ export function CreateRuleDrawer({
                                                 render={({ field }) => (
                                                     <FormItem className="flex-1">
                                                         <Select
-                                                            onValueChange={field.onChange}
+                                                            onValueChange={
+                                                                field.onChange
+                                                            }
                                                             value={field.value}
                                                         >
                                                             <FormControl>
@@ -495,10 +527,14 @@ export function CreateRuleDrawer({
                                                             </FormControl>
                                                             <SelectContent>
                                                                 <SelectItem value="all">
-                                                                    All conditions must match
+                                                                    All
+                                                                    conditions
+                                                                    must match
                                                                 </SelectItem>
                                                                 <SelectItem value="any">
-                                                                    Any condition can match
+                                                                    Any
+                                                                    condition
+                                                                    can match
                                                                 </SelectItem>
                                                             </SelectContent>
                                                         </Select>
@@ -515,10 +551,16 @@ export function CreateRuleDrawer({
                                                     name="conditionField"
                                                     render={({ field }) => (
                                                         <FormItem>
-                                                            <FormLabel className="text-xs">Field</FormLabel>
+                                                            <FormLabel className="text-xs">
+                                                                Field
+                                                            </FormLabel>
                                                             <Select
-                                                                onValueChange={field.onChange}
-                                                                value={field.value}
+                                                                onValueChange={
+                                                                    field.onChange
+                                                                }
+                                                                value={
+                                                                    field.value
+                                                                }
                                                             >
                                                                 <FormControl>
                                                                     <SelectTrigger>
@@ -550,10 +592,16 @@ export function CreateRuleDrawer({
                                                     name="conditionOperator"
                                                     render={({ field }) => (
                                                         <FormItem>
-                                                            <FormLabel className="text-xs">Operator</FormLabel>
+                                                            <FormLabel className="text-xs">
+                                                                Operator
+                                                            </FormLabel>
                                                             <Select
-                                                                onValueChange={field.onChange}
-                                                                value={field.value}
+                                                                onValueChange={
+                                                                    field.onChange
+                                                                }
+                                                                value={
+                                                                    field.value
+                                                                }
                                                             >
                                                                 <FormControl>
                                                                     <SelectTrigger>
@@ -568,10 +616,12 @@ export function CreateRuleDrawer({
                                                                         Equals
                                                                     </SelectItem>
                                                                     <SelectItem value="starts_with">
-                                                                        Starts with
+                                                                        Starts
+                                                                        with
                                                                     </SelectItem>
                                                                     <SelectItem value="ends_with">
-                                                                        Ends with
+                                                                        Ends
+                                                                        with
                                                                     </SelectItem>
                                                                 </SelectContent>
                                                             </Select>
@@ -585,7 +635,9 @@ export function CreateRuleDrawer({
                                                     name="conditionValue"
                                                     render={({ field }) => (
                                                         <FormItem>
-                                                            <FormLabel className="text-xs">Value</FormLabel>
+                                                            <FormLabel className="text-xs">
+                                                                Value
+                                                            </FormLabel>
                                                             <FormControl>
                                                                 <Input
                                                                     {...field}
@@ -607,8 +659,12 @@ export function CreateRuleDrawer({
                                                             <FormControl>
                                                                 <input
                                                                     type="checkbox"
-                                                                    checked={field.value}
-                                                                    onChange={field.onChange}
+                                                                    checked={
+                                                                        field.value
+                                                                    }
+                                                                    onChange={
+                                                                        field.onChange
+                                                                    }
                                                                     className="rounded"
                                                                 />
                                                             </FormControl>
@@ -644,7 +700,9 @@ export function CreateRuleDrawer({
                                                         Transaction Type
                                                     </FormLabel>
                                                     <Select
-                                                        onValueChange={field.onChange}
+                                                        onValueChange={
+                                                            field.onChange
+                                                        }
                                                         value={field.value}
                                                     >
                                                         <FormControl>
@@ -678,7 +736,9 @@ export function CreateRuleDrawer({
                                                         Category
                                                     </FormLabel>
                                                     <Select
-                                                        onValueChange={field.onChange}
+                                                        onValueChange={
+                                                            field.onChange
+                                                        }
                                                         value={field.value}
                                                     >
                                                         <FormControl>
@@ -687,14 +747,22 @@ export function CreateRuleDrawer({
                                                             </SelectTrigger>
                                                         </FormControl>
                                                         <SelectContent>
-                                                            {categories.map((account) => (
-                                                                <SelectItem
-                                                                    key={account.id}
-                                                                    value={account.id}
-                                                                >
-                                                                    {account.accountName}
-                                                                </SelectItem>
-                                                            ))}
+                                                            {categories.map(
+                                                                (account) => (
+                                                                    <SelectItem
+                                                                        key={
+                                                                            account.id
+                                                                        }
+                                                                        value={
+                                                                            account.id
+                                                                        }
+                                                                    >
+                                                                        {
+                                                                            account.accountName
+                                                                        }
+                                                                    </SelectItem>
+                                                                )
+                                                            )}
                                                         </SelectContent>
                                                     </Select>
                                                     <FormMessage />
@@ -711,7 +779,9 @@ export function CreateRuleDrawer({
                                                         Payee
                                                     </FormLabel>
                                                     <Select
-                                                        onValueChange={field.onChange}
+                                                        onValueChange={
+                                                            field.onChange
+                                                        }
                                                         value={field.value}
                                                     >
                                                         <FormControl>
@@ -720,14 +790,22 @@ export function CreateRuleDrawer({
                                                             </SelectTrigger>
                                                         </FormControl>
                                                         <SelectContent>
-                                                            {contacts.map((contact) => (
-                                                                <SelectItem
-                                                                    key={contact.id}
-                                                                    value={contact.id}
-                                                                >
-                                                                    {contact.displayName}
-                                                                </SelectItem>
-                                                            ))}
+                                                            {contacts.map(
+                                                                (contact) => (
+                                                                    <SelectItem
+                                                                        key={
+                                                                            contact.id
+                                                                        }
+                                                                        value={
+                                                                            contact.id
+                                                                        }
+                                                                    >
+                                                                        {
+                                                                            contact.displayName
+                                                                        }
+                                                                    </SelectItem>
+                                                                )
+                                                            )}
                                                         </SelectContent>
                                                     </Select>
                                                     <FormMessage />
@@ -744,7 +822,9 @@ export function CreateRuleDrawer({
                                                         Tax
                                                     </FormLabel>
                                                     <Select
-                                                        onValueChange={field.onChange}
+                                                        onValueChange={
+                                                            field.onChange
+                                                        }
                                                         value={field.value}
                                                     >
                                                         <FormControl>
@@ -777,16 +857,22 @@ export function CreateRuleDrawer({
                                                     <input
                                                         type="checkbox"
                                                         checked={field.value}
-                                                        onChange={field.onChange}
+                                                        onChange={
+                                                            field.onChange
+                                                        }
                                                         className="mt-1 rounded"
                                                     />
                                                 </FormControl>
                                                 <div className="flex-1 space-y-1">
                                                     <FormLabel className="text-sm font-normal leading-tight cursor-pointer">
-                                                        Automatically confirm transactions this rule applies to
+                                                        Automatically confirm
+                                                        transactions this rule
+                                                        applies to
                                                     </FormLabel>
                                                     <p className="text-xs text-muted-foreground">
-                                                        Rules will be applied automatically when transactions match
+                                                        Rules will be applied
+                                                        automatically when
+                                                        transactions match
                                                     </p>
                                                 </div>
                                             </FormItem>
@@ -801,7 +887,11 @@ export function CreateRuleDrawer({
                 <DrawerFooter className="border-t p-4">
                     <div className="flex items-center gap-3 w-full">
                         <DrawerClose asChild className="flex-1">
-                            <Button type="button" variant="outline" className="w-full">
+                            <Button
+                                type="button"
+                                variant="outline"
+                                className="w-full"
+                            >
                                 Cancel
                             </Button>
                         </DrawerClose>

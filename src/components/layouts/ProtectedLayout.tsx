@@ -73,7 +73,7 @@ const ProtectedLayout = ({
                         <Navbar
                             onSearchClick={() => setShowCommandPalette(true)}
                             onShortcutsClick={() => setShowShortcuts(true)}
-                        // onToggleSidebar is handled by SidebarTrigger/Provider now
+                            // onToggleSidebar is handled by SidebarTrigger/Provider now
                         />
 
                         <CommandPalette

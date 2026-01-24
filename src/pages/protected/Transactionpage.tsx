@@ -458,8 +458,7 @@ const Transactionpage = () => {
             const categoryLabelCandidate =
                 (firstSplit?.categoryAndGifi?.[0]?.displayLabel as
                     | string
-                    | undefined) ??
-                undefined;
+                    | undefined) ?? undefined;
 
             // Tax (prefer explicit taxId/taxIds; fallback to split)
             const taxIdCandidate =
@@ -496,9 +495,7 @@ const Transactionpage = () => {
                 fromTo: contactId || undefined,
                 // Store categoryId if available; otherwise fallback to label (so UI shows *something*)
                 category:
-                    categoryIdCandidate ||
-                    categoryLabelCandidate ||
-                    undefined,
+                    categoryIdCandidate || categoryLabelCandidate || undefined,
                 matched: tx.reconciled,
                 status,
                 account,
@@ -524,7 +521,8 @@ const Transactionpage = () => {
     const CATEGORY_OPTIONS: ComboboxOption[] = useMemo(() => {
         const accounts = accountsData?.data?.items || [];
         const categories = accounts.filter(
-            (acc) => acc.accountType === 'expense' || acc.accountType === 'income'
+            (acc) =>
+                acc.accountType === 'expense' || acc.accountType === 'income'
         );
         return categories.map((account) => ({
             value: account.id,
@@ -625,10 +623,10 @@ const Transactionpage = () => {
                         status === 'pending'
                             ? 'draft'
                             : status === 'all'
-                            ? 'all'
-                            : status === 'posted'
-                            ? 'posted'
-                            : 'all'
+                              ? 'all'
+                              : status === 'posted'
+                                ? 'posted'
+                                : 'all'
                     }
                     onValueChange={(value) => {
                         if (value === 'draft') {
@@ -642,9 +640,7 @@ const Transactionpage = () => {
                     className="w-fit"
                 >
                     <TabsList>
-                        <TabsTrigger value="all">
-                            All ({allCount})
-                        </TabsTrigger>
+                        <TabsTrigger value="all">All ({allCount})</TabsTrigger>
                         <TabsTrigger value="draft">
                             Draft ({pendingCount})
                         </TabsTrigger>
@@ -687,8 +683,8 @@ const Transactionpage = () => {
                                     filterStore.filterEndDate ||
                                     filterStore.filterMinAmount ||
                                     filterStore.filterMaxAmount) && (
-                                        <span className="ml-2 h-2 w-2 rounded-full bg-accent" />
-                                    )}
+                                    <span className="ml-2 h-2 w-2 rounded-full bg-accent" />
+                                )}
                             </Button>
                         </DrawerTrigger>
                         <DrawerContent className="h-full w-full sm:w-[400px]">
@@ -978,7 +974,7 @@ const Transactionpage = () => {
                                                     const rate =
                                                         (value &&
                                                             TAX_RATE_BY_ID[
-                                                            value
+                                                                value
                                                             ]) ||
                                                         0;
                                                     setTransactions((prev) =>
@@ -1021,8 +1017,8 @@ const Transactionpage = () => {
                                             value={
                                                 t.fromTo
                                                     ? contactNameById.get(
-                                                        t.fromTo
-                                                    ) || t.fromTo
+                                                          t.fromTo
+                                                      ) || t.fromTo
                                                     : ''
                                             }
                                             onChange={(value) => {
@@ -1039,11 +1035,11 @@ const Transactionpage = () => {
                                                     prev.map((tx) =>
                                                         tx.id === t.id
                                                             ? {
-                                                                ...tx,
-                                                                fromTo:
-                                                                    contactId ||
-                                                                    undefined,
-                                                            }
+                                                                  ...tx,
+                                                                  fromTo:
+                                                                      contactId ||
+                                                                      undefined,
+                                                              }
                                                             : tx
                                                     )
                                                 );
@@ -1065,10 +1061,13 @@ const Transactionpage = () => {
                                                 value={t.category || ''}
                                                 onChange={(value) => {
                                                     // Find category name by ID
-                                                    const categoryName = CATEGORY_OPTIONS.find(
-                                                        (opt) => opt.value === value
-                                                    )?.label || value;
-                                                    
+                                                    const categoryName =
+                                                        CATEGORY_OPTIONS.find(
+                                                            (opt) =>
+                                                                opt.value ===
+                                                                value
+                                                        )?.label || value;
+
                                                     setTransactions((prev) =>
                                                         prev.map((tx) =>
                                                             tx.id === t.id
@@ -1099,10 +1098,10 @@ const Transactionpage = () => {
                                                     prev.map((tx) =>
                                                         tx.id === t.id
                                                             ? {
-                                                                ...tx,
-                                                                matched:
-                                                                    !tx.matched,
-                                                            }
+                                                                  ...tx,
+                                                                  matched:
+                                                                      !tx.matched,
+                                                              }
                                                             : tx
                                                     )
                                                 );
@@ -1181,8 +1180,8 @@ const Transactionpage = () => {
                                                         const transactionAmount =
                                                             Math.abs(
                                                                 t.spent ||
-                                                                t.received ||
-                                                                0
+                                                                    t.received ||
+                                                                    0
                                                             );
                                                         setSelectedTransactionForSplit(
                                                             {
@@ -1202,7 +1201,9 @@ const Transactionpage = () => {
                                                 </DropdownMenuItem>
                                                 <DropdownMenuItem
                                                     onClick={() => {
-                                                        setSelectedTransactionForRule(t);
+                                                        setSelectedTransactionForRule(
+                                                            t
+                                                        );
                                                         setRuleDrawerOpen(true);
                                                     }}
                                                 >

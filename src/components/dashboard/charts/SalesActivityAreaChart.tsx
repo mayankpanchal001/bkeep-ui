@@ -116,7 +116,7 @@ export default function SalesActivityAreaChart({
                                                             backgroundColor:
                                                                 item.color ||
                                                                 (item.dataKey ===
-                                                                    'sales'
+                                                                'sales'
                                                                     ? destructiveColor
                                                                     : secondaryColor),
                                                         }}

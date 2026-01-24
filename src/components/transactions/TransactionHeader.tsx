@@ -62,9 +62,6 @@ export function TransactionHeader({
     const [canScrollLeft, setCanScrollLeft] = useState(false);
     const [canScrollRight, setCanScrollRight] = useState(true);
 
-
-
-
     const { data: accountsResponse } = useChartOfAccounts({
         isActive: true,
         limit: 100,
@@ -91,7 +88,7 @@ export function TransactionHeader({
         setCanScrollLeft(container.scrollLeft > 0);
         setCanScrollRight(
             container.scrollLeft <
-            container.scrollWidth - container.clientWidth - 10
+                container.scrollWidth - container.clientWidth - 10
         );
     }, []);
 
@@ -140,8 +137,6 @@ export function TransactionHeader({
         <div className="flex flex-col gap-4">
             {/* Top Header Row */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-
-
                 {/* Account Selector */}
                 <div className="flex items-center gap-2">
                     <DropdownMenu>

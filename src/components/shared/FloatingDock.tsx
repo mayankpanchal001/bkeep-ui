@@ -50,9 +50,10 @@ const FloatingDock = () => {
                                     flex items-center justify-center
                                     w-12 h-12 rounded-xl text-xl
                                     transition-all duration-200 ease-out
-                                    ${isActive
-                                        ? 'bg-primary text-white  scale-110 -translate-y-2'
-                                        : 'text-primary/50 hover:bg-primary/5 hover:text-primary hover:-translate-y-2'
+                                    ${
+                                        isActive
+                                            ? 'bg-primary text-white  scale-110 -translate-y-2'
+                                            : 'text-primary/50 hover:bg-primary/5 hover:text-primary hover:-translate-y-2'
                                     }
                                     ${isHovered && !isActive ? 'scale-110' : ''}
                                 `}
