@@ -230,7 +230,7 @@ const Navbar = ({ onSearchClick, onShortcutsClick }: NavbarProps) => {
                                     'relative p-2 rounded-lg transition-all duration-200',
                                     'hover:bg-primary/10 text-primary/70 hover:text-primary',
                                     isNotificationsOpen &&
-                                        'bg-primary/10 text-primary'
+                                    'bg-primary/10 text-primary'
                                 )}
                                 aria-label="Notifications"
                             >
@@ -312,13 +312,13 @@ const Navbar = ({ onSearchClick, onShortcutsClick }: NavbarProps) => {
                                                         className={cn(
                                                             'flex items-center justify-center w-9 h-9 rounded-lg shrink-0',
                                                             notificationColors[
-                                                                n.type
+                                                            n.type
                                                             ]
                                                         )}
                                                     >
                                                         {
                                                             notificationIcons[
-                                                                n.type
+                                                            n.type
                                                             ]
                                                         }
                                                     </div>
@@ -402,7 +402,7 @@ const Navbar = ({ onSearchClick, onShortcutsClick }: NavbarProps) => {
                                             'relative p-2 rounded-lg transition-all duration-200',
                                             'hover:bg-primary/10 text-primary/70 hover:text-primary',
                                             isNotificationsOpen &&
-                                                'bg-primary/10 text-primary'
+                                            'bg-primary/10 text-primary'
                                         )}
                                         aria-label="Notifications"
                                     >
@@ -429,7 +429,7 @@ const Navbar = ({ onSearchClick, onShortcutsClick }: NavbarProps) => {
                             sideOffset={8}
                         >
                             {/* Header */}
-                            <div className="px-4 py-3 border-b border-primary/10 dark:border-primary/20 bg-gradient-to-r from-surface-muted to-card dark:from-surface-muted/50 dark:to-surface-muted">
+                            <div className="px-4 py-3 border-b border-primary/10 dark:border-primary/20 bg-linear-to-r from-surface-muted to-card dark:from-surface-muted/50 dark:to-surface-muted">
                                 <div className="flex items-center justify-between gap-4">
                                     <div className="flex items-center gap-2 min-w-0">
                                         <Bell className="w-4 h-4 text-primary shrink-0" />
@@ -516,19 +516,20 @@ const Navbar = ({ onSearchClick, onShortcutsClick }: NavbarProps) => {
                                                     handleNotificationClick(n)
                                                 }
                                             >
-                                                <div className="flex items-start gap-3">
+                                                <div className="flex items-start gap-4">
                                                     {/* Icon */}
+
                                                     <div
                                                         className={cn(
                                                             'flex items-center justify-center w-9 h-9 rounded-lg shrink-0',
                                                             notificationColors[
-                                                                n.type
+                                                            n.type
                                                             ]
                                                         )}
                                                     >
                                                         {
                                                             notificationIcons[
-                                                                n.type
+                                                            n.type
                                                             ]
                                                         }
                                                     </div>
@@ -617,16 +618,7 @@ const Navbar = ({ onSearchClick, onShortcutsClick }: NavbarProps) => {
                                 </div>
                             </ScrollArea>
 
-                            {/* Footer */}
-                            {/* <div className="px-4 py-3 border-t border-slate-200/80 dark:border-slate-700/80 bg-slate-50/50 dark:bg-slate-800/50">
-                            <button
-                                onClick={handleViewAll}
-                                className="w-full flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-primary hover:bg-primary/10 rounded-lg transition-colors"
-                            >
-                                <Settings className="w-4 h-4" />
-                                Notification Settings
-                            </button>
-                        </div> */}
+
                         </PopoverContent>
                     </Popover>
                 )}
@@ -637,7 +629,7 @@ const Navbar = ({ onSearchClick, onShortcutsClick }: NavbarProps) => {
                         <TooltipTrigger asChild>
                             <DropdownMenuTrigger asChild>
                                 <button
-                                    className="w-8 h-8 p-1 rounded-full bg-linear-to-br from-primary/20 to-primary/10 flex items-center justify-center text-xs text-primary font-semibold hover:from-primary/30 hover:to-primary/20 transition-colors"
+                                    className="w-9 cursor-pointer h-9 p-1 rounded-full bg-linear-to-br from-primary/20 to-primary/10 flex items-center justify-center text-xs text-primary font-semibold hover:from-primary/30 hover:to-primary/20 transition-colors"
                                     aria-label="User menu"
                                 >
                                     {initials}

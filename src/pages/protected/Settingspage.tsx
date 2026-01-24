@@ -33,17 +33,13 @@ const Settingspage = () => {
         },
         ...(isSuperAdmin
             ? [
-                  {
-                      title: CAP_PLURAL,
-                      href: '/settings/tenants',
-                      icon: <Icons.Building className="w-4 h-4" />,
-                  },
-                  {
-                      title: 'Templates',
-                      href: '/settings/templates',
-                      icon: <Icons.ChartOfAccounts className="w-4 h-4" />,
-                  },
-              ]
+                {
+                    title: CAP_PLURAL,
+                    href: '/settings/tenants',
+                    icon: <Icons.Building className="w-4 h-4" />,
+                },
+
+            ]
             : []),
         {
             title: 'Users',

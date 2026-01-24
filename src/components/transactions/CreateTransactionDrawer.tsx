@@ -44,10 +44,9 @@ const formSchema = z.object({
     type: z.enum(['income', 'expense', 'transfer']),
     accountId: z.string().min(1, 'Account is required'),
     paidAt: z.string().min(1, 'Date is required'),
-    amount: z.coerce.number({
-        required_error: 'Amount is required',
-        invalid_type_error: 'Amount must be a valid number',
-    }).min(0.01, 'Amount must be greater than 0'),
+    amount: z.coerce
+        .number()
+        .min(0.01, 'Amount must be greater than 0'),
     currencyCode: z.string().default('CAD'),
     currencyRate: z.number().default(1),
     contactId: z.string().optional(),
@@ -288,16 +287,42 @@ export function CreateTransactionDrawer({
                                                 <CurrencyInput
                                                     placeholder="Amount"
                                                     step="0.01"
-                                                    value={typeof field.value === 'number' ? field.value : field.value || ''}
+                                                    value={
+                                                        typeof field.value ===
+                                                            'number'
+                                                            ? field.value
+                                                            : field.value || ''
+                                                    }
                                                     onValueChange={(value) => {
                                                         // CurrencyInput returns string value (numeric string without formatting)
                                                         // Convert to number for form validation
-                                                        if (!value || value === '' || value === undefined || value === null) {
+                                                        if (
+                                                            !value ||
+                                                            value === '' ||
+                                                            value ===
+                                                            undefined ||
+                                                            value === null
+                                                        ) {
                                                             field.onChange(0);
                                                         } else {
-                                                            const numValue = parseFloat(String(value));
-                                                            if (!isNaN(numValue) && isFinite(numValue) && numValue >= 0) {
-                                                                field.onChange(numValue);
+                                                            const numValue =
+                                                                parseFloat(
+                                                                    String(
+                                                                        value
+                                                                    )
+                                                                );
+                                                            if (
+                                                                !isNaN(
+                                                                    numValue
+                                                                ) &&
+                                                                isFinite(
+                                                                    numValue
+                                                                ) &&
+                                                                numValue >= 0
+                                                            ) {
+                                                                field.onChange(
+                                                                    numValue
+                                                                );
                                                             }
                                                         }
                                                     }}

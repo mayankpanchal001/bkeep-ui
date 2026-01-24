@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { FaExclamationTriangle, FaTimes } from 'react-icons/fa';
 import { useGetRoles } from '../../services/apis/roleApi';
 import { useUpdateUser } from '../../services/apis/usersApi';
+import { useAuth } from '../../stores/auth/authSelectore';
 import { UserType } from '../../types';
 import { Button } from '../ui/button';
 import Input from '../ui/input';
@@ -23,6 +24,9 @@ const EditUserModal = ({ isOpen, onClose, user }: EditUserModalProps) => {
         isActive: true,
     });
     const [errors, setErrors] = useState<Record<string, string>>({});
+
+    const { user: currentUser } = useAuth();
+    const isSuperAdmin = currentUser?.role?.name === 'superadmin';
 
     const { data: rolesData } = useGetRoles();
     const roles = rolesData?.data?.items || [];
@@ -224,6 +228,17 @@ const EditUserModal = ({ isOpen, onClose, user }: EditUserModalProps) => {
                             </div>
 
                             <div>
+                                <label
+                                    htmlFor="edit-user-role"
+                                    className="block text-sm font-medium text-primary mb-1.5"
+                                >
+                                    Role
+                                    {!isSuperAdmin && (
+                                        <span className="text-primary/50 text-xs ml-1">
+                                            (Read-only)
+                                        </span>
+                                    )}
+                                </label>
                                 <Select
                                     value={formData.roleId}
                                     onValueChange={(value: string) => {
@@ -239,6 +254,7 @@ const EditUserModal = ({ isOpen, onClose, user }: EditUserModalProps) => {
                                         }
                                     }}
                                     required
+                                    disabled={!isSuperAdmin}
                                 >
                                     <SelectContent>
                                         {roles.map((role) => (
@@ -255,6 +271,11 @@ const EditUserModal = ({ isOpen, onClose, user }: EditUserModalProps) => {
                                     <p className="text-destructive text-xs mt-1 flex items-center gap-1">
                                         <FaExclamationTriangle className="w-3 h-3" />
                                         {errors.roleId}
+                                    </p>
+                                )}
+                                {!isSuperAdmin && (
+                                    <p className="text-primary/50 text-xs mt-1">
+                                        Only superadmins can edit user roles
                                     </p>
                                 )}
                             </div>

@@ -5,6 +5,7 @@ import {
 import { Icons } from '@/components/shared/Icons';
 import { SidebarItemProps } from '../types';
 
+
 const CAP_SINGULAR =
     SINGLE_TENANT_PREFIX.charAt(0).toUpperCase() +
     SINGLE_TENANT_PREFIX.slice(1);
@@ -27,16 +28,7 @@ export const SIDEBAR_ITEMS: SidebarItemProps[] = [
         label: 'Reports',
         icon: <Icons.Reports />,
         path: '/reports',
-        children: [
-            {
-                label: 'Income Statement',
-                path: '/reports/income-statement',
-            },
-            {
-                label: 'Balance Sheet',
-                path: '/reports/balance-sheet',
-            },
-        ],
+
     },
     {
         label: 'Chart of Accounts',
@@ -47,12 +39,7 @@ export const SIDEBAR_ITEMS: SidebarItemProps[] = [
         label: 'Journal Entries',
         icon: <Icons.JournalEntries />,
         path: '/journal-entries',
-        children: [
-            {
-                label: 'All Journal Entries',
-                path: '/:id',
-            },
-        ],
+
     },
     {
         label: 'Invoices',
@@ -123,11 +110,6 @@ export const SIDEBAR_ITEMS: SidebarItemProps[] = [
                 label: 'Taxes',
                 icon: <Icons.Expenses />,
                 path: '/settings/taxes',
-            },
-            {
-                label: 'Templates',
-                icon: <Icons.ChartOfAccounts />,
-                path: '/settings/templates',
             },
             {
                 label: 'Data Privacy',

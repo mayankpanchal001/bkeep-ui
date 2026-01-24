@@ -129,7 +129,7 @@ export type PermissionCategory = {
 
 export type SidebarItemProps = {
     label: string;
-    icon?: React.ReactElement;
+    icon?: React.ReactNode;
     path?: string;
     children?: SidebarItemProps[];
 };

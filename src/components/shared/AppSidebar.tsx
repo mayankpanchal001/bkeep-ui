@@ -1,6 +1,6 @@
 import { SINGLE_TENANT_PREFIX } from '@/components/homepage/constants';
 import { Check, ChevronRight, ChevronsUpDown } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router';
 import { SIDEBAR_ITEMS } from '../../constants';
 import { LOGO_IMAGE } from '../../constants/images';
@@ -10,7 +10,7 @@ import { useAuth } from '../../stores/auth/authSelectore';
 import { useTenant } from '../../stores/tenant/tenantSelectore';
 import { showErrorToast } from '../../utills/toast';
 import { Icons } from '../shared/Icons';
-import { SidebarThemeSwitcher } from '../shared/SidebarThemeSwitcher';
+import { Avatar, AvatarFallback } from '../ui/avatar';
 import {
     Collapsible,
     CollapsibleContent,
@@ -117,7 +117,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     const [favLinks, setFavLinks] = useState<FavLink[]>([]);
     const [query, setQuery] = useState('');
     const { isMobile, setOpenMobile } = useSidebar();
-
+    const [hoveredItem, setHoveredItem] = useState<string | null>(null);
+    const hoverTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     useEffect(() => {
         const read = (): FavLink[] => {
             try {
@@ -151,7 +152,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             }
         };
         window.addEventListener('storage', onStorage);
-        return () => window.removeEventListener('storage', onStorage);
+        return () => {
+            window.removeEventListener('storage', onStorage);
+            if (hoverTimeoutRef.current) {
+                clearTimeout(hoverTimeoutRef.current);
+            }
+        };
     }, []);
 
     return (
@@ -175,13 +181,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                                     <div className="grid flex-1 text-left text-sm leading-tight">
                                         <span className="truncate font-semibold">
                                             {selectedTenant?.name ||
-                                                `Select ${
-                                                    SINGLE_TENANT_PREFIX.charAt(
-                                                        0
-                                                    ).toUpperCase() +
-                                                    SINGLE_TENANT_PREFIX.slice(
-                                                        1
-                                                    )
+                                                `Select ${SINGLE_TENANT_PREFIX.charAt(
+                                                    0
+                                                ).toUpperCase() +
+                                                SINGLE_TENANT_PREFIX.slice(
+                                                    1
+                                                )
                                                 }`}
                                         </span>
                                         <span className="truncate text-xs">
@@ -198,12 +203,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                                 sideOffset={4}
                             >
                                 <DropdownMenuLabel className="text-xs text-muted-foreground">
-                                    {`Switch ${
-                                        SINGLE_TENANT_PREFIX.charAt(
-                                            0
-                                        ).toUpperCase() +
+                                    {`Switch ${SINGLE_TENANT_PREFIX.charAt(
+                                        0
+                                    ).toUpperCase() +
                                         SINGLE_TENANT_PREFIX.slice(1)
-                                    }`}
+                                        }`}
                                 </DropdownMenuLabel>
                                 {tenants.map((tenant) => (
                                     <DropdownMenuItem
@@ -272,12 +276,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                                 const isReports = item.path === '/reports';
                                 const baseChildren = isReports
                                     ? [
-                                          ...favLinks.map((f) => ({
-                                              label: f.label,
-                                              path: f.path,
-                                          })),
-                                          ...(item.children || []),
-                                      ]
+                                        ...favLinks.map((f) => ({
+                                            label: f.label,
+                                            path: f.path,
+                                        })),
+                                        ...(item.children || []),
+                                    ]
                                     : item.children || [];
                                 const q = query.trim().toLowerCase();
                                 const itemMatches =
@@ -287,10 +291,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                                 const computedChildren =
                                     q.length > 0
                                         ? (baseChildren || []).filter((c) =>
-                                              (c.label || '')
-                                                  .toLowerCase()
-                                                  .includes(q)
-                                          )
+                                            (c.label || '')
+                                                .toLowerCase()
+                                                .includes(q)
+                                        )
                                         : baseChildren || [];
                                 const shouldRender =
                                     itemMatches ||
@@ -314,23 +318,40 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                                 }
 
                                 if (hasChildren) {
+                                    const isHovered = hoveredItem === item.label;
+                                    const isOpen =
+                                        q.length > 0
+                                            ? true
+                                            : isGroupExpanded || isHovered;
+
+                                    const handleMouseEnter = () => {
+                                        if (hoverTimeoutRef.current) {
+                                            clearTimeout(hoverTimeoutRef.current);
+                                            hoverTimeoutRef.current = null;
+                                        }
+                                        setHoveredItem(item.label);
+                                    };
+
+                                    const handleMouseLeave = () => {
+                                        hoverTimeoutRef.current = setTimeout(() => {
+                                            setHoveredItem(null);
+                                        }, 150);
+                                    };
+
                                     return (
                                         <Collapsible
                                             key={item.label}
                                             asChild
-                                            defaultOpen={
-                                                q.length > 0
-                                                    ? true
-                                                    : isGroupExpanded
-                                            }
+                                            open={isOpen}
                                             className="group/collapsible"
                                         >
-                                            <SidebarMenuItem>
+                                            <SidebarMenuItem className="transition-all duration-200 ease-in-out">
                                                 <div className="flex items-center">
                                                     <SidebarMenuButton
                                                         asChild
                                                         tooltip={item.label}
                                                         isActive={isActive}
+                                                        className="transition-all duration-200 ease-in-out"
                                                     >
                                                         <Link
                                                             to={
@@ -352,25 +373,33 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                                                     <CollapsibleTrigger asChild>
                                                         <SidebarMenuAction
                                                             showOnHover
+                                                            onMouseEnter={handleMouseEnter}
+                                                            onMouseLeave={handleMouseLeave}
                                                         >
-                                                            <ChevronRight className="transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                                                            <ChevronRight className="transition-transform duration-300 ease-in-out group-data-[state=open]/collapsible:rotate-90" />
                                                         </SidebarMenuAction>
                                                     </CollapsibleTrigger>
                                                 </div>
-                                                <CollapsibleContent>
-                                                    <SidebarMenuSub>
+                                                <CollapsibleContent
+                                                    onMouseEnter={handleMouseEnter}
+                                                    onMouseLeave={handleMouseLeave}
+                                                    className="transition-all duration-300 ease-in-out"
+                                                >
+                                                    <SidebarMenuSub className="transition-all duration-300 ease-in-out">
                                                         {computedChildren.map(
                                                             (child) => (
                                                                 <SidebarMenuSubItem
                                                                     key={
                                                                         child.label
                                                                     }
+                                                                    className="transition-all duration-200 ease-in-out"
                                                                 >
                                                                     <SidebarMenuSubButton
                                                                         asChild
                                                                         isActive={isItemActive(
                                                                             child.path
                                                                         )}
+                                                                        className="transition-all duration-200 ease-in-out"
                                                                     >
                                                                         <Link
                                                                             to={
@@ -386,10 +415,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                                                                                     );
                                                                             }}
                                                                         >
+                                                                            {'icon' in child && child.icon && (
+                                                                                <span className="[&>svg]:text-sidebar-foreground [&>svg]:size-4 [&>svg]:shrink-0 [&>svg]:transition-colors [&>svg]:duration-200">
+                                                                                    {child.icon}
+                                                                                </span>
+                                                                            )}
                                                                             <span>
-                                                                                {
-                                                                                    child.label
-                                                                                }
+                                                                                {child.label}
                                                                             </span>
                                                                         </Link>
                                                                     </SidebarMenuSubButton>
@@ -430,9 +462,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             </SidebarContent>
 
             <SidebarFooter>
-                <SidebarSeparator className="mb-2" />
-                <SidebarThemeSwitcher />
                 <SidebarMenu>
+                    <SidebarSeparator className="mb-2" />
                     <SidebarMenuItem>
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
@@ -440,9 +471,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                                     size="lg"
                                     className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
                                 >
-                                    <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                                        {user?.name?.charAt(0) || 'U'}
-                                    </div>
+                                    <Avatar className="size-9">
+                                        <AvatarFallback >
+                                            {user?.name?.charAt(0) || 'U'}
+                                        </AvatarFallback>
+                                    </Avatar>
                                     <div className="grid flex-1 text-left text-sm leading-tight">
                                         <span className="truncate font-semibold">
                                             {user?.name || 'User'}
@@ -462,9 +495,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                             >
                                 <DropdownMenuLabel className="p-0 font-normal">
                                     <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                                        <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                                            {user?.name?.charAt(0) || 'U'}
-                                        </div>
+                                        <Avatar className="size-9">
+                                            <AvatarFallback>
+                                                {user?.name?.charAt(0) || 'U'}
+                                            </AvatarFallback>
+                                        </Avatar>
+
                                         <div className="grid flex-1 text-left text-sm leading-tight">
                                             <span className="truncate font-semibold">
                                                 {user?.name || 'User'}

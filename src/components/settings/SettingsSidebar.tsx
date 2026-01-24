@@ -37,10 +37,9 @@ export function SettingsSidebar({
                             className={`
                                 flex items-center gap-2 p-1 sm:p-2 text-xs font-normal transition-colors whitespace-nowrap border-b-2
                                 rounded-sm lg:border-0
-                                ${
-                                    isActive
-                                        ? 'border-primary text-primary lg:bg-primary/5 lg:text-primary'
-                                        : 'border-transparent text-primary/50 hover:text-primary/70 hover:border-primary/25 lg:text-primary/60 lg:hover:bg-card lg:hover:text-primary'
+                                ${isActive
+                                    ? 'border-primary text-primary lg:bg-primary/5 lg:text-primary'
+                                    : 'border-transparent text-primary/50 hover:text-primary/70 hover:border-primary/25 lg:text-primary/60 lg:hover:bg-card lg:hover:text-primary'
                                 }
                             `}
                         >

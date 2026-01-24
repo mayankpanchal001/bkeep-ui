@@ -1,11 +1,15 @@
-import { Loader2, Mail, Phone, Save } from 'lucide-react';
-import React, { useEffect } from 'react';
+import { ArrowLeft, Mail, Phone, Save } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
-import { Badge } from '../../components/ui/badge';
+import { Icons } from '../../components/shared/Icons';
+import Loading from '../../components/shared/Loading';
+import PageHeader from '../../components/shared/PageHeader';
+import { Avatar, AvatarFallback } from '../../components/ui/avatar';
 import { Button } from '../../components/ui/button';
 import {
     Card,
     CardContent,
+    CardDescription,
     CardHeader,
     CardTitle,
 } from '../../components/ui/card';
@@ -18,6 +22,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from '../../components/ui/select';
+import { Separator } from '../../components/ui/separator';
 import { Switch } from '../../components/ui/switch';
 import {
     Tabs,
@@ -44,23 +49,43 @@ const contactTypeOptions = [
     { value: 'supplier', label: 'Supplier' },
 ];
 
+const titleOptions = [
+    { value: 'Mr', label: 'Mr' },
+    { value: 'Mrs', label: 'Mrs' },
+    { value: 'Miss', label: 'Miss' },
+    { value: 'Ms', label: 'Ms' },
+    { value: 'Dr', label: 'Dr' },
+    { value: 'Prof', label: 'Prof' },
+    { value: 'Sir', label: 'Sir' },
+    { value: 'Madam', label: 'Madam' },
+];
+
+// Helper function to get contact initials
+const getContactInitials = (displayName: string): string => {
+    const parts = displayName.trim().split(/\s+/);
+    if (parts.length >= 2) {
+        return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase();
+    }
+    return displayName.substring(0, 2).toUpperCase();
+};
+
 // Helper component for Input with Label
-interface InputFieldProps extends React.ComponentProps<typeof Input> {
+interface InputFieldProps extends Omit<React.ComponentProps<typeof Input>, 'error'> {
     label?: string;
-    labelShow?: boolean;
     required?: boolean;
+    error?: string;
 }
 
 const InputField: React.FC<InputFieldProps> = ({
     id,
     label,
-    labelShow = true,
     required,
+    error,
     ...props
 }) => {
     return (
         <div className="flex flex-col gap-2">
-            {labelShow && label && (
+            {label && (
                 <Label htmlFor={id} className="text-sm font-medium">
                     {label}
                     {required && (
@@ -69,6 +94,12 @@ const InputField: React.FC<InputFieldProps> = ({
                 </Label>
             )}
             <Input id={id} name={id} {...props} />
+            {error && (
+                <p className="text-xs text-destructive flex items-center gap-1">
+                    <Icons.Close className="w-3 h-3" />
+                    {error}
+                </p>
+            )}
         </div>
     );
 };
@@ -77,23 +108,27 @@ const InputField: React.FC<InputFieldProps> = ({
 interface SelectFieldProps {
     id: string;
     label?: string;
-    labelShow?: boolean;
     required?: boolean;
+    value?: string;
     defaultValue?: string;
     options: { value: string; label: string }[];
+    onChange?: (value: string) => void;
+    error?: string;
 }
 
 const SelectField: React.FC<SelectFieldProps> = ({
     id,
     label,
-    labelShow = true,
     required,
+    value,
     defaultValue,
     options,
+    onChange,
+    error,
 }) => {
     return (
         <div className="flex flex-col gap-2">
-            {labelShow && label && (
+            {label && (
                 <Label htmlFor={id} className="text-sm font-medium">
                     {label}
                     {required && (
@@ -101,7 +136,12 @@ const SelectField: React.FC<SelectFieldProps> = ({
                     )}
                 </Label>
             )}
-            <Select name={id} defaultValue={defaultValue}>
+            <Select
+                name={id}
+                value={value || undefined}
+                defaultValue={defaultValue || undefined}
+                onValueChange={onChange}
+            >
                 <SelectTrigger id={id}>
                     <SelectValue
                         placeholder={`Select ${label?.toLowerCase() || 'option'}`}
@@ -109,12 +149,21 @@ const SelectField: React.FC<SelectFieldProps> = ({
                 </SelectTrigger>
                 <SelectContent>
                     {options.map((option) => (
-                        <SelectItem key={option.value} value={option.value}>
+                        <SelectItem
+                            key={option.value}
+                            value={option.value}
+                        >
                             {option.label}
                         </SelectItem>
                     ))}
                 </SelectContent>
             </Select>
+            {error && (
+                <p className="text-xs text-destructive flex items-center gap-1">
+                    <Icons.Close className="w-3 h-3" />
+                    {error}
+                </p>
+            )}
         </div>
     );
 };
@@ -140,8 +189,19 @@ const ContactDetailPage = () => {
     const { mutateAsync: disableContact, isPending: isDisabling } =
         useDisableContact();
 
+    const [errors, setErrors] = useState<Record<string, string>>({});
+    const [contactType, setContactType] = useState<ContactType>(
+        contact?.type || 'customer'
+    );
+
     const isBusy = isCreating || isUpdating || (isLoading && !isNew);
     const isStatusBusy = isEnabling || isDisabling;
+
+    useEffect(() => {
+        if (contact?.type) {
+            setContactType(contact.type);
+        }
+    }, [contact]);
 
     useEffect(() => {
         if (!isNew && !isLoading && !contact && id) {
@@ -166,10 +226,31 @@ const ContactDetailPage = () => {
         }
     };
 
+    const validateForm = (formData: FormData): boolean => {
+        const newErrors: Record<string, string> = {};
+        const displayName = formData.get('displayName') as string;
+
+        if (!displayName?.trim()) {
+            newErrors.displayName = 'Display name is required';
+        }
+
+        const email = formData.get('email') as string;
+        if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            newErrors.email = 'Please enter a valid email address';
+        }
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const form = e.currentTarget;
         const formData = new FormData(form);
+
+        if (!validateForm(formData)) {
+            return;
+        }
 
         const payload: CreateContactPayload = {
             type: (formData.get('type') as ContactType) || 'customer',
@@ -188,7 +269,7 @@ const ContactDetailPage = () => {
             defaultTaxId: (formData.get('defaultTaxId') as string) || null,
             openingBalance:
                 formData.get('openingBalance') !== null &&
-                formData.get('openingBalance') !== ''
+                    formData.get('openingBalance') !== ''
                     ? Number(formData.get('openingBalance'))
                     : null,
             openingBalanceDate:
@@ -218,15 +299,9 @@ const ContactDetailPage = () => {
             },
         };
 
-        if (!payload.displayName) {
-            showErrorToast('Display name is required');
-            return;
-        }
-
         try {
             if (isNew) {
                 await createContact(payload);
-                showSuccessToast('Contact created successfully');
             } else if (id) {
                 await updateContact({
                     id,
@@ -264,49 +339,61 @@ const ContactDetailPage = () => {
     const handleBackToList = () => navigate('/expenses/contacts');
 
     if (isLoading && !isNew) {
-        return (
-            <div className="flex h-[calc(100vh-200px)] items-center justify-center">
-                <div className="flex flex-col items-center gap-2">
-                    <Loader2 className="w-8 h-8 animate-spin text-primary" />
-                    <span className="text-sm text-primary/60">
-                        Loading contact details...
-                    </span>
-                </div>
-            </div>
-        );
+        return <Loading />;
     }
 
+    const displayName = contact?.displayName || 'New Contact';
+
     return (
-        <form
-            onSubmit={handleSubmit}
-            className="space-y-6 max-w-7xl mx-auto pb-10"
-        >
+        <form onSubmit={handleSubmit} className="flex flex-col gap-6">
             {/* Header */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-primary/10 pb-6">
-                <div className="space-y-1">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="flex items-center gap-4">
+                    <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={handleBackToList}
+                        className="shrink-0"
+                    >
+                        <ArrowLeft className="w-4 h-4 mr-2" />
+                        Back
+                    </Button>
                     <div className="flex items-center gap-3">
-                        <h1 className="text-2xl font-bold text-primary tracking-tight">
-                            {isNew
-                                ? 'New Contact'
-                                : contact?.displayName || 'Edit Contact'}
-                        </h1>
-                        {!isNew && contact && (
-                            <Badge
-                                variant={
-                                    contact.isActive ? 'success' : 'destructive'
-                                }
-                            >
-                                {contact.isActive ? 'Active' : 'Inactive'}
-                            </Badge>
+                        {!isNew && (
+                            <Avatar className="size-12">
+                                <AvatarFallback className="bg-linear-to-br from-primary/20 to-secondary/20 text-primary font-semibold text-lg">
+                                    {getContactInitials(displayName)}
+                                </AvatarFallback>
+                            </Avatar>
                         )}
-                    </div>
-                    <div className="text-sm text-primary/60 font-medium">
-                        {isNew
-                            ? 'Create a new customer or supplier'
-                            : `Manage details for ${contact?.companyName || contact?.displayName}`}
+                        <div>
+                            <PageHeader
+                                title={isNew ? 'New Contact' : displayName}
+                                subtitle={
+                                    isNew
+                                        ? 'Create a new customer or supplier'
+                                        : `Manage details for ${contact?.companyName || contact?.displayName}`
+                                }
+                            />
+                        </div>
                     </div>
                 </div>
                 <div className="flex items-center gap-3">
+                    {!isNew && contact && (
+                        <div className="flex items-center gap-2 px-3 py-1.5 rounded-md border border-primary/10 bg-card">
+                            <Switch
+                                checked={contact.isActive}
+                                onCheckedChange={handleToggleStatus}
+                                disabled={isStatusBusy}
+                            />
+                            <div className="flex flex-col">
+                                <span className="text-xs font-medium text-primary">
+                                    {contact.isActive ? 'Active' : 'Inactive'}
+                                </span>
+                            </div>
+                        </div>
+                    )}
                     <Button
                         type="button"
                         variant="outline"
@@ -318,11 +405,10 @@ const ContactDetailPage = () => {
                     <Button
                         type="submit"
                         variant="default"
-                        size="default"
                         loading={isBusy}
                         startIcon={<Save className="w-4 h-4" />}
                     >
-                        Save Contact
+                        {isNew ? 'Create Contact' : 'Save Changes'}
                     </Button>
                 </div>
             </div>
@@ -330,20 +416,27 @@ const ContactDetailPage = () => {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Left Column (Main Info) */}
                 <div className="lg:col-span-2 space-y-6">
-                    {/* Basic Info Card */}
+                    {/* Basic Information */}
                     <Card>
                         <CardHeader>
                             <CardTitle>Basic Information</CardTitle>
+                            <CardDescription>
+                                Primary contact details and identification
+                            </CardDescription>
                         </CardHeader>
-                        <CardContent className="flex flex-col gap-4">
+                        <CardContent className="space-y-4">
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <SelectField
                                     id="type"
                                     label="Contact Type"
-                                    labelShow
                                     required
+                                    value={contactType}
                                     defaultValue={contact?.type || 'customer'}
                                     options={contactTypeOptions}
+                                    onChange={(value) =>
+                                        setContactType(value as ContactType)
+                                    }
+                                    error={errors.type}
                                 />
                                 <InputField
                                     id="displayName"
@@ -351,16 +444,19 @@ const ContactDetailPage = () => {
                                     required
                                     placeholder="e.g. Acme Corporation"
                                     defaultValue={contact?.displayName || ''}
+                                    error={errors.displayName}
                                 />
                             </div>
 
+                            <Separator />
+
                             <div className="grid grid-cols-1 sm:grid-cols-6 gap-4">
                                 <div className="sm:col-span-1">
-                                    <InputField
+                                    <SelectField
                                         id="title"
                                         label="Title"
-                                        placeholder="Mr."
-                                        defaultValue={contact?.title || ''}
+                                        defaultValue={contact?.title || undefined}
+                                        options={titleOptions}
                                     />
                                 </div>
                                 <div className="sm:col-span-2">
@@ -410,6 +506,8 @@ const ContactDetailPage = () => {
                                 </div>
                             </div>
 
+                            <Separator />
+
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <InputField
                                     id="email"
@@ -418,6 +516,7 @@ const ContactDetailPage = () => {
                                     startIcon={<Mail className="w-4 h-4" />}
                                     placeholder="john.doe@example.com"
                                     defaultValue={contact?.email || ''}
+                                    error={errors.email}
                                 />
                                 <InputField
                                     id="phoneNumber"
@@ -427,34 +526,38 @@ const ContactDetailPage = () => {
                                     defaultValue={contact?.phoneNumber || ''}
                                 />
                             </div>
-                            <div className="grid grid-cols-1 gap-4">
-                                <InputField
-                                    id="nameOnCheques"
-                                    label="Name on Cheques"
-                                    placeholder="Acme Corporation"
-                                    defaultValue={contact?.nameOnCheques || ''}
-                                />
-                            </div>
+
+                            <InputField
+                                id="nameOnCheques"
+                                label="Name on Cheques"
+                                placeholder="Acme Corporation"
+                                defaultValue={contact?.nameOnCheques || ''}
+                            />
                         </CardContent>
                     </Card>
 
-                    {/* Addresses Card with Tabs */}
+                    {/* Addresses */}
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
-                            <CardTitle>Addresses</CardTitle>
+                            <div>
+                                <CardTitle>Addresses</CardTitle>
+                                <CardDescription>
+                                    Billing and shipping addresses
+                                </CardDescription>
+                            </div>
                             <Button
                                 type="button"
                                 variant="outline"
                                 size="sm"
                                 onClick={copyBillingToShipping}
-                                className="bg-transparent text-primary/70 hover:text-primary hover:bg-primary/5"
                             >
-                                Copy billing to shipping
+                                <Icons.Download className="w-4 h-4 mr-2" />
+                                Copy Billing
                             </Button>
                         </CardHeader>
                         <CardContent>
                             <Tabs defaultValue="billing" className="w-full">
-                                <TabsList className="grid w-full grid-cols-2 mb-6">
+                                <TabsList className="grid w-full grid-cols-2">
                                     <TabsTrigger value="billing">
                                         Billing Address
                                     </TabsTrigger>
@@ -464,7 +567,7 @@ const ContactDetailPage = () => {
                                 </TabsList>
                                 <TabsContent
                                     value="billing"
-                                    className="flex flex-col gap-4"
+                                    className="space-y-4 mt-4"
                                 >
                                     <div className="grid grid-cols-1 gap-4">
                                         <InputField
@@ -529,7 +632,7 @@ const ContactDetailPage = () => {
                                 </TabsContent>
                                 <TabsContent
                                     value="shipping"
-                                    className="flex flex-col gap-4"
+                                    className="space-y-4 mt-4"
                                 >
                                     <div className="grid grid-cols-1 gap-4">
                                         <InputField
@@ -544,7 +647,7 @@ const ContactDetailPage = () => {
                                         <InputField
                                             id="shipping_streetAddress2"
                                             label="Street Address 2"
-                                            placeholder=""
+                                            placeholder="Suite 200"
                                             defaultValue={
                                                 contact?.shippingAddress
                                                     ?.streetAddress2 || ''
@@ -599,42 +702,15 @@ const ContactDetailPage = () => {
 
                 {/* Right Column (Settings & Financials) */}
                 <div className="space-y-6">
-                    {/* Status Card (Edit Mode Only) */}
-                    {!isNew && contact && (
-                        <Card>
-                            <CardHeader className="pb-3">
-                                <CardTitle className="text-base">
-                                    Contact Status
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent className="flex items-center justify-between pb-4">
-                                <div className="space-y-0.5">
-                                    <div className="text-sm font-medium">
-                                        {contact.isActive
-                                            ? 'Active'
-                                            : 'Inactive'}
-                                    </div>
-                                    <div className="text-xs text-primary/60">
-                                        {contact.isActive
-                                            ? 'Contact is enabled'
-                                            : 'Contact is disabled'}
-                                    </div>
-                                </div>
-                                <Switch
-                                    checked={contact.isActive}
-                                    onCheckedChange={handleToggleStatus}
-                                    disabled={isStatusBusy}
-                                />
-                            </CardContent>
-                        </Card>
-                    )}
-
-                    {/* Financial Defaults */}
+                    {/* Financial Details */}
                     <Card>
                         <CardHeader>
                             <CardTitle>Financial Details</CardTitle>
+                            <CardDescription>
+                                Default accounts and opening balance
+                            </CardDescription>
                         </CardHeader>
-                        <CardContent className="flex flex-col gap-4">
+                        <CardContent className="space-y-4">
                             <InputField
                                 id="defaultAccountId"
                                 label="Default Account ID"
@@ -647,14 +723,16 @@ const ContactDetailPage = () => {
                                 placeholder="Enter tax ID"
                                 defaultValue={contact?.defaultTaxId || ''}
                             />
-                            <div className="border-t border-primary/5 my-4"></div>
+                            <Separator />
                             <InputField
                                 id="openingBalance"
                                 label="Opening Balance"
                                 type="number"
                                 step="0.01"
                                 placeholder="0.00"
-                                defaultValue={contact?.openingBalance ?? ''}
+                                defaultValue={
+                                    contact?.openingBalance?.toString() || ''
+                                }
                             />
                             <InputField
                                 id="openingBalanceDate"
@@ -662,9 +740,11 @@ const ContactDetailPage = () => {
                                 type="date"
                                 defaultValue={
                                     contact?.openingBalanceDate
-                                        ? new Date(contact.openingBalanceDate)
-                                              .toISOString()
-                                              .split('T')[0]
+                                        ? new Date(
+                                            contact.openingBalanceDate
+                                        )
+                                            .toISOString()
+                                            .split('T')[0]
                                         : ''
                                 }
                             />
@@ -675,6 +755,9 @@ const ContactDetailPage = () => {
                     <Card>
                         <CardHeader>
                             <CardTitle>Notes</CardTitle>
+                            <CardDescription>
+                                Internal notes about this contact
+                            </CardDescription>
                         </CardHeader>
                         <CardContent>
                             <InputField
