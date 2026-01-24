@@ -5,7 +5,6 @@ import {
 import { Icons } from '@/components/shared/Icons';
 import { SidebarItemProps } from '../types';
 
-
 const CAP_SINGULAR =
     SINGLE_TENANT_PREFIX.charAt(0).toUpperCase() +
     SINGLE_TENANT_PREFIX.slice(1);
@@ -28,7 +27,6 @@ export const SIDEBAR_ITEMS: SidebarItemProps[] = [
         label: 'Reports',
         icon: <Icons.Reports />,
         path: '/reports',
-
     },
     {
         label: 'Chart of Accounts',
@@ -39,7 +37,6 @@ export const SIDEBAR_ITEMS: SidebarItemProps[] = [
         label: 'Journal Entries',
         icon: <Icons.JournalEntries />,
         path: '/journal-entries',
-
     },
     {
         label: 'Invoices',

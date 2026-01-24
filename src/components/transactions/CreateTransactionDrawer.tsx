@@ -44,9 +44,7 @@ const formSchema = z.object({
     type: z.enum(['income', 'expense', 'transfer']),
     accountId: z.string().min(1, 'Account is required'),
     paidAt: z.string().min(1, 'Date is required'),
-    amount: z.coerce
-        .number()
-        .min(0.01, 'Amount must be greater than 0'),
+    amount: z.coerce.number().min(0.01, 'Amount must be greater than 0'),
     currencyCode: z.string().default('CAD'),
     currencyRate: z.number().default(1),
     contactId: z.string().optional(),
@@ -289,7 +287,7 @@ export function CreateTransactionDrawer({
                                                     step="0.01"
                                                     value={
                                                         typeof field.value ===
-                                                            'number'
+                                                        'number'
                                                             ? field.value
                                                             : field.value || ''
                                                     }
@@ -300,7 +298,7 @@ export function CreateTransactionDrawer({
                                                             !value ||
                                                             value === '' ||
                                                             value ===
-                                                            undefined ||
+                                                                undefined ||
                                                             value === null
                                                         ) {
                                                             field.onChange(0);

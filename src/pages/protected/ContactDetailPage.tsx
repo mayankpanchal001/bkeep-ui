@@ -70,7 +70,8 @@ const getContactInitials = (displayName: string): string => {
 };
 
 // Helper component for Input with Label
-interface InputFieldProps extends Omit<React.ComponentProps<typeof Input>, 'error'> {
+interface InputFieldProps
+    extends Omit<React.ComponentProps<typeof Input>, 'error'> {
     label?: string;
     required?: boolean;
     error?: string;
@@ -149,10 +150,7 @@ const SelectField: React.FC<SelectFieldProps> = ({
                 </SelectTrigger>
                 <SelectContent>
                     {options.map((option) => (
-                        <SelectItem
-                            key={option.value}
-                            value={option.value}
-                        >
+                        <SelectItem key={option.value} value={option.value}>
                             {option.label}
                         </SelectItem>
                     ))}
@@ -269,7 +267,7 @@ const ContactDetailPage = () => {
             defaultTaxId: (formData.get('defaultTaxId') as string) || null,
             openingBalance:
                 formData.get('openingBalance') !== null &&
-                    formData.get('openingBalance') !== ''
+                formData.get('openingBalance') !== ''
                     ? Number(formData.get('openingBalance'))
                     : null,
             openingBalanceDate:
@@ -455,7 +453,9 @@ const ContactDetailPage = () => {
                                     <SelectField
                                         id="title"
                                         label="Title"
-                                        defaultValue={contact?.title || undefined}
+                                        defaultValue={
+                                            contact?.title || undefined
+                                        }
                                         options={titleOptions}
                                     />
                                 </div>
@@ -740,11 +740,9 @@ const ContactDetailPage = () => {
                                 type="date"
                                 defaultValue={
                                     contact?.openingBalanceDate
-                                        ? new Date(
-                                            contact.openingBalanceDate
-                                        )
-                                            .toISOString()
-                                            .split('T')[0]
+                                        ? new Date(contact.openingBalanceDate)
+                                              .toISOString()
+                                              .split('T')[0]
                                         : ''
                                 }
                             />

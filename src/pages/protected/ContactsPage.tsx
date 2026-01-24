@@ -91,7 +91,10 @@ const ContactsPage = () => {
 
     const { data, isLoading, isError } = useContacts(filters);
     const pagination = data?.data?.pagination;
-    const contacts = useMemo(() => data?.data?.items || [], [data?.data?.items]);
+    const contacts = useMemo(
+        () => data?.data?.items || [],
+        [data?.data?.items]
+    );
 
     const { mutateAsync: deleteContact, isPending: isDeleting } =
         useDeleteContact();
@@ -123,8 +126,6 @@ const ContactsPage = () => {
         () => contacts.map((c: Contact) => c.id),
         [contacts]
     );
-
-
 
     const handlePageChange = (page: number) =>
         setFilters((prev) => ({ ...prev, page }));
@@ -344,11 +345,15 @@ const ContactsPage = () => {
                             >
                                 Contact
                             </TableHead>
-                            <TableHead className="min-w-[100px]">Type</TableHead>
+                            <TableHead className="min-w-[100px]">
+                                Type
+                            </TableHead>
                             <TableHead className="min-w-[200px]">
                                 Contact Info
                             </TableHead>
-                            <TableHead className="min-w-[100px]">Status</TableHead>
+                            <TableHead className="min-w-[100px]">
+                                Status
+                            </TableHead>
                             <TableHead
                                 sortable
                                 sortKey="createdAt"
@@ -390,8 +395,13 @@ const ContactsPage = () => {
                                         : 'Get started by creating your first contact'
                                 }
                                 action={
-                                    !search && !filters.type && !filters.isActive ? (
-                                        <Button size="sm" onClick={handleGoToCreate}>
+                                    !search &&
+                                    !filters.type &&
+                                    !filters.isActive ? (
+                                        <Button
+                                            size="sm"
+                                            onClick={handleGoToCreate}
+                                        >
                                             <Icons.Plus className="w-4 h-4 mr-2" />
                                             Create Contact
                                         </Button>
@@ -416,7 +426,9 @@ const ContactsPage = () => {
                                         <div className="flex items-center gap-3">
                                             <Avatar className="size-10">
                                                 <AvatarFallback className="bg-linear-to-br from-primary/20 to-secondary/20 text-primary font-semibold">
-                                                    {getContactInitials(contact)}
+                                                    {getContactInitials(
+                                                        contact
+                                                    )}
                                                 </AvatarFallback>
                                             </Avatar>
                                             <div className="flex flex-col">
@@ -456,14 +468,17 @@ const ContactsPage = () => {
                                             {contact.phoneNumber && (
                                                 <div className="flex items-center gap-2 text-sm text-primary/75">
                                                     <Icons.Phone className="w-3.5 h-3.5" />
-                                                    <span>{contact.phoneNumber}</span>
+                                                    <span>
+                                                        {contact.phoneNumber}
+                                                    </span>
                                                 </div>
                                             )}
-                                            {!contact.email && !contact.phoneNumber && (
-                                                <span className="text-sm text-primary/50">
-                                                    No contact info
-                                                </span>
-                                            )}
+                                            {!contact.email &&
+                                                !contact.phoneNumber && (
+                                                    <span className="text-sm text-primary/50">
+                                                        No contact info
+                                                    </span>
+                                                )}
                                         </div>
                                     </TableCell>
                                     <TableCell className="py-4">
@@ -524,7 +539,9 @@ const ContactsPage = () => {
                                                 <DropdownMenuSeparator />
                                                 {contact.isActive ? (
                                                     <DropdownMenuItem
-                                                        disabled={isRowActionBusy}
+                                                        disabled={
+                                                            isRowActionBusy
+                                                        }
                                                         onSelect={() =>
                                                             void handleDisable(
                                                                 contact
@@ -536,7 +553,9 @@ const ContactsPage = () => {
                                                     </DropdownMenuItem>
                                                 ) : (
                                                     <DropdownMenuItem
-                                                        disabled={isRowActionBusy}
+                                                        disabled={
+                                                            isRowActionBusy
+                                                        }
                                                         onSelect={() =>
                                                             void handleEnable(
                                                                 contact
@@ -550,7 +569,9 @@ const ContactsPage = () => {
                                                 <DropdownMenuItem
                                                     disabled={isRowActionBusy}
                                                     onSelect={() =>
-                                                        void handleRestore(contact)
+                                                        void handleRestore(
+                                                            contact
+                                                        )
                                                     }
                                                 >
                                                     <Icons.Check className="mr-2 w-4 h-4" />
@@ -561,7 +582,9 @@ const ContactsPage = () => {
                                                     variant="destructive"
                                                     disabled={isRowActionBusy}
                                                     onSelect={() =>
-                                                        void handleDelete(contact)
+                                                        void handleDelete(
+                                                            contact
+                                                        )
                                                     }
                                                 >
                                                     <Icons.Trash className="mr-2 w-4 h-4" />
