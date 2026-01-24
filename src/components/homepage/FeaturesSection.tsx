@@ -22,7 +22,7 @@ export default function FeaturesSection() {
                     {INVEST_FEATURES.map((feature) => (
                         <div
                             key={feature.title}
-                            className="rounded-3xl border border-border bg-gradient-to-b from-muted/40 to-transparent p-4 shadow-[0_20px_60px_rgba(0,0,0,0.35)]"
+                            className="rounded-3xl border border-border bg-gradient-to-b from-muted/40 to-transparent p-4 "
                         >
                             <span className="text-[11px] uppercase tracking-[0.4em] text-muted-foreground">
                                 {feature.tag}

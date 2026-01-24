@@ -264,10 +264,10 @@ const ThemeManager = () => {
                                     onClick={() => handleSelectTheme(theme.id)}
                                     className={cn(
                                         'group relative rounded-xl border-2 p-3 transition-all duration-200',
-                                        'hover:scale-[1.02] hover:shadow-lg hover:border-primary/30',
+                                        'hover:scale-[1.02]  hover:border-primary/30',
                                         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
                                         selectedPaletteId === theme.id
-                                            ? 'border-primary shadow-md shadow-primary/20 bg-primary/5'
+                                            ? 'border-primary  bg-primary/5'
                                             : 'border-border bg-card hover:bg-accent/30',
                                         isTransitioning &&
                                             'opacity-60 pointer-events-none'
@@ -289,7 +289,7 @@ const ThemeManager = () => {
                                         </div>
                                     </div>
                                     {selectedPaletteId === theme.id && (
-                                        <div className="absolute -top-2 -right-2 h-5 w-5 rounded-full bg-primary flex items-center justify-center shadow-lg ring-2 ring-background">
+                                        <div className="absolute -top-2 -right-2 h-5 w-5 rounded-full bg-primary flex items-center justify-center  ring-2 ring-background">
                                             <Check className="h-3 w-3 text-primary-foreground" />
                                         </div>
                                     )}
@@ -332,7 +332,7 @@ const ThemeColorSwatches = ({
                 <div
                     key={index}
                     className={cn(
-                        'rounded-full border border-border/50 shadow-sm transition-transform hover:scale-110',
+                        'rounded-full border border-border/50  transition-transform hover:scale-110',
                         sizeClasses[size]
                     )}
                     style={{ backgroundColor: color }}

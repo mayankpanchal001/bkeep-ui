@@ -30,7 +30,7 @@ const detectOS = (): OSKind => {
 };
 
 const KeyCap = ({ label }: { label: string }) => (
-    <kbd className="px-2 py-1 text-xs font-semibold text-primary/70 bg-card dark:bg-muted rounded-md border border-primary/10 shadow-sm">
+    <kbd className="px-2 py-1 text-xs font-semibold text-primary/70 bg-card dark:bg-muted rounded-md border border-primary/10 ">
         {label}
     </kbd>
 );

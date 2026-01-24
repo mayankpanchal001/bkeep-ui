@@ -260,9 +260,9 @@ const Documentspage = () => {
                 onDragOver={handleDrag}
                 onDrop={handleDrop}
                 onClick={handleUploadAreaClick}
-                className={`w-full max-w-3xl mx-auto border-2 border-dashed rounded p-10 sm:p-12 text-center transition-all cursor-pointer shadow-sm ${
+                className={`w-full max-w-3xl mx-auto border-2 border-dashed rounded p-10 sm:p-12 text-center transition-all cursor-pointer  ${
                     dragActive
-                        ? 'border-primary bg-primary/10 shadow-md scale-[1.01]'
+                        ? 'border-primary bg-primary/10 scale-[1.01]'
                         : 'border-primary/25 bg-primary/5 hover:border-primary hover:bg-primary/10'
                 }`}
             >
@@ -334,7 +334,7 @@ const Documentspage = () => {
                     filteredDocuments.map((doc) => (
                         <div
                             key={doc.id}
-                            className="bg-card rounded shadow-sm border border-primary/10 p-4 hover:shadow-md transition-shadow"
+                            className="bg-card rounded  border border-primary/10 p-4 hover:shadow-md transition-shadow"
                         >
                             <div className="flex items-start justify-between mb-3">
                                 <div className="flex items-center gap-3 flex-1 min-w-0">

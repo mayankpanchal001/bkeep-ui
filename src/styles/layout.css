@@ -13,12 +13,12 @@
 }
 
 .protected-route-bottombar {
-    @apply lg:hidden absolute bottom-0 left-0 right-0 z-50 bg-card border-t border-primary/10 shadow-lg;
+    @apply lg:hidden absolute bottom-0 left-0 right-0 z-50 bg-card border-t border-primary/10;
     height: 64px;
 }
 
 .protected-route-topbar {
-    @apply lg:hidden absolute top-0 left-0 right-0 z-50 bg-card border-b border-primary/10 shadow-md;
+    @apply lg:hidden absolute top-0 left-0 right-0 z-50 bg-card border-b border-primary/10;
     height: 64px;
 }
 
@@ -41,6 +41,7 @@
     overflow: hidden;
 
     --sidebar-item-width: 60px;
+
     &.collapsed {
         @apply bg-transparent;
         width: var(--sidebar-item-width);
@@ -105,6 +106,7 @@
 
 .sidebar-header-logo {
     @apply flex items-center gap-3 w-full;
+
     img {
         @apply w-10 h-10 object-contain flex-shrink-0;
     }
@@ -162,9 +164,11 @@
     0% {
         transform: rotateY(0deg);
     }
+
     50% {
         transform: rotateY(180deg);
     }
+
     100% {
         transform: rotateY(360deg);
     }
@@ -234,7 +238,7 @@
 }
 
 .topbar-dropdown {
-    @apply absolute right-0 top-full mt-2 w-64 bg-card rounded-lg shadow-lg border border-primary/10 overflow-hidden z-50;
+    @apply absolute right-0 top-full mt-2 w-64 bg-card rounded-lg border border-primary/10 overflow-hidden z-50;
     animation: dropdownFadeIn 0.2s ease-out;
 }
 
@@ -243,6 +247,7 @@
         opacity: 0;
         transform: translateY(-10px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -289,6 +294,7 @@
 .transaction-table-cell {
     @apply px-4 py-3 text-sm;
 }
+
 .inner-section {
-    @apply bg-card rounded shadow-sm border border-primary/10 p-4 hover:shadow-md transition-shadow;
+    @apply bg-card rounded border border-primary/10 p-4 hover:shadow-md transition-shadow;
 }

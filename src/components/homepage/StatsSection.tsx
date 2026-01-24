@@ -3,7 +3,7 @@ import { PERFORMANCE_STATS } from './constants.tsx';
 export default function StatsSection() {
     return (
         <section id="metrics" className="mx-auto max-w-6xl px-6 pb-16 pt-10">
-            <div className="rounded-[32px] border border-border bg-gradient-to-br from-background via-muted/20 to-background p-8 shadow-sm">
+            <div className="rounded-[32px] border border-border bg-gradient-to-br from-background via-muted/20 to-background p-8 ">
                 <div className="grid gap-6 text-center sm:grid-cols-3">
                     {PERFORMANCE_STATS.map((stat) => (
                         <div

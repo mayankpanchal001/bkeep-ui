@@ -126,7 +126,7 @@ const Expensespage = () => {
         <div className="flex flex-col gap-4">
             {/* Summary Cards */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div className="bg-card rounded shadow-sm border border-primary/10 p-4">
+                <div className="bg-card rounded  border border-primary/10 p-4">
                     <div className="text-sm text-primary/50 mb-1">
                         Total Expenses
                     </div>
@@ -142,7 +142,7 @@ const Expensespage = () => {
                     .map(([category, amount]) => (
                         <div
                             key={category}
-                            className="bg-card rounded shadow-sm border border-primary/10 p-4"
+                            className="bg-card rounded  border border-primary/10 p-4"
                         >
                             <div className="text-sm text-primary/50 mb-1">
                                 {category}
@@ -304,7 +304,7 @@ const Expensespage = () => {
             {/* Create Expense Modal */}
             {showCreateModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4">
-                    <div className="w-full max-w-2xl rounded bg-card p-4 shadow-2xl max-h-[90vh] overflow-y-auto">
+                    <div className="w-full max-w-2xl rounded bg-card p-4 max-h-[90vh] overflow-y-auto">
                         <div className="flex items-center justify-between mb-4">
                             <h3 className="text-xl font-semibold text-primary">
                                 Add New Expense

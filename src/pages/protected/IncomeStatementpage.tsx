@@ -63,7 +63,7 @@ const IncomeStatementpage = () => {
             </div>
 
             {/* Date Range Selector */}
-            <div className="bg-card rounded shadow-sm border border-primary/10 p-4">
+            <div className="bg-card rounded  border border-primary/10 p-4">
                 <div className="flex flex-col sm:flex-row gap-4 items-end">
                     <div className="flex-1 grid grid-cols-2 gap-4">
                         <div>
@@ -155,7 +155,7 @@ const IncomeStatementpage = () => {
             </ChartWidget>
 
             {/* Income Statement Table */}
-            <div className="bg-card rounded shadow-sm border border-primary/10 p-4">
+            <div className="bg-card rounded  border border-primary/10 p-4">
                 <h3 className="text-lg font-semibold text-primary mb-4">
                     Detailed Income Statement
                 </h3>

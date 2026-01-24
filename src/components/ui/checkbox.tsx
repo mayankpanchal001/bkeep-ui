@@ -17,7 +17,7 @@ function Checkbox({
                 'size-4 shrink-0 rounded border border-input bg-card text-transparent',
                 'data-[state=checked]:bg-primary data-[state=checked]:border-primary data-[state=checked]:text-primary-foreground',
                 'hover:border-ring focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/30',
-                'disabled:cursor-not-allowed disabled:opacity-50 shadow-xs transition-shadow outline-none',
+                'disabled:cursor-not-allowed disabled:opacity-50 outline-none',
                 className
             )}
             {...props}

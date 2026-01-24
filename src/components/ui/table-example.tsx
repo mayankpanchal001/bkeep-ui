@@ -503,15 +503,15 @@ export default function TableExample() {
                 </div>
 
                 <div className="space-y-8">
-                    <section className="bg-card dark:bg-card rounded-xl shadow-sm border border-border overflow-hidden">
+                    <section className="bg-card dark:bg-card rounded-xl  border border-border overflow-hidden">
                         <FullFeaturedTableExample />
                     </section>
 
-                    <section className="bg-card dark:bg-card rounded-xl shadow-sm border border-border overflow-hidden">
+                    <section className="bg-card dark:bg-card rounded-xl  border border-border overflow-hidden">
                         <BasicTableExample />
                     </section>
 
-                    <section className="bg-card dark:bg-card rounded-xl shadow-sm border border-border overflow-hidden">
+                    <section className="bg-card dark:bg-card rounded-xl  border border-border overflow-hidden">
                         <MinimalTableExample />
                     </section>
                 </div>

@@ -810,7 +810,7 @@ export default function ViewJournalEntrypage() {
                         }
 
                         if (isDragOver) {
-                            return `${baseClasses} border-t-2 border-primary bg-primary/10 shadow-sm`;
+                            return `${baseClasses} border-t-2 border-primary bg-primary/10 `;
                         }
 
                         if (draggedLineId && !isDragged) {

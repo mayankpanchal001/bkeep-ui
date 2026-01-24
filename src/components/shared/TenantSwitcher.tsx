@@ -108,7 +108,7 @@ const TenantSwitcher = ({ compact = false }: TenantSwitcherProps) => {
                     aria-label={`${CAP_SINGULAR} switcher`}
                     aria-expanded={isOpen}
                     className={cn(
-                        'group pl-1 inline-flex items-center gap-2 rounded-full bg-card border border-primary/25 shadow-sm transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-card cursor-pointer',
+                        'group pl-1 inline-flex items-center gap-2 rounded-full bg-card border border-primary/25  transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-card cursor-pointer',
                         buttonClasses,
                         (isSwitching || isLoadingTenants) &&
                             'opacity-60 cursor-not-allowed',

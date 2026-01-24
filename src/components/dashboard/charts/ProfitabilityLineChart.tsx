@@ -65,7 +65,7 @@ const ProfitabilityLineChart = ({ data }: ProfitabilityLineChartProps) => {
                                 month?: string;
                             };
                             return (
-                                <div className="rounded-lg border border-border/50 bg-card p-2 shadow-sm">
+                                <div className="rounded-lg border border-border/50 bg-card p-2 ">
                                     <div className="grid gap-2">
                                         <div className="font-medium">
                                             {monthData?.month as string}

@@ -50,7 +50,7 @@ const ImportChartOfAccountsDrawer = ({
     const [mapping, setMapping] = useState<Record<string, string>>({});
     const inputRef = useRef<HTMLInputElement>(null);
 
-    const { data: templatesData, isLoading: isTemplatesLoading } = useTemplates(
+    const { data: templatesData } = useTemplates(
         {
             type: 'accounts',
             isActive: true,
@@ -419,50 +419,8 @@ const ImportChartOfAccountsDrawer = ({
                         <div className="flex flex-col gap-4">
                             {/* Templates Section */}
                             <div className="flex flex-col gap-2">
-                                <div className="flex items-center justify-between gap-2">
-                                    <p className="text-sm font-medium text-primary">
-                                        Templates
-                                    </p>
-                                    <Button
-                                        onClick={handleDownloadSample}
-                                        variant="outline"
-                                        size="sm"
-                                    >
-                                        Download Sample File
-                                    </Button>
-                                </div>
-
-                                {isTemplatesLoading ? (
-                                    <p className="text-xs text-primary/50">
-                                        Loading templates...
-                                    </p>
-                                ) : templates.length ? (
-                                    <div className="flex flex-wrap gap-2">
-                                        {templates.map((t) => (
-                                            <button
-                                                key={t.id}
-                                                type="button"
-                                                onClick={() =>
-                                                    setSelectedTemplateId(t.id)
-                                                }
-                                                className={`px-3 py-1.5 rounded text-sm border transition-colors ${
-                                                    selectedTemplateId === t.id
-                                                        ? 'bg-primary text-white border-primary'
-                                                        : 'bg-card border-primary/10 text-primary hover:bg-primary/5'
-                                                }`}
-                                            >
-                                                {t.name || 'Template'}
-                                            </button>
-                                        ))}
-                                    </div>
-                                ) : (
-                                    <p className="text-xs text-primary/50">
-                                        No templates available.
-                                    </p>
-                                )}
-
                                 {selectedTemplateId && (
-                                    <div className="rounded border border-primary/10 bg-card p-3">
+                                    <div className="">
                                         {isTemplatePreviewLoading ? (
                                             <p className="text-xs text-primary/50">
                                                 Loading template preview...
@@ -481,19 +439,6 @@ const ImportChartOfAccountsDrawer = ({
                                                                 .description ||
                                                                 '—'}
                                                         </p>
-                                                    </div>
-                                                    <div className="flex gap-2">
-                                                        <Button
-                                                            variant="outline"
-                                                            size="sm"
-                                                            onClick={() =>
-                                                                setSelectedTemplateId(
-                                                                    null
-                                                                )
-                                                            }
-                                                        >
-                                                            Clear
-                                                        </Button>
                                                     </div>
                                                 </div>
 
@@ -580,8 +525,6 @@ const ImportChartOfAccountsDrawer = ({
                                                     </p>
                                                     <div className="flex gap-2">
                                                         <Button
-                                                            variant="default"
-                                                            size="sm"
                                                             onClick={
                                                                 handleApplyTemplate
                                                             }
@@ -592,9 +535,11 @@ const ImportChartOfAccountsDrawer = ({
                                                                 applyTemplateMutation.isPending
                                                             }
                                                             className=""
+                                                            tooltip={
+                                                                'Apply Template Directly'
+                                                            }
                                                         >
-                                                            Apply Template
-                                                            Directly
+                                                            Apply
                                                         </Button>
                                                         {/* <Button
                                                             variant="outline"

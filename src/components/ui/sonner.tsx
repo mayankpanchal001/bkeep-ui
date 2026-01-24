@@ -35,7 +35,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
         },
         className: cn(
             'group relative flex items-start gap-3 rounded-lg border border-border bg-card text-card-foreground',
-            'shadow-lg shadow-black/10 dark:shadow-black/30 backdrop-blur-sm',
+            ' backdrop-blur-sm',
             'px-4 py-3',
             'data-[swipe=cancel]:translate-x-0 data-[swipe=end]:translate-x-[var(--radix-toast-swipe-end-x)]',
             'data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)]',

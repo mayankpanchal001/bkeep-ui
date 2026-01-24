@@ -1,3 +1,4 @@
+import { CreateRuleDrawer } from '@/components/transactions/CreateRuleDrawer';
 import { CreateTransactionDrawer } from '@/components/transactions/CreateTransactionDrawer';
 import { PostTransactionModal } from '@/components/transactions/PostTransactionModal';
 import { SplitTransactionDrawer } from '@/components/transactions/SplitTransactionModal';
@@ -36,6 +37,8 @@ import {
 import { Filter, Search, X } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Button } from '../../components/ui/button';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useChartOfAccounts } from '../../services/apis/chartsAccountApi';
 import { useContacts } from '../../services/apis/contactsApi';
 import { useTaxes } from '../../services/apis/taxApi';
 import {
@@ -104,6 +107,12 @@ const Transactionpage = () => {
 
     // Fetch contacts data first (needed for supplier filter conversion)
     const { data: contactsData } = useContacts({
+        isActive: true,
+        limit: 1000,
+    });
+
+    // Fetch chart of accounts for categories
+    const { data: accountsData } = useChartOfAccounts({
         isActive: true,
         limit: 1000,
     });
@@ -314,8 +323,14 @@ const Transactionpage = () => {
     const getTransactionStatus = useCallback(
         (tx: { reconciled?: boolean; status?: string }): TxStatus => {
             if (!tx) return 'pending';
+            // Map API 'draft' status back to 'pending' for UI
+            const apiStatus = (tx as unknown as { status?: string }).status;
+            if (apiStatus === 'draft') {
+                return 'pending';
+            }
+            // Map other statuses or use reconciled flag
             return (
-                ((tx as unknown as { status?: string }).status as TxStatus) ||
+                (apiStatus as TxStatus) ||
                 (tx.reconciled ? 'posted' : 'pending')
             );
         },
@@ -347,6 +362,9 @@ const Transactionpage = () => {
             taxId?: string;
             description?: string;
         } | null>(null);
+    const [ruleDrawerOpen, setRuleDrawerOpen] = useState(false);
+    const [selectedTransactionForRule, setSelectedTransactionForRule] =
+        useState<BankTransaction | null>(null);
     const {
         mutate: reconcileTransaction,
         mutateAsync: reconcileTransactionAsync,
@@ -418,6 +436,46 @@ const Transactionpage = () => {
             const account = tx.account?.accountName || 'Account';
             const accountId = tx.accountId;
 
+            // --------- Extract IDs from API response (top-level or split) ---------
+            // NOTE: the TransactionItem type in `src/types/index.ts` doesn't include
+            // category/tax at top-level, but the API may return them. We read
+            // defensively from common locations.
+            const firstSplit = tx.splits?.[0];
+
+            // Contact
+            const contactId =
+                (tx as unknown as { contactId?: string | null }).contactId ??
+                undefined;
+
+            // Category (prefer backend id if present; fallback to split categoryId)
+            const categoryIdCandidate =
+                (tx as unknown as { categoryId?: string | null }).categoryId ??
+                (firstSplit as unknown as { categoryId?: string | null })
+                    ?.categoryId ??
+                undefined;
+
+            // Some backends expose a nested category object or category+gifi label.
+            const categoryLabelCandidate =
+                (firstSplit?.categoryAndGifi?.[0]?.displayLabel as
+                    | string
+                    | undefined) ?? undefined;
+
+            // Tax (prefer explicit taxId/taxIds; fallback to split)
+            const taxIdCandidate =
+                (tx as unknown as { taxId?: string | null }).taxId ??
+                (
+                    tx as unknown as {
+                        taxIds?: Array<string | null | undefined>;
+                    }
+                ).taxIds?.find((id) => !!id) ??
+                (firstSplit as unknown as { taxId?: string | null })?.taxId ??
+                (
+                    firstSplit as unknown as {
+                        taxIds?: Array<string | null | undefined>;
+                    }
+                )?.taxIds?.find((id) => !!id) ??
+                undefined;
+
             // Map reconciled: false -> 'pending' (waiting for reconciliation/review)
             // Map reconciled: true -> 'posted' (finalized)
             // If API returns explicit status, use it
@@ -430,10 +488,14 @@ const Transactionpage = () => {
                 spent,
                 received,
                 tax: undefined,
-                taxId: undefined, // Payload doesn't seem to return tax details on the item
+                // Keep id as-is if API provides it; default tax assignment happens later.
+                taxId: taxIdCandidate || undefined,
                 taxRate: undefined,
-                fromTo: tx.contactId || undefined, // Use contactId or fetch contact name if available
-                category: undefined, // Payload doesn't show category
+                // Store contactId (UI maps it to displayName via `contactNameById`)
+                fromTo: contactId || undefined,
+                // Store categoryId if available; otherwise fallback to label (so UI shows *something*)
+                category:
+                    categoryIdCandidate || categoryLabelCandidate || undefined,
                 matched: tx.reconciled,
                 status,
                 account,
@@ -445,48 +507,28 @@ const Transactionpage = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [apiTransactions, isLoading, error]);
 
+    // Supplier/From-To options from actual contacts API
     const SUPPLIER_OPTIONS: ComboboxOption[] = useMemo(() => {
-        const uniqueSuppliers = new Set<string>();
-
-        // Add contact names to options
-        contactNameById.forEach((name) => {
-            uniqueSuppliers.add(name);
-        });
-
-        transactions.forEach((t) => {
-            if (t.description) uniqueSuppliers.add(t.description);
-            // Add contact name if fromTo is a contactId
-            if (t.fromTo) {
-                const contactName = contactNameById.get(t.fromTo);
-                if (contactName) {
-                    uniqueSuppliers.add(contactName);
-                } else {
-                    // If it's not a contactId, add it as is (for backward compatibility)
-                    uniqueSuppliers.add(t.fromTo);
-                }
-            }
-        });
-        return Array.from(uniqueSuppliers).map((s) => ({
-            value: s,
-            label: s,
+        const contacts = contactsData?.data?.items || [];
+        return contacts
+            .filter((contact) => contact.displayName)
+            .map((contact) => ({
+                value: contact.displayName,
+                label: contact.displayName,
+            }));
+    }, [contactsData]);
+    // Category options from Chart of Accounts (expense and income accounts)
+    const CATEGORY_OPTIONS: ComboboxOption[] = useMemo(() => {
+        const accounts = accountsData?.data?.items || [];
+        const categories = accounts.filter(
+            (acc) =>
+                acc.accountType === 'expense' || acc.accountType === 'income'
+        );
+        return categories.map((account) => ({
+            value: account.id,
+            label: account.accountName,
         }));
-    }, [transactions, contactNameById]);
-    const CATEGORY_OPTIONS: ComboboxOption[] = useMemo(
-        () => [
-            { value: 'Postage & Courier', label: 'Postage & Courier' },
-            { value: 'Continuing Education', label: 'Continuing Education' },
-            { value: 'Office Supplies', label: 'Office Supplies' },
-            { value: 'Software', label: 'Software' },
-            { value: 'Utilities', label: 'Utilities' },
-            { value: 'Marketing', label: 'Marketing' },
-            { value: 'Travel', label: 'Travel' },
-            { value: 'Meals', label: 'Meals' },
-            { value: 'Rent', label: 'Rent' },
-            { value: 'Insurance', label: 'Insurance' },
-            { value: 'Income', label: 'Income' },
-        ],
-        []
-    );
+    }, [accountsData]);
 
     // Use API data directly - all filtering is handled by the API
     const filtered = transactions;
@@ -523,6 +565,7 @@ const Transactionpage = () => {
         if (!defaultTax) return;
         setTransactions((prev) =>
             prev.map((tx) => {
+                // Only auto-assign a default tax if API didn't provide one.
                 if (!tx.taxId && tx.spent) {
                     const rate = defaultTax.rate;
                     const taxAmount = Number((tx.spent * rate).toFixed(2));
@@ -571,29 +614,41 @@ const Transactionpage = () => {
                     };
                 })}
                 onStatusSelect={(status) => filterStore.setStatus(status)}
+                currentStatus={status}
             />
 
             <div className="flex items-center gap-2 flex-wrap">
-                <Button
-                    variant={status === 'all' ? 'default' : 'outline'}
-                    onClick={() => filterStore.setStatus('all')}
+                <Tabs
+                    value={
+                        status === 'pending'
+                            ? 'draft'
+                            : status === 'all'
+                              ? 'all'
+                              : status === 'posted'
+                                ? 'posted'
+                                : 'all'
+                    }
+                    onValueChange={(value) => {
+                        if (value === 'draft') {
+                            filterStore.setStatus('pending');
+                        } else if (value === 'all') {
+                            filterStore.setStatus('all');
+                        } else if (value === 'posted') {
+                            filterStore.setStatus('posted');
+                        }
+                    }}
+                    className="w-fit"
                 >
-                    All ({allCount})
-                </Button>
-
-                <Button
-                    variant={status === 'pending' ? 'default' : 'outline'}
-                    onClick={() => filterStore.setStatus('pending')}
-                >
-                    Pending ({pendingCount})
-                </Button>
-
-                <Button
-                    variant={status === 'posted' ? 'default' : 'outline'}
-                    onClick={() => filterStore.setStatus('posted')}
-                >
-                    Posted ({postedCount})
-                </Button>
+                    <TabsList>
+                        <TabsTrigger value="all">All ({allCount})</TabsTrigger>
+                        <TabsTrigger value="draft">
+                            Draft ({pendingCount})
+                        </TabsTrigger>
+                        <TabsTrigger value="posted">
+                            Posted ({postedCount})
+                        </TabsTrigger>
+                    </TabsList>
+                </Tabs>
 
                 <div className="sm:ml-auto flex items-center gap-3 flex-wrap">
                     <div className="relative w-full sm:w-[260px]">
@@ -796,7 +851,7 @@ const Transactionpage = () => {
                             variant="outline"
                             size="sm"
                             disabled={isBulkProcessing}
-                            className="border border-green-200 bg-green-50 text-green-700 hover:bg-green-100 hover:text-green-900 shadow-none"
+                            className="border border-green-200 bg-green-50 text-green-700 hover:bg-green-100 hover:text-green-900 "
                             onClick={handleBulkPost}
                         >
                             Post ({selectedItems.length})
@@ -805,7 +860,7 @@ const Transactionpage = () => {
                             variant="outline"
                             size="sm"
                             disabled={isBulkProcessing}
-                            className="border border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100 hover:text-blue-900 shadow-none"
+                            className="border border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100 hover:text-blue-900 "
                             onClick={() =>
                                 handleBulkAction(
                                     'reconciled',
@@ -819,7 +874,7 @@ const Transactionpage = () => {
                             variant="outline"
                             size="sm"
                             disabled={isBulkProcessing}
-                            className="border border-orange-200 bg-orange-50 text-orange-700 hover:bg-orange-100 hover:text-orange-900 shadow-none"
+                            className="border border-orange-200 bg-orange-50 text-orange-700 hover:bg-orange-100 hover:text-orange-900 "
                             onClick={() =>
                                 handleBulkAction(
                                     'reversed',
@@ -833,7 +888,7 @@ const Transactionpage = () => {
                             variant="outline"
                             size="sm"
                             disabled={isBulkProcessing}
-                            className="border border-red-200 bg-red-50 text-red-700 hover:bg-red-100 hover:text-red-900 shadow-none"
+                            className="border border-red-200 bg-red-50 text-red-700 hover:bg-red-100 hover:text-red-900 "
                             onClick={() =>
                                 handleBulkAction('voided', voidTransactionAsync)
                             }
@@ -1005,6 +1060,14 @@ const Transactionpage = () => {
                                                 options={CATEGORY_OPTIONS}
                                                 value={t.category || ''}
                                                 onChange={(value) => {
+                                                    // Find category name by ID
+                                                    const categoryName =
+                                                        CATEGORY_OPTIONS.find(
+                                                            (opt) =>
+                                                                opt.value ===
+                                                                value
+                                                        )?.label || value;
+
                                                     setTransactions((prev) =>
                                                         prev.map((tx) =>
                                                             tx.id === t.id
@@ -1019,7 +1082,7 @@ const Transactionpage = () => {
                                                     );
                                                     if (value) {
                                                         showSuccessToast(
-                                                            `Category set to ${value}`
+                                                            `Category set to ${categoryName}`
                                                         );
                                                     }
                                                 }}
@@ -1137,11 +1200,12 @@ const Transactionpage = () => {
                                                     Split
                                                 </DropdownMenuItem>
                                                 <DropdownMenuItem
-                                                    onClick={() =>
-                                                        showSuccessToast(
-                                                            'Rule created (demo placeholder)'
-                                                        )
-                                                    }
+                                                    onClick={() => {
+                                                        setSelectedTransactionForRule(
+                                                            t
+                                                        );
+                                                        setRuleDrawerOpen(true);
+                                                    }}
                                                 >
                                                     Create rule
                                                 </DropdownMenuItem>
@@ -1227,6 +1291,29 @@ const Transactionpage = () => {
                     }
                     onSuccess={() => {
                         setSelectedTransactionForSplit(null);
+                    }}
+                />
+            )}
+
+            {/* Create Rule Drawer */}
+            {selectedTransactionForRule && (
+                <CreateRuleDrawer
+                    open={ruleDrawerOpen}
+                    onOpenChange={(open) => {
+                        setRuleDrawerOpen(open);
+                        if (!open) {
+                            setSelectedTransactionForRule(null);
+                        }
+                    }}
+                    transaction={{
+                        id: selectedTransactionForRule.id,
+                        description: selectedTransactionForRule.description,
+                        spent: selectedTransactionForRule.spent,
+                        received: selectedTransactionForRule.received,
+                        category: selectedTransactionForRule.category,
+                        fromTo: selectedTransactionForRule.fromTo,
+                        accountId: selectedTransactionForRule.accountId,
+                        taxId: selectedTransactionForRule.taxId,
                     }}
                 />
             )}

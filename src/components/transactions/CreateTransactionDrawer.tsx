@@ -122,19 +122,27 @@ export function CreateTransactionDrawer({
     useEffect(() => {
         if (!watchedAccountId) return;
 
-        const selectedAccount = filteredAccounts.find((account) => account.id === watchedAccountId);
+        const selectedAccount = filteredAccounts.find(
+            (account) => account.id === watchedAccountId
+        );
 
         if (!selectedAccount) return;
         const accountType = selectedAccount.accountDetailType;
         let paymentMethod: FormValues['paymentMethod'];
 
-        if (accountType === 'cash-on-hand' || accountType === 'undeposited-funds') {
+        if (
+            accountType === 'cash-on-hand' ||
+            accountType === 'undeposited-funds'
+        ) {
             paymentMethod = 'cash';
-        }
-        else if (accountType === 'chequing' || accountType === 'savings' || accountType === 'money-market' || accountType === 'trust-account') {
+        } else if (
+            accountType === 'chequing' ||
+            accountType === 'savings' ||
+            accountType === 'money-market' ||
+            accountType === 'trust-account'
+        ) {
             paymentMethod = 'bank';
-        }
-        else if (accountType === 'credit-card') {
+        } else if (accountType === 'credit-card') {
             paymentMethod = 'card';
         }
         if (paymentMethod) {
