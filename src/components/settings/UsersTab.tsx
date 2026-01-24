@@ -218,25 +218,6 @@ const UsersTab = () => {
         (i: PendingInvitation) => i.id
     );
 
-    // Calculate stats
-    const stats = useMemo(() => {
-        const totalUsers = pagination?.total || 0;
-        const verifiedUsers = users.filter(
-            (u: UserType) => u.isVerified
-        ).length;
-        const activeUsers = users.filter(
-            (u: UserType) => u.isActive !== false
-        ).length;
-        const pendingCount =
-            invitationsPagination?.total || pendingInvitations.length || 0;
-
-        return {
-            total: totalUsers,
-            verified: verifiedUsers,
-            active: activeUsers,
-            pending: pendingCount,
-        };
-    }, [users, pagination, pendingInvitations, invitationsPagination]);
 
     const handleBulkExport = () => {
         console.log('Exporting users:', selectedItems);
@@ -289,72 +270,6 @@ const UsersTab = () => {
                 </Button>
             </div>
 
-            {/* Stats Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="bg-card border border-border rounded-lg p-4">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <p className="text-xs font-medium text-primary/60 uppercase tracking-wide">
-                                Total Users
-                            </p>
-                            <p className="text-2xl font-bold text-primary mt-1">
-                                {stats.total}
-                            </p>
-                        </div>
-                        <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                            <Icons.Users className="w-5 h-5 text-primary" />
-                        </div>
-                    </div>
-                </div>
-
-                <div className="bg-card border border-border rounded-lg p-4">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <p className="text-xs font-medium text-primary/60 uppercase tracking-wide">
-                                Verified
-                            </p>
-                            <p className="text-2xl font-bold text-primary mt-1">
-                                {stats.verified}
-                            </p>
-                        </div>
-                        <div className="w-10 h-10 rounded-lg bg-green-500/10 flex items-center justify-center">
-                            <Icons.Check className="w-5 h-5 text-green-600" />
-                        </div>
-                    </div>
-                </div>
-
-                <div className="bg-card border border-border rounded-lg p-4">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <p className="text-xs font-medium text-primary/60 uppercase tracking-wide">
-                                Active
-                            </p>
-                            <p className="text-2xl font-bold text-primary mt-1">
-                                {stats.active}
-                            </p>
-                        </div>
-                        <div className="w-10 h-10 rounded-lg bg-secondary/10 flex items-center justify-center">
-                            <Icons.UserCircle className="w-5 h-5 text-secondary" />
-                        </div>
-                    </div>
-                </div>
-
-                <div className="bg-card border border-border rounded-lg p-4">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <p className="text-xs font-medium text-primary/60 uppercase tracking-wide">
-                                Pending
-                            </p>
-                            <p className="text-2xl font-bold text-primary mt-1">
-                                {stats.pending}
-                            </p>
-                        </div>
-                        <div className="w-10 h-10 rounded-lg bg-yellow-500/10 flex items-center justify-center">
-                            <Icons.Mail className="w-5 h-5 text-yellow-600" />
-                        </div>
-                    </div>
-                </div>
-            </div>
 
             {/* Search and Filters */}
             <div className="flex flex-col gap-4">
@@ -406,11 +321,10 @@ const UsersTab = () => {
                                 filters.isVerified === true ? undefined : true
                             )
                         }
-                        className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
-                            filters.isVerified === true
-                                ? 'bg-secondary text-foreground'
-                                : 'bg-primary/5 text-primary/70 hover:bg-primary/10'
-                        }`}
+                        className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${filters.isVerified === true
+                            ? 'bg-secondary text-foreground'
+                            : 'bg-primary/5 text-primary/70 hover:bg-primary/10'
+                            }`}
                     >
                         <Icons.Check className="inline w-3 h-3 mr-1" />
                         Verified Only
@@ -423,33 +337,32 @@ const UsersTab = () => {
                                 filters.isActive === true ? undefined : true
                             )
                         }
-                        className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
-                            filters.isActive === true
-                                ? 'bg-secondary text-foreground'
-                                : 'bg-primary/5 text-primary/70 hover:bg-primary/10'
-                        }`}
+                        className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${filters.isActive === true
+                            ? 'bg-secondary text-foreground'
+                            : 'bg-primary/5 text-primary/70 hover:bg-primary/10'
+                            }`}
                     >
                         <Icons.UserCircle className="inline w-3 h-3 mr-1" />
                         Active Only
                     </button>
                     {(filters.isVerified === true ||
                         filters.isActive === true) && (
-                        <button
-                            type="button"
-                            onClick={() => {
-                                setFilters((prev) => ({
-                                    ...prev,
-                                    isVerified: undefined,
-                                    isActive: undefined,
-                                    page: 1,
-                                }));
-                            }}
-                            className="px-3 py-1.5 text-xs font-medium rounded-md bg-primary/5 text-primary/70 hover:bg-primary/10 transition-colors"
-                        >
-                            <Icons.Close className="inline w-3 h-3 mr-1" />
-                            Clear All
-                        </button>
-                    )}
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setFilters((prev) => ({
+                                        ...prev,
+                                        isVerified: undefined,
+                                        isActive: undefined,
+                                        page: 1,
+                                    }));
+                                }}
+                                className="px-3 py-1.5 text-xs font-medium rounded-md bg-primary/5 text-primary/70 hover:bg-primary/10 transition-colors"
+                            >
+                                <Icons.Close className="inline w-3 h-3 mr-1" />
+                                Clear All
+                            </button>
+                        )}
                 </div>
             </div>
 
@@ -718,15 +631,15 @@ const UsersTab = () => {
                                 message="No users found"
                                 description={
                                     search ||
-                                    filters.isVerified ||
-                                    filters.isActive
+                                        filters.isVerified ||
+                                        filters.isActive
                                         ? 'Try adjusting your search or filters'
                                         : 'Get started by inviting your first user'
                                 }
                                 action={
                                     !search &&
-                                    !filters.isVerified &&
-                                    !filters.isActive ? (
+                                        !filters.isVerified &&
+                                        !filters.isActive ? (
                                         <Button
                                             size="sm"
                                             onClick={() =>
@@ -806,8 +719,8 @@ const UsersTab = () => {
                                             <span className="text-primary/75 text-sm">
                                                 {user.createdAt
                                                     ? new Date(
-                                                          user.createdAt
-                                                      ).toLocaleDateString()
+                                                        user.createdAt
+                                                    ).toLocaleDateString()
                                                     : '—'}
                                             </span>
                                             {user.createdAt && (
