@@ -254,10 +254,25 @@ export function CreateRuleDrawer({
         }
 
         if (values.actionPayee) {
+            // Convert displayName to contactId if needed
+            // Check if actionPayee is a displayName (not a UUID)
+            const isDisplayName = !values.actionPayee.match(
+                /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+            );
+            let contactId = values.actionPayee;
+            if (isDisplayName) {
+                // Find contactId by displayName
+                const contact = contacts.find(
+                    (c) => c.displayName === values.actionPayee
+                );
+                if (contact) {
+                    contactId = contact.id;
+                }
+            }
             payload.actions?.push({
                 id: generateId(),
                 actionType: 'set_contact',
-                payload: { contactId: values.actionPayee },
+                payload: { contactId },
             });
         }
 

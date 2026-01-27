@@ -63,6 +63,7 @@ const Transactionpage = () => {
         taxId?: string;
         taxRate?: number;
         fromTo?: string;
+        contactId?: string;
         category?: string;
         matched?: boolean;
         status: TxStatus;
@@ -293,6 +294,8 @@ const Transactionpage = () => {
         }
 
         return filters;
+        // Use contactsData instead of contactNameById to avoid Map reference issues
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [
         page,
         limit,
@@ -308,7 +311,7 @@ const Transactionpage = () => {
         filterMaxAmount,
         sort,
         order,
-        contactNameById,
+        contactsData,
     ]);
 
     const [transactions, setTransactions] = useState<BankTransaction[]>([]);
@@ -442,8 +445,19 @@ const Transactionpage = () => {
             // defensively from common locations.
             const firstSplit = tx.splits?.[0];
 
-            // Contact
+            // Contact - extract displayName directly from API response
+            const contactDisplayName =
+                (tx as unknown as {
+                    contact?: {
+                        displayName?: string;
+                        id?: string;
+                    } | null;
+                }).contact?.displayName ?? undefined;
             const contactId =
+                (tx as unknown as {
+                    contact?: { id?: string } | null;
+                    contactId?: string | null;
+                }).contact?.id ??
                 (tx as unknown as { contactId?: string | null }).contactId ??
                 undefined;
 
@@ -491,8 +505,10 @@ const Transactionpage = () => {
                 // Keep id as-is if API provides it; default tax assignment happens later.
                 taxId: taxIdCandidate || undefined,
                 taxRate: undefined,
-                // Store contactId (UI maps it to displayName via `contactNameById`)
-                fromTo: contactId || undefined,
+                // Store contact displayName directly from API response for display
+                // Also store contactId for reference when saving
+                fromTo: contactDisplayName || undefined,
+                contactId: contactId || undefined,
                 // Store categoryId if available; otherwise fallback to label (so UI shows *something*)
                 category:
                     categoryIdCandidate || categoryLabelCandidate || undefined,
@@ -1013,13 +1029,7 @@ const Transactionpage = () => {
                                     <div className="min-w-[200px]">
                                         <Combobox
                                             options={SUPPLIER_OPTIONS}
-                                            value={
-                                                t.fromTo
-                                                    ? contactNameById.get(
-                                                          t.fromTo
-                                                      ) || t.fromTo
-                                                    : ''
-                                            }
+                                            value={t.fromTo || ''}
                                             onChange={(value) => {
                                                 // Find contactId by displayName
                                                 const contactId =
@@ -1028,16 +1038,15 @@ const Transactionpage = () => {
                                                     ).find(
                                                         ([, name]) =>
                                                             name === value
-                                                    )?.[0] || value;
+                                                    )?.[0] || undefined;
 
                                                 setTransactions((prev) =>
                                                     prev.map((tx) =>
                                                         tx.id === t.id
                                                             ? {
                                                                   ...tx,
-                                                                  fromTo:
-                                                                      contactId ||
-                                                                      undefined,
+                                                                  fromTo: value || undefined,
+                                                                  contactId: contactId || undefined,
                                                               }
                                                             : tx
                                                     )
@@ -1310,7 +1319,7 @@ const Transactionpage = () => {
                         spent: selectedTransactionForRule.spent,
                         received: selectedTransactionForRule.received,
                         category: selectedTransactionForRule.category,
-                        fromTo: selectedTransactionForRule.fromTo,
+                        fromTo: selectedTransactionForRule.contactId || selectedTransactionForRule.fromTo,
                         accountId: selectedTransactionForRule.accountId,
                         taxId: selectedTransactionForRule.taxId,
                     }}
