@@ -681,7 +681,11 @@ const ChartOfAccountspage = () => {
                                             return (
                                                 <Button
                                                     key={s}
-                                                    variant="outline"
+                                                    variant={
+                                                            active
+                                                            ? 'default'
+                                                            : 'outline'
+                                                    }
                                                     size="sm"
                                                     onClick={() => {
                                                         setIsActiveFilter(

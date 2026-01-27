@@ -81,6 +81,7 @@ import {
 } from '../../services/apis/journalApi';
 import { useJournalEntriesFilterStore } from '../../stores/journalEntries/journalEntriesFilterStore';
 import type { JournalEntry } from '../../types/journal';
+import { CurrencyInput } from './CreateJournalEntrypage';
 
 export default function JournalEntriespage() {
     const navigate = useNavigate();
@@ -502,7 +503,7 @@ export default function JournalEntriespage() {
                     </div>
 
                     <div className="ml-auto flex items-center gap-2 sm:gap-3">
-                        <Button size="sm" onClick={handleCreateNew}>
+                        <Button onClick={handleCreateNew}>
                             <Icons.Plus className="w-4 h-4 sm:mr-1" />
                             <span className="hidden sm:inline">New</span>
                         </Button>
@@ -513,7 +514,7 @@ export default function JournalEntriespage() {
                             direction="right"
                         >
                             <DrawerTrigger asChild>
-                                <Button variant="outline" size="sm">
+                                <Button variant="outline">
                                     <Filter className="h-4 w-4 sm:mr-2" />
                                     <span className="hidden sm:inline">
                                         Filters
@@ -647,8 +648,7 @@ export default function JournalEntriespage() {
                                             Amount Range
                                         </label>
                                         <div className="grid grid-cols-2 gap-2">
-                                            <Input
-                                                type="number"
+                                            <CurrencyInput
                                                 placeholder="Min"
                                                 value={
                                                     filterStore.filterMinAmount
@@ -659,8 +659,7 @@ export default function JournalEntriespage() {
                                                     )
                                                 }
                                             />
-                                            <Input
-                                                type="number"
+                                            <CurrencyInput
                                                 placeholder="Max"
                                                 value={
                                                     filterStore.filterMaxAmount
@@ -897,7 +896,7 @@ export default function JournalEntriespage() {
                         <TableHead align="right" sortable sortKey="totalCredit">
                             Credit
                         </TableHead>
-                        <TableHead>Status</TableHead>
+                        <TableHead align="center">Status</TableHead>
                         <TableHead>Actions</TableHead>
                     </tr>
                 </TableHeader>
@@ -1030,7 +1029,7 @@ export default function JournalEntriespage() {
                                 </TableCell>
                                 <TableCell>
                                     <div
-                                        className="flex items-center justify-end gap-2"
+                                        className="flex items-center justify-start gap-2"
                                         onClick={(e) => e.stopPropagation()}
                                     >
                                         {/* {entry.status === 'draft' && (
