@@ -672,7 +672,6 @@ const Transactionpage = () => {
                         <DrawerTrigger asChild>
                             <Button
                                 variant="outline"
-                                size="sm"
                                 className="flex-1 sm:flex-initial"
                             >
                                 <Filter className="mr-2 h-4 w-4" /> Filters

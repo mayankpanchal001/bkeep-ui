@@ -189,7 +189,7 @@ export function CreateTransactionDrawer({
     return (
         <Drawer open={open} onOpenChange={setOpen} direction="right">
             <DrawerTrigger asChild>
-                <Button size="sm">
+                <Button >
                     <Plus className="w-4 h-4 mr-2" />
                     Create Transaction
                 </Button>
