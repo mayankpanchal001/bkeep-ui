@@ -1219,13 +1219,16 @@ const Transactionpage = () => {
             </Table>
 
             {/* Pagination */}
-            <TablePagination
-                page={filterStore.page}
-                totalPages={totalPages}
-                totalItems={totalItems}
-                itemsPerPage={itemsPerPage}
-                onPageChange={(page) => filterStore.setPage(page)}
-            />
+            {totalPages > 1 && (
+                <TablePagination
+                    page={filterStore.page}
+                    totalPages={totalPages}
+                    totalItems={totalItems}
+                    itemsPerPage={itemsPerPage}
+                    onPageChange={(page) => filterStore.setPage(page)}
+                    className="mr-[25px]"
+                />
+            )}
 
             {/* Post Transaction Modal */}
             {selectedTransactionForPost && (
