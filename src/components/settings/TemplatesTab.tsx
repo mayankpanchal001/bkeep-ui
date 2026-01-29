@@ -84,7 +84,7 @@ const TemplatesTab = () => {
     const formatRate = (rate: number) => {
         if (!Number.isFinite(rate)) return '—';
         const normalized =
-            rate >= 0 && rate <= 1 ? Math.round(rate * 10000) / 100 : rate;
+            rate >= 0 && rate <= 1 ? Math.round(rate * 1) / 100 : rate;
         return `${normalized}%`;
     };
 

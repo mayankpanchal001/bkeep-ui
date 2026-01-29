@@ -134,6 +134,37 @@ export default function Input({
     // Handle date input type with calendar popover and manual entry
     if (type === 'date') {
         const selectedDate = dateValue ? new Date(dateValue) : undefined;
+        const hasDateValue = inputValue !== '';
+        const showDateClear = clearable && hasDateValue && !disabled;
+
+        // Calculate right padding based on buttons shown
+        const getDateEndPadding = () => {
+            if (showDateClear) {
+                return inputSize === 'sm'
+                    ? 'pr-[4.5rem]'
+                    : inputSize === 'lg'
+                      ? 'pr-24'
+                      : 'pr-20';
+            }
+            return inputSize === 'sm'
+                ? 'pr-10'
+                : inputSize === 'lg'
+                  ? 'pr-12'
+                  : 'pr-11';
+        };
+
+        // Format display value in dd/mm/yyyy format
+        const getDisplayValue = () => {
+            if (!inputValue) return '';
+            // If the date is valid and in yyyy-MM-dd format, show dd/mm/yyyy
+            if (inputValue.match(/^\d{4}-\d{2}-\d{2}$/) && isValidDate) {
+                const date = new Date(inputValue + 'T00:00:00');
+                if (!isNaN(date.getTime())) {
+                    return format(date, 'dd/MM/yyyy');
+                }
+            }
+            return inputValue;
+        };
 
         const handleDateSelect = (date: Date | undefined) => {
             if (date && onChange) {
@@ -155,6 +186,20 @@ export default function Input({
             setOpen(false);
         };
 
+        const handleDateClear = (e: React.MouseEvent<HTMLButtonElement>) => {
+            e.preventDefault();
+            e.stopPropagation();
+            setInputValue('');
+            setIsValidDate(true);
+            if (onChange) {
+                const syntheticEvent = {
+                    target: { value: '' },
+                } as React.ChangeEvent<HTMLInputElement>;
+                onChange(syntheticEvent);
+            }
+            inputRef.current?.focus();
+        };
+
         const handleManualInput = (e: React.ChangeEvent<HTMLInputElement>) => {
             const inputVal = e.target.value;
             setInputValue(inputVal);
@@ -172,16 +217,11 @@ export default function Input({
             let parsedDate: Date | null = null;
             let formattedDate = inputVal;
 
-            // Check for yyyy-MM-dd format (standard)
-            if (inputVal.match(/^\d{4}-\d{2}-\d{2}$/)) {
-                parsedDate = new Date(inputVal + 'T00:00:00');
-                formattedDate = inputVal;
-            }
-            // Check for MM/DD/YYYY or M/D/YYYY format
-            else if (inputVal.match(/^\d{1,2}\/\d{1,2}\/\d{4}$/)) {
+            // Check for dd/mm/yyyy format (primary format)
+            if (inputVal.match(/^\d{1,2}\/\d{1,2}\/\d{4}$/)) {
                 const parts = inputVal.split('/');
-                const month = parseInt(parts[0], 10) - 1;
-                const day = parseInt(parts[1], 10);
+                const day = parseInt(parts[0], 10);
+                const month = parseInt(parts[1], 10) - 1;
                 const year = parseInt(parts[2], 10);
                 parsedDate = new Date(year, month, day);
                 if (
@@ -194,11 +234,11 @@ export default function Input({
                     parsedDate = null;
                 }
             }
-            // Check for MM-DD-YYYY or M-D-YYYY format
+            // Check for dd-mm-yyyy format
             else if (inputVal.match(/^\d{1,2}-\d{1,2}-\d{4}$/)) {
                 const parts = inputVal.split('-');
-                const month = parseInt(parts[0], 10) - 1;
-                const day = parseInt(parts[1], 10);
+                const day = parseInt(parts[0], 10);
+                const month = parseInt(parts[1], 10) - 1;
                 const year = parseInt(parts[2], 10);
                 parsedDate = new Date(year, month, day);
                 if (
@@ -210,6 +250,11 @@ export default function Input({
                 } else {
                     parsedDate = null;
                 }
+            }
+            // Check for yyyy-MM-dd format (ISO standard)
+            else if (inputVal.match(/^\d{4}-\d{2}-\d{2}$/)) {
+                parsedDate = new Date(inputVal + 'T00:00:00');
+                formattedDate = inputVal;
             }
             // Try generic Date parsing as fallback
             else {
@@ -234,23 +279,30 @@ export default function Input({
             } else {
                 // Still allow typing, but mark as invalid
                 setIsValidDate(false);
-                // Don't call onChange for invalid dates
             }
         };
 
-        const handleCalendarIconClick = (
-            e: React.MouseEvent<HTMLButtonElement>
-        ) => {
-            e.preventDefault();
-            e.stopPropagation();
-            if (!disabled) {
-                setOpen(true);
-            }
+        // Button size classes
+        const calendarButtonSize = {
+            sm: 'h-6 w-6',
+            default: 'h-7 w-7',
+            lg: 'h-8 w-8',
         };
+
+        const clearButtonSize = {
+            sm: 'h-5 w-5',
+            default: 'h-6 w-6',
+            lg: 'h-7 w-7',
+        };
+
+        // Year range for the calendar dropdown
+        const currentYear = new Date().getFullYear();
+        const fromYear = currentYear - 100;
+        const toYear = currentYear + 50;
 
         return (
             <Popover open={open} onOpenChange={setOpen}>
-                <div className="relative w-full">
+                <div className="relative w-full group">
                     {startIcon && (
                         <span className={iconStartClasses}>{startIcon}</span>
                     )}
@@ -258,19 +310,18 @@ export default function Input({
                         ref={inputRef}
                         type="text"
                         data-slot="input"
-                        value={inputValue}
+                        value={getDisplayValue()}
                         onChange={handleManualInput}
-                        placeholder={
-                            props.placeholder || 'YYYY-MM-DD or click calendar'
-                        }
+                        placeholder={props.placeholder || 'DD/MM/YYYY'}
                         disabled={disabled}
                         className={cn(
                             baseClasses,
                             startIcon && iconPadding[inputSize].start,
-                            iconPadding[inputSize].end,
+                            getDateEndPadding(),
                             !isValidDate &&
                                 error !== false &&
-                                'border-destructive',
+                                'border-destructive focus-visible:border-destructive focus-visible:ring-destructive/20',
+                            'tabular-nums',
                             className
                         )}
                         {...(props as Omit<
@@ -278,26 +329,61 @@ export default function Input({
                             'type' | 'value' | 'onChange' | 'className'
                         >)}
                     />
-                    <PopoverTrigger asChild>
-                        <button
-                            type="button"
-                            onClick={handleCalendarIconClick}
-                            disabled={disabled}
-                            className={cn(
-                                iconEndClasses,
-                                'pointer-events-auto cursor-pointer hover:text-foreground transition-colors',
-                                disabled && 'pointer-events-none opacity-50'
-                            )}
-                            tabIndex={-1}
-                        >
-                            {endIcon || <CalendarIcon />}
-                        </button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
+                    <div
+                        className={cn(
+                            'absolute top-1/2 -translate-y-1/2 flex items-center gap-1',
+                            inputSize === 'sm'
+                                ? 'right-1.5'
+                                : inputSize === 'lg'
+                                  ? 'right-2.5'
+                                  : 'right-2'
+                        )}
+                    >
+                        {showDateClear && (
+                            <button
+                                type="button"
+                                onClick={handleDateClear}
+                                className={cn(
+                                    'inline-flex items-center justify-center rounded-md text-muted-foreground/60 hover:text-foreground hover:bg-muted/80 transition-all duration-150',
+                                    clearButtonSize[inputSize],
+                                    iconSizeClasses[inputSize]
+                                )}
+                                tabIndex={-1}
+                                aria-label="Clear date"
+                            >
+                                <X />
+                            </button>
+                        )}
+                        <PopoverTrigger asChild>
+                            <button
+                                type="button"
+                                disabled={disabled}
+                                className={cn(
+                                    'inline-flex items-center justify-center rounded-md text-muted-foreground hover:text-foreground hover:bg-muted/80 transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1',
+                                    calendarButtonSize[inputSize],
+                                    iconSizeClasses[inputSize],
+                                    disabled && 'pointer-events-none opacity-50'
+                                )}
+                                tabIndex={-1}
+                                aria-label="Open calendar"
+                            >
+                                {endIcon || <CalendarIcon />}
+                            </button>
+                        </PopoverTrigger>
+                    </div>
+                    <PopoverContent
+                        className="w-auto p-0"
+                        align="start"
+                        sideOffset={4}
+                    >
                         <Calendar
                             mode="single"
                             selected={selectedDate}
                             onSelect={handleDateSelect}
+                            defaultMonth={selectedDate}
+                            captionLayout="dropdown"
+                            fromYear={fromYear}
+                            toYear={toYear}
                             initialFocus
                         />
                     </PopoverContent>

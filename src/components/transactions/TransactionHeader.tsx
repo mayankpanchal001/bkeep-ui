@@ -15,7 +15,7 @@ import {
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Button } from '../ui/button';
 import { BankCard } from './BankCard';
-import ImportTransactionsModal from './ImportTransactionsModal';
+import ImportTransactionsDrawer from './ImportTransactionsDrawer';
 
 interface HeaderTransaction {
     accountId?: string;
@@ -25,7 +25,7 @@ interface HeaderTransaction {
 
 interface TransactionHeaderProps {
     selectedAccountId?: string;
-    onAccountSelect?: (accountId: string) => void;
+    onAccountSelect?: (accountId?: string) => void;
     transactions?: HeaderTransaction[];
     onStatusSelect?: (
         status: 'pending' | 'posted' | 'voided' | 'reversed'
@@ -88,7 +88,7 @@ export function TransactionHeader({
         setCanScrollLeft(container.scrollLeft > 0);
         setCanScrollRight(
             container.scrollLeft <
-            container.scrollWidth - container.clientWidth - 10
+                container.scrollWidth - container.clientWidth - 10
         );
     }, []);
 
@@ -185,20 +185,20 @@ export function TransactionHeader({
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button>
-                            Link account
+                            Import Data
                             <ChevronDown className="w-4 h-4 ml-2" />
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>
                         <DropdownMenuItem>
                             <Landmark className="w-4 h-4 mr-2" />
-                            Connect Bank
+                            Connect to Bank
                         </DropdownMenuItem>
                         <DropdownMenuItem
                             onClick={() => setIsImportModalOpen(true)}
                         >
                             <Import className="w-4 h-4 mr-2" />
-                            Import Data
+                            Import from the file
                         </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
@@ -304,9 +304,13 @@ export function TransactionHeader({
                                     postedCount={postedCount}
                                     voidedCount={voidedCount}
                                     reversedCount={reversedCount}
-                                    onClick={() =>
-                                        onAccountSelect?.(account.id)
-                                    }
+                                    onClick={() => {
+                                        if (selectedAccountId === account.id) {
+                                            onAccountSelect?.(undefined);
+                                        } else {
+                                            onAccountSelect?.(account.id);
+                                        }
+                                    }}
                                     onStatusClick={onStatusSelect}
                                 />
                             );
@@ -314,10 +318,9 @@ export function TransactionHeader({
                 </div>
             </div>
 
-            <ImportTransactionsModal
+            <ImportTransactionsDrawer
                 isOpen={isImportModalOpen}
                 onClose={() => setIsImportModalOpen(false)}
-                selectedAccountId={selectedAccountId}
             />
         </div>
     );

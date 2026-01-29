@@ -113,7 +113,7 @@ const TaxesTab = () => {
                 header: 'Rate',
                 cell: ({ row }) => (
                     <span className="font-medium text-primary">
-                        {((row.original.rate || 0) * 100).toFixed(2)}%
+                        {(row.original.rate || 0).toFixed(2)}%
                     </span>
                 ),
             },

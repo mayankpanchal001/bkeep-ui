@@ -83,7 +83,7 @@ export function SplitTransactionDrawer({
         const taxes = taxesData?.data?.items || [];
         return taxes.map((tax) => ({
             value: tax.id,
-            label: `${tax.name} (${(tax.rate * 100).toFixed(2)}%)`,
+            label: `${tax.name} (${tax.rate}%)`,
         }));
     }, [taxesData]);
 
@@ -317,13 +317,16 @@ export function SplitTransactionDrawer({
 
     return (
         <Drawer direction="bottom" open={open} onOpenChange={handleClose}>
-            <DrawerContent onPointerDownOutside={(e) => e.preventDefault()} className="max-h-[90vh]  flex flex-col">
+            <DrawerContent
+                onPointerDownOutside={(e) => e.preventDefault()}
+                className="h-[100vh] max-h-[100vh] mt-0 rounded-none flex flex-col"
+            >
                 <div className="mx-auto w-full sm:max-w-5xl">
                     <DrawerHeader className="border-b border-primary/10 pb-3 px-3 sm:px-6">
-                    <DrawerClose className="absolute right-4 top-4 p-2 hover:bg-primary/10">
-                        <X className="h-4 w-4 text-muted-foreground hover:text-foreground" />
-                        <span className="sr-only">Close</span>
-                    </DrawerClose>
+                        <DrawerClose className="absolute right-4 top-4 p-2 hover:bg-primary/10">
+                            <X className="h-4 w-4 text-muted-foreground hover:text-foreground" />
+                            <span className="sr-only">Close</span>
+                        </DrawerClose>
                         <DrawerTitle className="text-base sm:text-lg">
                             Split Transaction
                         </DrawerTitle>

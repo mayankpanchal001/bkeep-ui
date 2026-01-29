@@ -206,7 +206,7 @@ const Invoicepage = () => {
                             startIcon={<Search className="w-4 h-4" />}
                         />
                     </div>
-                    <Button  onClick={() => setShowCreateModal(true)}>
+                    <Button onClick={() => setShowCreateModal(true)}>
                         <Plus className="w-4 h-4 mr-1" />
                         New Invoice
                     </Button>

@@ -37,7 +37,7 @@ const TaxForm = ({ onClose, initialData }: TaxFormProps) => {
             setFormData({
                 name: initialData.name || '',
                 code: initialData.code || '',
-                ratePercent: ((initialData.rate || 0) * 100).toString(),
+                ratePercent: (initialData.rate || 0).toString(),
                 description: initialData.description || '',
                 isActive: !!initialData.isActive,
             });

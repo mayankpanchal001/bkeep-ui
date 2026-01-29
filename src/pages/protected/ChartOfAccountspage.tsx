@@ -709,7 +709,7 @@ const ChartOfAccountspage = () => {
                                                 <Button
                                                     key={s}
                                                     variant={
-                                                            active
+                                                        active
                                                             ? 'default'
                                                             : 'outline'
                                                     }

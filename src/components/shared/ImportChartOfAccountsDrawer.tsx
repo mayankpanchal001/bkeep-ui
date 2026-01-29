@@ -332,7 +332,7 @@ const ImportChartOfAccountsDrawer = ({
             direction="bottom"
             dismissible={false}
         >
-            <DrawerContent className="max-h-[90vh] bg-card">
+            <DrawerContent className="h-[100vh] max-h-[100vh] mt-0 rounded-none bg-card flex flex-col">
                 <DrawerHeader className="flex flex-row items-center justify-between px-6 py-4 border-b border-primary/10">
                     <DrawerTitle className="text-xl font-semibold text-primary">
                         {step === 'select'

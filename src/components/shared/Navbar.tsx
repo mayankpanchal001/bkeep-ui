@@ -242,7 +242,7 @@ const Navbar = ({ onSearchClick, onShortcutsClick }: NavbarProps) => {
                                 )}
                             </button>
                         </DrawerTrigger>
-                        <DrawerContent className="h-[85vh] flex flex-col">
+                        <DrawerContent className="h-[100vh] max-h-[100vh] mt-0 rounded-none flex flex-col">
                             <DrawerHeader className="text-left px-4 py-3 border-b border-primary/10">
                                 <DrawerTitle>Notifications</DrawerTitle>
                                 <DrawerDescription className="sr-only">
