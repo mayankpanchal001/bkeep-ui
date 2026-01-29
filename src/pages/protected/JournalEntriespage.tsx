@@ -1164,6 +1164,7 @@ export default function JournalEntriespage() {
                     totalItems={totalItems}
                     itemsPerPage={filterStore.limit}
                     onPageChange={(page) => filterStore.setPage(page)}
+                    className="mr-[40px]"
                 />
             )}
 

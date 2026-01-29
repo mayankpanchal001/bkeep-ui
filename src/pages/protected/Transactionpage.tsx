@@ -600,7 +600,7 @@ const Transactionpage = () => {
         }).format(n || 0);
 
     return (
-        <div className="h-full flex flex-col gap-4">
+        <div className="flex flex-col gap-4">
             <TransactionHeader
                 selectedAccountId={filterStore.selectedAccountId}
                 onAccountSelect={(id) => filterStore.setSelectedAccountId(id)}
@@ -1226,6 +1226,7 @@ const Transactionpage = () => {
                     totalItems={totalItems}
                     itemsPerPage={itemsPerPage}
                     onPageChange={(page) => filterStore.setPage(page)}
+                    className="mr-[25px]"
                 />
             )}
 

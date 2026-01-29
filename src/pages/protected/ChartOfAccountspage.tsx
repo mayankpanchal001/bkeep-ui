@@ -556,6 +556,7 @@ const ChartOfAccountspage = () => {
                     totalItems={pagination.total}
                     itemsPerPage={pagination.limit}
                     onPageChange={setPage}
+                    className="mr-[40px]"
                 />
             )}
 
