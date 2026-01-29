@@ -84,7 +84,7 @@ const TemplatesTab = () => {
     const formatRate = (rate: number) => {
         if (!Number.isFinite(rate)) return '—';
         const normalized =
-            rate >= 0 && rate <= 1 ? Math.round(rate * 10000) / 100 : rate;
+            rate >= 0 && rate <= 1 ? Math.round(rate * 1) / 100 : rate;
         return `${normalized}%`;
     };
 
@@ -168,11 +168,10 @@ const TemplatesTab = () => {
                                             onClick={() =>
                                                 setSelectedTemplateId(t.id)
                                             }
-                                            className={`w-full text-left px-4 py-3 transition-colors ${
-                                                isSelected
-                                                    ? 'bg-primary/5'
-                                                    : 'hover:bg-primary/5'
-                                            }`}
+                                            className={`w-full text-left px-4 py-3 transition-colors ${isSelected
+                                                ? 'bg-primary/5'
+                                                : 'hover:bg-primary/5'
+                                                }`}
                                         >
                                             <div className="flex items-start justify-between gap-3">
                                                 <div className="min-w-0">
@@ -184,11 +183,10 @@ const TemplatesTab = () => {
                                                     </p>
                                                 </div>
                                                 <span
-                                                    className={`shrink-0 text-[10px] px-2 py-1 rounded-full border ${
-                                                        t.isActive
-                                                            ? 'border-green-600/20 bg-green-600/10 text-green-700'
-                                                            : 'border-primary/10 bg-card text-primary/60'
-                                                    }`}
+                                                    className={`shrink-0 text-[10px] px-2 py-1 rounded-full border ${t.isActive
+                                                        ? 'border-green-600/20 bg-green-600/10 text-green-700'
+                                                        : 'border-primary/10 bg-card text-primary/60'
+                                                        }`}
                                                 >
                                                     {t.isActive
                                                         ? 'Active'

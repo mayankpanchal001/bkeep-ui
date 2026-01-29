@@ -113,7 +113,7 @@ const TaxesTab = () => {
                 header: 'Rate',
                 cell: ({ row }) => (
                     <span className="font-medium text-primary">
-                        {((row.original.rate || 0) * 100).toFixed(2)}%
+                        {((row.original.rate || 0)).toFixed(2)}%
                     </span>
                 ),
             },
@@ -122,11 +122,10 @@ const TaxesTab = () => {
                 header: 'Status',
                 cell: ({ row }) => (
                     <span
-                        className={`text-xs px-2 py-1 rounded ${
-                            row.original.isActive
+                        className={`text-xs px-2 py-1 rounded ${row.original.isActive
                                 ? 'bg-green-100 text-green-700'
                                 : 'bg-primary/10 text-primary/50'
-                        }`}
+                            }`}
                     >
                         {row.original.isActive ? 'Active' : 'Inactive'}
                     </span>
@@ -158,15 +157,15 @@ const TaxesTab = () => {
                         },
                         tax.isActive
                             ? {
-                                  label: 'Disable',
-                                  onClick: () => handleDisable(tax.id),
-                                  separator: true,
-                              }
+                                label: 'Disable',
+                                onClick: () => handleDisable(tax.id),
+                                separator: true,
+                            }
                             : {
-                                  label: 'Enable',
-                                  onClick: () => handleEnable(tax.id),
-                                  separator: true,
-                              },
+                                label: 'Enable',
+                                onClick: () => handleEnable(tax.id),
+                                separator: true,
+                            },
                         {
                             label: 'Delete',
                             icon: <Icons.Trash className="mr-2 w-4 h-4" />,
@@ -264,10 +263,10 @@ const TaxesTab = () => {
                                         {header.isPlaceholder
                                             ? null
                                             : flexRender(
-                                                  header.column.columnDef
-                                                      .header,
-                                                  header.getContext()
-                                              )}
+                                                header.column.columnDef
+                                                    .header,
+                                                header.getContext()
+                                            )}
                                     </TableHead>
                                 );
                             })}

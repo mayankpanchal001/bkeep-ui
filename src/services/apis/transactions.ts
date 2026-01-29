@@ -121,6 +121,7 @@ export type CreateTransactionPayload = {
     currencyCode: string;
     currencyRate: number;
     contactId?: string;
+    categoryId?: string;
     paymentMethod?: 'cash' | 'card' | 'bank' | 'check' | 'other';
     reference?: string;
     description?: string;
@@ -390,6 +391,179 @@ export const useSplitTransaction = () => {
             const message =
                 maybeAxiosError.response?.data?.message ||
                 'Failed to split transaction';
+            showErrorToast(message);
+        },
+    });
+};
+
+export type TransactionImportField = {
+    key: string;
+    label: string;
+    required: boolean;
+    formatHint?: string;
+};
+
+export type TransactionImportFieldsResponse = {
+    success: boolean;
+    statusCode: number;
+    message: string;
+    data: {
+        fields: TransactionImportField[];
+        dateFormats?: string[];
+    };
+};
+
+export type TransactionImportStartResponse = {
+    success: boolean;
+    statusCode: number;
+    message: string;
+    data?: {
+        importId?: string;
+    };
+};
+
+export type TransactionImportProgressResponse = {
+    success: boolean;
+    statusCode: number;
+    message: string;
+    data?: {
+        importId: string;
+        status: 'pending' | 'processing' | 'completed' | 'failed';
+        processed?: number;
+        total?: number;
+        created?: number;
+        skipped?: number;
+        failed?: number;
+    };
+};
+
+export const getTransactionImportFields = async (
+    mode?: 'single' | 'double'
+): Promise<TransactionImportFieldsResponse> => {
+    const params = new URLSearchParams();
+    if (mode) params.append('mode', mode);
+    const url = `/transactions/import/fields${params.toString() ? `?${params.toString()}` : ''}`;
+    const response = await axiosInstance.get(url);
+    return response.data;
+};
+
+export const downloadTransactionSampleSingle = async (): Promise<Blob> => {
+    const response = await axiosInstance.get(
+        '/transactions/import/sample/single',
+        {
+            responseType: 'blob',
+            headers: {
+                Accept: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            },
+        }
+    );
+    return response.data;
+};
+
+export const downloadTransactionSampleDouble = async (): Promise<Blob> => {
+    const response = await axiosInstance.get(
+        '/transactions/import/sample/double',
+        {
+            responseType: 'blob',
+            headers: {
+                Accept: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            },
+        }
+    );
+    return response.data;
+};
+
+export const startTransactionImport = async (
+    file: File,
+    mapping?: Record<string, string>,
+    accountId?: string,
+    dateFormat?: string,
+    columnMode?: 'single' | 'double',
+    isReverse?: boolean
+): Promise<TransactionImportStartResponse> => {
+    const formData = new FormData();
+    formData.append('file', file);
+    if (mapping) {
+        formData.append('fieldMappings', JSON.stringify(mapping));
+    }
+    if (accountId) {
+        formData.append('accountId', accountId);
+    }
+    if (dateFormat) {
+        formData.append('dateFormat', dateFormat);
+    }
+    if (columnMode) {
+        formData.append('columnMode', columnMode);
+    }
+    if (typeof isReverse === 'boolean') {
+        formData.append('isReverse', String(isReverse));
+    }
+    const response = await axiosInstance.post(
+        '/transactions/import',
+        formData,
+        {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        }
+    );
+    return response.data;
+};
+
+export const getTransactionImportProgress = async (
+    importId: string
+): Promise<TransactionImportProgressResponse> => {
+    const response = await axiosInstance.get(
+        `/transactions/import/${importId}/progress`
+    );
+    return response.data;
+};
+
+export const useTransactionImportFields = (mode?: 'single' | 'double') => {
+    return useQuery<TransactionImportFieldsResponse, Error>({
+        queryKey: ['transactions-import-fields', mode],
+        queryFn: () => getTransactionImportFields(mode),
+        staleTime: Infinity,
+    });
+};
+
+export const useStartTransactionImport = () => {
+    return useMutation({
+        mutationFn: ({
+            file,
+            mapping,
+            accountId,
+            dateFormat,
+            columnMode,
+            isReverse,
+        }: {
+            file: File;
+            mapping?: Record<string, string>;
+            accountId?: string;
+            dateFormat?: string;
+            columnMode?: 'single' | 'double';
+            isReverse?: boolean;
+        }) =>
+            startTransactionImport(
+                file,
+                mapping,
+                accountId,
+                dateFormat,
+                columnMode,
+                isReverse
+            ),
+        onSuccess: (data) => {
+            showSuccessToast(
+                data?.message || 'Transactions import started successfully'
+            );
+        },
+        onError: (error) => {
+            const maybeAxiosError = error as {
+                response?: { data?: { message?: string } };
+            };
+            const message =
+                maybeAxiosError.response?.data?.message ||
+                'Failed to start transactions import';
             showErrorToast(message);
         },
     });

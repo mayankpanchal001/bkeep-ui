@@ -67,7 +67,7 @@ const TaxDetailDrawer = ({
                                     Rate
                                 </h3>
                                 <p className="text-base">
-                                    {((tax.rate || 0) * 100).toFixed(2)}%
+                                    {(tax.rate || 0)}%
                                 </p>
                             </div>
 

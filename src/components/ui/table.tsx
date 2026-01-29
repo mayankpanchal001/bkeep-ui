@@ -376,9 +376,9 @@ function Table({
     const containerClasses = cn(
         'relative w-full overflow-hidden max-h-full',
         borderStyle === 'default' &&
-            'rounded-md border border-border bg-background',
+        'rounded-md border border-border bg-background',
         borderStyle === 'minimal' &&
-            'rounded-md border border-border/60 bg-background',
+        'rounded-md border border-border/60 bg-background',
         borderStyle === 'none' && '',
         containerClassName
     );
@@ -413,12 +413,12 @@ function Table({
                             value={
                                 hasResizableColumns
                                     ? {
-                                          columns,
-                                          registerColumn,
-                                          unregisterColumn,
-                                          columnLayout: computedLayout,
-                                          setColumnLayout,
-                                      }
+                                        columns,
+                                        registerColumn,
+                                        unregisterColumn,
+                                        columnLayout: computedLayout,
+                                        setColumnLayout,
+                                    }
                                     : null
                             }
                         >
@@ -440,7 +440,7 @@ function Table({
                                     className={cn(
                                         'relative overflow-auto h-full',
                                         transposeOnMobile &&
-                                            'md:overflow-auto overflow-visible'
+                                        'md:overflow-auto overflow-visible'
                                     )}
                                 >
                                     {hasResizableColumns && computedLayout && (
@@ -460,15 +460,15 @@ function Table({
                                                         Array.isArray(layout)
                                                             ? (layout as number[])
                                                             : columns.map(
-                                                                  (c) =>
-                                                                      (
-                                                                          layout as Record<
-                                                                              string,
-                                                                              number
-                                                                          >
-                                                                      )[c.id] ??
-                                                                      0
-                                                              );
+                                                                (c) =>
+                                                                    (
+                                                                        layout as Record<
+                                                                            string,
+                                                                            number
+                                                                        >
+                                                                    )[c.id] ??
+                                                                    0
+                                                            );
                                                     setColumnLayout(next);
                                                     updateOverlayWidth();
                                                 }}
@@ -483,7 +483,7 @@ function Table({
                                                                 id={col.id}
                                                                 defaultSize={
                                                                     computedLayout[
-                                                                        idx
+                                                                    idx
                                                                     ]
                                                                 }
                                                                 minSize={
@@ -496,9 +496,9 @@ function Table({
                                                             />
                                                             {idx <
                                                                 columns.length -
-                                                                    1 && (
-                                                                <ResizableHandle className="pointer-events-auto w-2 bg-transparent after:w-1 after:bg-border/40 hover:after:bg-border" />
-                                                            )}
+                                                                1 && (
+                                                                    <ResizableHandle className="pointer-events-auto w-2 bg-transparent after:w-1 after:bg-border/40 hover:after:bg-border" />
+                                                                )}
                                                         </React.Fragment>
                                                     );
                                                 })}
@@ -512,7 +512,7 @@ function Table({
                                         className={cn(
                                             'w-full caption-bottom text-sm table-auto',
                                             transposeOnMobile &&
-                                                'block md:table',
+                                            'block md:table',
                                             className
                                         )}
                                         {...props}
@@ -590,7 +590,7 @@ function TableBody({ className, ...props }: React.ComponentProps<'tbody'>) {
                 '[&_tr:last-child]:border-0',
                 'divide-y divide-border',
                 transposeOnMobile &&
-                    'block md:table-row-group space-y-3 md:space-y-0',
+                'block md:table-row-group space-y-3 md:space-y-0',
                 className
             )}
             {...props}
@@ -667,7 +667,7 @@ function TableRow({ className, rowId, onClick, ...props }: TableRowProps) {
                 'group-data-[striped=true]/table:odd:bg-muted/30',
                 onClick && 'cursor-pointer',
                 transposeOnMobile &&
-                    'block md:table-row mb-3 md:mb-0 border border-primary/10 md:border-0 rounded-lg md:rounded-none bg-card md:bg-transparent p-0 md:p-0 last:mb-0',
+                'block md:table-row mb-3 md:mb-0 border border-primary/10 md:border-0 rounded-lg md:rounded-none bg-card md:bg-transparent p-0 md:p-0 last:mb-0',
                 className
             )}
             {...props}
@@ -746,9 +746,9 @@ function TableHead({
             ? children
             : React.isValidElement(children) &&
                 typeof (children.props as { children?: unknown }).children ===
-                    'string'
-              ? ((children.props as { children?: unknown }).children as string)
-              : '';
+                'string'
+                ? ((children.props as { children?: unknown }).children as string)
+                : '';
     return (
         <th
             data-slot="table-head"
@@ -912,7 +912,7 @@ function TableCell({
                     ? '[&:has([role=checkbox])]:w-8 [&:has([role=checkbox])]:px-1.5'
                     : '[&:has([role=checkbox])]:w-10 [&:has([role=checkbox])]:px-2',
                 transposeOnMobile &&
-                    'flex md:table-cell items-start md:items-middle gap-2 md:gap-0 px-3 md:px-2 py-2.5 md:py-1.5 border-b border-primary/10 md:border-b-0 last:border-b-0',
+                'flex md:table-cell items-start md:items-middle gap-2 md:gap-0 px-3 md:px-2 py-2.5 md:py-1.5 border-b border-primary/10 md:border-b-0 last:border-b-0',
                 className
             )}
             {...props}
@@ -1357,5 +1357,5 @@ export {
     TableRow,
     TableRowCheckbox,
     TableSelectAllCheckbox,
-    TableSelectionToolbar,
+    TableSelectionToolbar
 };
