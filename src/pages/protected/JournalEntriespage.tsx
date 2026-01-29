@@ -483,7 +483,7 @@ export default function JournalEntriespage() {
     };
 
     return (
-        <div className="flex flex-col gap-4">
+        <div className="h-full flex flex-col gap-4">
             <PageHeader
                 title="Journal Entries"
                 subtitle={`${total} total entries`}
@@ -1157,13 +1157,15 @@ export default function JournalEntriespage() {
             </Table>
 
             {/* Pagination */}
-            <TablePagination
-                page={filterStore.page}
-                totalPages={totalPages}
-                totalItems={totalItems}
-                itemsPerPage={filterStore.limit}
-                onPageChange={(page) => filterStore.setPage(page)}
-            />
+            {totalPages > 1 && (
+                <TablePagination
+                    page={filterStore.page}
+                    totalPages={totalPages}
+                    totalItems={totalItems}
+                    itemsPerPage={filterStore.limit}
+                    onPageChange={(page) => filterStore.setPage(page)}
+                />
+            )}
 
             {/* Delete Confirmation Dialog */}
             <AlertDialog

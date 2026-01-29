@@ -29,6 +29,7 @@ import {
     TableRowCheckbox,
     TableSelectAllCheckbox,
     TableSelectionToolbar,
+    TablePagination,
 } from '@/components/ui/table';
 import {
     Tooltip,
@@ -146,6 +147,17 @@ const ChartOfAccountspage = () => {
     const [selectedAccountSubType, setSelectedAccountSubType] =
         useState<string>('bank');
 
+    const [page, setPage] = useState(1);
+    const [limit] = useState(20);
+    useEffect(() => {
+        setPage(1);
+    }, [
+        debouncedSearchQuery,
+        selectedTypes,
+        selectedDetailTypes,
+        isActiveFilter,
+    ]);
+
     useEffect(() => {
         const handle = window.setTimeout(() => {
             setDebouncedSearchQuery(searchQuery.trim());
@@ -162,7 +174,11 @@ const ChartOfAccountspage = () => {
         search: debouncedSearchQuery || undefined,
         accountType: serverAccountTypeParam,
         isActive: serverIsActiveParam,
+        page,
+        limit,
     });
+
+    const pagination = data?.data?.pagination;
 
     const createMutation = useCreateChartOfAccount();
     const updateMutation = useUpdateChartOfAccount();
@@ -532,6 +548,16 @@ const ChartOfAccountspage = () => {
                     )}
                 </TableBody>
             </Table>
+
+            {pagination && pagination.totalPages > 1 && (
+                <TablePagination
+                    page={pagination.page}
+                    totalPages={pagination.totalPages}
+                    totalItems={pagination.total}
+                    itemsPerPage={pagination.limit}
+                    onPageChange={setPage}
+                />
+            )}
 
             {/* Filters Drawer */}
             <Drawer
@@ -909,7 +935,7 @@ const ChartOfAccountspage = () => {
                                 )}
                             </div>
 
-                            <div className="flex flex-col gap-2">
+                            {/* <div className="flex flex-col gap-2">
                                 <Label htmlFor="opening-balance">
                                     Opening Balance{' '}
                                     <span className="text-red-500">*</span>
@@ -941,7 +967,7 @@ const ChartOfAccountspage = () => {
                                         {formErrors.openingBalance}
                                     </p>
                                 )}
-                            </div>
+                            </div> */}
 
                             <div className="flex flex-col gap-2">
                                 <Label htmlFor="description">Description</Label>
