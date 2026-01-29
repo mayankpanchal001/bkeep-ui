@@ -48,7 +48,10 @@ interface TransactionsTableProps {
     taxRateById: Record<string, number>;
     contactNameById: Map<string, string>;
 
-    updateTransaction: (vars: { id: string; payload: Record<string, unknown> }) => void;
+    updateTransaction: (vars: {
+        id: string;
+        payload: Record<string, unknown>;
+    }) => void;
     setTransactions: React.Dispatch<React.SetStateAction<BankTransaction[]>>;
 
     onPostClick: (id: string) => void;
@@ -108,7 +111,10 @@ export const TransactionsTable = ({
                     sortKey={sort}
                     sortDirection={order}
                     onSortChange={(key, direction) => {
-                        onSortChange(direction ? key : null, direction || undefined);
+                        onSortChange(
+                            direction ? key : null,
+                            direction || undefined
+                        );
                     }}
                 >
                     {/* Bulk Actions Toolbar */}
@@ -126,7 +132,6 @@ export const TransactionsTable = ({
                                 variant="outline"
                                 size="sm"
                                 disabled={isBulkProcessing}
-
                                 onClick={() =>
                                     handleBulkAction(
                                         'reconciled',
@@ -140,7 +145,6 @@ export const TransactionsTable = ({
                                 variant="outline"
                                 size="sm"
                                 disabled={isBulkProcessing}
-
                                 onClick={() =>
                                     handleBulkAction(
                                         'reversed',
@@ -154,9 +158,11 @@ export const TransactionsTable = ({
                                 variant="outline"
                                 size="sm"
                                 disabled={isBulkProcessing}
-
                                 onClick={() =>
-                                    handleBulkAction('voided', voidTransactionAsync)
+                                    handleBulkAction(
+                                        'voided',
+                                        voidTransactionAsync
+                                    )
                                 }
                             >
                                 Void ({selectedItems.length})
@@ -202,7 +208,9 @@ export const TransactionsTable = ({
                                     </TableCell>
                                     <TableCell data-label="Date">
                                         <span className="text-sm font-medium text-primary">
-                                            {new Date(t.date).toLocaleDateString()}
+                                            {new Date(
+                                                t.date
+                                            ).toLocaleDateString()}
                                         </span>
                                     </TableCell>
                                     <TableCell
@@ -220,7 +228,9 @@ export const TransactionsTable = ({
                                     </TableCell>
                                     <TableCell data-label="Spent">
                                         <span className="text-red-600 font-semibold">
-                                            {t.spent ? `-${currency(t.spent)}` : ''}
+                                            {t.spent
+                                                ? `-${currency(t.spent)}`
+                                                : ''}
                                         </span>
                                     </TableCell>
                                     <TableCell data-label="Received">
@@ -240,38 +250,49 @@ export const TransactionsTable = ({
                                                         const rate =
                                                             (value &&
                                                                 taxRateById[
-                                                                value
+                                                                    value
                                                                 ]) ||
                                                             0;
-                                                        setTransactions((prev) =>
-                                                            prev.map((tx) => {
-                                                                if (tx.id !== t.id)
-                                                                    return tx;
-                                                                const base =
-                                                                    tx.spent ?? 0;
-                                                                const taxAmount =
-                                                                    Number(
-                                                                        (
-                                                                            base *
-                                                                            rate
-                                                                        ).toFixed(2)
-                                                                    );
-                                                                return {
-                                                                    ...tx,
-                                                                    taxId:
-                                                                        value ||
-                                                                        undefined,
-                                                                    taxRate:
-                                                                        rate ||
-                                                                        undefined,
-                                                                    tax: taxAmount,
-                                                                };
-                                                            })
+                                                        setTransactions(
+                                                            (prev) =>
+                                                                prev.map(
+                                                                    (tx) => {
+                                                                        if (
+                                                                            tx.id !==
+                                                                            t.id
+                                                                        )
+                                                                            return tx;
+                                                                        const base =
+                                                                            tx.spent ??
+                                                                            0;
+                                                                        const taxAmount =
+                                                                            Number(
+                                                                                (
+                                                                                    base *
+                                                                                    rate
+                                                                                ).toFixed(
+                                                                                    2
+                                                                                )
+                                                                            );
+                                                                        return {
+                                                                            ...tx,
+                                                                            taxId:
+                                                                                value ||
+                                                                                undefined,
+                                                                            taxRate:
+                                                                                rate ||
+                                                                                undefined,
+                                                                            tax: taxAmount,
+                                                                        };
+                                                                    }
+                                                                )
                                                         );
                                                         updateTransaction({
                                                             id: t.id,
                                                             payload: {
-                                                                taxIds: value ? [value] : [],
+                                                                taxIds: value
+                                                                    ? [value]
+                                                                    : [],
                                                             },
                                                         });
                                                     }}
@@ -306,14 +327,14 @@ export const TransactionsTable = ({
                                                         prev.map((tx) =>
                                                             tx.id === t.id
                                                                 ? {
-                                                                    ...tx,
-                                                                    fromTo:
-                                                                        value ||
-                                                                        undefined,
-                                                                    contactId:
-                                                                        contactId ||
-                                                                        undefined,
-                                                                }
+                                                                      ...tx,
+                                                                      fromTo:
+                                                                          value ||
+                                                                          undefined,
+                                                                      contactId:
+                                                                          contactId ||
+                                                                          undefined,
+                                                                  }
                                                                 : tx
                                                         )
                                                     );
@@ -351,17 +372,20 @@ export const TransactionsTable = ({
                                                                     value
                                                             )?.label || value;
 
-                                                        setTransactions((prev) =>
-                                                            prev.map((tx) =>
-                                                                tx.id === t.id
-                                                                    ? {
-                                                                        ...tx,
-                                                                        category:
-                                                                            value ||
-                                                                            undefined,
-                                                                    }
-                                                                    : tx
-                                                            )
+                                                        setTransactions(
+                                                            (prev) =>
+                                                                prev.map(
+                                                                    (tx) =>
+                                                                        tx.id ===
+                                                                        t.id
+                                                                            ? {
+                                                                                  ...tx,
+                                                                                  category:
+                                                                                      value ||
+                                                                                      undefined,
+                                                                              }
+                                                                            : tx
+                                                                )
                                                         );
                                                         if (value) {
                                                             showSuccessToast(
@@ -371,7 +395,8 @@ export const TransactionsTable = ({
                                                             updateTransaction({
                                                                 id: t.id,
                                                                 payload: {
-                                                                    categoryId: value,
+                                                                    categoryId:
+                                                                        value,
                                                                 },
                                                             });
                                                         }
@@ -388,10 +413,10 @@ export const TransactionsTable = ({
                                                         prev.map((tx) =>
                                                             tx.id === t.id
                                                                 ? {
-                                                                    ...tx,
-                                                                    matched:
-                                                                        !tx.matched,
-                                                                }
+                                                                      ...tx,
+                                                                      matched:
+                                                                          !tx.matched,
+                                                                  }
                                                                 : tx
                                                         )
                                                     );
@@ -406,7 +431,6 @@ export const TransactionsTable = ({
                                                         ? 'default'
                                                         : 'outline'
                                                 }
-
                                             >
                                                 {t.matched ? 'Match' : 'Match'}
                                             </Button>
@@ -416,7 +440,9 @@ export const TransactionsTable = ({
                                         <div className="flex items-center gap-2">
                                             <Button
                                                 size="sm"
-                                                onClick={() => onPostClick(t.id)}
+                                                onClick={() =>
+                                                    onPostClick(t.id)
+                                                }
                                             >
                                                 Post
                                             </Button>
@@ -442,14 +468,18 @@ export const TransactionsTable = ({
                                                     </DropdownMenuItem>
                                                     <DropdownMenuItem
                                                         onClick={() =>
-                                                            voidTransaction(t.id)
+                                                            voidTransaction(
+                                                                t.id
+                                                            )
                                                         }
                                                     >
                                                         Void
                                                     </DropdownMenuItem>
                                                     <DropdownMenuItem
                                                         onClick={() =>
-                                                            reverseTransaction(t.id)
+                                                            reverseTransaction(
+                                                                t.id
+                                                            )
                                                         }
                                                     >
                                                         Reverse

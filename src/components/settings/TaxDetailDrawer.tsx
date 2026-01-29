@@ -66,9 +66,7 @@ const TaxDetailDrawer = ({
                                 <h3 className="text-sm font-medium text-muted-foreground">
                                     Rate
                                 </h3>
-                                <p className="text-base">
-                                    {(tax.rate || 0)}%
-                                </p>
+                                <p className="text-base">{tax.rate || 0}%</p>
                             </div>
 
                             <div className="space-y-1">

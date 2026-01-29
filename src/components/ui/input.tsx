@@ -84,9 +84,9 @@ export default function Input({
         'bg-card file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input w-full min-w-0 rounded-md border py-1 transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50',
         'focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]',
         error &&
-        'border-destructive focus-visible:border-destructive focus-visible:ring-destructive/20',
+            'border-destructive focus-visible:border-destructive focus-visible:ring-destructive/20',
         success &&
-        'border-green-500 focus-visible:border-green-500 focus-visible:ring-green-500/20',
+            'border-green-500 focus-visible:border-green-500 focus-visible:ring-green-500/20',
         sizeClasses[inputSize]
     );
 
@@ -106,8 +106,8 @@ export default function Input({
         inputSize === 'sm'
             ? 'left-2'
             : inputSize === 'lg'
-                ? 'left-3'
-                : 'left-2.5'
+              ? 'left-3'
+              : 'left-2.5'
     );
     const iconEndClasses = cn(
         'absolute top-1/2 -translate-y-1/2 text-muted-foreground inline-flex items-center justify-center',
@@ -115,8 +115,8 @@ export default function Input({
         inputSize === 'sm'
             ? 'right-2'
             : inputSize === 'lg'
-                ? 'right-3'
-                : 'right-2.5'
+              ? 'right-3'
+              : 'right-2.5'
     );
 
     const handleClear = () => {
@@ -140,9 +140,17 @@ export default function Input({
         // Calculate right padding based on buttons shown
         const getDateEndPadding = () => {
             if (showDateClear) {
-                return inputSize === 'sm' ? 'pr-[4.5rem]' : inputSize === 'lg' ? 'pr-24' : 'pr-20';
+                return inputSize === 'sm'
+                    ? 'pr-[4.5rem]'
+                    : inputSize === 'lg'
+                      ? 'pr-24'
+                      : 'pr-20';
             }
-            return inputSize === 'sm' ? 'pr-10' : inputSize === 'lg' ? 'pr-12' : 'pr-11';
+            return inputSize === 'sm'
+                ? 'pr-10'
+                : inputSize === 'lg'
+                  ? 'pr-12'
+                  : 'pr-11';
         };
 
         // Format display value in dd/mm/yyyy format
@@ -310,7 +318,9 @@ export default function Input({
                             baseClasses,
                             startIcon && iconPadding[inputSize].start,
                             getDateEndPadding(),
-                            !isValidDate && error !== false && 'border-destructive focus-visible:border-destructive focus-visible:ring-destructive/20',
+                            !isValidDate &&
+                                error !== false &&
+                                'border-destructive focus-visible:border-destructive focus-visible:ring-destructive/20',
                             'tabular-nums',
                             className
                         )}
@@ -322,7 +332,11 @@ export default function Input({
                     <div
                         className={cn(
                             'absolute top-1/2 -translate-y-1/2 flex items-center gap-1',
-                            inputSize === 'sm' ? 'right-1.5' : inputSize === 'lg' ? 'right-2.5' : 'right-2'
+                            inputSize === 'sm'
+                                ? 'right-1.5'
+                                : inputSize === 'lg'
+                                  ? 'right-2.5'
+                                  : 'right-2'
                         )}
                     >
                         {showDateClear && (
@@ -357,7 +371,11 @@ export default function Input({
                             </button>
                         </PopoverTrigger>
                     </div>
-                    <PopoverContent className="w-auto p-0" align="start" sideOffset={4}>
+                    <PopoverContent
+                        className="w-auto p-0"
+                        align="start"
+                        sideOffset={4}
+                    >
                         <Calendar
                             mode="single"
                             selected={selectedDate}

@@ -36,7 +36,12 @@ import { useTaxes } from '@/services/apis/taxApi';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2, Plus, Trash2 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
-import { useFieldArray, useForm, UseFormReturn, type Resolver } from 'react-hook-form';
+import {
+    useFieldArray,
+    useForm,
+    UseFormReturn,
+    type Resolver,
+} from 'react-hook-form';
 import { z } from 'zod';
 
 // Simple ID generator
@@ -276,7 +281,7 @@ const ConditionRow = ({
                                                         e.target.value === ''
                                                             ? undefined
                                                             : e.target
-                                                                .valueAsNumber
+                                                                  .valueAsNumber
                                                     )
                                                 }
                                                 placeholder="0.00"
@@ -408,7 +413,8 @@ export function CreateRuleDrawer({
     });
 
     // Check if data is still loading
-    const isLoadingData = isLoadingAccounts || isLoadingContacts || isLoadingTaxes;
+    const isLoadingData =
+        isLoadingAccounts || isLoadingContacts || isLoadingTaxes;
 
     // Get accounts from API data
     const accounts = useMemo(() => {
@@ -469,9 +475,10 @@ export function CreateRuleDrawer({
     const form = useForm<FormValues>({
         resolver: zodResolver(formSchema) as Resolver<FormValues>,
         defaultValues: {
-            name: transaction && transaction.description
-                ? `Rule for ${transaction.description.substring(0, 30)}${transaction.description.length > 30 ? '...' : ''}`
-                : '',
+            name:
+                transaction && transaction.description
+                    ? `Rule for ${transaction.description.substring(0, 30)}${transaction.description.length > 30 ? '...' : ''}`
+                    : '',
             description: '',
             transactionType: getTransactionType(transaction),
             accountId: transaction?.accountId || 'all',
@@ -503,10 +510,9 @@ export function CreateRuleDrawer({
     useEffect(() => {
         if (transaction && open) {
             form.reset({
-                name:
-                    transaction.description
-                        ? `Rule for ${transaction.description.substring(0, 30)}${transaction.description.length > 30 ? '...' : ''}`
-                        : '',
+                name: transaction.description
+                    ? `Rule for ${transaction.description.substring(0, 30)}${transaction.description.length > 30 ? '...' : ''}`
+                    : '',
                 description: '',
                 transactionType: getTransactionType(transaction),
                 accountId: transaction.accountId || 'all',
@@ -696,8 +702,6 @@ export function CreateRuleDrawer({
                     <p className="text-sm text-muted-foreground mt-1">
                         Rules only apply to unreviewed transactions.
                     </p>
-
-
                 </DrawerHeader>
 
                 <div className="flex-1 overflow-y-auto">
@@ -1018,64 +1022,64 @@ export function CreateRuleDrawer({
                                                             <SelectContent>
                                                                 {incomeCategories.length >
                                                                     0 && (
-                                                                        <>
-                                                                            <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">
-                                                                                Income
-                                                                            </div>
-                                                                            {incomeCategories.map(
-                                                                                (
-                                                                                    account
-                                                                                ) => (
-                                                                                    <SelectItem
-                                                                                        key={
-                                                                                            account.id
-                                                                                        }
-                                                                                        value={
-                                                                                            account.id
-                                                                                        }
-                                                                                    >
-                                                                                        {
-                                                                                            account.accountName
-                                                                                        }
-                                                                                    </SelectItem>
-                                                                                )
-                                                                            )}
-                                                                        </>
-                                                                    )}
+                                                                    <>
+                                                                        <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">
+                                                                            Income
+                                                                        </div>
+                                                                        {incomeCategories.map(
+                                                                            (
+                                                                                account
+                                                                            ) => (
+                                                                                <SelectItem
+                                                                                    key={
+                                                                                        account.id
+                                                                                    }
+                                                                                    value={
+                                                                                        account.id
+                                                                                    }
+                                                                                >
+                                                                                    {
+                                                                                        account.accountName
+                                                                                    }
+                                                                                </SelectItem>
+                                                                            )
+                                                                        )}
+                                                                    </>
+                                                                )}
                                                                 {expenseCategories.length >
                                                                     0 && (
-                                                                        <>
-                                                                            <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground mt-1">
-                                                                                Expense
-                                                                            </div>
-                                                                            {expenseCategories.map(
-                                                                                (
-                                                                                    account
-                                                                                ) => (
-                                                                                    <SelectItem
-                                                                                        key={
-                                                                                            account.id
-                                                                                        }
-                                                                                        value={
-                                                                                            account.id
-                                                                                        }
-                                                                                    >
-                                                                                        {
-                                                                                            account.accountName
-                                                                                        }
-                                                                                    </SelectItem>
-                                                                                )
-                                                                            )}
-                                                                        </>
-                                                                    )}
+                                                                    <>
+                                                                        <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground mt-1">
+                                                                            Expense
+                                                                        </div>
+                                                                        {expenseCategories.map(
+                                                                            (
+                                                                                account
+                                                                            ) => (
+                                                                                <SelectItem
+                                                                                    key={
+                                                                                        account.id
+                                                                                    }
+                                                                                    value={
+                                                                                        account.id
+                                                                                    }
+                                                                                >
+                                                                                    {
+                                                                                        account.accountName
+                                                                                    }
+                                                                                </SelectItem>
+                                                                            )
+                                                                        )}
+                                                                    </>
+                                                                )}
                                                                 {categories.length ===
                                                                     0 && (
-                                                                        <div className="px-2 py-4 text-sm text-muted-foreground text-center">
-                                                                            No
-                                                                            categories
-                                                                            available
-                                                                        </div>
-                                                                    )}
+                                                                    <div className="px-2 py-4 text-sm text-muted-foreground text-center">
+                                                                        No
+                                                                        categories
+                                                                        available
+                                                                    </div>
+                                                                )}
                                                             </SelectContent>
                                                         </Select>
                                                         <FormMessage />
@@ -1105,7 +1109,7 @@ export function CreateRuleDrawer({
                                                         </FormControl>
                                                         <SelectContent>
                                                             {contacts.length >
-                                                                0 ? (
+                                                            0 ? (
                                                                 contacts.map(
                                                                     (
                                                                         contact
@@ -1160,25 +1164,37 @@ export function CreateRuleDrawer({
                                                             <SelectItem value="none">
                                                                 No tax
                                                             </SelectItem>
-                                                            {taxes.length > 0 ? (
-                                                                taxes.map(
-                                                                    (tax) => (
-                                                                        <SelectItem
-                                                                            key={
-                                                                                tax.id
-                                                                            }
-                                                                            value={
-                                                                                tax.id
-                                                                            }
-                                                                        >
-                                                                            {
-                                                                                tax.name
-                                                                            }{' '}
-                                                                            ({(tax.rate * 100).toFixed(tax.rate * 100 % 1 === 0 ? 0 : 2)}%)
-                                                                        </SelectItem>
-                                                                    )
-                                                                )
-                                                            ) : null}
+                                                            {taxes.length > 0
+                                                                ? taxes.map(
+                                                                      (tax) => (
+                                                                          <SelectItem
+                                                                              key={
+                                                                                  tax.id
+                                                                              }
+                                                                              value={
+                                                                                  tax.id
+                                                                              }
+                                                                          >
+                                                                              {
+                                                                                  tax.name
+                                                                              }{' '}
+                                                                              (
+                                                                              {(
+                                                                                  tax.rate *
+                                                                                  100
+                                                                              ).toFixed(
+                                                                                  (tax.rate *
+                                                                                      100) %
+                                                                                      1 ===
+                                                                                      0
+                                                                                      ? 0
+                                                                                      : 2
+                                                                              )}
+                                                                              %)
+                                                                          </SelectItem>
+                                                                      )
+                                                                  )
+                                                                : null}
                                                         </SelectContent>
                                                     </Select>
                                                     <FormMessage />

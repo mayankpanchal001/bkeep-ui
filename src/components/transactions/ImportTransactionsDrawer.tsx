@@ -54,7 +54,9 @@ const ImportTransactionsDrawer = ({
     } | null>(null);
     const inputRef = useRef<HTMLInputElement>(null);
 
-    const [mappingMode, setMappingMode] = useState<'single' | 'double'>('single');
+    const [mappingMode, setMappingMode] = useState<'single' | 'double'>(
+        'single'
+    );
     const { data: importFieldsData } = useTransactionImportFields(mappingMode);
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const importFields = Array.isArray(importFieldsData?.data?.fields)
@@ -107,7 +109,11 @@ const ImportTransactionsDrawer = ({
     }, [isOpen]);
 
     useEffect(() => {
-        if (step === 'mapping' && fileHeaders.length > 0 && importFields.length > 0) {
+        if (
+            step === 'mapping' &&
+            fileHeaders.length > 0 &&
+            importFields.length > 0
+        ) {
             const initialMapping: Record<string, string> = {};
             importFields.forEach((field) => {
                 const match = fileHeaders.find(
@@ -139,7 +145,10 @@ const ImportTransactionsDrawer = ({
                         skipped: data.skipped,
                         failed: data.failed,
                     });
-                    if (data.status === 'completed' || data.status === 'failed') {
+                    if (
+                        data.status === 'completed' ||
+                        data.status === 'failed'
+                    ) {
                         window.clearInterval(timer);
                     }
                 }
@@ -184,7 +193,8 @@ const ImportTransactionsDrawer = ({
 
     const handleFile = (file: File) => {
         if (
-            file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
+            file.type ===
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
             file.type === 'application/vnd.ms-excel' ||
             file.name.endsWith('.xlsx') ||
             file.name.endsWith('.xls') ||
@@ -194,13 +204,19 @@ const ImportTransactionsDrawer = ({
             const reader = new FileReader();
             reader.onload = (e) => {
                 try {
-                    const data = new Uint8Array(e.target?.result as ArrayBuffer);
+                    const data = new Uint8Array(
+                        e.target?.result as ArrayBuffer
+                    );
                     const workbook = XLSX.read(data, { type: 'array' });
                     const sheetName = workbook.SheetNames[0];
                     const worksheet = workbook.Sheets[sheetName];
-                    const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+                    const jsonData = XLSX.utils.sheet_to_json(worksheet, {
+                        header: 1,
+                    });
                     if (jsonData.length > 0) {
-                        const headers = (jsonData[0] as unknown[]).map((h) => String(h));
+                        const headers = (jsonData[0] as unknown[]).map((h) =>
+                            String(h)
+                        );
                         setFileHeaders(headers);
                         setStep('mapping');
                     }
@@ -254,11 +270,13 @@ const ImportTransactionsDrawer = ({
     const handleImport = () => {
         if (selectedFile) {
             const invertedMapping: Record<string, string> = {};
-            Object.entries(mapping).forEach(([systemFieldKey, fileColumnName]) => {
-                if (fileColumnName) {
-                    invertedMapping[fileColumnName] = systemFieldKey;
+            Object.entries(mapping).forEach(
+                ([systemFieldKey, fileColumnName]) => {
+                    if (fileColumnName) {
+                        invertedMapping[fileColumnName] = systemFieldKey;
+                    }
                 }
-            });
+            );
             importMutation.mutate(
                 {
                     file: selectedFile,
@@ -294,7 +312,9 @@ const ImportTransactionsDrawer = ({
         step === 'file-upload'
             ? selectedFile !== null && !!targetAccountId && !!dateFormat
             : Array.isArray(importFields) &&
-            importFields.filter((f) => f.required).every((f) => mapping[f.key]);
+              importFields
+                  .filter((f) => f.required)
+                  .every((f) => mapping[f.key]);
 
     const handleClose = () => {
         if (importMutation.isPending) {
@@ -310,7 +330,12 @@ const ImportTransactionsDrawer = ({
     };
 
     return (
-        <Drawer open={isOpen} onOpenChange={handleOpenChange} direction="bottom" dismissible={false}>
+        <Drawer
+            open={isOpen}
+            onOpenChange={handleOpenChange}
+            direction="bottom"
+            dismissible={false}
+        >
             <DrawerContent className="h-screen  max-h-screen mt-0 rounded-none bg-card flex flex-col">
                 <div className="w-[min(100%,900px)] mx-auto my-auto">
                     <DrawerHeader className="flex flex-row items-center justify-between px-6 py-4 border-b border-primary/10">
@@ -318,8 +343,8 @@ const ImportTransactionsDrawer = ({
                             {step === 'file-upload'
                                 ? 'Import Transactions from File'
                                 : step === 'mapping'
-                                    ? 'Map Import Fields'
-                                    : 'Import Progress'}
+                                  ? 'Map Import Fields'
+                                  : 'Import Progress'}
                         </DrawerTitle>
                         <button
                             onClick={handleClose}
@@ -336,44 +361,79 @@ const ImportTransactionsDrawer = ({
                             <div className="space-y-6 py-4">
                                 <div className="flex items-center gap-3">
                                     <div className="flex flex-col gap-1">
-                                        <p className="text-sm font-medium text-primary">Import Mode</p>
-                                        <p className="text-xs text-primary/50">Choose the column style of your file</p>
+                                        <p className="text-sm font-medium text-primary">
+                                            Import Mode
+                                        </p>
+                                        <p className="text-xs text-primary/50">
+                                            Choose the column style of your file
+                                        </p>
                                     </div>
-                                    <Select value={mappingMode} onValueChange={(v) => setMappingMode(v as 'single' | 'double')}>
+                                    <Select
+                                        value={mappingMode}
+                                        onValueChange={(v) =>
+                                            setMappingMode(
+                                                v as 'single' | 'double'
+                                            )
+                                        }
+                                    >
                                         <SelectTrigger className="w-[160px]">
                                             <SelectValue placeholder="Select mode" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            <SelectItem value="single">Single Column</SelectItem>
-                                            <SelectItem value="double">Double Column</SelectItem>
+                                            <SelectItem value="single">
+                                                Single Column
+                                            </SelectItem>
+                                            <SelectItem value="double">
+                                                Double Column
+                                            </SelectItem>
                                         </SelectContent>
                                     </Select>
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                                     <div className="flex flex-col gap-1">
-                                        <p className="text-sm font-medium text-primary">Target Account</p>
-                                        <Select value={targetAccountId} onValueChange={setTargetAccountId}>
+                                        <p className="text-sm font-medium text-primary">
+                                            Target Account
+                                        </p>
+                                        <Select
+                                            value={targetAccountId}
+                                            onValueChange={setTargetAccountId}
+                                        >
                                             <SelectTrigger className="w-full">
                                                 <SelectValue placeholder="Select account" />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                {validAccounts.map((account) => (
-                                                    <SelectItem key={account.id} value={account.id}>
-                                                        {account.accountName}
-                                                    </SelectItem>
-                                                ))}
+                                                {validAccounts.map(
+                                                    (account) => (
+                                                        <SelectItem
+                                                            key={account.id}
+                                                            value={account.id}
+                                                        >
+                                                            {
+                                                                account.accountName
+                                                            }
+                                                        </SelectItem>
+                                                    )
+                                                )}
                                             </SelectContent>
                                         </Select>
                                     </div>
                                     <div className="flex flex-col gap-1">
-                                        <p className="text-sm font-medium text-primary">Date Format</p>
-                                        <Select value={dateFormat} onValueChange={setDateFormat}>
+                                        <p className="text-sm font-medium text-primary">
+                                            Date Format
+                                        </p>
+                                        <Select
+                                            value={dateFormat}
+                                            onValueChange={setDateFormat}
+                                        >
                                             <SelectTrigger className="w-full">
                                                 <SelectValue placeholder="Select date format" />
                                             </SelectTrigger>
                                             <SelectContent>
                                                 {allDateFormats.map((fmt) => (
-                                                    <SelectItem key={fmt} value={fmt}>
+                                                    <SelectItem
+                                                        key={fmt}
+                                                        value={fmt}
+                                                    >
                                                         {fmt}
                                                     </SelectItem>
                                                 ))}
@@ -382,30 +442,43 @@ const ImportTransactionsDrawer = ({
                                     </div>
                                     <div className="flex items-end gap-2">
                                         <div className="flex items-center gap-2">
-                                            <p className="text-sm font-medium text-primary">Reverse Amounts</p>
-                                            <Switch checked={isReverse} onCheckedChange={setIsReverse} />
+                                            <p className="text-sm font-medium text-primary">
+                                                Reverse Amounts
+                                            </p>
+                                            <Switch
+                                                checked={isReverse}
+                                                onCheckedChange={setIsReverse}
+                                            />
                                         </div>
                                     </div>
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                    <Button onClick={handleDownloadSampleSingle}>
+                                    <Button
+                                        onClick={handleDownloadSampleSingle}
+                                    >
                                         Download Single Column Sample
                                     </Button>
-                                    <Button variant="outline" onClick={handleDownloadSampleDouble}>
+                                    <Button
+                                        variant="outline"
+                                        onClick={handleDownloadSampleDouble}
+                                    >
                                         Download Double Column Sample
                                     </Button>
                                 </div>
                                 <div className="flex flex-col gap-2">
                                     <div
-                                        className={`relative flex flex-col items-center justify-center w-full h-48 border-2 border-dashed rounded-lg transition-colors cursor-pointer ${dragActive
-                                            ? 'border-primary bg-primary/10'
-                                            : 'border-primary/25 hover:border-primary/50 hover:bg-card'
-                                            } ${selectedFile ? 'bg-primary/20 border-primary' : ''}`}
+                                        className={`relative flex flex-col items-center justify-center w-full h-48 border-2 border-dashed rounded-lg transition-colors cursor-pointer ${
+                                            dragActive
+                                                ? 'border-primary bg-primary/10'
+                                                : 'border-primary/25 hover:border-primary/50 hover:bg-card'
+                                        } ${selectedFile ? 'bg-primary/20 border-primary' : ''}`}
                                         onDragEnter={handleDrag}
                                         onDragLeave={handleDrag}
                                         onDragOver={handleDrag}
                                         onDrop={handleDrop}
-                                        onClick={() => inputRef.current?.click()}
+                                        onClick={() =>
+                                            inputRef.current?.click()
+                                        }
                                     >
                                         <input
                                             ref={inputRef}
@@ -421,7 +494,10 @@ const ImportTransactionsDrawer = ({
                                                     {selectedFile.name}
                                                 </p>
                                                 <p className="text-xs text-primary/50 mt-1">
-                                                    {(selectedFile.size / 1024).toFixed(2)} KB
+                                                    {(
+                                                        selectedFile.size / 1024
+                                                    ).toFixed(2)}{' '}
+                                                    KB
                                                 </p>
                                                 <Button
                                                     size="sm"
@@ -430,7 +506,9 @@ const ImportTransactionsDrawer = ({
                                                     onClick={(e) => {
                                                         e.stopPropagation();
                                                         setSelectedFile(null);
-                                                        if (inputRef.current) inputRef.current.value = '';
+                                                        if (inputRef.current)
+                                                            inputRef.current.value =
+                                                                '';
                                                     }}
                                                 >
                                                     Remove
@@ -440,10 +518,14 @@ const ImportTransactionsDrawer = ({
                                             <div className="text-center">
                                                 <Upload className="w-10 h-10 text-primary/40 mx-auto mb-2" />
                                                 <p className="text-sm font-medium text-primary/70">
-                                                    <span className="text-primary hover:underline">Click to upload</span>{' '}
+                                                    <span className="text-primary hover:underline">
+                                                        Click to upload
+                                                    </span>{' '}
                                                     or drag and drop
                                                 </p>
-                                                <p className="text-xs text-primary/50 mt-1">Excel or CSV files</p>
+                                                <p className="text-xs text-primary/50 mt-1">
+                                                    Excel or CSV files
+                                                </p>
                                             </div>
                                         )}
                                     </div>
@@ -453,42 +535,72 @@ const ImportTransactionsDrawer = ({
                             <div className="flex flex-col gap-4">
                                 <div className="flex flex-col gap-2">
                                     <p className="text-sm text-primary/50">
-                                        Map columns from <span className="font-medium">{selectedFile?.name}</span> to system
-                                        fields
+                                        Map columns from{' '}
+                                        <span className="font-medium">
+                                            {selectedFile?.name}
+                                        </span>{' '}
+                                        to system fields
                                     </p>
                                 </div>
                                 <div className="flex flex-col gap-4">
                                     <div className="grid grid-cols-12 gap-4 text-sm font-medium text-primary/50 border-b border-primary/10 pb-2 mb-2">
-                                        <div className="col-span-5">System Field</div>
+                                        <div className="col-span-5">
+                                            System Field
+                                        </div>
                                         <div className="col-span-2 flex justify-center"></div>
-                                        <div className="col-span-5">File Column</div>
+                                        <div className="col-span-5">
+                                            File Column
+                                        </div>
                                     </div>
                                     {importFields.map((field) => (
-                                        <div key={field.key} className="grid grid-cols-12 gap-4 items-center">
+                                        <div
+                                            key={field.key}
+                                            className="grid grid-cols-12 gap-4 items-center"
+                                        >
                                             <div className="col-span-5">
                                                 <div className="flex items-center">
-                                                    <span className="font-medium text-primary/70">{field.label}</span>
-                                                    {field.required && <span className="text-red-500 ml-1">*</span>}
+                                                    <span className="font-medium text-primary/70">
+                                                        {field.label}
+                                                    </span>
+                                                    {field.required && (
+                                                        <span className="text-red-500 ml-1">
+                                                            *
+                                                        </span>
+                                                    )}
                                                 </div>
-                                                <div className="text-xs text-primary/40 mt-0.5">{field.key}</div>
+                                                <div className="text-xs text-primary/40 mt-0.5">
+                                                    {field.key}
+                                                </div>
                                             </div>
                                             <div className="col-span-2 flex justify-center text-primary/30">
                                                 <ArrowRight className="w-4 h-4" />
                                             </div>
                                             <div className="col-span-5">
                                                 <Select
-                                                    value={mapping[field.key] || ''}
-                                                    onValueChange={(e) => handleMappingChange(field.key, e)}
+                                                    value={
+                                                        mapping[field.key] || ''
+                                                    }
+                                                    onValueChange={(e) =>
+                                                        handleMappingChange(
+                                                            field.key,
+                                                            e
+                                                        )
+                                                    }
                                                 >
                                                     <SelectTrigger className="w-full">
                                                         <SelectValue placeholder="Select column..." />
                                                     </SelectTrigger>
                                                     <SelectContent>
-                                                        {fileHeaders.map((h) => (
-                                                            <SelectItem key={h} value={h}>
-                                                                {h}
-                                                            </SelectItem>
-                                                        ))}
+                                                        {fileHeaders.map(
+                                                            (h) => (
+                                                                <SelectItem
+                                                                    key={h}
+                                                                    value={h}
+                                                                >
+                                                                    {h}
+                                                                </SelectItem>
+                                                            )
+                                                        )}
                                                     </SelectContent>
                                                 </Select>
                                             </div>
@@ -499,17 +611,30 @@ const ImportTransactionsDrawer = ({
                         ) : (
                             <div className="flex flex-col gap-4">
                                 <div className="rounded border border-primary/10 p-4">
-                                    <p className="text-sm font-medium text-primary">Import Status</p>
+                                    <p className="text-sm font-medium text-primary">
+                                        Import Status
+                                    </p>
                                     <div className="text-sm text-primary/60 mt-2">
-                                        <div>Status: {progress?.status || 'processing'}</div>
+                                        <div>
+                                            Status:{' '}
+                                            {progress?.status || 'processing'}
+                                        </div>
                                         {progress?.total !== undefined && (
                                             <div>
-                                                Processed {progress?.processed || 0} of {progress?.total}
+                                                Processed{' '}
+                                                {progress?.processed || 0} of{' '}
+                                                {progress?.total}
                                             </div>
                                         )}
-                                        <div>Created: {progress?.created || 0}</div>
-                                        <div>Skipped: {progress?.skipped || 0}</div>
-                                        <div>Failed: {progress?.failed || 0}</div>
+                                        <div>
+                                            Created: {progress?.created || 0}
+                                        </div>
+                                        <div>
+                                            Skipped: {progress?.skipped || 0}
+                                        </div>
+                                        <div>
+                                            Failed: {progress?.failed || 0}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -519,21 +644,38 @@ const ImportTransactionsDrawer = ({
                     <DrawerFooter className="flex flex-row items-center justify-between gap-3 px-6 py-4 border-t border-primary/10">
                         <div className="flex gap-2">
                             {step !== 'file-upload' && step !== 'progress' && (
-                                <Button variant="outline" onClick={handleBack} disabled={importMutation.isPending}>
+                                <Button
+                                    variant="outline"
+                                    onClick={handleBack}
+                                    disabled={importMutation.isPending}
+                                >
                                     Back
                                 </Button>
                             )}
                         </div>
                         <div className="flex gap-2">
-                            <Button variant="outline" onClick={handleClose} disabled={importMutation.isPending}>
+                            <Button
+                                variant="outline"
+                                onClick={handleClose}
+                                disabled={importMutation.isPending}
+                            >
                                 Cancel
                             </Button>
                             {step === 'file-upload' ? (
-                                <Button onClick={() => setStep('mapping')} disabled={!selectedFile || !isFormValid}>
+                                <Button
+                                    onClick={() => setStep('mapping')}
+                                    disabled={!selectedFile || !isFormValid}
+                                >
                                     Continue
                                 </Button>
                             ) : step === 'mapping' ? (
-                                <Button onClick={handleImport} disabled={!isFormValid || importMutation.isPending} loading={importMutation.isPending}>
+                                <Button
+                                    onClick={handleImport}
+                                    disabled={
+                                        !isFormValid || importMutation.isPending
+                                    }
+                                    loading={importMutation.isPending}
+                                >
                                     Import Data
                                 </Button>
                             ) : step === 'progress' ? (

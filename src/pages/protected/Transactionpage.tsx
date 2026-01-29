@@ -27,7 +27,7 @@ import {
     getTransactionStatus,
     mapApiTransactionsToBank,
     type BankTransaction,
-    type TxStatus
+    type TxStatus,
 } from '@/utils/transactionUtils';
 import { Filter, Search, X } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -40,7 +40,7 @@ import {
     useReverseTransaction,
     useTransactions,
     useUpdateTransaction,
-    useVoidTransaction
+    useVoidTransaction,
 } from '../../services/apis/transactions';
 import { useTransactionsFilterStore } from '../../stores/transactions/transactionsFilterStore';
 import { showErrorToast, showSuccessToast } from '../../utills/toast';
@@ -93,7 +93,10 @@ const Transactionpage = () => {
         limit: 1000,
     });
 
-    const contactNameById = useMemo(() => buildContactNameMap(contactsData), [contactsData]);
+    const contactNameById = useMemo(
+        () => buildContactNameMap(contactsData),
+        [contactsData]
+    );
 
     const apiFilters = useMemo(
         () =>
@@ -221,9 +224,9 @@ const Transactionpage = () => {
         if (!apiTransactions) {
             return;
         }
-        const mapped: BankTransaction[] = mapApiTransactionsToBank(apiTransactions);
+        const mapped: BankTransaction[] =
+            mapApiTransactionsToBank(apiTransactions);
         setTransactions(mapped);
-
     }, [apiTransactions, isLoading, error]);
 
     const SUPPLIER_OPTIONS: ComboboxOption[] = useMemo(
@@ -262,9 +265,7 @@ const Transactionpage = () => {
         <div className="h-full flex flex-col gap-4">
             <TransactionHeader
                 selectedAccountId={filterStore.selectedAccountId}
-                onAccountSelect={(id) =>
-                    filterStore.setSelectedAccountId(id)
-                }
+                onAccountSelect={(id) => filterStore.setSelectedAccountId(id)}
                 transactions={allTransactions.map((tx) => {
                     const date = tx.paidAt || tx.createdAt;
                     const status: TxStatus = getStatusForHeader(tx);
@@ -280,10 +281,10 @@ const Transactionpage = () => {
                         status === 'pending'
                             ? 'draft'
                             : status === 'all'
-                                ? 'all'
-                                : status === 'posted'
-                                    ? 'posted'
-                                    : 'all'
+                              ? 'all'
+                              : status === 'posted'
+                                ? 'posted'
+                                : 'all'
                     }
                     onValueChange={(value) => {
                         if (value === 'draft') {
@@ -301,10 +302,12 @@ const Transactionpage = () => {
                             All ({computeCounts(allTransactions).allCount})
                         </TabsTrigger>
                         <TabsTrigger value="draft">
-                            Draft ({computeCounts(allTransactions).pendingCount})
+                            Draft ({computeCounts(allTransactions).pendingCount}
+                            )
                         </TabsTrigger>
                         <TabsTrigger value="posted">
-                            Posted ({computeCounts(allTransactions).postedCount})
+                            Posted ({computeCounts(allTransactions).postedCount}
+                            )
                         </TabsTrigger>
                     </TabsList>
                 </Tabs>
@@ -341,8 +344,8 @@ const Transactionpage = () => {
                                     filterStore.filterEndDate ||
                                     filterStore.filterMinAmount ||
                                     filterStore.filterMaxAmount) && (
-                                        <span className="ml-2 h-2 w-2 rounded-full bg-accent" />
-                                    )}
+                                    <span className="ml-2 h-2 w-2 rounded-full bg-accent" />
+                                )}
                             </Button>
                         </DrawerTrigger>
                         <DrawerContent className="h-full w-full sm:w-[400px]">
