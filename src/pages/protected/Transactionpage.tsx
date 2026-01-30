@@ -199,7 +199,13 @@ const Transactionpage = () => {
             setSelectedItems([]);
         } catch (error) {
             console.error(`Failed to ${actionName} transactions:`, error);
-            showErrorToast(`Failed to ${actionName} some transactions`);
+            const maybeAxiosError = error as {
+                response?: { data?: { message?: string } };
+            };
+            const message =
+                maybeAxiosError.response?.data?.message ||
+                `Failed to ${actionName} some transactions`;
+            showErrorToast(message);
         } finally {
             setIsBulkProcessing(false);
         }
@@ -218,7 +224,13 @@ const Transactionpage = () => {
         if (isLoading) return;
         if (error) {
             console.error('Error fetching transactions:', error);
-            showErrorToast('Failed to fetch transactions');
+            const maybeAxiosError = error as {
+                response?: { data?: { message?: string } };
+            };
+            const message =
+                maybeAxiosError.response?.data?.message ||
+                'Failed to fetch transactions';
+            showErrorToast(message);
             return;
         }
         if (!apiTransactions) {

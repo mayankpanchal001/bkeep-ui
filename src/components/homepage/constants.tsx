@@ -26,6 +26,11 @@ export const PAGE_HEADERS = [
         subtitle: 'View and manage all your financial transactions',
     },
     {
+        path: '/rules',
+        title: 'Rules',
+        subtitle: 'Create and manage bank rules',
+    },
+    {
         path: '/reports',
         title: 'Reports',
         subtitle:

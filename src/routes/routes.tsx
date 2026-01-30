@@ -81,6 +81,7 @@ const BalanceSheetpage = lazyWithRetry(
 const ChartOfAccountspage = lazyWithRetry(
     () => import('../pages/protected/ChartOfAccountspage')
 );
+const Rulespage = lazyWithRetry(() => import('../pages/protected/Rulespage'));
 const Settingspage = lazyWithRetry(
     () => import('../pages/protected/Settingspage')
 );
@@ -210,6 +211,10 @@ const routes = createBrowserRouter([
             {
                 path: '/transactions',
                 element: withSuspense(Transactionpage),
+            },
+            {
+                path: '/rules',
+                element: withSuspense(Rulespage),
             },
             {
                 path: '/reports',

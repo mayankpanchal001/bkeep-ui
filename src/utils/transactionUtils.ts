@@ -16,6 +16,7 @@ export type BankTransaction = {
     contactId?: string;
     category?: string;
     matched?: boolean;
+    matchedReceiptDocs?: number[];
     status: TxStatus;
     account: string;
     accountId?: string;
@@ -301,6 +302,9 @@ export const mapApiTransactionsToBank = (
             contactId: contactId || undefined,
             category: categoryIdCandidate || undefined,
             matched: tx.reconciled,
+            matchedReceiptDocs:
+                (tx as unknown as { matchedReceiptDocs?: number[] })
+                    .matchedReceiptDocs || undefined,
             status,
             account,
             accountId,

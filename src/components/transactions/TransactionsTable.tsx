@@ -99,6 +99,7 @@ export const TransactionsTable = ({
     reverseTransaction,
     pagination,
 }: TransactionsTableProps) => {
+
     return (
         <div className="flex-1 min-h-0">
             <div className="h-full overflow-y-auto">
@@ -436,6 +437,7 @@ export const TransactionsTable = ({
                                             </Button>
                                         </div>
                                     </TableCell>
+                                    
                                     <TableCell data-label="Action">
                                         <div className="flex items-center gap-2">
                                             <Button

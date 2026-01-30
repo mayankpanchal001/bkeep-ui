@@ -112,6 +112,24 @@ export const useTransactions = (filters?: TransactionFilters) => {
     });
 };
 
+// ========= Get Transaction (by ID) =========
+export const getTransactionById = async (
+    id: string
+): Promise<TransactionItem> => {
+    const response = await axiosInstance.get(`/transactions/${id}`);
+    const maybeData = (response.data as unknown as { data?: unknown })?.data;
+    const tx = (maybeData || response.data) as TransactionItem;
+    return tx;
+};
+
+export const useTransactionById = (id?: string, enabled?: boolean) => {
+    return useQuery<TransactionItem>({
+        queryKey: ['transaction', id],
+        queryFn: () => getTransactionById(id as string),
+        enabled: !!id && (enabled ?? true),
+    });
+};
+
 // ========= Create Transaction =========
 export type CreateTransactionPayload = {
     type: 'income' | 'expense' | 'transfer';
