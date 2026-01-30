@@ -299,8 +299,34 @@ const Rulespage = () => {
     const filteredItems = items;
 
     const headerActions = (
-        <div className="flex items-center gap-2">
+        <div className="flex gap-2  max-sm:w-full sm:w-auto">
+            <Form {...searchForm}>
+                <FormField
+                    control={searchForm.control}
+                    name="search"
+                    render={({ field }) => (
+                        <FormItem className="w-full sm:w-[260px]">
+                            <FormControl>
+                                <Input
+                                    value={field.value}
+                                    onChange={(e) => {
+                                        field.onChange(e);
+                                        setSearch(e.target.value);
+                                        setPage(1);
+                                    }}
+                                    placeholder="Search by name or conditions"
+                                    startIcon={
+                                        <Icons.Search className="w-4 h-4" />
+                                    }
+                                />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+            </Form>
             <Button
+                // className="max-sm:w-full"
                 onClick={() => {
                     setEditRule(null);
                     setOpenCreate(true);
@@ -319,39 +345,8 @@ const Rulespage = () => {
                 actions={headerActions}
             />
 
-            <div className="sm:ml-auto flex items-center gap-3 flex-wrap">
-                <div className="relative w-full sm:w-[260px]">
-                    <Form {...searchForm}>
-                        <FormField
-                            control={searchForm.control}
-                            name="search"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormControl>
-                                        <Input
-                                            value={field.value}
-                                            onChange={(e) => {
-                                                field.onChange(e);
-                                                setSearch(e.target.value);
-                                                setPage(1);
-                                            }}
-                                            placeholder="Search by name or conditions"
-                                            startIcon={
-                                                <Icons.Search className="w-4 h-4" />
-                                            }
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                    </Form>
-                </div>
-            </div>
-
             <div className="border border-primary/10 rounded-lg overflow-hidden h-full">
                 <Table
-                    containerClassName="h-full"
                     enableSelection={true}
                     onSelectionChange={setSelectedIds}
                     rowIds={filteredItems.map((r) => r.id)}
@@ -558,15 +553,19 @@ const Rulespage = () => {
                         )}
                     </TableBody>
                 </Table>
-                <div className="border-t bg-card p-4">
-                    <TablePagination
-                        page={pagination?.page || page}
-                        totalPages={pagination?.totalPages || 1}
-                        totalItems={pagination?.total || filteredItems.length}
-                        itemsPerPage={pagination?.limit || limit}
-                        onPageChange={(p) => setPage(p)}
-                    />
-                </div>
+                {pagination && (pagination.totalPages || 0) > 1 ? (
+                    <div className="border-t bg-card p-4">
+                        <TablePagination
+                            page={pagination.page || page}
+                            totalPages={pagination.totalPages || 1}
+                            totalItems={
+                                pagination.total || filteredItems.length
+                            }
+                            itemsPerPage={pagination.limit || limit}
+                            onPageChange={(p) => setPage(p)}
+                        />
+                    </div>
+                ) : null}
             </div>
             <AlertDialog
                 open={deleteDialogOpen}
