@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
     Drawer,
     DrawerClose,
@@ -6,7 +7,6 @@ import {
     DrawerFooter,
     DrawerHeader,
     DrawerTitle,
-    DrawerTrigger,
 } from '@/components/ui/drawer';
 import {
     Form,
@@ -17,6 +17,7 @@ import {
     FormMessage,
 } from '@/components/ui/form';
 import Input from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
     Select,
     SelectContent,
@@ -25,12 +26,15 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
+import { Textarea } from '@/components/ui/textarea';
 import { useChartOfAccounts } from '@/services/apis/chartsAccountApi';
 import { useContacts } from '@/services/apis/contactsApi';
 import {
     CreateRulePayload,
+    Rule,
     RuleCondition,
     useCreateRule,
+    useUpdateRule,
 } from '@/services/apis/rules';
 import { useTaxes } from '@/services/apis/taxApi';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -65,10 +69,36 @@ const formSchema = z.object({
     accountId: z.string().optional(),
     matchType: z.enum(['all', 'any']),
     conditions: z.array(conditionSchema),
+    actionType: z
+        .enum([
+            'set_category',
+            'set_contact',
+            'set_memo',
+            'set_taxes',
+            'set_type',
+            'set_splits',
+            'exclude',
+        ])
+        .default('set_category'),
     actionTransactionType: z.string().optional(),
     actionCategory: z.string().optional(),
     actionPayee: z.string().optional(),
-    actionTax: z.string().optional(),
+    actionMemo: z.string().optional(),
+    actionTaxIds: z.array(z.string()).default([]).optional(),
+    splitsMode: z.enum(['none', 'percent', 'amount']).default('none'),
+    splitLines: z
+        .array(
+            z.object({
+                percent: z.number().optional(),
+                amount: z.number().optional(),
+                categoryId: z.string().optional(),
+                description: z.string().optional(),
+                taxIds: z.array(z.string()).optional(),
+            })
+        )
+        .default([])
+        .optional(),
+    actionExclude: z.boolean().default(false),
     autoApply: z.boolean().default(false),
 });
 
@@ -109,7 +139,7 @@ const ConditionRow = ({
                 </Button>
             )}
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pr-8">
+            <div className="grid grid-cols-1 gap-3">
                 {/* Field Selection */}
                 <FormField
                     control={form.control}
@@ -385,19 +415,24 @@ export interface TransactionData {
 interface CreateRuleDrawerProps {
     trigger?: React.ReactNode;
     transaction?: TransactionData;
+    rule?: Rule;
     open?: boolean;
     onOpenChange?: (open: boolean) => void;
+    mode?: 'create' | 'edit';
 }
 
 export function CreateRuleDrawer({
     transaction,
+    rule,
     open: controlledOpen,
     onOpenChange: controlledOnOpenChange,
+    mode = 'create',
 }: CreateRuleDrawerProps) {
     const [internalOpen, setInternalOpen] = useState(false);
     const open = controlledOpen !== undefined ? controlledOpen : internalOpen;
     const setOpen = controlledOnOpenChange || setInternalOpen;
     const { mutate: createRule, isPending } = useCreateRule();
+    const { mutate: updateRule, isPending: isUpdating } = useUpdateRule();
     const { data: accountsData, isLoading: isLoadingAccounts } =
         useChartOfAccounts({
             isActive: true,
@@ -493,10 +528,18 @@ export function CreateRuleDrawer({
                     caseSensitive: false,
                 },
             ],
-            actionTransactionType: getActionTransactionType(transaction),
+            actionType: 'set_category',
+            actionTransactionType:
+                getActionTransactionType(transaction).toLowerCase() ===
+                'deposit'
+                    ? 'income'
+                    : 'expense',
             actionCategory: transaction?.category || '',
             actionPayee: transaction?.fromTo || '',
-            actionTax: transaction?.taxId || '',
+            actionMemo: '',
+            actionTaxIds: transaction?.taxId ? [transaction.taxId] : [],
+            splitsMode: 'none',
+            splitLines: [],
             autoApply: false,
         },
     });
@@ -504,6 +547,14 @@ export function CreateRuleDrawer({
     const { fields, append, remove } = useFieldArray({
         control: form.control,
         name: 'conditions',
+    });
+    const {
+        fields: splitFields,
+        append: appendSplit,
+        remove: removeSplit,
+    } = useFieldArray({
+        control: form.control,
+        name: 'splitLines',
     });
 
     // Update form when transaction changes
@@ -527,10 +578,18 @@ export function CreateRuleDrawer({
                         caseSensitive: false,
                     },
                 ],
-                actionTransactionType: getActionTransactionType(transaction),
+                actionType: 'set_category',
+                actionTransactionType:
+                    getActionTransactionType(transaction).toLowerCase() ===
+                    'deposit'
+                        ? 'income'
+                        : 'expense',
                 actionCategory: transaction.category || '',
                 actionPayee: transaction.fromTo || '',
-                actionTax: transaction.taxId || '',
+                actionMemo: '',
+                actionTaxIds: transaction.taxId ? [transaction.taxId] : [],
+                splitsMode: 'none',
+                splitLines: [],
                 autoApply: false,
             });
         }
@@ -546,6 +605,206 @@ export function CreateRuleDrawer({
             caseSensitive: false,
         });
     };
+
+    useEffect(() => {
+        if (rule && open) {
+            const mappedConditions =
+                (rule.conditions || []).length > 0
+                    ? (rule.conditions || []).map((c) => {
+                          const isAmount = c.field === 'amount';
+                          const vNum =
+                              typeof c.valueNumber === 'string'
+                                  ? Number(c.valueNumber)
+                                  : c.valueNumber;
+                          const vNumTo =
+                              typeof c.valueNumberTo === 'string'
+                                  ? Number(c.valueNumberTo)
+                                  : c.valueNumberTo;
+                          return {
+                              field: c.field,
+                              operator: c.operator,
+                              value: isAmount ? undefined : c.valueString || '',
+                              valueNumber: isAmount
+                                  ? typeof vNum === 'number' &&
+                                    Number.isFinite(vNum)
+                                      ? vNum
+                                      : undefined
+                                  : undefined,
+                              valueNumberTo: isAmount
+                                  ? typeof vNumTo === 'number' &&
+                                    Number.isFinite(vNumTo)
+                                      ? vNumTo
+                                      : undefined
+                                  : undefined,
+                              caseSensitive: !!c.caseSensitive,
+                          };
+                      })
+                    : [
+                          {
+                              field: 'description',
+                              operator: 'contains',
+                              value: '',
+                              valueNumber: undefined,
+                              valueNumberTo: undefined,
+                              caseSensitive: false,
+                          },
+                      ];
+            const typeAction = (rule.actions || []).find(
+                (a) => a.actionType === 'set_type'
+            );
+            const categoryAction = (rule.actions || []).find(
+                (a) => a.actionType === 'set_category'
+            );
+            const contactAction = (rule.actions || []).find(
+                (a) => a.actionType === 'set_contact'
+            );
+            const taxAction = (rule.actions || []).find(
+                (a) => a.actionType === 'set_taxes'
+            );
+            const memoAction = (rule.actions || []).find(
+                (a) => a.actionType === 'set_memo'
+            );
+            const excludeAction = (rule.actions || []).find(
+                (a) => a.actionType === 'exclude'
+            );
+            const splitsAction = (rule.actions || []).find(
+                (a) => a.actionType === 'set_splits'
+            );
+            const typePayload = (typeAction?.payload || {}) as Record<
+                string,
+                unknown
+            >;
+            const typeVal =
+                typeof typePayload.type === 'string' ? typePayload.type : '';
+            const actionTypeValue =
+                typeVal.toLowerCase() === 'income'
+                    ? 'income'
+                    : typeVal.toLowerCase() === 'expense'
+                      ? 'expense'
+                      : '';
+            const categoryPayload = (categoryAction?.payload || {}) as Record<
+                string,
+                unknown
+            >;
+            const contactPayload = (contactAction?.payload || {}) as Record<
+                string,
+                unknown
+            >;
+            const taxPayload = (taxAction?.payload || {}) as Record<
+                string,
+                unknown
+            >;
+            const memoPayload = (memoAction?.payload || {}) as Record<
+                string,
+                unknown
+            >;
+            const splitsPayload = (splitsAction?.payload || {}) as Record<
+                string,
+                unknown
+            >;
+            const selectedActionType = categoryAction
+                ? 'set_category'
+                : contactAction
+                  ? 'set_contact'
+                  : memoAction
+                    ? 'set_memo'
+                    : taxAction
+                      ? 'set_taxes'
+                      : typeAction
+                        ? 'set_type'
+                        : splitsAction
+                          ? 'set_splits'
+                          : excludeAction
+                            ? 'exclude'
+                            : 'set_category';
+            form.reset({
+                name: rule.name || '',
+                description: rule.description || '',
+                transactionType: rule.transactionType || 'any',
+                accountId:
+                    rule.accountScope === 'selected' &&
+                    Array.isArray(rule.accountIds) &&
+                    rule.accountIds.length > 0
+                        ? rule.accountIds[0]
+                        : 'all',
+                matchType: rule.matchType || 'all',
+                conditions: mappedConditions,
+                actionType: selectedActionType as FormValues['actionType'],
+                actionTransactionType: actionTypeValue,
+                actionCategory:
+                    typeof categoryPayload.categoryId === 'string'
+                        ? (categoryPayload.categoryId as string)
+                        : '',
+                actionPayee:
+                    typeof contactPayload.contactId === 'string'
+                        ? (contactPayload.contactId as string)
+                        : '',
+                actionMemo:
+                    typeof memoPayload.memo === 'string'
+                        ? (memoPayload.memo as string)
+                        : '',
+                actionTaxIds: (() => {
+                    const taxObj = taxPayload as { taxIds?: unknown };
+                    const arr = Array.isArray(taxObj.taxIds)
+                        ? taxObj.taxIds
+                        : [];
+                    return (arr as unknown[]).filter(
+                        (t): t is string => typeof t === 'string'
+                    ) as string[];
+                })(),
+                splitsMode: (() => {
+                    const sObj = splitsPayload as { mode?: unknown };
+                    const m =
+                        typeof sObj.mode === 'string' ? sObj.mode : undefined;
+                    return m === 'percent' || m === 'amount'
+                        ? (m as 'percent' | 'amount')
+                        : 'none';
+                })(),
+                splitLines: (() => {
+                    const sObj = splitsPayload as { lines?: unknown };
+                    const lines = Array.isArray(sObj.lines)
+                        ? (sObj.lines as unknown[])
+                        : [];
+                    return lines.map((item) => {
+                        const l = item as {
+                            percent?: unknown;
+                            amount?: unknown;
+                            categoryId?: unknown;
+                            description?: unknown;
+                            taxIds?: unknown;
+                        };
+                        const percent =
+                            typeof l.percent === 'number'
+                                ? l.percent
+                                : undefined;
+                        const amount =
+                            typeof l.amount === 'number' ? l.amount : undefined;
+                        const categoryId =
+                            typeof l.categoryId === 'string'
+                                ? l.categoryId
+                                : undefined;
+                        const description =
+                            typeof l.description === 'string'
+                                ? l.description
+                                : undefined;
+                        const taxIds = Array.isArray(l.taxIds)
+                            ? (l.taxIds as unknown[]).filter(
+                                  (t): t is string => typeof t === 'string'
+                              )
+                            : [];
+                        return {
+                            percent,
+                            amount,
+                            categoryId,
+                            description,
+                            taxIds,
+                        };
+                    });
+                })(),
+                autoApply: !!rule.autoApply,
+            });
+        }
+    }, [rule, open, form]);
 
     const onSubmit = (values: FormValues) => {
         const actionId = generateId();
@@ -577,6 +836,161 @@ export function CreateRuleDrawer({
             return condition;
         });
 
+        const accountScope =
+            values.accountId && values.accountId !== 'all' ? 'selected' : 'all';
+        const accountIds =
+            values.accountId && values.accountId !== 'all'
+                ? [values.accountId]
+                : [];
+
+        if (mode === 'edit' && rule?.id) {
+            const updateActions: Array<{
+                actionType: string;
+                payload?: Record<string, unknown>;
+            }> = [];
+            switch (values.actionType) {
+                case 'set_type': {
+                    if (values.actionTransactionType) {
+                        updateActions.push({
+                            actionType: 'set_type',
+                            payload: {
+                                type: values.actionTransactionType.toLowerCase(),
+                            },
+                        });
+                    }
+                    break;
+                }
+                case 'set_category': {
+                    if (values.actionCategory) {
+                        updateActions.push({
+                            actionType: 'set_category',
+                            payload: { categoryId: values.actionCategory },
+                        });
+                    }
+                    break;
+                }
+                case 'set_contact': {
+                    if (values.actionPayee) {
+                        const isDisplayName = !values.actionPayee.match(
+                            /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+                        );
+                        let contactId = values.actionPayee;
+                        if (isDisplayName) {
+                            const contact = contacts.find(
+                                (c) => c.displayName === values.actionPayee
+                            );
+                            if (contact) {
+                                contactId = contact.id;
+                            }
+                        }
+                        updateActions.push({
+                            actionType: 'set_contact',
+                            payload: { contactId },
+                        });
+                    }
+                    break;
+                }
+                case 'set_memo': {
+                    if (
+                        values.actionMemo &&
+                        values.actionMemo.trim().length > 0
+                    ) {
+                        updateActions.push({
+                            actionType: 'set_memo',
+                            payload: { memo: values.actionMemo.trim() },
+                        });
+                    }
+                    break;
+                }
+                case 'set_taxes': {
+                    if (
+                        Array.isArray(values.actionTaxIds) &&
+                        values.actionTaxIds.length > 0
+                    ) {
+                        updateActions.push({
+                            actionType: 'set_taxes',
+                            payload: { taxIds: values.actionTaxIds },
+                        });
+                    }
+                    break;
+                }
+                case 'set_splits': {
+                    if (
+                        values.splitsMode !== 'none' &&
+                        (values.splitLines || []).length > 0
+                    ) {
+                        const lines = (values.splitLines || [])
+                            .map((l) => {
+                                const base: Record<string, unknown> = {};
+                                if (values.splitsMode === 'percent') {
+                                    if (typeof l.percent === 'number') {
+                                        base.percent = l.percent;
+                                    }
+                                } else if (values.splitsMode === 'amount') {
+                                    if (typeof l.amount === 'number') {
+                                        base.amount = l.amount;
+                                    }
+                                }
+                                if (l.categoryId)
+                                    base.categoryId = l.categoryId;
+                                if (
+                                    l.description &&
+                                    l.description.trim().length > 0
+                                )
+                                    base.description = l.description.trim();
+                                return base;
+                            })
+                            .filter((b) => Object.keys(b).length > 0);
+                        if (lines.length > 0) {
+                            updateActions.push({
+                                actionType: 'set_splits',
+                                payload: {
+                                    mode:
+                                        values.splitsMode === 'percent'
+                                            ? 'percent'
+                                            : 'amount',
+                                    lines,
+                                },
+                            });
+                        }
+                    }
+                    break;
+                }
+                case 'exclude': {
+                    updateActions.push({ actionType: 'exclude' });
+                    break;
+                }
+                default:
+                    break;
+            }
+            updateRule(
+                {
+                    id: rule.id,
+                    payload: {
+                        name: values.name.trim(),
+                        description: values.description?.trim() || undefined,
+                        transactionType: (values.transactionType || 'any') as
+                            | 'any'
+                            | 'income'
+                            | 'expense',
+                        matchType: values.matchType,
+                        autoApply: values.autoApply,
+                        stopOnMatch: true,
+                        accountScope,
+                        accountIds,
+                        conditions,
+                        actions: updateActions,
+                    },
+                },
+                {
+                    onSuccess: () => {
+                        setOpen(false);
+                    },
+                }
+            );
+            return;
+        }
+
         const payload: CreateRulePayload = {
             name: values.name.trim(),
             description: values.description?.trim() || undefined,
@@ -585,74 +999,139 @@ export function CreateRuleDrawer({
             matchType: values.matchType,
             autoApply: values.autoApply,
             stopOnMatch: true,
-            priority: 100,
-            accountScope:
-                values.accountId && values.accountId !== 'all'
-                    ? 'selected'
-                    : 'all',
-            accountIds:
-                values.accountId && values.accountId !== 'all'
-                    ? [values.accountId]
-                    : [],
+            priority: 1,
+            accountScope,
+            accountIds,
             conditions: conditions,
             actions: [],
         };
 
-        // Add actions based on what's filled out
-        if (values.actionTransactionType) {
-            payload.actions?.push({
-                id: generateId(),
-                actionType: 'set_type',
-                payload: { type: values.actionTransactionType.toLowerCase() },
-            });
-        }
-
-        if (values.actionCategory) {
-            payload.actions?.push({
-                id: generateId(),
-                actionType: 'set_category',
-                payload: { categoryId: values.actionCategory },
-            });
-        }
-
-        if (values.actionPayee) {
-            // Convert displayName to contactId if needed
-            // Check if actionPayee is a displayName (not a UUID)
-            const isDisplayName = !values.actionPayee.match(
-                /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
-            );
-            let contactId = values.actionPayee;
-            if (isDisplayName) {
-                // Find contactId by displayName
-                const contact = contacts.find(
-                    (c) => c.displayName === values.actionPayee
-                );
-                if (contact) {
-                    contactId = contact.id;
+        switch (values.actionType) {
+            case 'set_type': {
+                if (values.actionTransactionType) {
+                    payload.actions?.push({
+                        id: generateId(),
+                        actionType: 'set_type',
+                        payload: {
+                            type: values.actionTransactionType.toLowerCase(),
+                        },
+                    });
                 }
+                break;
             }
-            payload.actions?.push({
-                id: generateId(),
-                actionType: 'set_contact',
-                payload: { contactId },
-            });
+            case 'set_category': {
+                if (values.actionCategory) {
+                    payload.actions?.push({
+                        id: generateId(),
+                        actionType: 'set_category',
+                        payload: { categoryId: values.actionCategory },
+                    });
+                }
+                break;
+            }
+            case 'set_contact': {
+                if (values.actionPayee) {
+                    const isDisplayName = !values.actionPayee.match(
+                        /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+                    );
+                    let contactId = values.actionPayee;
+                    if (isDisplayName) {
+                        const contact = contacts.find(
+                            (c) => c.displayName === values.actionPayee
+                        );
+                        if (contact) {
+                            contactId = contact.id;
+                        }
+                    }
+                    payload.actions?.push({
+                        id: generateId(),
+                        actionType: 'set_contact',
+                        payload: { contactId },
+                    });
+                }
+                break;
+            }
+            case 'set_memo': {
+                if (values.actionMemo && values.actionMemo.trim().length > 0) {
+                    payload.actions?.push({
+                        id: generateId(),
+                        actionType: 'set_memo',
+                        payload: { memo: values.actionMemo.trim() },
+                    });
+                }
+                break;
+            }
+            case 'set_taxes': {
+                if (
+                    Array.isArray(values.actionTaxIds) &&
+                    values.actionTaxIds.length > 0
+                ) {
+                    payload.actions?.push({
+                        id: generateId(),
+                        actionType: 'set_taxes',
+                        payload: { taxIds: values.actionTaxIds },
+                    });
+                }
+                break;
+            }
+            case 'set_splits': {
+                if (
+                    values.splitsMode !== 'none' &&
+                    (values.splitLines || []).length > 0
+                ) {
+                    const lines = (values.splitLines || [])
+                        .map((l) => {
+                            const base: Record<string, unknown> = {};
+                            if (values.splitsMode === 'percent') {
+                                if (typeof l.percent === 'number') {
+                                    base.percent = l.percent;
+                                }
+                            } else if (values.splitsMode === 'amount') {
+                                if (typeof l.amount === 'number') {
+                                    base.amount = l.amount;
+                                }
+                            }
+                            if (l.categoryId) base.categoryId = l.categoryId;
+                            if (
+                                l.description &&
+                                l.description.trim().length > 0
+                            )
+                                base.description = l.description.trim();
+                            return base;
+                        })
+                        .filter((b) => Object.keys(b).length > 0);
+                    if (lines.length > 0) {
+                        payload.actions?.push({
+                            id: generateId(),
+                            actionType: 'set_splits',
+                            payload: {
+                                mode:
+                                    values.splitsMode === 'percent'
+                                        ? 'percent'
+                                        : 'amount',
+                                lines,
+                            },
+                        });
+                    }
+                }
+                break;
+            }
+            case 'exclude': {
+                payload.actions?.push({
+                    id: generateId(),
+                    actionType: 'exclude',
+                });
+                break;
+            }
+            default:
+                break;
         }
 
-        if (values.actionTax && values.actionTax !== 'none') {
-            payload.actions?.push({
-                id: generateId(),
-                actionType: 'set_tax',
-                payload: { taxId: values.actionTax },
-            });
-        }
-
-        // Ensure at least one action
         if (!payload.actions || payload.actions.length === 0) {
             payload.actions = [
                 {
                     id: actionId,
-                    actionType: 'set_category',
-                    payload: {},
+                    actionType: 'exclude',
                 },
             ];
         }
@@ -675,10 +1154,14 @@ export function CreateRuleDrawer({
                             caseSensitive: false,
                         },
                     ],
-                    actionTransactionType: 'Deposit',
+                    actionType: 'set_category',
+                    actionTransactionType: 'income',
                     actionCategory: '',
                     actionPayee: '',
-                    actionTax: '',
+                    actionMemo: '',
+                    actionTaxIds: [],
+                    splitsMode: 'none',
+                    splitLines: [],
                     autoApply: false,
                 });
                 setOpen(false);
@@ -688,17 +1171,11 @@ export function CreateRuleDrawer({
 
     return (
         <Drawer open={open} onOpenChange={setOpen} direction="right">
-            <DrawerTrigger asChild>
-                {/* {trigger || (
-                    <Button size="sm" tooltip="Create transaction rule">
-                        <Plus className="w-4 h-4 mr-2" />
-                        Create Rule
-                    </Button>
-                )} */}
-            </DrawerTrigger>
-            <DrawerContent className="h-full w-full sm:w-[600px] mt-0 rounded-none flex flex-col">
+            <DrawerContent className="h-full w-full mt-0 rounded-none flex flex-col">
                 <DrawerHeader className="border-b px-6 py-4 flex flex-col items-start">
-                    <DrawerTitle>Create rule</DrawerTitle>
+                    <DrawerTitle>
+                        {mode === 'edit' ? 'Edit rule' : 'Create rule'}
+                    </DrawerTitle>
                     <p className="text-sm text-muted-foreground mt-1">
                         Rules only apply to unreviewed transactions.
                     </p>
@@ -775,10 +1252,10 @@ export function CreateRuleDrawer({
                                     </h3>
 
                                     <div className="space-y-4">
-                                        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
-                                            <FormLabel className="text-sm font-normal min-w-[120px] pt-2">
+                                        <div className="flex flex-col gap-3">
+                                            <Label className="text-sm font-normal min-w-[120px] pt-2">
                                                 Transaction Type
-                                            </FormLabel>
+                                            </Label>
                                             <FormField
                                                 control={form.control}
                                                 name="transactionType"
@@ -813,10 +1290,10 @@ export function CreateRuleDrawer({
                                             />
                                         </div>
 
-                                        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
-                                            <FormLabel className="text-sm font-normal min-w-[120px] pt-2">
+                                        <div className="flex flex-col gap-3">
+                                            <Label className="text-sm font-normal min-w-[120px] pt-2">
                                                 Account
-                                            </FormLabel>
+                                            </Label>
                                             <FormField
                                                 control={form.control}
                                                 name="accountId"
@@ -887,10 +1364,10 @@ export function CreateRuleDrawer({
                                     </div>
 
                                     <div className="flex flex-col gap-4">
-                                        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
-                                            <FormLabel className="text-sm font-normal min-w-[120px] pt-2">
+                                        <div className="flex flex-col gap-3">
+                                            <Label className="text-sm font-normal min-w-[120px] pt-2">
                                                 Match Type
-                                            </FormLabel>
+                                            </Label>
                                             <FormField
                                                 control={form.control}
                                                 name="matchType"
@@ -953,11 +1430,11 @@ export function CreateRuleDrawer({
                                     <div className="space-y-4">
                                         <FormField
                                             control={form.control}
-                                            name="actionTransactionType"
+                                            name="actionType"
                                             render={({ field }) => (
                                                 <FormItem>
                                                     <FormLabel className="text-sm font-normal">
-                                                        Transaction Type
+                                                        Action Type
                                                     </FormLabel>
                                                     <Select
                                                         onValueChange={
@@ -967,18 +1444,30 @@ export function CreateRuleDrawer({
                                                     >
                                                         <FormControl>
                                                             <SelectTrigger>
-                                                                <SelectValue placeholder="Select type (optional)" />
+                                                                <SelectValue />
                                                             </SelectTrigger>
                                                         </FormControl>
                                                         <SelectContent>
-                                                            <SelectItem value="Deposit">
-                                                                Deposit
+                                                            <SelectItem value="set_category">
+                                                                Set category
                                                             </SelectItem>
-                                                            <SelectItem value="Expense">
-                                                                Expense
+                                                            <SelectItem value="set_contact">
+                                                                Set contact
                                                             </SelectItem>
-                                                            <SelectItem value="Transfer">
-                                                                Transfer
+                                                            <SelectItem value="set_memo">
+                                                                Set memo
+                                                            </SelectItem>
+                                                            <SelectItem value="set_taxes">
+                                                                Set taxes
+                                                            </SelectItem>
+                                                            <SelectItem value="set_type">
+                                                                Set type
+                                                            </SelectItem>
+                                                            <SelectItem value="set_splits">
+                                                                Set splits
+                                                            </SelectItem>
+                                                            <SelectItem value="exclude">
+                                                                Exclude
                                                             </SelectItem>
                                                         </SelectContent>
                                                     </Select>
@@ -987,26 +1476,15 @@ export function CreateRuleDrawer({
                                             )}
                                         />
 
-                                        <FormField
-                                            control={form.control}
-                                            name="actionCategory"
-                                            render={({ field }) => {
-                                                const incomeCategories =
-                                                    categories.filter(
-                                                        (acc) =>
-                                                            acc.accountType ===
-                                                            'income'
-                                                    );
-                                                const expenseCategories =
-                                                    categories.filter(
-                                                        (acc) =>
-                                                            acc.accountType ===
-                                                            'expense'
-                                                    );
-                                                return (
+                                        {form.watch('actionType') ===
+                                            'set_type' && (
+                                            <FormField
+                                                control={form.control}
+                                                name="actionTransactionType"
+                                                render={({ field }) => (
                                                     <FormItem>
                                                         <FormLabel className="text-sm font-normal">
-                                                            Category
+                                                            Type
                                                         </FormLabel>
                                                         <Select
                                                             onValueChange={
@@ -1016,67 +1494,176 @@ export function CreateRuleDrawer({
                                                         >
                                                             <FormControl>
                                                                 <SelectTrigger>
-                                                                    <SelectValue placeholder="Select category (optional)" />
+                                                                    <SelectValue />
                                                                 </SelectTrigger>
                                                             </FormControl>
                                                             <SelectContent>
-                                                                {incomeCategories.length >
-                                                                    0 && (
-                                                                    <>
-                                                                        <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">
-                                                                            Income
+                                                                <SelectItem value="income">
+                                                                    Income
+                                                                </SelectItem>
+                                                                <SelectItem value="expense">
+                                                                    Expense
+                                                                </SelectItem>
+                                                            </SelectContent>
+                                                        </Select>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+                                        )}
+
+                                        {form.watch('actionType') ===
+                                            'set_category' && (
+                                            <FormField
+                                                control={form.control}
+                                                name="actionCategory"
+                                                render={({ field }) => {
+                                                    const incomeCategories =
+                                                        categories.filter(
+                                                            (acc) =>
+                                                                acc.accountType ===
+                                                                'income'
+                                                        );
+                                                    const expenseCategories =
+                                                        categories.filter(
+                                                            (acc) =>
+                                                                acc.accountType ===
+                                                                'expense'
+                                                        );
+                                                    return (
+                                                        <FormItem>
+                                                            <FormLabel className="text-sm font-normal">
+                                                                Category
+                                                            </FormLabel>
+                                                            <Select
+                                                                onValueChange={
+                                                                    field.onChange
+                                                                }
+                                                                value={
+                                                                    field.value
+                                                                }
+                                                            >
+                                                                <FormControl>
+                                                                    <SelectTrigger>
+                                                                        <SelectValue placeholder="Select category (optional)" />
+                                                                    </SelectTrigger>
+                                                                </FormControl>
+                                                                <SelectContent>
+                                                                    {incomeCategories.length >
+                                                                        0 && (
+                                                                        <>
+                                                                            <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">
+                                                                                Income
+                                                                            </div>
+                                                                            {incomeCategories.map(
+                                                                                (
+                                                                                    account
+                                                                                ) => (
+                                                                                    <SelectItem
+                                                                                        key={
+                                                                                            account.id
+                                                                                        }
+                                                                                        value={
+                                                                                            account.id
+                                                                                        }
+                                                                                    >
+                                                                                        {
+                                                                                            account.accountName
+                                                                                        }
+                                                                                    </SelectItem>
+                                                                                )
+                                                                            )}
+                                                                        </>
+                                                                    )}
+                                                                    {expenseCategories.length >
+                                                                        0 && (
+                                                                        <>
+                                                                            <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground mt-1">
+                                                                                Expense
+                                                                            </div>
+                                                                            {expenseCategories.map(
+                                                                                (
+                                                                                    account
+                                                                                ) => (
+                                                                                    <SelectItem
+                                                                                        key={
+                                                                                            account.id
+                                                                                        }
+                                                                                        value={
+                                                                                            account.id
+                                                                                        }
+                                                                                    >
+                                                                                        {
+                                                                                            account.accountName
+                                                                                        }
+                                                                                    </SelectItem>
+                                                                                )
+                                                                            )}
+                                                                        </>
+                                                                    )}
+                                                                    {categories.length ===
+                                                                        0 && (
+                                                                        <div className="px-2 py-4 text-sm text-muted-foreground text-center">
+                                                                            No
+                                                                            categories
+                                                                            available
                                                                         </div>
-                                                                        {incomeCategories.map(
-                                                                            (
-                                                                                account
-                                                                            ) => (
-                                                                                <SelectItem
-                                                                                    key={
-                                                                                        account.id
-                                                                                    }
-                                                                                    value={
-                                                                                        account.id
-                                                                                    }
-                                                                                >
-                                                                                    {
-                                                                                        account.accountName
-                                                                                    }
-                                                                                </SelectItem>
-                                                                            )
-                                                                        )}
-                                                                    </>
-                                                                )}
-                                                                {expenseCategories.length >
-                                                                    0 && (
-                                                                    <>
-                                                                        <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground mt-1">
-                                                                            Expense
-                                                                        </div>
-                                                                        {expenseCategories.map(
-                                                                            (
-                                                                                account
-                                                                            ) => (
-                                                                                <SelectItem
-                                                                                    key={
-                                                                                        account.id
-                                                                                    }
-                                                                                    value={
-                                                                                        account.id
-                                                                                    }
-                                                                                >
-                                                                                    {
-                                                                                        account.accountName
-                                                                                    }
-                                                                                </SelectItem>
-                                                                            )
-                                                                        )}
-                                                                    </>
-                                                                )}
-                                                                {categories.length ===
-                                                                    0 && (
+                                                                    )}
+                                                                </SelectContent>
+                                                            </Select>
+                                                            <FormMessage />
+                                                        </FormItem>
+                                                    );
+                                                }}
+                                            />
+                                        )}
+
+                                        {form.watch('actionType') ===
+                                            'set_contact' && (
+                                            <FormField
+                                                control={form.control}
+                                                name="actionPayee"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel className="text-sm font-normal">
+                                                            Contact / Payee
+                                                        </FormLabel>
+                                                        <Select
+                                                            onValueChange={
+                                                                field.onChange
+                                                            }
+                                                            value={field.value}
+                                                        >
+                                                            <FormControl>
+                                                                <SelectTrigger>
+                                                                    <SelectValue placeholder="Select contact (optional)" />
+                                                                </SelectTrigger>
+                                                            </FormControl>
+                                                            <SelectContent>
+                                                                {contacts.length >
+                                                                0 ? (
+                                                                    contacts.map(
+                                                                        (
+                                                                            contact
+                                                                        ) => (
+                                                                            <SelectItem
+                                                                                key={
+                                                                                    contact.id
+                                                                                }
+                                                                                value={
+                                                                                    contact.id
+                                                                                }
+                                                                            >
+                                                                                {
+                                                                                    contact.displayName
+                                                                                }
+                                                                            </SelectItem>
+                                                                        )
+                                                                    )
+                                                                ) : (
                                                                     <div className="px-2 py-4 text-sm text-muted-foreground text-center">
                                                                         No
-                                                                        categories
+                                                                        contacts
                                                                         available
                                                                     </div>
                                                                 )}
@@ -1084,128 +1671,423 @@ export function CreateRuleDrawer({
                                                         </Select>
                                                         <FormMessage />
                                                     </FormItem>
-                                                );
-                                            }}
-                                        />
+                                                )}
+                                            />
+                                        )}
 
-                                        <FormField
-                                            control={form.control}
-                                            name="actionPayee"
-                                            render={({ field }) => (
-                                                <FormItem>
-                                                    <FormLabel className="text-sm font-normal">
-                                                        Contact / Payee
-                                                    </FormLabel>
-                                                    <Select
-                                                        onValueChange={
-                                                            field.onChange
-                                                        }
-                                                        value={field.value}
-                                                    >
-                                                        <FormControl>
-                                                            <SelectTrigger>
-                                                                <SelectValue placeholder="Select contact (optional)" />
-                                                            </SelectTrigger>
-                                                        </FormControl>
-                                                        <SelectContent>
-                                                            {contacts.length >
-                                                            0 ? (
-                                                                contacts.map(
-                                                                    (
-                                                                        contact
-                                                                    ) => (
-                                                                        <SelectItem
-                                                                            key={
-                                                                                contact.id
-                                                                            }
-                                                                            value={
-                                                                                contact.id
-                                                                            }
-                                                                        >
-                                                                            {
-                                                                                contact.displayName
-                                                                            }
-                                                                        </SelectItem>
-                                                                    )
-                                                                )
-                                                            ) : (
-                                                                <div className="px-2 py-4 text-sm text-muted-foreground text-center">
-                                                                    No contacts
-                                                                    available
-                                                                </div>
-                                                            )}
-                                                        </SelectContent>
-                                                    </Select>
-                                                    <FormMessage />
-                                                </FormItem>
-                                            )}
-                                        />
-
-                                        <FormField
-                                            control={form.control}
-                                            name="actionTax"
-                                            render={({ field }) => (
-                                                <FormItem>
-                                                    <FormLabel className="text-sm font-normal">
-                                                        Tax
-                                                    </FormLabel>
-                                                    <Select
-                                                        onValueChange={
-                                                            field.onChange
-                                                        }
-                                                        value={field.value}
-                                                    >
-                                                        <FormControl>
-                                                            <SelectTrigger>
-                                                                <SelectValue placeholder="Select tax (optional)" />
-                                                            </SelectTrigger>
-                                                        </FormControl>
-                                                        <SelectContent>
-                                                            <SelectItem value="none">
-                                                                No tax
-                                                            </SelectItem>
-                                                            {taxes.length > 0
-                                                                ? taxes.map(
-                                                                      (tax) => (
-                                                                          <SelectItem
-                                                                              key={
-                                                                                  tax.id
-                                                                              }
-                                                                              value={
-                                                                                  tax.id
-                                                                              }
-                                                                          >
-                                                                              {
-                                                                                  tax.name
-                                                                              }{' '}
-                                                                              (
-                                                                              {(
-                                                                                  tax.rate *
-                                                                                  100
-                                                                              ).toFixed(
-                                                                                  (tax.rate *
-                                                                                      100) %
-                                                                                      1 ===
-                                                                                      0
-                                                                                      ? 0
-                                                                                      : 2
-                                                                              )}
-                                                                              %)
-                                                                          </SelectItem>
+                                        {form.watch('actionType') ===
+                                            'set_taxes' && (
+                                            <FormField
+                                                control={form.control}
+                                                name="actionTaxIds"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel className="text-sm font-normal">
+                                                            Taxes
+                                                        </FormLabel>
+                                                        <div className="space-y-2">
+                                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                                                {taxes.length >
+                                                                0
+                                                                    ? taxes.map(
+                                                                          (
+                                                                              tax
+                                                                          ) => {
+                                                                              const checked =
+                                                                                  Array.isArray(
+                                                                                      field.value
+                                                                                  )
+                                                                                      ? field.value.includes(
+                                                                                            tax.id
+                                                                                        )
+                                                                                      : false;
+                                                                              return (
+                                                                                  <label
+                                                                                      key={
+                                                                                          tax.id
+                                                                                      }
+                                                                                      className="flex items-center gap-2 rounded border px-2 py-1.5"
+                                                                                  >
+                                                                                      <Checkbox
+                                                                                          checked={
+                                                                                              checked
+                                                                                          }
+                                                                                          onCheckedChange={(
+                                                                                              c
+                                                                                          ) => {
+                                                                                              const current =
+                                                                                                  Array.isArray(
+                                                                                                      field.value
+                                                                                                  )
+                                                                                                      ? [
+                                                                                                            ...field.value,
+                                                                                                        ]
+                                                                                                      : [];
+                                                                                              if (
+                                                                                                  c
+                                                                                              ) {
+                                                                                                  if (
+                                                                                                      !current.includes(
+                                                                                                          tax.id
+                                                                                                      )
+                                                                                                  ) {
+                                                                                                      current.push(
+                                                                                                          tax.id
+                                                                                                      );
+                                                                                                  }
+                                                                                              } else {
+                                                                                                  const idx =
+                                                                                                      current.indexOf(
+                                                                                                          tax.id
+                                                                                                      );
+                                                                                                  if (
+                                                                                                      idx >=
+                                                                                                      0
+                                                                                                  )
+                                                                                                      current.splice(
+                                                                                                          idx,
+                                                                                                          1
+                                                                                                      );
+                                                                                              }
+                                                                                              field.onChange(
+                                                                                                  current
+                                                                                              );
+                                                                                          }}
+                                                                                      />
+                                                                                      <span className="text-sm">
+                                                                                          {
+                                                                                              tax.name
+                                                                                          }{' '}
+                                                                                          (
+                                                                                          {(
+                                                                                              tax.rate *
+                                                                                              100
+                                                                                          ).toFixed(
+                                                                                              (tax.rate *
+                                                                                                  100) %
+                                                                                                  1 ===
+                                                                                                  0
+                                                                                                  ? 0
+                                                                                                  : 2
+                                                                                          )}
+                                                                                          %)
+                                                                                      </span>
+                                                                                  </label>
+                                                                              );
+                                                                          }
                                                                       )
-                                                                  )
-                                                                : null}
-                                                        </SelectContent>
-                                                    </Select>
-                                                    <FormMessage />
-                                                </FormItem>
+                                                                    : null}
+                                                            </div>
+                                                            <FormMessage />
+                                                        </div>
+                                                    </FormItem>
+                                                )}
+                                            />
+                                        )}
+
+                                        {form.watch('actionType') ===
+                                            'set_memo' && (
+                                            <FormField
+                                                control={form.control}
+                                                name="actionMemo"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel className="text-sm font-normal">
+                                                            Memo
+                                                        </FormLabel>
+                                                        <FormControl>
+                                                            <Textarea
+                                                                {...field}
+                                                                placeholder="Enter memo (optional)"
+                                                                className="min-h-20"
+                                                            />
+                                                        </FormControl>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+                                        )}
+
+                                        {form.watch('actionType') ===
+                                            'set_splits' && (
+                                            <FormField
+                                                control={form.control}
+                                                name="splitsMode"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel className="text-sm font-normal">
+                                                            Splits
+                                                        </FormLabel>
+                                                        <Select
+                                                            onValueChange={
+                                                                field.onChange
+                                                            }
+                                                            value={field.value}
+                                                        >
+                                                            <FormControl>
+                                                                <SelectTrigger>
+                                                                    <SelectValue placeholder="No splits" />
+                                                                </SelectTrigger>
+                                                            </FormControl>
+                                                            <SelectContent>
+                                                                <SelectItem value="none">
+                                                                    None
+                                                                </SelectItem>
+                                                                <SelectItem value="percent">
+                                                                    Percent
+                                                                </SelectItem>
+                                                                <SelectItem value="amount">
+                                                                    Fixed amount
+                                                                </SelectItem>
+                                                            </SelectContent>
+                                                        </Select>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+                                        )}
+
+                                        {form.watch('actionType') ===
+                                            'set_splits' &&
+                                            form.watch('splitsMode') !==
+                                                'none' && (
+                                                <div className="space-y-3">
+                                                    {splitFields.map(
+                                                        (sf, idx) => (
+                                                            <div
+                                                                key={sf.id}
+                                                                className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3 border rounded"
+                                                            >
+                                                                {form.watch(
+                                                                    'splitsMode'
+                                                                ) ===
+                                                                'percent' ? (
+                                                                    <FormField
+                                                                        control={
+                                                                            form.control
+                                                                        }
+                                                                        name={`splitLines.${idx}.percent`}
+                                                                        render={({
+                                                                            field,
+                                                                        }) => (
+                                                                            <FormItem>
+                                                                                <FormLabel className="text-xs">
+                                                                                    Percent
+                                                                                </FormLabel>
+                                                                                <FormControl>
+                                                                                    <Input
+                                                                                        type="number"
+                                                                                        {...field}
+                                                                                        value={
+                                                                                            field.value ??
+                                                                                            ''
+                                                                                        }
+                                                                                        onChange={(
+                                                                                            e
+                                                                                        ) =>
+                                                                                            field.onChange(
+                                                                                                e
+                                                                                                    .target
+                                                                                                    .value ===
+                                                                                                    ''
+                                                                                                    ? undefined
+                                                                                                    : e
+                                                                                                          .target
+                                                                                                          .valueAsNumber
+                                                                                            )
+                                                                                        }
+                                                                                        placeholder="0"
+                                                                                    />
+                                                                                </FormControl>
+                                                                                <FormMessage />
+                                                                            </FormItem>
+                                                                        )}
+                                                                    />
+                                                                ) : (
+                                                                    <FormField
+                                                                        control={
+                                                                            form.control
+                                                                        }
+                                                                        name={`splitLines.${idx}.amount`}
+                                                                        render={({
+                                                                            field,
+                                                                        }) => (
+                                                                            <FormItem>
+                                                                                <FormLabel className="text-xs">
+                                                                                    Amount
+                                                                                </FormLabel>
+                                                                                <FormControl>
+                                                                                    <Input
+                                                                                        type="number"
+                                                                                        {...field}
+                                                                                        value={
+                                                                                            field.value ??
+                                                                                            ''
+                                                                                        }
+                                                                                        onChange={(
+                                                                                            e
+                                                                                        ) =>
+                                                                                            field.onChange(
+                                                                                                e
+                                                                                                    .target
+                                                                                                    .value ===
+                                                                                                    ''
+                                                                                                    ? undefined
+                                                                                                    : e
+                                                                                                          .target
+                                                                                                          .valueAsNumber
+                                                                                            )
+                                                                                        }
+                                                                                        placeholder="0.00"
+                                                                                    />
+                                                                                </FormControl>
+                                                                                <FormMessage />
+                                                                            </FormItem>
+                                                                        )}
+                                                                    />
+                                                                )}
+                                                                <FormField
+                                                                    control={
+                                                                        form.control
+                                                                    }
+                                                                    name={`splitLines.${idx}.categoryId`}
+                                                                    render={({
+                                                                        field,
+                                                                    }) => (
+                                                                        <FormItem>
+                                                                            <FormLabel className="text-xs">
+                                                                                Category
+                                                                            </FormLabel>
+                                                                            <Select
+                                                                                onValueChange={
+                                                                                    field.onChange
+                                                                                }
+                                                                                value={
+                                                                                    field.value
+                                                                                }
+                                                                            >
+                                                                                <FormControl>
+                                                                                    <SelectTrigger>
+                                                                                        <SelectValue placeholder="Select category" />
+                                                                                    </SelectTrigger>
+                                                                                </FormControl>
+                                                                                <SelectContent>
+                                                                                    {categories.length >
+                                                                                    0
+                                                                                        ? categories.map(
+                                                                                              (
+                                                                                                  account
+                                                                                              ) => (
+                                                                                                  <SelectItem
+                                                                                                      key={
+                                                                                                          account.id
+                                                                                                      }
+                                                                                                      value={
+                                                                                                          account.id
+                                                                                                      }
+                                                                                                  >
+                                                                                                      {
+                                                                                                          account.accountName
+                                                                                                      }
+                                                                                                  </SelectItem>
+                                                                                              )
+                                                                                          )
+                                                                                        : null}
+                                                                                </SelectContent>
+                                                                            </Select>
+                                                                            <FormMessage />
+                                                                        </FormItem>
+                                                                    )}
+                                                                />
+                                                                <FormField
+                                                                    control={
+                                                                        form.control
+                                                                    }
+                                                                    name={`splitLines.${idx}.description`}
+                                                                    render={({
+                                                                        field,
+                                                                    }) => (
+                                                                        <FormItem className="sm:col-span-2">
+                                                                            <FormLabel className="text-xs">
+                                                                                Description
+                                                                            </FormLabel>
+                                                                            <FormControl>
+                                                                                <Input
+                                                                                    {...field}
+                                                                                    placeholder="Optional description"
+                                                                                />
+                                                                            </FormControl>
+                                                                            <FormMessage />
+                                                                        </FormItem>
+                                                                    )}
+                                                                />
+                                                                <div className="sm:col-span-2 flex justify-end">
+                                                                    <Button
+                                                                        type="button"
+                                                                        variant="ghost"
+                                                                        size="icon"
+                                                                        onClick={() =>
+                                                                            removeSplit(
+                                                                                idx
+                                                                            )
+                                                                        }
+                                                                        className="h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                                                                    >
+                                                                        <Trash2 className="w-4 h-4" />
+                                                                    </Button>
+                                                                </div>
+                                                            </div>
+                                                        )
+                                                    )}
+                                                    <Button
+                                                        type="button"
+                                                        variant="outline"
+                                                        size="sm"
+                                                        onClick={() =>
+                                                            appendSplit({
+                                                                percent:
+                                                                    form.watch(
+                                                                        'splitsMode'
+                                                                    ) ===
+                                                                    'percent'
+                                                                        ? 0
+                                                                        : undefined,
+                                                                amount:
+                                                                    form.watch(
+                                                                        'splitsMode'
+                                                                    ) ===
+                                                                    'amount'
+                                                                        ? 0
+                                                                        : undefined,
+                                                                categoryId: '',
+                                                                description: '',
+                                                                taxIds: [],
+                                                            })
+                                                        }
+                                                    >
+                                                        <Plus className="w-3 h-3 mr-1" />
+                                                        Add Split Line
+                                                    </Button>
+                                                </div>
                                             )}
-                                        />
                                     </div>
                                 </div>
 
                                 {/* Auto-apply Section */}
                                 <div className="space-y-4 border-t pt-6">
+                                    {form.watch('actionType') === 'exclude' && (
+                                        <div className="flex items-start gap-3">
+                                            <div className="flex-1 space-y-1">
+                                                <Label className="text-sm font-medium leading-tight">
+                                                    Exclude transaction
+                                                </Label>
+                                                <p className="text-xs text-muted-foreground">
+                                                    When matched, void and mark
+                                                    as reviewed
+                                                </p>
+                                            </div>
+                                        </div>
+                                    )}
                                     <FormField
                                         control={form.control}
                                         name="autoApply"
@@ -1252,11 +2134,20 @@ export function CreateRuleDrawer({
                         </DrawerClose>
                         <Button
                             type="submit"
-                            disabled={isPending || isLoadingData}
+                            disabled={
+                                (mode === 'edit' ? isUpdating : isPending) ||
+                                isLoadingData
+                            }
                             onClick={form.handleSubmit(onSubmit)}
                             className="flex-1"
                         >
-                            {isPending ? 'Saving...' : 'Save Rule'}
+                            {mode === 'edit'
+                                ? isUpdating
+                                    ? 'Updating...'
+                                    : 'Update Rule'
+                                : isPending
+                                  ? 'Saving...'
+                                  : 'Save Rule'}
                         </Button>
                     </div>
                 </DrawerFooter>

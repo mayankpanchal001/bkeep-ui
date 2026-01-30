@@ -14,7 +14,7 @@ export type RuleCondition = {
 };
 
 export type RuleAction = {
-    id: string;
+    id?: string;
     actionType: string;
     payload?: Record<string, unknown>;
 };
@@ -88,12 +88,33 @@ export type CreateRulePayload = {
     actions?: RuleAction[];
 };
 
-export type UpdateRulePayload = Partial<CreateRulePayload>;
+export type UpdateRulePayload = {
+    name?: string;
+    description?: string;
+    transactionType?: 'any' | 'income' | 'expense';
+    matchType?: 'all' | 'any';
+    autoApply?: boolean;
+    stopOnMatch?: boolean;
+    priority?: number;
+    accountScope?: 'all' | 'selected';
+    accountIds?: string[];
+    conditions?: RuleCondition[];
+    actions?: Array<{
+        actionType: string;
+        payload?: Record<string, unknown>;
+    }>;
+};
 
 export type TestRulePayload = {
-    ruleId?: string;
-    rule?: CreateRulePayload;
-    transactionIds?: string[];
+    transactionType?: 'any' | 'income' | 'expense';
+    matchType: 'all' | 'any';
+    conditions: RuleCondition[];
+    actions?: RuleAction[];
+    accountScope?: 'all' | 'selected';
+    accountIds?: string[];
+    testAgainstAll?: boolean;
+    transactionId?: string;
+    limit?: number;
 };
 
 export type TestRuleResponse = {
@@ -101,8 +122,13 @@ export type TestRuleResponse = {
     statusCode: number;
     message: string;
     data?: {
-        matchedTransactions?: unknown[];
-        preview?: unknown;
+        totalTested: number;
+        totalMatched: number;
+        matches: Array<{
+            transactionId: string;
+            match: boolean;
+            preview?: Record<string, unknown>;
+        }>;
     };
 };
 
@@ -204,7 +230,29 @@ export const updateRule = async (
     id: string,
     payload: UpdateRulePayload
 ): Promise<RuleResponse> => {
-    const response = await axiosInstance.patch(`/rules/${id}`, payload);
+    const sanitizedConditions =
+        payload.conditions?.map((c) => {
+            const cond = { ...c };
+            if (cond.field === 'amount') {
+                if (typeof cond.valueNumber === 'string') {
+                    const n = Number(cond.valueNumber);
+                    cond.valueNumber = Number.isFinite(n) ? n : undefined;
+                }
+                if (typeof cond.valueNumberTo === 'string') {
+                    const n2 = Number(cond.valueNumberTo);
+                    cond.valueNumberTo = Number.isFinite(n2) ? n2 : undefined;
+                }
+            }
+            return cond;
+        }) || payload.conditions;
+    const sanitizedPayload: UpdateRulePayload = {
+        ...payload,
+        conditions: sanitizedConditions,
+    };
+    const response = await axiosInstance.patch(
+        `/rules/${id}`,
+        sanitizedPayload
+    );
     return response.data;
 };
 

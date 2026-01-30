@@ -85,9 +85,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             window.location.reload();
         } catch (error) {
             console.error(`Failed to switch ${SINGLE_TENANT_PREFIX}:`, error);
-            showErrorToast(
-                `Failed to switch ${SINGLE_TENANT_PREFIX}. Please try again.`
-            );
+            const maybeAxiosError = error as {
+                response?: { data?: { message?: string } };
+            };
+            const message =
+                maybeAxiosError.response?.data?.message ||
+                `Failed to switch ${SINGLE_TENANT_PREFIX}. Please try again.`;
+            showErrorToast(message);
         } finally {
             setIsSwitching(false);
         }
@@ -240,7 +244,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 />
             </SidebarHeader>
             <SidebarContent>
-                {favLinks.length > 0 && (
+                {/* {favLinks.length > 0 && (
                     <SidebarGroup>
                         <SidebarGroupLabel>Favourites</SidebarGroupLabel>
                         <SidebarGroupContent>
@@ -267,7 +271,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                             </SidebarMenu>
                         </SidebarGroupContent>
                     </SidebarGroup>
-                )}
+                )} */}
                 {favLinks.length > 0 && <SidebarSeparator />}
                 <SidebarGroup>
                     <SidebarGroupLabel>Navigation</SidebarGroupLabel>

@@ -87,7 +87,7 @@ const ReportDetailpage = () => {
     const subtitle = category ? `Category: ${category.title}` : 'Report detail';
 
     return (
-        <div className="flex flex-col gap-4 w-full lg:max-w-5xl lg:mx-auto">
+        <div className="flex flex-col gap-4 w-full lg:mx-auto">
             <div className="flex flex-col gap-1">
                 <h1 className="text-xl font-semibold text-foreground">
                     {title}

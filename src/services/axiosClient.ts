@@ -30,7 +30,10 @@ axiosInstance.interceptors.response.use(
     (error) => {
         if (error.response?.status === 401) {
             // Handle unauthorized access
-            showErrorToast('Your session has expired. Logging you out...');
+            const message =
+                error.response?.data?.message ||
+                'Your session has expired. Please log in again.';
+            showErrorToast(message);
             localStorage.removeItem('accessToken');
             localStorage.removeItem('refreshToken');
             localStorage.removeItem('user');

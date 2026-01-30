@@ -24,6 +24,11 @@ export const SIDEBAR_ITEMS: SidebarItemProps[] = [
         path: '/transactions',
     },
     {
+        label: 'Rules',
+        icon: <Icons.Settings />,
+        path: '/rules',
+    },
+    {
         label: 'Reports',
         icon: <Icons.Reports />,
         path: '/reports',

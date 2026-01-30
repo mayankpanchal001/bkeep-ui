@@ -436,6 +436,7 @@ export const TransactionsTable = ({
                                             </Button>
                                         </div>
                                     </TableCell>
+
                                     <TableCell data-label="Action">
                                         <div className="flex items-center gap-2">
                                             <Button
