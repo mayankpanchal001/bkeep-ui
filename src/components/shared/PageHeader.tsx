@@ -14,7 +14,9 @@ const PageHeader = ({
                 <p className="text-sm text-primary/50">{subtitle}</p>
             </div>
             {actions && (
-                <div className="flex items-center max-sm:w-full gap-2">{actions}</div>
+                <div className="flex items-center max-sm:w-full gap-2">
+                    {actions}
+                </div>
             )}
         </div>
     );
