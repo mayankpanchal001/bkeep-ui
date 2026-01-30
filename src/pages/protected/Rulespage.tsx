@@ -158,13 +158,13 @@ const Rulespage = () => {
         conditionValue: string;
         caseSensitive: boolean;
         actionType:
-            | 'set_category'
-            | 'set_contact'
-            | 'set_memo'
-            | 'set_taxes'
-            | 'set_type'
-            | 'set_splits'
-            | 'exclude';
+        | 'set_category'
+        | 'set_contact'
+        | 'set_memo'
+        | 'set_taxes'
+        | 'set_type'
+        | 'set_splits'
+        | 'exclude';
         actionCategoryId: string;
         actionContactId: string;
         actionMemo: string;
@@ -255,14 +255,14 @@ const Rulespage = () => {
             typeof c.valueNumber === 'number'
                 ? String(c.valueNumber)
                 : typeof c.valueNumber === 'string'
-                  ? c.valueNumber
-                  : '';
+                    ? c.valueNumber
+                    : '';
         const vnt =
             typeof c.valueNumberTo === 'number'
                 ? String(c.valueNumberTo)
                 : typeof c.valueNumberTo === 'string'
-                  ? c.valueNumberTo
-                  : '';
+                    ? c.valueNumberTo
+                    : '';
         if (op === 'contains') {
             return `${field} contains "${vs}"`;
         }
@@ -299,8 +299,35 @@ const Rulespage = () => {
     const filteredItems = items;
 
     const headerActions = (
-        <div className="flex items-center gap-2">
+        <div className="flex gap-2  max-sm:w-full sm:w-auto">
+            <Form {...searchForm}
+            >
+                <FormField
+                    control={searchForm.control}
+                    name="search"
+                    render={({ field }) => (
+                        <FormItem className="w-full sm:w-[260px]">
+                            <FormControl>
+                                <Input
+                                    value={field.value}
+                                    onChange={(e) => {
+                                        field.onChange(e);
+                                        setSearch(e.target.value);
+                                        setPage(1);
+                                    }}
+                                    placeholder="Search by name or conditions"
+                                    startIcon={
+                                        <Icons.Search className="w-4 h-4" />
+                                    }
+                                />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+            </Form>
             <Button
+                // className="max-sm:w-full"
                 onClick={() => {
                     setEditRule(null);
                     setOpenCreate(true);
@@ -319,46 +346,16 @@ const Rulespage = () => {
                 actions={headerActions}
             />
 
-            <div className="sm:ml-auto flex items-center gap-3 flex-wrap">
-                <div className="relative w-full sm:w-[260px]">
-                    <Form {...searchForm}>
-                        <FormField
-                            control={searchForm.control}
-                            name="search"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormControl>
-                                        <Input
-                                            value={field.value}
-                                            onChange={(e) => {
-                                                field.onChange(e);
-                                                setSearch(e.target.value);
-                                                setPage(1);
-                                            }}
-                                            placeholder="Search by name or conditions"
-                                            startIcon={
-                                                <Icons.Search className="w-4 h-4" />
-                                            }
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                    </Form>
-                </div>
-            </div>
 
             <div className="border border-primary/10 rounded-lg overflow-hidden h-full">
                 <Table
-                    containerClassName="h-full"
                     enableSelection={true}
                     onSelectionChange={setSelectedIds}
                     rowIds={filteredItems.map((r) => r.id)}
                     selectedIds={selectedIds}
                     sortKey={'priority'}
                     sortDirection={'asc'}
-                    onSortChange={() => {}}
+                    onSortChange={() => { }}
                 >
                     <TableHeader>
                         <tr>
@@ -472,41 +469,41 @@ const Rulespage = () => {
                                                     <DropdownMenuItem
                                                         onClick={() => {
                                                             const updatedRule: Rule =
-                                                                {
-                                                                    ...r,
-                                                                    transactionType:
-                                                                        'any',
-                                                                    matchType:
-                                                                        'all',
-                                                                    accountScope:
-                                                                        'all',
-                                                                    accountIds:
-                                                                        [],
-                                                                    conditions:
-                                                                        [
-                                                                            {
-                                                                                id: 'temp-description-contains-bank-fee',
-                                                                                field: 'description',
-                                                                                operator:
-                                                                                    'contains',
-                                                                                valueString:
-                                                                                    'BANK FEE',
-                                                                                caseSensitive: false,
-                                                                            },
-                                                                        ],
-                                                                    actions: [
+                                                            {
+                                                                ...r,
+                                                                transactionType:
+                                                                    'any',
+                                                                matchType:
+                                                                    'all',
+                                                                accountScope:
+                                                                    'all',
+                                                                accountIds:
+                                                                    [],
+                                                                conditions:
+                                                                    [
                                                                         {
-                                                                            id: '940e13fb-f0f8-4caf-a755-a32ae7f869c6',
-                                                                            actionType:
-                                                                                'set_category',
-                                                                            payload:
-                                                                                {
-                                                                                    categoryId:
-                                                                                        'bd68e04d-7a14-4dd8-8818-3ba181755e0c',
-                                                                                },
+                                                                            id: 'temp-description-contains-bank-fee',
+                                                                            field: 'description',
+                                                                            operator:
+                                                                                'contains',
+                                                                            valueString:
+                                                                                'BANK FEE',
+                                                                            caseSensitive: false,
                                                                         },
                                                                     ],
-                                                                };
+                                                                actions: [
+                                                                    {
+                                                                        id: '940e13fb-f0f8-4caf-a755-a32ae7f869c6',
+                                                                        actionType:
+                                                                            'set_category',
+                                                                        payload:
+                                                                        {
+                                                                            categoryId:
+                                                                                'bd68e04d-7a14-4dd8-8818-3ba181755e0c',
+                                                                        },
+                                                                    },
+                                                                ],
+                                                            };
                                                             setRuleUnderTest(
                                                                 updatedRule
                                                             );
@@ -558,15 +555,18 @@ const Rulespage = () => {
                         )}
                     </TableBody>
                 </Table>
-                <div className="border-t bg-card p-4">
-                    <TablePagination
-                        page={pagination?.page || page}
-                        totalPages={pagination?.totalPages || 1}
-                        totalItems={pagination?.total || filteredItems.length}
-                        itemsPerPage={pagination?.limit || limit}
-                        onPageChange={(p) => setPage(p)}
-                    />
-                </div>
+                {pagination && (pagination.totalPages || 0) > 1 ? (
+                    <div className="border-t bg-card p-4">
+                        <TablePagination
+                            page={pagination.page || page}
+                            totalPages={pagination.totalPages || 1}
+                            totalItems={pagination.total || filteredItems.length}
+                            itemsPerPage={pagination.limit || limit}
+                            onPageChange={(p) => setPage(p)}
+                        />
+                    </div>
+                ) : null}
+
             </div>
             <AlertDialog
                 open={deleteDialogOpen}
@@ -988,498 +988,498 @@ const Rulespage = () => {
                                 </div>
                                 {quickForm.watch('actionType') ===
                                     'set_category' && (
-                                    <div className="flex flex-col">
-                                        <span className="text-xs text-primary/60">
-                                            Category
-                                        </span>
-                                        <Select
-                                            value={quickForm.watch(
-                                                'actionCategoryId'
-                                            )}
-                                            onValueChange={(val) =>
-                                                quickForm.setValue(
-                                                    'actionCategoryId',
-                                                    val
-                                                )
-                                            }
-                                        >
-                                            <SelectTrigger className="mt-1">
-                                                <SelectValue placeholder="Select category" />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                {categories.map((c) => (
-                                                    <SelectItem
-                                                        key={c.id}
-                                                        value={c.id}
-                                                    >
-                                                        {c.accountName}
-                                                    </SelectItem>
-                                                ))}
-                                            </SelectContent>
-                                        </Select>
-                                    </div>
-                                )}
-                                {quickForm.watch('actionType') ===
-                                    'set_contact' && (
-                                    <div className="flex flex-col">
-                                        <span className="text-xs text-primary/60">
-                                            Contact
-                                        </span>
-                                        <Select
-                                            value={quickForm.watch(
-                                                'actionContactId'
-                                            )}
-                                            onValueChange={(val) =>
-                                                quickForm.setValue(
-                                                    'actionContactId',
-                                                    val
-                                                )
-                                            }
-                                        >
-                                            <SelectTrigger className="mt-1">
-                                                <SelectValue placeholder="Select contact" />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                {contacts.map((c) => (
-                                                    <SelectItem
-                                                        key={c.id}
-                                                        value={c.id}
-                                                    >
-                                                        {c.displayName}
-                                                    </SelectItem>
-                                                ))}
-                                            </SelectContent>
-                                        </Select>
-                                    </div>
-                                )}
-                                {quickForm.watch('actionType') ===
-                                    'set_memo' && (
-                                    <div className="flex flex-col">
-                                        <span className="text-xs text-primary/60">
-                                            Memo
-                                        </span>
-                                        <FormField
-                                            control={quickForm.control}
-                                            name="actionMemo"
-                                            render={({ field }) => (
-                                                <FormItem>
-                                                    <FormControl>
-                                                        <Textarea
-                                                            value={field.value}
-                                                            onChange={(e) =>
-                                                                field.onChange(
-                                                                    e
-                                                                )
-                                                            }
-                                                            placeholder="Enter memo"
-                                                            className="min-h-20"
-                                                        />
-                                                    </FormControl>
-                                                    <FormMessage />
-                                                </FormItem>
-                                            )}
-                                        />
-                                    </div>
-                                )}
-                                {quickForm.watch('actionType') ===
-                                    'set_taxes' && (
-                                    <div className="flex flex-col">
-                                        <span className="text-xs text-primary/60">
-                                            Taxes
-                                        </span>
-                                        <FormField
-                                            control={quickForm.control}
-                                            name="actionTaxIds"
-                                            render={({ field }) => (
-                                                <FormItem>
-                                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                                                        {taxes.map((tax) => {
-                                                            const checked =
-                                                                Array.isArray(
-                                                                    field.value
-                                                                )
-                                                                    ? field.value.includes(
-                                                                          tax.id
-                                                                      )
-                                                                    : false;
-                                                            return (
-                                                                <label
-                                                                    key={tax.id}
-                                                                    className="flex items-center gap-2 rounded border px-2 py-1.5"
-                                                                >
-                                                                    <Checkbox
-                                                                        checked={
-                                                                            checked
-                                                                        }
-                                                                        onCheckedChange={(
-                                                                            c
-                                                                        ) => {
-                                                                            const current =
-                                                                                Array.isArray(
-                                                                                    field.value
-                                                                                )
-                                                                                    ? [
-                                                                                          ...field.value,
-                                                                                      ]
-                                                                                    : [];
-                                                                            if (
-                                                                                c
-                                                                            ) {
-                                                                                if (
-                                                                                    !current.includes(
-                                                                                        tax.id
-                                                                                    )
-                                                                                ) {
-                                                                                    current.push(
-                                                                                        tax.id
-                                                                                    );
-                                                                                }
-                                                                            } else {
-                                                                                const idx =
-                                                                                    current.indexOf(
-                                                                                        tax.id
-                                                                                    );
-                                                                                if (
-                                                                                    idx >=
-                                                                                    0
-                                                                                )
-                                                                                    current.splice(
-                                                                                        idx,
-                                                                                        1
-                                                                                    );
-                                                                            }
-                                                                            quickForm.setValue(
-                                                                                'actionTaxIds',
-                                                                                current
-                                                                            );
-                                                                        }}
-                                                                    />
-                                                                    <span className="text-sm">
-                                                                        {
-                                                                            tax.name
-                                                                        }{' '}
-                                                                        (
-                                                                        {(
-                                                                            tax.rate *
-                                                                            100
-                                                                        ).toFixed(
-                                                                            (tax.rate *
-                                                                                100) %
-                                                                                1 ===
-                                                                                0
-                                                                                ? 0
-                                                                                : 2
-                                                                        )}
-                                                                        %)
-                                                                    </span>
-                                                                </label>
-                                                            );
-                                                        })}
-                                                    </div>
-                                                    <FormMessage />
-                                                </FormItem>
-                                            )}
-                                        />
-                                    </div>
-                                )}
-                                {quickForm.watch('actionType') ===
-                                    'set_type' && (
-                                    <div className="flex flex-col">
-                                        <span className="text-xs text-primary/60">
-                                            Type
-                                        </span>
-                                        <Select
-                                            value={quickForm.watch(
-                                                'actionTypeValue'
-                                            )}
-                                            onValueChange={(val) =>
-                                                quickForm.setValue(
-                                                    'actionTypeValue',
-                                                    val as 'income' | 'expense'
-                                                )
-                                            }
-                                        >
-                                            <SelectTrigger className="mt-1">
-                                                <SelectValue />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectItem value="income">
-                                                    Income
-                                                </SelectItem>
-                                                <SelectItem value="expense">
-                                                    Expense
-                                                </SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                    </div>
-                                )}
-                                {quickForm.watch('actionType') ===
-                                    'set_splits' && (
-                                    <div className="flex flex-col gap-3">
                                         <div className="flex flex-col">
                                             <span className="text-xs text-primary/60">
-                                                Splits
+                                                Category
                                             </span>
                                             <Select
                                                 value={quickForm.watch(
-                                                    'splitsMode'
+                                                    'actionCategoryId'
                                                 )}
                                                 onValueChange={(val) =>
                                                     quickForm.setValue(
-                                                        'splitsMode',
-                                                        val as QuickFormValues['splitsMode']
+                                                        'actionCategoryId',
+                                                        val
                                                     )
                                                 }
                                             >
                                                 <SelectTrigger className="mt-1">
-                                                    <SelectValue placeholder="No splits" />
+                                                    <SelectValue placeholder="Select category" />
                                                 </SelectTrigger>
                                                 <SelectContent>
-                                                    <SelectItem value="none">
-                                                        None
+                                                    {categories.map((c) => (
+                                                        <SelectItem
+                                                            key={c.id}
+                                                            value={c.id}
+                                                        >
+                                                            {c.accountName}
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+                                    )}
+                                {quickForm.watch('actionType') ===
+                                    'set_contact' && (
+                                        <div className="flex flex-col">
+                                            <span className="text-xs text-primary/60">
+                                                Contact
+                                            </span>
+                                            <Select
+                                                value={quickForm.watch(
+                                                    'actionContactId'
+                                                )}
+                                                onValueChange={(val) =>
+                                                    quickForm.setValue(
+                                                        'actionContactId',
+                                                        val
+                                                    )
+                                                }
+                                            >
+                                                <SelectTrigger className="mt-1">
+                                                    <SelectValue placeholder="Select contact" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    {contacts.map((c) => (
+                                                        <SelectItem
+                                                            key={c.id}
+                                                            value={c.id}
+                                                        >
+                                                            {c.displayName}
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+                                    )}
+                                {quickForm.watch('actionType') ===
+                                    'set_memo' && (
+                                        <div className="flex flex-col">
+                                            <span className="text-xs text-primary/60">
+                                                Memo
+                                            </span>
+                                            <FormField
+                                                control={quickForm.control}
+                                                name="actionMemo"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormControl>
+                                                            <Textarea
+                                                                value={field.value}
+                                                                onChange={(e) =>
+                                                                    field.onChange(
+                                                                        e
+                                                                    )
+                                                                }
+                                                                placeholder="Enter memo"
+                                                                className="min-h-20"
+                                                            />
+                                                        </FormControl>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+                                        </div>
+                                    )}
+                                {quickForm.watch('actionType') ===
+                                    'set_taxes' && (
+                                        <div className="flex flex-col">
+                                            <span className="text-xs text-primary/60">
+                                                Taxes
+                                            </span>
+                                            <FormField
+                                                control={quickForm.control}
+                                                name="actionTaxIds"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                                            {taxes.map((tax) => {
+                                                                const checked =
+                                                                    Array.isArray(
+                                                                        field.value
+                                                                    )
+                                                                        ? field.value.includes(
+                                                                            tax.id
+                                                                        )
+                                                                        : false;
+                                                                return (
+                                                                    <label
+                                                                        key={tax.id}
+                                                                        className="flex items-center gap-2 rounded border px-2 py-1.5"
+                                                                    >
+                                                                        <Checkbox
+                                                                            checked={
+                                                                                checked
+                                                                            }
+                                                                            onCheckedChange={(
+                                                                                c
+                                                                            ) => {
+                                                                                const current =
+                                                                                    Array.isArray(
+                                                                                        field.value
+                                                                                    )
+                                                                                        ? [
+                                                                                            ...field.value,
+                                                                                        ]
+                                                                                        : [];
+                                                                                if (
+                                                                                    c
+                                                                                ) {
+                                                                                    if (
+                                                                                        !current.includes(
+                                                                                            tax.id
+                                                                                        )
+                                                                                    ) {
+                                                                                        current.push(
+                                                                                            tax.id
+                                                                                        );
+                                                                                    }
+                                                                                } else {
+                                                                                    const idx =
+                                                                                        current.indexOf(
+                                                                                            tax.id
+                                                                                        );
+                                                                                    if (
+                                                                                        idx >=
+                                                                                        0
+                                                                                    )
+                                                                                        current.splice(
+                                                                                            idx,
+                                                                                            1
+                                                                                        );
+                                                                                }
+                                                                                quickForm.setValue(
+                                                                                    'actionTaxIds',
+                                                                                    current
+                                                                                );
+                                                                            }}
+                                                                        />
+                                                                        <span className="text-sm">
+                                                                            {
+                                                                                tax.name
+                                                                            }{' '}
+                                                                            (
+                                                                            {(
+                                                                                tax.rate *
+                                                                                100
+                                                                            ).toFixed(
+                                                                                (tax.rate *
+                                                                                    100) %
+                                                                                    1 ===
+                                                                                    0
+                                                                                    ? 0
+                                                                                    : 2
+                                                                            )}
+                                                                            %)
+                                                                        </span>
+                                                                    </label>
+                                                                );
+                                                            })}
+                                                        </div>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+                                        </div>
+                                    )}
+                                {quickForm.watch('actionType') ===
+                                    'set_type' && (
+                                        <div className="flex flex-col">
+                                            <span className="text-xs text-primary/60">
+                                                Type
+                                            </span>
+                                            <Select
+                                                value={quickForm.watch(
+                                                    'actionTypeValue'
+                                                )}
+                                                onValueChange={(val) =>
+                                                    quickForm.setValue(
+                                                        'actionTypeValue',
+                                                        val as 'income' | 'expense'
+                                                    )
+                                                }
+                                            >
+                                                <SelectTrigger className="mt-1">
+                                                    <SelectValue />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="income">
+                                                        Income
                                                     </SelectItem>
-                                                    <SelectItem value="percent">
-                                                        Percent
-                                                    </SelectItem>
-                                                    <SelectItem value="amount">
-                                                        Fixed amount
+                                                    <SelectItem value="expense">
+                                                        Expense
                                                     </SelectItem>
                                                 </SelectContent>
                                             </Select>
                                         </div>
-                                        {quickForm.watch('splitsMode') !==
-                                            'none' && (
-                                            <div className="space-y-3">
-                                                {(
-                                                    quickForm.watch(
-                                                        'splitLines'
-                                                    ) || []
-                                                ).map((_, idx) => (
-                                                    <div
-                                                        key={idx}
-                                                        className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3 border rounded"
-                                                    >
-                                                        {quickForm.watch(
-                                                            'splitsMode'
-                                                        ) === 'percent' ? (
-                                                            <FormField
-                                                                control={
-                                                                    quickForm.control
-                                                                }
-                                                                name={`splitLines.${idx}.percent`}
-                                                                render={({
-                                                                    field,
-                                                                }) => (
-                                                                    <FormItem>
-                                                                        <FormControl>
-                                                                            <Input
-                                                                                type="number"
-                                                                                value={
-                                                                                    field.value ??
-                                                                                    ''
-                                                                                }
-                                                                                onChange={(
-                                                                                    e
-                                                                                ) =>
-                                                                                    field.onChange(
-                                                                                        e
-                                                                                            .currentTarget
-                                                                                            .value ===
-                                                                                            ''
-                                                                                            ? undefined
-                                                                                            : e
-                                                                                                  .currentTarget
-                                                                                                  .valueAsNumber
-                                                                                    )
-                                                                                }
-                                                                                placeholder="0"
-                                                                            />
-                                                                        </FormControl>
-                                                                        <FormMessage />
-                                                                    </FormItem>
-                                                                )}
-                                                            />
-                                                        ) : (
-                                                            <FormField
-                                                                control={
-                                                                    quickForm.control
-                                                                }
-                                                                name={`splitLines.${idx}.amount`}
-                                                                render={({
-                                                                    field,
-                                                                }) => (
-                                                                    <FormItem>
-                                                                        <FormControl>
-                                                                            <Input
-                                                                                type="number"
-                                                                                value={
-                                                                                    field.value ??
-                                                                                    ''
-                                                                                }
-                                                                                onChange={(
-                                                                                    e
-                                                                                ) =>
-                                                                                    field.onChange(
-                                                                                        e
-                                                                                            .currentTarget
-                                                                                            .value ===
-                                                                                            ''
-                                                                                            ? undefined
-                                                                                            : e
-                                                                                                  .currentTarget
-                                                                                                  .valueAsNumber
-                                                                                    )
-                                                                                }
-                                                                                placeholder="0.00"
-                                                                            />
-                                                                        </FormControl>
-                                                                        <FormMessage />
-                                                                    </FormItem>
-                                                                )}
-                                                            />
-                                                        )}
-                                                        <FormField
-                                                            control={
-                                                                quickForm.control
-                                                            }
-                                                            name={`splitLines.${idx}.categoryId`}
-                                                            render={({
-                                                                field,
-                                                            }) => (
-                                                                <FormItem>
-                                                                    <Select
-                                                                        value={
-                                                                            field.value
-                                                                        }
-                                                                        onValueChange={
-                                                                            field.onChange
-                                                                        }
-                                                                    >
-                                                                        <FormControl>
-                                                                            <SelectTrigger>
-                                                                                <SelectValue placeholder="Select category" />
-                                                                            </SelectTrigger>
-                                                                        </FormControl>
-                                                                        <SelectContent>
-                                                                            {categories.map(
-                                                                                (
-                                                                                    c
-                                                                                ) => (
-                                                                                    <SelectItem
-                                                                                        key={
-                                                                                            c.id
-                                                                                        }
-                                                                                        value={
-                                                                                            c.id
-                                                                                        }
-                                                                                    >
-                                                                                        {
-                                                                                            c.accountName
-                                                                                        }
-                                                                                    </SelectItem>
-                                                                                )
-                                                                            )}
-                                                                        </SelectContent>
-                                                                    </Select>
-                                                                    <FormMessage />
-                                                                </FormItem>
-                                                            )}
-                                                        />
-                                                        <FormField
-                                                            control={
-                                                                quickForm.control
-                                                            }
-                                                            name={`splitLines.${idx}.description`}
-                                                            render={({
-                                                                field,
-                                                            }) => (
-                                                                <FormItem className="sm:col-span-2">
-                                                                    <FormControl>
-                                                                        <Input
-                                                                            value={
-                                                                                field.value ??
-                                                                                ''
-                                                                            }
-                                                                            onChange={(
-                                                                                e
-                                                                            ) =>
-                                                                                field.onChange(
-                                                                                    e
-                                                                                )
-                                                                            }
-                                                                            placeholder="Optional description"
-                                                                        />
-                                                                    </FormControl>
-                                                                    <FormMessage />
-                                                                </FormItem>
-                                                            )}
-                                                        />
-                                                        <div className="sm:col-span-2 flex justify-end">
-                                                            <Button
-                                                                type="button"
-                                                                variant="ghost"
-                                                                onClick={() => {
-                                                                    const arr =
-                                                                        [
-                                                                            ...(quickForm.getValues(
-                                                                                'splitLines'
-                                                                            ) ||
-                                                                                []),
-                                                                        ];
-                                                                    arr.splice(
-                                                                        idx,
-                                                                        1
-                                                                    );
-                                                                    quickForm.setValue(
-                                                                        'splitLines',
-                                                                        arr
-                                                                    );
-                                                                }}
-                                                            >
-                                                                Remove
-                                                            </Button>
-                                                        </div>
-                                                    </div>
-                                                ))}
-                                                <Button
-                                                    type="button"
-                                                    variant="outline"
-                                                    onClick={() => {
-                                                        const mode =
-                                                            quickForm.getValues(
-                                                                'splitsMode'
-                                                            );
-                                                        const arr = [
-                                                            ...(quickForm.getValues(
-                                                                'splitLines'
-                                                            ) || []),
-                                                        ];
-                                                        arr.push({
-                                                            percent:
-                                                                mode ===
-                                                                'percent'
-                                                                    ? 0
-                                                                    : undefined,
-                                                            amount:
-                                                                mode ===
-                                                                'amount'
-                                                                    ? 0
-                                                                    : undefined,
-                                                            categoryId: '',
-                                                            description: '',
-                                                        });
+                                    )}
+                                {quickForm.watch('actionType') ===
+                                    'set_splits' && (
+                                        <div className="flex flex-col gap-3">
+                                            <div className="flex flex-col">
+                                                <span className="text-xs text-primary/60">
+                                                    Splits
+                                                </span>
+                                                <Select
+                                                    value={quickForm.watch(
+                                                        'splitsMode'
+                                                    )}
+                                                    onValueChange={(val) =>
                                                         quickForm.setValue(
-                                                            'splitLines',
-                                                            arr
-                                                        );
-                                                    }}
+                                                            'splitsMode',
+                                                            val as QuickFormValues['splitsMode']
+                                                        )
+                                                    }
                                                 >
-                                                    Add Split Line
-                                                </Button>
+                                                    <SelectTrigger className="mt-1">
+                                                        <SelectValue placeholder="No splits" />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                        <SelectItem value="none">
+                                                            None
+                                                        </SelectItem>
+                                                        <SelectItem value="percent">
+                                                            Percent
+                                                        </SelectItem>
+                                                        <SelectItem value="amount">
+                                                            Fixed amount
+                                                        </SelectItem>
+                                                    </SelectContent>
+                                                </Select>
                                             </div>
-                                        )}
-                                    </div>
-                                )}
+                                            {quickForm.watch('splitsMode') !==
+                                                'none' && (
+                                                    <div className="space-y-3">
+                                                        {(
+                                                            quickForm.watch(
+                                                                'splitLines'
+                                                            ) || []
+                                                        ).map((_, idx) => (
+                                                            <div
+                                                                key={idx}
+                                                                className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3 border rounded"
+                                                            >
+                                                                {quickForm.watch(
+                                                                    'splitsMode'
+                                                                ) === 'percent' ? (
+                                                                    <FormField
+                                                                        control={
+                                                                            quickForm.control
+                                                                        }
+                                                                        name={`splitLines.${idx}.percent`}
+                                                                        render={({
+                                                                            field,
+                                                                        }) => (
+                                                                            <FormItem>
+                                                                                <FormControl>
+                                                                                    <Input
+                                                                                        type="number"
+                                                                                        value={
+                                                                                            field.value ??
+                                                                                            ''
+                                                                                        }
+                                                                                        onChange={(
+                                                                                            e
+                                                                                        ) =>
+                                                                                            field.onChange(
+                                                                                                e
+                                                                                                    .currentTarget
+                                                                                                    .value ===
+                                                                                                    ''
+                                                                                                    ? undefined
+                                                                                                    : e
+                                                                                                        .currentTarget
+                                                                                                        .valueAsNumber
+                                                                                            )
+                                                                                        }
+                                                                                        placeholder="0"
+                                                                                    />
+                                                                                </FormControl>
+                                                                                <FormMessage />
+                                                                            </FormItem>
+                                                                        )}
+                                                                    />
+                                                                ) : (
+                                                                    <FormField
+                                                                        control={
+                                                                            quickForm.control
+                                                                        }
+                                                                        name={`splitLines.${idx}.amount`}
+                                                                        render={({
+                                                                            field,
+                                                                        }) => (
+                                                                            <FormItem>
+                                                                                <FormControl>
+                                                                                    <Input
+                                                                                        type="number"
+                                                                                        value={
+                                                                                            field.value ??
+                                                                                            ''
+                                                                                        }
+                                                                                        onChange={(
+                                                                                            e
+                                                                                        ) =>
+                                                                                            field.onChange(
+                                                                                                e
+                                                                                                    .currentTarget
+                                                                                                    .value ===
+                                                                                                    ''
+                                                                                                    ? undefined
+                                                                                                    : e
+                                                                                                        .currentTarget
+                                                                                                        .valueAsNumber
+                                                                                            )
+                                                                                        }
+                                                                                        placeholder="0.00"
+                                                                                    />
+                                                                                </FormControl>
+                                                                                <FormMessage />
+                                                                            </FormItem>
+                                                                        )}
+                                                                    />
+                                                                )}
+                                                                <FormField
+                                                                    control={
+                                                                        quickForm.control
+                                                                    }
+                                                                    name={`splitLines.${idx}.categoryId`}
+                                                                    render={({
+                                                                        field,
+                                                                    }) => (
+                                                                        <FormItem>
+                                                                            <Select
+                                                                                value={
+                                                                                    field.value
+                                                                                }
+                                                                                onValueChange={
+                                                                                    field.onChange
+                                                                                }
+                                                                            >
+                                                                                <FormControl>
+                                                                                    <SelectTrigger>
+                                                                                        <SelectValue placeholder="Select category" />
+                                                                                    </SelectTrigger>
+                                                                                </FormControl>
+                                                                                <SelectContent>
+                                                                                    {categories.map(
+                                                                                        (
+                                                                                            c
+                                                                                        ) => (
+                                                                                            <SelectItem
+                                                                                                key={
+                                                                                                    c.id
+                                                                                                }
+                                                                                                value={
+                                                                                                    c.id
+                                                                                                }
+                                                                                            >
+                                                                                                {
+                                                                                                    c.accountName
+                                                                                                }
+                                                                                            </SelectItem>
+                                                                                        )
+                                                                                    )}
+                                                                                </SelectContent>
+                                                                            </Select>
+                                                                            <FormMessage />
+                                                                        </FormItem>
+                                                                    )}
+                                                                />
+                                                                <FormField
+                                                                    control={
+                                                                        quickForm.control
+                                                                    }
+                                                                    name={`splitLines.${idx}.description`}
+                                                                    render={({
+                                                                        field,
+                                                                    }) => (
+                                                                        <FormItem className="sm:col-span-2">
+                                                                            <FormControl>
+                                                                                <Input
+                                                                                    value={
+                                                                                        field.value ??
+                                                                                        ''
+                                                                                    }
+                                                                                    onChange={(
+                                                                                        e
+                                                                                    ) =>
+                                                                                        field.onChange(
+                                                                                            e
+                                                                                        )
+                                                                                    }
+                                                                                    placeholder="Optional description"
+                                                                                />
+                                                                            </FormControl>
+                                                                            <FormMessage />
+                                                                        </FormItem>
+                                                                    )}
+                                                                />
+                                                                <div className="sm:col-span-2 flex justify-end">
+                                                                    <Button
+                                                                        type="button"
+                                                                        variant="ghost"
+                                                                        onClick={() => {
+                                                                            const arr =
+                                                                                [
+                                                                                    ...(quickForm.getValues(
+                                                                                        'splitLines'
+                                                                                    ) ||
+                                                                                        []),
+                                                                                ];
+                                                                            arr.splice(
+                                                                                idx,
+                                                                                1
+                                                                            );
+                                                                            quickForm.setValue(
+                                                                                'splitLines',
+                                                                                arr
+                                                                            );
+                                                                        }}
+                                                                    >
+                                                                        Remove
+                                                                    </Button>
+                                                                </div>
+                                                            </div>
+                                                        ))}
+                                                        <Button
+                                                            type="button"
+                                                            variant="outline"
+                                                            onClick={() => {
+                                                                const mode =
+                                                                    quickForm.getValues(
+                                                                        'splitsMode'
+                                                                    );
+                                                                const arr = [
+                                                                    ...(quickForm.getValues(
+                                                                        'splitLines'
+                                                                    ) || []),
+                                                                ];
+                                                                arr.push({
+                                                                    percent:
+                                                                        mode ===
+                                                                            'percent'
+                                                                            ? 0
+                                                                            : undefined,
+                                                                    amount:
+                                                                        mode ===
+                                                                            'amount'
+                                                                            ? 0
+                                                                            : undefined,
+                                                                    categoryId: '',
+                                                                    description: '',
+                                                                });
+                                                                quickForm.setValue(
+                                                                    'splitLines',
+                                                                    arr
+                                                                );
+                                                            }}
+                                                        >
+                                                            Add Split Line
+                                                        </Button>
+                                                    </div>
+                                                )}
+                                        </div>
+                                    )}
                             </div>
                         </div>
 
@@ -1522,9 +1522,9 @@ const Rulespage = () => {
                                     const accountIds =
                                         accountScope === 'selected'
                                             ? (accountIdsCsv || '')
-                                                  .split(',')
-                                                  .map((s) => s.trim())
-                                                  .filter((s) => s.length > 0)
+                                                .split(',')
+                                                .map((s) => s.trim())
+                                                .filter((s) => s.length > 0)
                                             : [];
                                     const actions: RuleAction[] = [];
                                     if (
@@ -1591,7 +1591,7 @@ const Rulespage = () => {
                                                 if (
                                                     splitsMode === 'percent' &&
                                                     typeof l.percent ===
-                                                        'number'
+                                                    'number'
                                                 ) {
                                                     line.percent = l.percent;
                                                 }
@@ -1742,9 +1742,9 @@ const Rulespage = () => {
                                                     testForm.setValue(
                                                         'transactionType',
                                                         val as
-                                                            | 'any'
-                                                            | 'income'
-                                                            | 'expense'
+                                                        | 'any'
+                                                        | 'income'
+                                                        | 'expense'
                                                     )
                                                 }
                                             >
@@ -1807,8 +1807,8 @@ const Rulespage = () => {
                                                     testForm.setValue(
                                                         'accountScope',
                                                         val as
-                                                            | 'all'
-                                                            | 'selected'
+                                                        | 'all'
+                                                        | 'selected'
                                                     )
                                                 }
                                             >
@@ -1827,37 +1827,37 @@ const Rulespage = () => {
                                         </div>
                                         {testForm.watch('accountScope') ===
                                             'selected' && (
-                                            <div className="flex flex-col">
-                                                <span className="text-sm font-medium text-primary">
-                                                    Account IDs
-                                                    (comma-separated)
-                                                </span>
-                                                <FormField
-                                                    control={testForm.control}
-                                                    name="accountIdsCsv"
-                                                    render={({ field }) => (
-                                                        <FormItem>
-                                                            <FormControl>
-                                                                <Input
-                                                                    value={
-                                                                        field.value
-                                                                    }
-                                                                    onChange={(
-                                                                        e
-                                                                    ) =>
-                                                                        field.onChange(
+                                                <div className="flex flex-col">
+                                                    <span className="text-sm font-medium text-primary">
+                                                        Account IDs
+                                                        (comma-separated)
+                                                    </span>
+                                                    <FormField
+                                                        control={testForm.control}
+                                                        name="accountIdsCsv"
+                                                        render={({ field }) => (
+                                                            <FormItem>
+                                                                <FormControl>
+                                                                    <Input
+                                                                        value={
+                                                                            field.value
+                                                                        }
+                                                                        onChange={(
                                                                             e
-                                                                        )
-                                                                    }
-                                                                    placeholder="uuid-1, uuid-2"
-                                                                />
-                                                            </FormControl>
-                                                            <FormMessage />
-                                                        </FormItem>
-                                                    )}
-                                                />
-                                            </div>
-                                        )}
+                                                                        ) =>
+                                                                            field.onChange(
+                                                                                e
+                                                                            )
+                                                                        }
+                                                                        placeholder="uuid-1, uuid-2"
+                                                                    />
+                                                                </FormControl>
+                                                                <FormMessage />
+                                                            </FormItem>
+                                                        )}
+                                                    />
+                                                </div>
+                                            )}
                                     </div>
 
                                     <div className="flex items-center justify-between">
@@ -2063,37 +2063,37 @@ const Rulespage = () => {
                                                 const accountIds =
                                                     accountScope === 'selected'
                                                         ? (accountIdsCsv || '')
-                                                              .split(',')
-                                                              .map((s) =>
-                                                                  s.trim()
-                                                              )
-                                                              .filter(
-                                                                  (s) =>
-                                                                      s.length >
-                                                                      0
-                                                              )
+                                                            .split(',')
+                                                            .map((s) =>
+                                                                s.trim()
+                                                            )
+                                                            .filter(
+                                                                (s) =>
+                                                                    s.length >
+                                                                    0
+                                                            )
                                                         : [];
                                                 const payload: TestRulePayload =
-                                                    {
-                                                        transactionType,
-                                                        matchType,
-                                                        conditions:
-                                                            sanitizedConditions,
-                                                        actions: includeActions
-                                                            ? ruleUnderTest.actions ||
-                                                              []
-                                                            : undefined,
-                                                        accountScope,
-                                                        accountIds,
-                                                        testAgainstAll:
-                                                            againstAll,
-                                                        transactionId:
-                                                            againstAll
-                                                                ? undefined
-                                                                : transactionId ||
-                                                                  undefined,
-                                                        limit,
-                                                    };
+                                                {
+                                                    transactionType,
+                                                    matchType,
+                                                    conditions:
+                                                        sanitizedConditions,
+                                                    actions: includeActions
+                                                        ? ruleUnderTest.actions ||
+                                                        []
+                                                        : undefined,
+                                                    accountScope,
+                                                    accountIds,
+                                                    testAgainstAll:
+                                                        againstAll,
+                                                    transactionId:
+                                                        againstAll
+                                                            ? undefined
+                                                            : transactionId ||
+                                                            undefined,
+                                                    limit,
+                                                };
                                                 setTestErrorMessage(null);
                                                 runRuleTest(payload, {
                                                     onSuccess: (res) => {
