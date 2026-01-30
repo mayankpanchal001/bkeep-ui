@@ -100,8 +100,8 @@ export const TransactionsTable = ({
     pagination,
 }: TransactionsTableProps) => {
     return (
-        <div className="flex-1 min-h-0">
-            <div className="h-full overflow-y-auto">
+        <div className="flex flex-col flex-1 min-h-0">
+            <div className="overflow-y-auto min-h-0">
                 <Table
                     containerClassName="h-full"
                     enableSelection={true}
@@ -449,9 +449,8 @@ export const TransactionsTable = ({
                                             <DropdownMenu>
                                                 <DropdownMenuTrigger asChild>
                                                     <Button
-                                                        variant="ghost"
+                                                        variant="outline"
                                                         size="sm"
-                                                        className="h-8 w-8 p-0"
                                                     >
                                                         <MoreHorizontal className="h-4 w-4" />
                                                     </Button>

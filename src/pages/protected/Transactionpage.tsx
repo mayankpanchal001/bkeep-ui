@@ -262,7 +262,7 @@ const Transactionpage = () => {
     const getStatusForHeader = getTransactionStatusRef;
 
     return (
-        <div className="h-full flex flex-col gap-4">
+        <div className="flex flex-col gap-4">
             <TransactionHeader
                 selectedAccountId={filterStore.selectedAccountId}
                 onAccountSelect={(id) => filterStore.setSelectedAccountId(id)}

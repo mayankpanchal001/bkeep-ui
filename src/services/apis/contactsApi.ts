@@ -4,8 +4,11 @@ import {
     ContactsListResponse,
     ContactsQueryParams,
     CreateContactPayload,
-    UpdateContactPayload,
     ImportFieldsResponse,
+    ImportProgressResponse,
+    ImportSuccessResponse,
+    StartImportPayload,
+    UpdateContactPayload,
 } from '../../types/contact';
 import { showErrorToast, showSuccessToast } from '../../utills/toast.tsx';
 import axiosInstance from '../axiosClient';
@@ -233,3 +236,51 @@ export const useRestoreContact = () => {
         },
     });
 };
+export const useContactsImportFields = () => {
+    return useQuery<ImportFieldsResponse, Error>({
+        queryKey: ['contacts-import-fields'],
+        queryFn: getContactsImportFields,
+    });
+};
+
+export async function startContactImport(
+    payload: StartImportPayload
+): Promise<ImportSuccessResponse> {
+    const formData = new FormData();
+    formData.append('file', payload.file);
+    formData.append('mapping', JSON.stringify(payload.mapping));
+
+    const response = await axiosInstance.post('/contacts/import', formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    });
+    return response.data;
+}
+
+export const useStartContactImport = () => {
+    return useMutation({
+        mutationFn: (payload: StartImportPayload) =>
+            startContactImport(payload),
+        onSuccess: () => {
+            showSuccessToast('Import started successfully');
+        },
+        onError: (error) => {
+            console.error('Import contact failed:', error);
+            const maybeAxiosError = error as {
+                response?: { data?: { message?: string } };
+            };
+            const message =
+                maybeAxiosError.response?.data?.message ||
+                'Failed to start import';
+            showErrorToast(message);
+        },
+    });
+};
+
+export async function getContactImportProgress(
+    id: string
+): Promise<ImportProgressResponse> {
+    const response = await axiosInstance.get(`/contacts/import/${id}/progress`);
+    return response.data;
+}

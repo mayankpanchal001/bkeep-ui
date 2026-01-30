@@ -483,7 +483,7 @@ export default function JournalEntriespage() {
     };
 
     return (
-        <div className="h-full flex flex-col gap-4">
+        <div className="flex flex-col gap-4">
             <PageHeader
                 title="Journal Entries"
                 subtitle={`${total} total entries`}

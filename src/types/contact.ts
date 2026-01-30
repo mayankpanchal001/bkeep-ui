@@ -104,5 +104,7 @@ export type ImportFieldsResponse = {
     success: boolean;
     statusCode: number;
     message: string;
-    data?: ImportField[];
+    data?: {
+        fields: ImportField[];
+    };
 };
