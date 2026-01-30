@@ -9,7 +9,7 @@ import {
     AlertDialogDescription,
     AlertDialogFooter,
     AlertDialogHeader,
-    AlertDialogTitle
+    AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -30,7 +30,7 @@ import {
     FormControl,
     FormField,
     FormItem,
-    FormMessage
+    FormMessage,
 } from '@/components/ui/form';
 import Input from '@/components/ui/input';
 import {
@@ -55,7 +55,18 @@ import {
 import { Textarea } from '@/components/ui/textarea';
 import { useChartOfAccounts } from '@/services/apis/chartsAccountApi';
 import { useContacts } from '@/services/apis/contactsApi';
-import { useCreateRule, useDeleteRule, useRules, useTestRule, type CreateRulePayload, type Rule, type RuleAction, type RuleCondition, type TestRulePayload, type TestRuleResponse } from '@/services/apis/rules';
+import {
+    useCreateRule,
+    useDeleteRule,
+    useRules,
+    useTestRule,
+    type CreateRulePayload,
+    type Rule,
+    type RuleAction,
+    type RuleCondition,
+    type TestRulePayload,
+    type TestRuleResponse,
+} from '@/services/apis/rules';
 import { useTaxes } from '@/services/apis/taxApi';
 import { useTransactionById } from '@/services/apis/transactions';
 import { useEffect, useMemo, useState } from 'react';
@@ -89,8 +100,12 @@ const Rulespage = () => {
 
     const [openTest, setOpenTest] = useState(false);
     const [ruleUnderTest, setRuleUnderTest] = useState<Rule | null>(null);
-    const [testResult, setTestResult] = useState<TestRuleResponse['data'] | null>(null);
-    const [testErrorMessage, setTestErrorMessage] = useState<string | null>(null);
+    const [testResult, setTestResult] = useState<
+        TestRuleResponse['data'] | null
+    >(null);
+    const [testErrorMessage, setTestErrorMessage] = useState<string | null>(
+        null
+    );
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [ruleIdToDelete, setRuleIdToDelete] = useState<string | null>(null);
     const { mutate: runRuleTest, isPending: isTesting } = useTestRule();
@@ -142,7 +157,14 @@ const Rulespage = () => {
         conditionOperator: 'contains';
         conditionValue: string;
         caseSensitive: boolean;
-        actionType: 'set_category' | 'set_contact' | 'set_memo' | 'set_taxes' | 'set_type' | 'set_splits' | 'exclude';
+        actionType:
+            | 'set_category'
+            | 'set_contact'
+            | 'set_memo'
+            | 'set_taxes'
+            | 'set_type'
+            | 'set_splits'
+            | 'exclude';
         actionCategoryId: string;
         actionContactId: string;
         actionMemo: string;
@@ -186,16 +208,25 @@ const Rulespage = () => {
         isActive: true,
         limit: 1000,
     });
-    const accounts = useMemo(() => accountsData?.data?.items || [], [accountsData]);
+    const accounts = useMemo(
+        () => accountsData?.data?.items || [],
+        [accountsData]
+    );
     const categories = useMemo(
-        () => accounts.filter((a) => a.accountType === 'income' || a.accountType === 'expense'),
+        () =>
+            accounts.filter(
+                (a) => a.accountType === 'income' || a.accountType === 'expense'
+            ),
         [accounts]
     );
     const { data: contactsData } = useContacts({
         isActive: true,
         limit: 1000,
     });
-    const contacts = useMemo(() => contactsData?.data?.items || [], [contactsData]);
+    const contacts = useMemo(
+        () => contactsData?.data?.items || [],
+        [contactsData]
+    );
     const { data: taxesData } = useTaxes({
         isActive: true,
         limit: 1000,
@@ -224,14 +255,14 @@ const Rulespage = () => {
             typeof c.valueNumber === 'number'
                 ? String(c.valueNumber)
                 : typeof c.valueNumber === 'string'
-                    ? c.valueNumber
-                    : '';
+                  ? c.valueNumber
+                  : '';
         const vnt =
             typeof c.valueNumberTo === 'number'
                 ? String(c.valueNumberTo)
                 : typeof c.valueNumberTo === 'string'
-                    ? c.valueNumberTo
-                    : '';
+                  ? c.valueNumberTo
+                  : '';
         if (op === 'contains') {
             return `${field} contains "${vs}"`;
         }
@@ -245,13 +276,21 @@ const Rulespage = () => {
     };
 
     const settingsLabel = (a: RuleAction) => {
-        if (a.actionType === 'set_category' && a.payload && 'categoryId' in a.payload) {
+        if (
+            a.actionType === 'set_category' &&
+            a.payload &&
+            'categoryId' in a.payload
+        ) {
             return 'Set Category';
         }
         if (a.actionType === 'set_type' && a.payload && 'type' in a.payload) {
             return `Set Type to ${(a.payload as Record<string, unknown>).type}`;
         }
-        if (a.actionType === 'set_contact' && a.payload && 'contactId' in a.payload) {
+        if (
+            a.actionType === 'set_contact' &&
+            a.payload &&
+            'contactId' in a.payload
+        ) {
             return 'Set Contact';
         }
         return a.actionType;
@@ -261,10 +300,12 @@ const Rulespage = () => {
 
     const headerActions = (
         <div className="flex items-center gap-2">
-            <Button onClick={() => {
-                setEditRule(null);
-                setOpenCreate(true);
-            }}>
+            <Button
+                onClick={() => {
+                    setEditRule(null);
+                    setOpenCreate(true);
+                }}
+            >
                 New rule
             </Button>
         </div>
@@ -295,7 +336,9 @@ const Rulespage = () => {
                                                 setPage(1);
                                             }}
                                             placeholder="Search by name or conditions"
-                                            startIcon={<Icons.Search className="w-4 h-4" />}
+                                            startIcon={
+                                                <Icons.Search className="w-4 h-4" />
+                                            }
                                         />
                                     </FormControl>
                                     <FormMessage />
@@ -315,7 +358,7 @@ const Rulespage = () => {
                     selectedIds={selectedIds}
                     sortKey={'priority'}
                     sortDirection={'asc'}
-                    onSortChange={() => { }}
+                    onSortChange={() => {}}
                 >
                     <TableHeader>
                         <tr>
@@ -338,7 +381,11 @@ const Rulespage = () => {
                         {filteredItems.length === 0 ? (
                             <TableEmptyState
                                 colSpan={9}
-                                message={isLoading ? 'Loading rules...' : 'No rules found'}
+                                message={
+                                    isLoading
+                                        ? 'Loading rules...'
+                                        : 'No rules found'
+                                }
                                 description={
                                     isLoading
                                         ? ''
@@ -356,7 +403,10 @@ const Rulespage = () => {
                                             {r.priority ?? ''}
                                         </span>
                                     </TableCell>
-                                    <TableCell data-label="Rule Name" noTruncate>
+                                    <TableCell
+                                        data-label="Rule Name"
+                                        noTruncate
+                                    >
                                         <span className="text-sm font-medium text-primary">
                                             {r.name}
                                         </span>
@@ -368,7 +418,10 @@ const Rulespage = () => {
                                             </span>
                                         </div>
                                     </TableCell>
-                                    <TableCell data-label="Conditions" noTruncate>
+                                    <TableCell
+                                        data-label="Conditions"
+                                        noTruncate
+                                    >
                                         <div className="text-sm text-primary/80">
                                             {(r.conditions || [])
                                                 .map((c) => conditionLabel(c))
@@ -418,43 +471,62 @@ const Rulespage = () => {
                                                     </DropdownMenuItem>
                                                     <DropdownMenuItem
                                                         onClick={() => {
-                                                            const updatedRule: Rule = {
-                                                                ...r,
-                                                                transactionType: 'any',
-                                                                matchType: 'all',
-                                                                accountScope: 'all',
-                                                                accountIds: [],
-                                                                conditions: [
-                                                                    {
-                                                                        id: 'temp-description-contains-bank-fee',
-                                                                        field: 'description',
-                                                                        operator: 'contains',
-                                                                        valueString: 'BANK FEE',
-                                                                        caseSensitive: false,
-                                                                    },
-                                                                ],
-                                                                actions: [
-                                                                    {
-                                                                        id: '940e13fb-f0f8-4caf-a755-a32ae7f869c6',
-                                                                        actionType: 'set_category',
-                                                                        payload: {
-                                                                            categoryId: 'bd68e04d-7a14-4dd8-8818-3ba181755e0c',
+                                                            const updatedRule: Rule =
+                                                                {
+                                                                    ...r,
+                                                                    transactionType:
+                                                                        'any',
+                                                                    matchType:
+                                                                        'all',
+                                                                    accountScope:
+                                                                        'all',
+                                                                    accountIds:
+                                                                        [],
+                                                                    conditions:
+                                                                        [
+                                                                            {
+                                                                                id: 'temp-description-contains-bank-fee',
+                                                                                field: 'description',
+                                                                                operator:
+                                                                                    'contains',
+                                                                                valueString:
+                                                                                    'BANK FEE',
+                                                                                caseSensitive: false,
+                                                                            },
+                                                                        ],
+                                                                    actions: [
+                                                                        {
+                                                                            id: '940e13fb-f0f8-4caf-a755-a32ae7f869c6',
+                                                                            actionType:
+                                                                                'set_category',
+                                                                            payload:
+                                                                                {
+                                                                                    categoryId:
+                                                                                        'bd68e04d-7a14-4dd8-8818-3ba181755e0c',
+                                                                                },
                                                                         },
-                                                                    },
-                                                                ],
-                                                            };
-                                                            setRuleUnderTest(updatedRule);
+                                                                    ],
+                                                                };
+                                                            setRuleUnderTest(
+                                                                updatedRule
+                                                            );
                                                             setTestResult(null);
-                                                            setTestErrorMessage(null);
+                                                            setTestErrorMessage(
+                                                                null
+                                                            );
                                                             testForm.reset({
                                                                 transactionType:
                                                                     'any',
-                                                                matchType: 'all',
-                                                                accountScope: 'all',
-                                                                accountIdsCsv: '',
+                                                                matchType:
+                                                                    'all',
+                                                                accountScope:
+                                                                    'all',
+                                                                accountIdsCsv:
+                                                                    '',
                                                                 againstAll: true,
                                                                 limit: 25,
-                                                                transactionId: '',
+                                                                transactionId:
+                                                                    '',
                                                                 includeActions: true,
                                                             });
                                                             setOpenTest(true);
@@ -466,8 +538,12 @@ const Rulespage = () => {
                                                     <DropdownMenuItem
                                                         variant="destructive"
                                                         onClick={() => {
-                                                            setRuleIdToDelete(r.id);
-                                                            setDeleteDialogOpen(true);
+                                                            setRuleIdToDelete(
+                                                                r.id
+                                                            );
+                                                            setDeleteDialogOpen(
+                                                                true
+                                                            );
                                                         }}
                                                     >
                                                         <Trash2 className="mr-2 h-4 w-4" />
@@ -503,7 +579,8 @@ const Rulespage = () => {
                     <AlertDialogHeader>
                         <AlertDialogTitle>Delete rule</AlertDialogTitle>
                         <AlertDialogDescription>
-                            This action cannot be undone. This will permanently delete the rule.
+                            This action cannot be undone. This will permanently
+                            delete the rule.
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
@@ -528,7 +605,9 @@ const Rulespage = () => {
                     <div className="border border-primary/10 rounded-lg p-4 space-y-6">
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div className="flex flex-col">
-                                <span className="text-sm font-medium text-primary">Rule name</span>
+                                <span className="text-sm font-medium text-primary">
+                                    Rule name
+                                </span>
                                 <FormField
                                     control={quickForm.control}
                                     name="name"
@@ -537,7 +616,9 @@ const Rulespage = () => {
                                             <FormControl>
                                                 <Input
                                                     value={field.value}
-                                                    onChange={(e) => field.onChange(e)}
+                                                    onChange={(e) =>
+                                                        field.onChange(e)
+                                                    }
                                                     placeholder="Rule name"
                                                 />
                                             </FormControl>
@@ -547,7 +628,9 @@ const Rulespage = () => {
                                 />
                             </div>
                             <div className="flex flex-col">
-                                <span className="text-sm font-medium text-primary">Description</span>
+                                <span className="text-sm font-medium text-primary">
+                                    Description
+                                </span>
                                 <FormField
                                     control={quickForm.control}
                                     name="description"
@@ -556,7 +639,9 @@ const Rulespage = () => {
                                             <FormControl>
                                                 <Input
                                                     value={field.value}
-                                                    onChange={(e) => field.onChange(e)}
+                                                    onChange={(e) =>
+                                                        field.onChange(e)
+                                                    }
                                                     placeholder="Description"
                                                 />
                                             </FormControl>
@@ -569,11 +654,16 @@ const Rulespage = () => {
 
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                             <div className="flex flex-col">
-                                <span className="text-sm font-medium text-primary">Transaction type</span>
+                                <span className="text-sm font-medium text-primary">
+                                    Transaction type
+                                </span>
                                 <Select
                                     value={quickForm.watch('transactionType')}
                                     onValueChange={(val) =>
-                                        quickForm.setValue('transactionType', val as 'any' | 'income' | 'expense')
+                                        quickForm.setValue(
+                                            'transactionType',
+                                            val as 'any' | 'income' | 'expense'
+                                        )
                                     }
                                 >
                                     <SelectTrigger className="mt-1">
@@ -581,17 +671,26 @@ const Rulespage = () => {
                                     </SelectTrigger>
                                     <SelectContent>
                                         <SelectItem value="any">Any</SelectItem>
-                                        <SelectItem value="income">Income</SelectItem>
-                                        <SelectItem value="expense">Expense</SelectItem>
+                                        <SelectItem value="income">
+                                            Income
+                                        </SelectItem>
+                                        <SelectItem value="expense">
+                                            Expense
+                                        </SelectItem>
                                     </SelectContent>
                                 </Select>
                             </div>
                             <div className="flex flex-col">
-                                <span className="text-sm font-medium text-primary">Match type</span>
+                                <span className="text-sm font-medium text-primary">
+                                    Match type
+                                </span>
                                 <Select
                                     value={quickForm.watch('matchType')}
                                     onValueChange={(val) =>
-                                        quickForm.setValue('matchType', val as 'all' | 'any')
+                                        quickForm.setValue(
+                                            'matchType',
+                                            val as 'all' | 'any'
+                                        )
                                     }
                                 >
                                     <SelectTrigger className="mt-1">
@@ -604,7 +703,9 @@ const Rulespage = () => {
                                 </Select>
                             </div>
                             <div className="flex flex-col">
-                                <span className="text-sm font-medium text-primary">Priority</span>
+                                <span className="text-sm font-medium text-primary">
+                                    Priority
+                                </span>
                                 <FormField
                                     control={quickForm.control}
                                     name="priority"
@@ -614,7 +715,13 @@ const Rulespage = () => {
                                                 <Input
                                                     type="number"
                                                     value={field.value}
-                                                    onChange={(e) => field.onChange(Number(e.target.value))}
+                                                    onChange={(e) =>
+                                                        field.onChange(
+                                                            Number(
+                                                                e.target.value
+                                                            )
+                                                        )
+                                                    }
                                                     placeholder="1"
                                                 />
                                             </FormControl>
@@ -627,11 +734,16 @@ const Rulespage = () => {
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div className="flex flex-col">
-                                <span className="text-sm font-medium text-primary">Account scope</span>
+                                <span className="text-sm font-medium text-primary">
+                                    Account scope
+                                </span>
                                 <Select
                                     value={quickForm.watch('accountScope')}
                                     onValueChange={(val) =>
-                                        quickForm.setValue('accountScope', val as 'all' | 'selected')
+                                        quickForm.setValue(
+                                            'accountScope',
+                                            val as 'all' | 'selected'
+                                        )
                                     }
                                 >
                                     <SelectTrigger className="mt-1">
@@ -639,13 +751,17 @@ const Rulespage = () => {
                                     </SelectTrigger>
                                     <SelectContent>
                                         <SelectItem value="all">All</SelectItem>
-                                        <SelectItem value="selected">Selected</SelectItem>
+                                        <SelectItem value="selected">
+                                            Selected
+                                        </SelectItem>
                                     </SelectContent>
                                 </Select>
                             </div>
                             {quickForm.watch('accountScope') === 'selected' && (
                                 <div className="flex flex-col">
-                                    <span className="text-sm font-medium text-primary">Account IDs (comma-separated)</span>
+                                    <span className="text-sm font-medium text-primary">
+                                        Account IDs (comma-separated)
+                                    </span>
                                     <FormField
                                         control={quickForm.control}
                                         name="accountIdsCsv"
@@ -654,7 +770,9 @@ const Rulespage = () => {
                                                 <FormControl>
                                                     <Input
                                                         value={field.value}
-                                                        onChange={(e) => field.onChange(e)}
+                                                        onChange={(e) =>
+                                                            field.onChange(e)
+                                                        }
                                                         placeholder="uuid-1, uuid-2"
                                                     />
                                                 </FormControl>
@@ -676,11 +794,17 @@ const Rulespage = () => {
                                             <Input
                                                 type="checkbox"
                                                 checked={field.value}
-                                                onChange={(e) => field.onChange(e.target.checked)}
+                                                onChange={(e) =>
+                                                    field.onChange(
+                                                        e.target.checked
+                                                    )
+                                                }
                                                 inputSize="sm"
                                                 className="h-4 w-4"
                                             />
-                                            <span className="text-sm text-primary">Auto-apply</span>
+                                            <span className="text-sm text-primary">
+                                                Auto-apply
+                                            </span>
                                         </>
                                     )}
                                 />
@@ -694,11 +818,17 @@ const Rulespage = () => {
                                             <Input
                                                 type="checkbox"
                                                 checked={field.value}
-                                                onChange={(e) => field.onChange(e.target.checked)}
+                                                onChange={(e) =>
+                                                    field.onChange(
+                                                        e.target.checked
+                                                    )
+                                                }
                                                 inputSize="sm"
                                                 className="h-4 w-4"
                                             />
-                                            <span className="text-sm text-primary">Stop on match</span>
+                                            <span className="text-sm text-primary">
+                                                Stop on match
+                                            </span>
                                         </>
                                     )}
                                 />
@@ -706,42 +836,64 @@ const Rulespage = () => {
                         </div>
 
                         <div className="space-y-3">
-                            <span className="text-sm font-medium text-primary">Condition</span>
+                            <span className="text-sm font-medium text-primary">
+                                Condition
+                            </span>
                             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                                 <div className="flex flex-col">
-                                    <span className="text-xs text-primary/60">Field</span>
+                                    <span className="text-xs text-primary/60">
+                                        Field
+                                    </span>
                                     <Select
-                                        value={quickForm.watch('conditionField')}
+                                        value={quickForm.watch(
+                                            'conditionField'
+                                        )}
                                         onValueChange={(val) =>
-                                            quickForm.setValue('conditionField', val as 'description')
+                                            quickForm.setValue(
+                                                'conditionField',
+                                                val as 'description'
+                                            )
                                         }
                                     >
                                         <SelectTrigger className="mt-1">
                                             <SelectValue />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            <SelectItem value="description">Description</SelectItem>
+                                            <SelectItem value="description">
+                                                Description
+                                            </SelectItem>
                                         </SelectContent>
                                     </Select>
                                 </div>
                                 <div className="flex flex-col">
-                                    <span className="text-xs text-primary/60">Operator</span>
+                                    <span className="text-xs text-primary/60">
+                                        Operator
+                                    </span>
                                     <Select
-                                        value={quickForm.watch('conditionOperator')}
+                                        value={quickForm.watch(
+                                            'conditionOperator'
+                                        )}
                                         onValueChange={(val) =>
-                                            quickForm.setValue('conditionOperator', val as 'contains')
+                                            quickForm.setValue(
+                                                'conditionOperator',
+                                                val as 'contains'
+                                            )
                                         }
                                     >
                                         <SelectTrigger className="mt-1">
                                             <SelectValue />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            <SelectItem value="contains">Contains</SelectItem>
+                                            <SelectItem value="contains">
+                                                Contains
+                                            </SelectItem>
                                         </SelectContent>
                                     </Select>
                                 </div>
                                 <div className="flex flex-col">
-                                    <span className="text-xs text-primary/60">Value</span>
+                                    <span className="text-xs text-primary/60">
+                                        Value
+                                    </span>
                                     <FormField
                                         control={quickForm.control}
                                         name="conditionValue"
@@ -750,7 +902,9 @@ const Rulespage = () => {
                                                 <FormControl>
                                                     <Input
                                                         value={field.value}
-                                                        onChange={(e) => field.onChange(e)}
+                                                        onChange={(e) =>
+                                                            field.onChange(e)
+                                                        }
                                                         placeholder="BANK FEE"
                                                     />
                                                 </FormControl>
@@ -769,11 +923,17 @@ const Rulespage = () => {
                                             <Input
                                                 type="checkbox"
                                                 checked={field.value}
-                                                onChange={(e) => field.onChange(e.target.checked)}
+                                                onChange={(e) =>
+                                                    field.onChange(
+                                                        e.target.checked
+                                                    )
+                                                }
                                                 inputSize="sm"
                                                 className="h-4 w-4"
                                             />
-                                            <span className="text-sm text-primary">Case sensitive</span>
+                                            <span className="text-sm text-primary">
+                                                Case sensitive
+                                            </span>
                                         </>
                                     )}
                                 />
@@ -781,10 +941,14 @@ const Rulespage = () => {
                         </div>
 
                         <div className="space-y-3">
-                            <span className="text-sm font-medium text-primary">Action</span>
+                            <span className="text-sm font-medium text-primary">
+                                Action
+                            </span>
                             <div className="grid grid-cols-1 gap-3">
                                 <div className="flex flex-col">
-                                    <span className="text-xs text-primary/60">Action Type</span>
+                                    <span className="text-xs text-primary/60">
+                                        Action Type
+                                    </span>
                                     <Select
                                         value={quickForm.watch('actionType')}
                                         onValueChange={(val) =>
@@ -798,29 +962,56 @@ const Rulespage = () => {
                                             <SelectValue />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            <SelectItem value="set_category">Set category</SelectItem>
-                                            <SelectItem value="set_contact">Set contact</SelectItem>
-                                            <SelectItem value="set_memo">Set memo</SelectItem>
-                                            <SelectItem value="set_taxes">Set taxes</SelectItem>
-                                            <SelectItem value="set_type">Set type</SelectItem>
-                                            <SelectItem value="set_splits">Set splits</SelectItem>
-                                            <SelectItem value="exclude">Exclude</SelectItem>
+                                            <SelectItem value="set_category">
+                                                Set category
+                                            </SelectItem>
+                                            <SelectItem value="set_contact">
+                                                Set contact
+                                            </SelectItem>
+                                            <SelectItem value="set_memo">
+                                                Set memo
+                                            </SelectItem>
+                                            <SelectItem value="set_taxes">
+                                                Set taxes
+                                            </SelectItem>
+                                            <SelectItem value="set_type">
+                                                Set type
+                                            </SelectItem>
+                                            <SelectItem value="set_splits">
+                                                Set splits
+                                            </SelectItem>
+                                            <SelectItem value="exclude">
+                                                Exclude
+                                            </SelectItem>
                                         </SelectContent>
                                     </Select>
                                 </div>
-                                {quickForm.watch('actionType') === 'set_category' && (
+                                {quickForm.watch('actionType') ===
+                                    'set_category' && (
                                     <div className="flex flex-col">
-                                        <span className="text-xs text-primary/60">Category</span>
+                                        <span className="text-xs text-primary/60">
+                                            Category
+                                        </span>
                                         <Select
-                                            value={quickForm.watch('actionCategoryId')}
-                                            onValueChange={(val) => quickForm.setValue('actionCategoryId', val)}
+                                            value={quickForm.watch(
+                                                'actionCategoryId'
+                                            )}
+                                            onValueChange={(val) =>
+                                                quickForm.setValue(
+                                                    'actionCategoryId',
+                                                    val
+                                                )
+                                            }
                                         >
                                             <SelectTrigger className="mt-1">
                                                 <SelectValue placeholder="Select category" />
                                             </SelectTrigger>
                                             <SelectContent>
                                                 {categories.map((c) => (
-                                                    <SelectItem key={c.id} value={c.id}>
+                                                    <SelectItem
+                                                        key={c.id}
+                                                        value={c.id}
+                                                    >
                                                         {c.accountName}
                                                     </SelectItem>
                                                 ))}
@@ -828,19 +1019,32 @@ const Rulespage = () => {
                                         </Select>
                                     </div>
                                 )}
-                                {quickForm.watch('actionType') === 'set_contact' && (
+                                {quickForm.watch('actionType') ===
+                                    'set_contact' && (
                                     <div className="flex flex-col">
-                                        <span className="text-xs text-primary/60">Contact</span>
+                                        <span className="text-xs text-primary/60">
+                                            Contact
+                                        </span>
                                         <Select
-                                            value={quickForm.watch('actionContactId')}
-                                            onValueChange={(val) => quickForm.setValue('actionContactId', val)}
+                                            value={quickForm.watch(
+                                                'actionContactId'
+                                            )}
+                                            onValueChange={(val) =>
+                                                quickForm.setValue(
+                                                    'actionContactId',
+                                                    val
+                                                )
+                                            }
                                         >
                                             <SelectTrigger className="mt-1">
                                                 <SelectValue placeholder="Select contact" />
                                             </SelectTrigger>
                                             <SelectContent>
                                                 {contacts.map((c) => (
-                                                    <SelectItem key={c.id} value={c.id}>
+                                                    <SelectItem
+                                                        key={c.id}
+                                                        value={c.id}
+                                                    >
                                                         {c.displayName}
                                                     </SelectItem>
                                                 ))}
@@ -848,9 +1052,12 @@ const Rulespage = () => {
                                         </Select>
                                     </div>
                                 )}
-                                {quickForm.watch('actionType') === 'set_memo' && (
+                                {quickForm.watch('actionType') ===
+                                    'set_memo' && (
                                     <div className="flex flex-col">
-                                        <span className="text-xs text-primary/60">Memo</span>
+                                        <span className="text-xs text-primary/60">
+                                            Memo
+                                        </span>
                                         <FormField
                                             control={quickForm.control}
                                             name="actionMemo"
@@ -859,7 +1066,11 @@ const Rulespage = () => {
                                                     <FormControl>
                                                         <Textarea
                                                             value={field.value}
-                                                            onChange={(e) => field.onChange(e)}
+                                                            onChange={(e) =>
+                                                                field.onChange(
+                                                                    e
+                                                                )
+                                                            }
                                                             placeholder="Enter memo"
                                                             className="min-h-20"
                                                         />
@@ -870,9 +1081,12 @@ const Rulespage = () => {
                                         />
                                     </div>
                                 )}
-                                {quickForm.watch('actionType') === 'set_taxes' && (
+                                {quickForm.watch('actionType') ===
+                                    'set_taxes' && (
                                     <div className="flex flex-col">
-                                        <span className="text-xs text-primary/60">Taxes</span>
+                                        <span className="text-xs text-primary/60">
+                                            Taxes
+                                        </span>
                                         <FormField
                                             control={quickForm.control}
                                             name="actionTaxIds"
@@ -880,35 +1094,81 @@ const Rulespage = () => {
                                                 <FormItem>
                                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                                                         {taxes.map((tax) => {
-                                                            const checked = Array.isArray(field.value)
-                                                                ? field.value.includes(tax.id)
-                                                                : false;
+                                                            const checked =
+                                                                Array.isArray(
+                                                                    field.value
+                                                                )
+                                                                    ? field.value.includes(
+                                                                          tax.id
+                                                                      )
+                                                                    : false;
                                                             return (
                                                                 <label
                                                                     key={tax.id}
                                                                     className="flex items-center gap-2 rounded border px-2 py-1.5"
                                                                 >
                                                                     <Checkbox
-                                                                        checked={checked}
-                                                                        onCheckedChange={(c) => {
-                                                                            const current = Array.isArray(field.value)
-                                                                                ? [...field.value]
-                                                                                : [];
-                                                                            if (c) {
-                                                                                if (!current.includes(tax.id)) {
-                                                                                    current.push(tax.id);
+                                                                        checked={
+                                                                            checked
+                                                                        }
+                                                                        onCheckedChange={(
+                                                                            c
+                                                                        ) => {
+                                                                            const current =
+                                                                                Array.isArray(
+                                                                                    field.value
+                                                                                )
+                                                                                    ? [
+                                                                                          ...field.value,
+                                                                                      ]
+                                                                                    : [];
+                                                                            if (
+                                                                                c
+                                                                            ) {
+                                                                                if (
+                                                                                    !current.includes(
+                                                                                        tax.id
+                                                                                    )
+                                                                                ) {
+                                                                                    current.push(
+                                                                                        tax.id
+                                                                                    );
                                                                                 }
                                                                             } else {
-                                                                                const idx = current.indexOf(tax.id);
-                                                                                if (idx >= 0) current.splice(idx, 1);
+                                                                                const idx =
+                                                                                    current.indexOf(
+                                                                                        tax.id
+                                                                                    );
+                                                                                if (
+                                                                                    idx >=
+                                                                                    0
+                                                                                )
+                                                                                    current.splice(
+                                                                                        idx,
+                                                                                        1
+                                                                                    );
                                                                             }
-                                                                            quickForm.setValue('actionTaxIds', current);
+                                                                            quickForm.setValue(
+                                                                                'actionTaxIds',
+                                                                                current
+                                                                            );
                                                                         }}
                                                                     />
                                                                     <span className="text-sm">
-                                                                        {tax.name}{' '}
-                                                                        ({(tax.rate * 100).toFixed(
-                                                                            (tax.rate * 100) % 1 === 0 ? 0 : 2
+                                                                        {
+                                                                            tax.name
+                                                                        }{' '}
+                                                                        (
+                                                                        {(
+                                                                            tax.rate *
+                                                                            100
+                                                                        ).toFixed(
+                                                                            (tax.rate *
+                                                                                100) %
+                                                                                1 ===
+                                                                                0
+                                                                                ? 0
+                                                                                : 2
                                                                         )}
                                                                         %)
                                                                     </span>
@@ -922,11 +1182,16 @@ const Rulespage = () => {
                                         />
                                     </div>
                                 )}
-                                {quickForm.watch('actionType') === 'set_type' && (
+                                {quickForm.watch('actionType') ===
+                                    'set_type' && (
                                     <div className="flex flex-col">
-                                        <span className="text-xs text-primary/60">Type</span>
+                                        <span className="text-xs text-primary/60">
+                                            Type
+                                        </span>
                                         <Select
-                                            value={quickForm.watch('actionTypeValue')}
+                                            value={quickForm.watch(
+                                                'actionTypeValue'
+                                            )}
                                             onValueChange={(val) =>
                                                 quickForm.setValue(
                                                     'actionTypeValue',
@@ -938,18 +1203,27 @@ const Rulespage = () => {
                                                 <SelectValue />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                <SelectItem value="income">Income</SelectItem>
-                                                <SelectItem value="expense">Expense</SelectItem>
+                                                <SelectItem value="income">
+                                                    Income
+                                                </SelectItem>
+                                                <SelectItem value="expense">
+                                                    Expense
+                                                </SelectItem>
                                             </SelectContent>
                                         </Select>
                                     </div>
                                 )}
-                                {quickForm.watch('actionType') === 'set_splits' && (
+                                {quickForm.watch('actionType') ===
+                                    'set_splits' && (
                                     <div className="flex flex-col gap-3">
                                         <div className="flex flex-col">
-                                            <span className="text-xs text-primary/60">Splits</span>
+                                            <span className="text-xs text-primary/60">
+                                                Splits
+                                            </span>
                                             <Select
-                                                value={quickForm.watch('splitsMode')}
+                                                value={quickForm.watch(
+                                                    'splitsMode'
+                                                )}
                                                 onValueChange={(val) =>
                                                     quickForm.setValue(
                                                         'splitsMode',
@@ -961,34 +1235,61 @@ const Rulespage = () => {
                                                     <SelectValue placeholder="No splits" />
                                                 </SelectTrigger>
                                                 <SelectContent>
-                                                    <SelectItem value="none">None</SelectItem>
-                                                    <SelectItem value="percent">Percent</SelectItem>
-                                                    <SelectItem value="amount">Fixed amount</SelectItem>
+                                                    <SelectItem value="none">
+                                                        None
+                                                    </SelectItem>
+                                                    <SelectItem value="percent">
+                                                        Percent
+                                                    </SelectItem>
+                                                    <SelectItem value="amount">
+                                                        Fixed amount
+                                                    </SelectItem>
                                                 </SelectContent>
                                             </Select>
                                         </div>
-                                        {quickForm.watch('splitsMode') !== 'none' && (
+                                        {quickForm.watch('splitsMode') !==
+                                            'none' && (
                                             <div className="space-y-3">
-                                                {(quickForm.watch('splitLines') || []).map((_, idx) => (
+                                                {(
+                                                    quickForm.watch(
+                                                        'splitLines'
+                                                    ) || []
+                                                ).map((_, idx) => (
                                                     <div
                                                         key={idx}
                                                         className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3 border rounded"
                                                     >
-                                                        {quickForm.watch('splitsMode') === 'percent' ? (
+                                                        {quickForm.watch(
+                                                            'splitsMode'
+                                                        ) === 'percent' ? (
                                                             <FormField
-                                                                control={quickForm.control}
+                                                                control={
+                                                                    quickForm.control
+                                                                }
                                                                 name={`splitLines.${idx}.percent`}
-                                                                render={({ field }) => (
+                                                                render={({
+                                                                    field,
+                                                                }) => (
                                                                     <FormItem>
                                                                         <FormControl>
                                                                             <Input
                                                                                 type="number"
-                                                                                value={field.value ?? ''}
-                                                                                onChange={(e) =>
+                                                                                value={
+                                                                                    field.value ??
+                                                                                    ''
+                                                                                }
+                                                                                onChange={(
+                                                                                    e
+                                                                                ) =>
                                                                                     field.onChange(
-                                                                                        e.currentTarget.value === ''
+                                                                                        e
+                                                                                            .currentTarget
+                                                                                            .value ===
+                                                                                            ''
                                                                                             ? undefined
-                                                                                            : e.currentTarget.valueAsNumber
+                                                                                            : e
+                                                                                                  .currentTarget
+                                                                                                  .valueAsNumber
                                                                                     )
                                                                                 }
                                                                                 placeholder="0"
@@ -1000,19 +1301,33 @@ const Rulespage = () => {
                                                             />
                                                         ) : (
                                                             <FormField
-                                                                control={quickForm.control}
+                                                                control={
+                                                                    quickForm.control
+                                                                }
                                                                 name={`splitLines.${idx}.amount`}
-                                                                render={({ field }) => (
+                                                                render={({
+                                                                    field,
+                                                                }) => (
                                                                     <FormItem>
                                                                         <FormControl>
                                                                             <Input
                                                                                 type="number"
-                                                                                value={field.value ?? ''}
-                                                                                onChange={(e) =>
+                                                                                value={
+                                                                                    field.value ??
+                                                                                    ''
+                                                                                }
+                                                                                onChange={(
+                                                                                    e
+                                                                                ) =>
                                                                                     field.onChange(
-                                                                                        e.currentTarget.value === ''
+                                                                                        e
+                                                                                            .currentTarget
+                                                                                            .value ===
+                                                                                            ''
                                                                                             ? undefined
-                                                                                            : e.currentTarget.valueAsNumber
+                                                                                            : e
+                                                                                                  .currentTarget
+                                                                                                  .valueAsNumber
                                                                                     )
                                                                                 }
                                                                                 placeholder="0.00"
@@ -1024,13 +1339,21 @@ const Rulespage = () => {
                                                             />
                                                         )}
                                                         <FormField
-                                                            control={quickForm.control}
+                                                            control={
+                                                                quickForm.control
+                                                            }
                                                             name={`splitLines.${idx}.categoryId`}
-                                                            render={({ field }) => (
+                                                            render={({
+                                                                field,
+                                                            }) => (
                                                                 <FormItem>
                                                                     <Select
-                                                                        value={field.value}
-                                                                        onValueChange={field.onChange}
+                                                                        value={
+                                                                            field.value
+                                                                        }
+                                                                        onValueChange={
+                                                                            field.onChange
+                                                                        }
                                                                     >
                                                                         <FormControl>
                                                                             <SelectTrigger>
@@ -1038,11 +1361,24 @@ const Rulespage = () => {
                                                                             </SelectTrigger>
                                                                         </FormControl>
                                                                         <SelectContent>
-                                                                            {categories.map((c) => (
-                                                                                <SelectItem key={c.id} value={c.id}>
-                                                                                    {c.accountName}
-                                                                                </SelectItem>
-                                                                            ))}
+                                                                            {categories.map(
+                                                                                (
+                                                                                    c
+                                                                                ) => (
+                                                                                    <SelectItem
+                                                                                        key={
+                                                                                            c.id
+                                                                                        }
+                                                                                        value={
+                                                                                            c.id
+                                                                                        }
+                                                                                    >
+                                                                                        {
+                                                                                            c.accountName
+                                                                                        }
+                                                                                    </SelectItem>
+                                                                                )
+                                                                            )}
                                                                         </SelectContent>
                                                                     </Select>
                                                                     <FormMessage />
@@ -1050,14 +1386,27 @@ const Rulespage = () => {
                                                             )}
                                                         />
                                                         <FormField
-                                                            control={quickForm.control}
+                                                            control={
+                                                                quickForm.control
+                                                            }
                                                             name={`splitLines.${idx}.description`}
-                                                            render={({ field }) => (
+                                                            render={({
+                                                                field,
+                                                            }) => (
                                                                 <FormItem className="sm:col-span-2">
                                                                     <FormControl>
                                                                         <Input
-                                                                            value={field.value ?? ''}
-                                                                            onChange={(e) => field.onChange(e)}
+                                                                            value={
+                                                                                field.value ??
+                                                                                ''
+                                                                            }
+                                                                            onChange={(
+                                                                                e
+                                                                            ) =>
+                                                                                field.onChange(
+                                                                                    e
+                                                                                )
+                                                                            }
                                                                             placeholder="Optional description"
                                                                         />
                                                                     </FormControl>
@@ -1070,9 +1419,21 @@ const Rulespage = () => {
                                                                 type="button"
                                                                 variant="ghost"
                                                                 onClick={() => {
-                                                                    const arr = [...(quickForm.getValues('splitLines') || [])];
-                                                                    arr.splice(idx, 1);
-                                                                    quickForm.setValue('splitLines', arr);
+                                                                    const arr =
+                                                                        [
+                                                                            ...(quickForm.getValues(
+                                                                                'splitLines'
+                                                                            ) ||
+                                                                                []),
+                                                                        ];
+                                                                    arr.splice(
+                                                                        idx,
+                                                                        1
+                                                                    );
+                                                                    quickForm.setValue(
+                                                                        'splitLines',
+                                                                        arr
+                                                                    );
                                                                 }}
                                                             >
                                                                 Remove
@@ -1084,15 +1445,33 @@ const Rulespage = () => {
                                                     type="button"
                                                     variant="outline"
                                                     onClick={() => {
-                                                        const mode = quickForm.getValues('splitsMode');
-                                                        const arr = [...(quickForm.getValues('splitLines') || [])];
+                                                        const mode =
+                                                            quickForm.getValues(
+                                                                'splitsMode'
+                                                            );
+                                                        const arr = [
+                                                            ...(quickForm.getValues(
+                                                                'splitLines'
+                                                            ) || []),
+                                                        ];
                                                         arr.push({
-                                                            percent: mode === 'percent' ? 0 : undefined,
-                                                            amount: mode === 'amount' ? 0 : undefined,
+                                                            percent:
+                                                                mode ===
+                                                                'percent'
+                                                                    ? 0
+                                                                    : undefined,
+                                                            amount:
+                                                                mode ===
+                                                                'amount'
+                                                                    ? 0
+                                                                    : undefined,
                                                             categoryId: '',
                                                             description: '',
                                                         });
-                                                        quickForm.setValue('splitLines', arr);
+                                                        quickForm.setValue(
+                                                            'splitLines',
+                                                            arr
+                                                        );
                                                     }}
                                                 >
                                                     Add Split Line
@@ -1143,53 +1522,101 @@ const Rulespage = () => {
                                     const accountIds =
                                         accountScope === 'selected'
                                             ? (accountIdsCsv || '')
-                                                .split(',')
-                                                .map((s) => s.trim())
-                                                .filter((s) => s.length > 0)
+                                                  .split(',')
+                                                  .map((s) => s.trim())
+                                                  .filter((s) => s.length > 0)
                                             : [];
                                     const actions: RuleAction[] = [];
-                                    if (actionType === 'set_category' && actionCategoryId) {
+                                    if (
+                                        actionType === 'set_category' &&
+                                        actionCategoryId
+                                    ) {
                                         actions.push({
                                             actionType: 'set_category',
-                                            payload: { categoryId: actionCategoryId },
+                                            payload: {
+                                                categoryId: actionCategoryId,
+                                            },
                                         });
-                                    } else if (actionType === 'set_contact' && actionContactId) {
+                                    } else if (
+                                        actionType === 'set_contact' &&
+                                        actionContactId
+                                    ) {
                                         actions.push({
                                             actionType: 'set_contact',
-                                            payload: { contactId: actionContactId },
+                                            payload: {
+                                                contactId: actionContactId,
+                                            },
                                         });
-                                    } else if (actionType === 'set_memo' && actionMemo && actionMemo.trim().length > 0) {
+                                    } else if (
+                                        actionType === 'set_memo' &&
+                                        actionMemo &&
+                                        actionMemo.trim().length > 0
+                                    ) {
                                         actions.push({
                                             actionType: 'set_memo',
-                                            payload: { memo: actionMemo.trim() },
+                                            payload: {
+                                                memo: actionMemo.trim(),
+                                            },
                                         });
-                                    } else if (actionType === 'set_taxes' && Array.isArray(actionTaxIds) && actionTaxIds.length > 0) {
+                                    } else if (
+                                        actionType === 'set_taxes' &&
+                                        Array.isArray(actionTaxIds) &&
+                                        actionTaxIds.length > 0
+                                    ) {
                                         actions.push({
                                             actionType: 'set_taxes',
                                             payload: { taxIds: actionTaxIds },
                                         });
-                                    } else if (actionType === 'set_type' && actionTypeValue) {
+                                    } else if (
+                                        actionType === 'set_type' &&
+                                        actionTypeValue
+                                    ) {
                                         actions.push({
                                             actionType: 'set_type',
-                                            payload: { type: actionTypeValue.toLowerCase() },
+                                            payload: {
+                                                type: actionTypeValue.toLowerCase(),
+                                            },
                                         });
-                                    } else if (actionType === 'set_splits' && splitsMode !== 'none' && (splitLines || []).length > 0) {
-                                        const lines = (splitLines || []).map((l) => {
-                                            const line: Record<string, unknown> = {};
-                                            if (splitsMode === 'percent' && typeof l.percent === 'number') {
-                                                line.percent = l.percent;
+                                    } else if (
+                                        actionType === 'set_splits' &&
+                                        splitsMode !== 'none' &&
+                                        (splitLines || []).length > 0
+                                    ) {
+                                        const lines = (splitLines || []).map(
+                                            (l) => {
+                                                const line: Record<
+                                                    string,
+                                                    unknown
+                                                > = {};
+                                                if (
+                                                    splitsMode === 'percent' &&
+                                                    typeof l.percent ===
+                                                        'number'
+                                                ) {
+                                                    line.percent = l.percent;
+                                                }
+                                                if (
+                                                    splitsMode === 'amount' &&
+                                                    typeof l.amount === 'number'
+                                                ) {
+                                                    line.amount = l.amount;
+                                                }
+                                                if (l.categoryId)
+                                                    line.categoryId =
+                                                        l.categoryId;
+                                                if (l.description)
+                                                    line.description =
+                                                        l.description;
+                                                return line;
                                             }
-                                            if (splitsMode === 'amount' && typeof l.amount === 'number') {
-                                                line.amount = l.amount;
-                                            }
-                                            if (l.categoryId) line.categoryId = l.categoryId;
-                                            if (l.description) line.description = l.description;
-                                            return line;
-                                        });
+                                        );
                                         actions.push({
                                             actionType: 'set_splits',
                                             payload: {
-                                                mode: splitsMode === 'percent' ? 'percent' : 'amount',
+                                                mode:
+                                                    splitsMode === 'percent'
+                                                        ? 'percent'
+                                                        : 'amount',
                                                 lines,
                                             },
                                         });
@@ -1200,7 +1627,8 @@ const Rulespage = () => {
                                     }
                                     const payload: CreateRulePayload = {
                                         name: name.trim(),
-                                        description: description.trim() || undefined,
+                                        description:
+                                            description.trim() || undefined,
                                         active: true,
                                         transactionType,
                                         matchType,
@@ -1266,7 +1694,11 @@ const Rulespage = () => {
                 mode="edit"
             />
 
-            <Drawer open={openTest} onOpenChange={setOpenTest} direction="right">
+            <Drawer
+                open={openTest}
+                onOpenChange={setOpenTest}
+                direction="right"
+            >
                 <DrawerContent className="h-full w-full sm:w-full mt-0 rounded-none flex flex-col">
                     <DrawerHeader>
                         <DrawerTitle>Test Rule</DrawerTitle>
@@ -1276,54 +1708,87 @@ const Rulespage = () => {
                             <div className="space-y-6">
                                 <div className="space-y-2">
                                     <div className="text-sm text-primary/60">
-                                        {ruleUnderTest ? ruleUnderTest.name : ''}
+                                        {ruleUnderTest
+                                            ? ruleUnderTest.name
+                                            : ''}
                                     </div>
                                     <div className="text-xs text-primary/50">
-                                        Configure how to test this rule against transactions
+                                        Configure how to test this rule against
+                                        transactions
                                     </div>
                                 </div>
                                 {!testAgainstAll && testTransaction ? (
                                     <div className="rounded-md bg-muted/40 p-3 text-xs text-primary/70">
-                                        <div className="font-medium text-primary">Selected Transaction</div>
+                                        <div className="font-medium text-primary">
+                                            Selected Transaction
+                                        </div>
                                         <div className="mt-1">
-                                            Description: {testTransaction.description || '—'}
+                                            Description:{' '}
+                                            {testTransaction.description || '—'}
                                         </div>
                                     </div>
                                 ) : null}
                                 <div className="space-y-4">
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                         <div className="flex flex-col">
-                                            <span className="text-sm font-medium text-primary">Transaction type</span>
+                                            <span className="text-sm font-medium text-primary">
+                                                Transaction type
+                                            </span>
                                             <Select
-                                                value={testForm.watch('transactionType')}
+                                                value={testForm.watch(
+                                                    'transactionType'
+                                                )}
                                                 onValueChange={(val) =>
-                                                    testForm.setValue('transactionType', val as 'any' | 'income' | 'expense')
+                                                    testForm.setValue(
+                                                        'transactionType',
+                                                        val as
+                                                            | 'any'
+                                                            | 'income'
+                                                            | 'expense'
+                                                    )
                                                 }
                                             >
                                                 <SelectTrigger className="mt-1">
                                                     <SelectValue />
                                                 </SelectTrigger>
                                                 <SelectContent>
-                                                    <SelectItem value="any">Any</SelectItem>
-                                                    <SelectItem value="income">Income</SelectItem>
-                                                    <SelectItem value="expense">Expense</SelectItem>
+                                                    <SelectItem value="any">
+                                                        Any
+                                                    </SelectItem>
+                                                    <SelectItem value="income">
+                                                        Income
+                                                    </SelectItem>
+                                                    <SelectItem value="expense">
+                                                        Expense
+                                                    </SelectItem>
                                                 </SelectContent>
                                             </Select>
                                         </div>
                                         <div className="flex flex-col">
-                                            <span className="text-sm font-medium text-primary">Match type</span>
+                                            <span className="text-sm font-medium text-primary">
+                                                Match type
+                                            </span>
                                             <Select
-                                                value={testForm.watch('matchType')}
+                                                value={testForm.watch(
+                                                    'matchType'
+                                                )}
                                                 onValueChange={(val) =>
-                                                    testForm.setValue('matchType', val as 'all' | 'any')
+                                                    testForm.setValue(
+                                                        'matchType',
+                                                        val as 'all' | 'any'
+                                                    )
                                                 }
                                             >
                                                 <SelectTrigger className="mt-1">
                                                     <SelectValue />
                                                 </SelectTrigger>
                                                 <SelectContent>
-                                                    <SelectItem value="all">All</SelectItem>
-                                                    <SelectItem value="any">Any</SelectItem>
+                                                    <SelectItem value="all">
+                                                        All
+                                                    </SelectItem>
+                                                    <SelectItem value="any">
+                                                        Any
+                                                    </SelectItem>
                                                 </SelectContent>
                                             </Select>
                                         </div>
@@ -1331,26 +1796,41 @@ const Rulespage = () => {
 
                                     <div className="grid grid-cols-1 gap-4">
                                         <div className="flex flex-col">
-                                            <span className="text-sm font-medium text-primary">Account scope</span>
+                                            <span className="text-sm font-medium text-primary">
+                                                Account scope
+                                            </span>
                                             <Select
-                                                value={testForm.watch('accountScope')}
+                                                value={testForm.watch(
+                                                    'accountScope'
+                                                )}
                                                 onValueChange={(val) =>
-                                                    testForm.setValue('accountScope', val as 'all' | 'selected')
+                                                    testForm.setValue(
+                                                        'accountScope',
+                                                        val as
+                                                            | 'all'
+                                                            | 'selected'
+                                                    )
                                                 }
                                             >
                                                 <SelectTrigger className="mt-1">
                                                     <SelectValue />
                                                 </SelectTrigger>
                                                 <SelectContent>
-                                                    <SelectItem value="all">All</SelectItem>
-                                                    <SelectItem value="selected">Selected</SelectItem>
+                                                    <SelectItem value="all">
+                                                        All
+                                                    </SelectItem>
+                                                    <SelectItem value="selected">
+                                                        Selected
+                                                    </SelectItem>
                                                 </SelectContent>
                                             </Select>
                                         </div>
-                                        {testForm.watch('accountScope') === 'selected' && (
+                                        {testForm.watch('accountScope') ===
+                                            'selected' && (
                                             <div className="flex flex-col">
                                                 <span className="text-sm font-medium text-primary">
-                                                    Account IDs (comma-separated)
+                                                    Account IDs
+                                                    (comma-separated)
                                                 </span>
                                                 <FormField
                                                     control={testForm.control}
@@ -1359,8 +1839,16 @@ const Rulespage = () => {
                                                         <FormItem>
                                                             <FormControl>
                                                                 <Input
-                                                                    value={field.value}
-                                                                    onChange={(e) => field.onChange(e)}
+                                                                    value={
+                                                                        field.value
+                                                                    }
+                                                                    onChange={(
+                                                                        e
+                                                                    ) =>
+                                                                        field.onChange(
+                                                                            e
+                                                                        )
+                                                                    }
                                                                     placeholder="uuid-1, uuid-2"
                                                                 />
                                                             </FormControl>
@@ -1374,8 +1862,12 @@ const Rulespage = () => {
 
                                     <div className="flex items-center justify-between">
                                         <div className="flex flex-col">
-                                            <span className="text-sm font-medium text-primary">Test against all</span>
-                                            <span className="text-xs text-primary/50">Sample recent transactions</span>
+                                            <span className="text-sm font-medium text-primary">
+                                                Test against all
+                                            </span>
+                                            <span className="text-xs text-primary/50">
+                                                Sample recent transactions
+                                            </span>
                                         </div>
                                         <FormField
                                             control={testForm.control}
@@ -1385,21 +1877,34 @@ const Rulespage = () => {
                                                     <div className="w-4">
                                                         <Input
                                                             type="checkbox"
-                                                            checked={field.value}
-                                                            onChange={(e) => field.onChange(e.target.checked)}
+                                                            checked={
+                                                                field.value
+                                                            }
+                                                            onChange={(e) =>
+                                                                field.onChange(
+                                                                    e.target
+                                                                        .checked
+                                                                )
+                                                            }
                                                             inputSize="sm"
                                                             className="h-4 p-0"
                                                         />
                                                     </div>
-                                                    <span className="text-sm text-primary">Enable</span>
+                                                    <span className="text-sm text-primary">
+                                                        Enable
+                                                    </span>
                                                 </label>
                                             )}
                                         />
                                     </div>
                                     <div className="flex items-center justify-between">
                                         <div className="flex flex-col">
-                                            <span className="text-sm font-medium text-primary">Limit</span>
-                                            <span className="text-xs text-primary/50">Max transactions to test (1–500)</span>
+                                            <span className="text-sm font-medium text-primary">
+                                                Limit
+                                            </span>
+                                            <span className="text-xs text-primary/50">
+                                                Max transactions to test (1–500)
+                                            </span>
                                         </div>
                                         <FormField
                                             control={testForm.control}
@@ -1411,7 +1916,14 @@ const Rulespage = () => {
                                                         min={1}
                                                         max={500}
                                                         value={field.value}
-                                                        onChange={(e) => field.onChange(Number(e.target.value))}
+                                                        onChange={(e) =>
+                                                            field.onChange(
+                                                                Number(
+                                                                    e.target
+                                                                        .value
+                                                                )
+                                                            )
+                                                        }
                                                         inputSize="sm"
                                                     />
                                                 </div>
@@ -1421,8 +1933,13 @@ const Rulespage = () => {
                                     {!testForm.watch('againstAll') && (
                                         <div className="flex items-center justify-between">
                                             <div className="flex flex-col">
-                                                <span className="text-sm font-medium text-primary">Transaction ID</span>
-                                                <span className="text-xs text-primary/50">Test against a single transaction</span>
+                                                <span className="text-sm font-medium text-primary">
+                                                    Transaction ID
+                                                </span>
+                                                <span className="text-xs text-primary/50">
+                                                    Test against a single
+                                                    transaction
+                                                </span>
                                             </div>
                                             <FormField
                                                 control={testForm.control}
@@ -1432,7 +1949,11 @@ const Rulespage = () => {
                                                         <Input
                                                             type="text"
                                                             value={field.value}
-                                                            onChange={(e) => field.onChange(e)}
+                                                            onChange={(e) =>
+                                                                field.onChange(
+                                                                    e
+                                                                )
+                                                            }
                                                             placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
                                                             inputSize="sm"
                                                         />
@@ -1443,8 +1964,12 @@ const Rulespage = () => {
                                     )}
                                     <div className="flex items-center justify-between">
                                         <div className="flex flex-col">
-                                            <span className="text-sm font-medium text-primary">Include actions (preview)</span>
-                                            <span className="text-xs text-primary/50">Use rule actions for preview</span>
+                                            <span className="text-sm font-medium text-primary">
+                                                Include actions (preview)
+                                            </span>
+                                            <span className="text-xs text-primary/50">
+                                                Use rule actions for preview
+                                            </span>
                                         </div>
                                         <FormField
                                             control={testForm.control}
@@ -1454,36 +1979,77 @@ const Rulespage = () => {
                                                     <div className="w-4">
                                                         <Input
                                                             type="checkbox"
-                                                            checked={field.value}
-                                                            onChange={(e) => field.onChange(e.target.checked)}
+                                                            checked={
+                                                                field.value
+                                                            }
+                                                            onChange={(e) =>
+                                                                field.onChange(
+                                                                    e.target
+                                                                        .checked
+                                                                )
+                                                            }
                                                             inputSize="sm"
                                                             className="h-4 p-0"
                                                         />
                                                     </div>
-                                                    <span className="text-sm text-primary">Enable</span>
+                                                    <span className="text-sm text-primary">
+                                                        Enable
+                                                    </span>
                                                 </label>
                                             )}
                                         />
                                     </div>
                                     <div>
                                         <Button
-                                            disabled={!ruleUnderTest || isTesting}
+                                            disabled={
+                                                !ruleUnderTest || isTesting
+                                            }
                                             onClick={() => {
                                                 if (!ruleUnderTest) return;
-                                                const sanitizedConditions: RuleCondition[] = (ruleUnderTest.conditions || []).map((c) => {
-                                                    const cond: RuleCondition = { ...c };
-                                                    if (cond.field === 'amount') {
-                                                        if (typeof cond.valueNumber === 'string') {
-                                                            const n = Number(cond.valueNumber);
-                                                            cond.valueNumber = Number.isFinite(n) ? n : undefined;
+                                                const sanitizedConditions: RuleCondition[] =
+                                                    (
+                                                        ruleUnderTest.conditions ||
+                                                        []
+                                                    ).map((c) => {
+                                                        const cond: RuleCondition =
+                                                            { ...c };
+                                                        if (
+                                                            cond.field ===
+                                                            'amount'
+                                                        ) {
+                                                            if (
+                                                                typeof cond.valueNumber ===
+                                                                'string'
+                                                            ) {
+                                                                const n =
+                                                                    Number(
+                                                                        cond.valueNumber
+                                                                    );
+                                                                cond.valueNumber =
+                                                                    Number.isFinite(
+                                                                        n
+                                                                    )
+                                                                        ? n
+                                                                        : undefined;
+                                                            }
+                                                            if (
+                                                                typeof cond.valueNumberTo ===
+                                                                'string'
+                                                            ) {
+                                                                const n2 =
+                                                                    Number(
+                                                                        cond.valueNumberTo
+                                                                    );
+                                                                cond.valueNumberTo =
+                                                                    Number.isFinite(
+                                                                        n2
+                                                                    )
+                                                                        ? n2
+                                                                        : undefined;
+                                                            }
                                                         }
-                                                        if (typeof cond.valueNumberTo === 'string') {
-                                                            const n2 = Number(cond.valueNumberTo);
-                                                            cond.valueNumberTo = Number.isFinite(n2) ? n2 : undefined;
-                                                        }
-                                                    }
-                                                    return cond;
-                                                });
+                                                        return cond;
+                                                    });
                                                 const {
                                                     transactionType,
                                                     matchType,
@@ -1497,39 +2063,70 @@ const Rulespage = () => {
                                                 const accountIds =
                                                     accountScope === 'selected'
                                                         ? (accountIdsCsv || '')
-                                                            .split(',')
-                                                            .map((s) => s.trim())
-                                                            .filter((s) => s.length > 0)
+                                                              .split(',')
+                                                              .map((s) =>
+                                                                  s.trim()
+                                                              )
+                                                              .filter(
+                                                                  (s) =>
+                                                                      s.length >
+                                                                      0
+                                                              )
                                                         : [];
-                                                const payload: TestRulePayload = {
-                                                    transactionType,
-                                                    matchType,
-                                                    conditions: sanitizedConditions,
-                                                    actions: includeActions ? ruleUnderTest.actions || [] : undefined,
-                                                    accountScope,
-                                                    accountIds,
-                                                    testAgainstAll: againstAll,
-                                                    transactionId: againstAll ? undefined : transactionId || undefined,
-                                                    limit,
-                                                };
+                                                const payload: TestRulePayload =
+                                                    {
+                                                        transactionType,
+                                                        matchType,
+                                                        conditions:
+                                                            sanitizedConditions,
+                                                        actions: includeActions
+                                                            ? ruleUnderTest.actions ||
+                                                              []
+                                                            : undefined,
+                                                        accountScope,
+                                                        accountIds,
+                                                        testAgainstAll:
+                                                            againstAll,
+                                                        transactionId:
+                                                            againstAll
+                                                                ? undefined
+                                                                : transactionId ||
+                                                                  undefined,
+                                                        limit,
+                                                    };
                                                 setTestErrorMessage(null);
                                                 runRuleTest(payload, {
                                                     onSuccess: (res) => {
-                                                        setTestResult(res.data || null);
+                                                        setTestResult(
+                                                            res.data || null
+                                                        );
                                                     },
-                                                    onError: (error: unknown) => {
-                                                        const maybeAxiosError = error as {
-                                                            response?: { data?: { message?: string } };
-                                                        };
+                                                    onError: (
+                                                        error: unknown
+                                                    ) => {
+                                                        const maybeAxiosError =
+                                                            error as {
+                                                                response?: {
+                                                                    data?: {
+                                                                        message?: string;
+                                                                    };
+                                                                };
+                                                            };
                                                         const message =
-                                                            maybeAxiosError.response?.data?.message ||
+                                                            maybeAxiosError
+                                                                .response?.data
+                                                                ?.message ||
                                                             'Failed to test rule';
-                                                        setTestErrorMessage(message);
+                                                        setTestErrorMessage(
+                                                            message
+                                                        );
                                                     },
                                                 });
                                             }}
                                         >
-                                            {isTesting ? 'Testing…' : 'Run Test'}
+                                            {isTesting
+                                                ? 'Testing…'
+                                                : 'Run Test'}
                                         </Button>
                                     </div>
                                 </div>
@@ -1543,31 +2140,40 @@ const Rulespage = () => {
                                 {testResult && (
                                     <div className="space-y-3 border-t pt-4">
                                         <div className="text-sm text-primary">
-                                            Tested {testResult.totalTested} • Matched {testResult.totalMatched}
+                                            Tested {testResult.totalTested} •
+                                            Matched {testResult.totalMatched}
                                         </div>
                                         <div className="space-y-2">
-                                            {(testResult.matches || []).map((m) => (
-                                                <div
-                                                    key={m.transactionId}
-                                                    className="flex items-start justify-between rounded border px-3 py-2"
-                                                >
-                                                    <div className="flex flex-col">
-                                                        <span className="text-xs text-primary/60">
-                                                            Transaction
-                                                        </span>
-                                                        <span className="text-sm font-medium text-primary">
-                                                            {m.transactionId}
-                                                        </span>
+                                            {(testResult.matches || []).map(
+                                                (m) => (
+                                                    <div
+                                                        key={m.transactionId}
+                                                        className="flex items-start justify-between rounded border px-3 py-2"
+                                                    >
+                                                        <div className="flex flex-col">
+                                                            <span className="text-xs text-primary/60">
+                                                                Transaction
+                                                            </span>
+                                                            <span className="text-sm font-medium text-primary">
+                                                                {
+                                                                    m.transactionId
+                                                                }
+                                                            </span>
+                                                        </div>
+                                                        <div className="text-sm">
+                                                            {m.match ? (
+                                                                <span className="px-2 py-0.5 rounded bg-green-100 text-green-700">
+                                                                    Matched
+                                                                </span>
+                                                            ) : (
+                                                                <span className="px-2 py-0.5 rounded bg-gray-100 text-gray-700">
+                                                                    No match
+                                                                </span>
+                                                            )}
+                                                        </div>
                                                     </div>
-                                                    <div className="text-sm">
-                                                        {m.match ? (
-                                                            <span className="px-2 py-0.5 rounded bg-green-100 text-green-700">Matched</span>
-                                                        ) : (
-                                                            <span className="px-2 py-0.5 rounded bg-gray-100 text-gray-700">No match</span>
-                                                        )}
-                                                    </div>
-                                                </div>
-                                            ))}
+                                                )
+                                            )}
                                         </div>
                                     </div>
                                 )}

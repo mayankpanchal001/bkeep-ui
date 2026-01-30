@@ -6,7 +6,7 @@ import {
     DrawerContent,
     DrawerFooter,
     DrawerHeader,
-    DrawerTitle
+    DrawerTitle,
 } from '@/components/ui/drawer';
 import {
     Form,
@@ -69,7 +69,17 @@ const formSchema = z.object({
     accountId: z.string().optional(),
     matchType: z.enum(['all', 'any']),
     conditions: z.array(conditionSchema),
-    actionType: z.enum(['set_category', 'set_contact', 'set_memo', 'set_taxes', 'set_type', 'set_splits', 'exclude']).default('set_category'),
+    actionType: z
+        .enum([
+            'set_category',
+            'set_contact',
+            'set_memo',
+            'set_taxes',
+            'set_type',
+            'set_splits',
+            'exclude',
+        ])
+        .default('set_category'),
     actionTransactionType: z.string().optional(),
     actionCategory: z.string().optional(),
     actionPayee: z.string().optional(),
@@ -301,7 +311,7 @@ const ConditionRow = ({
                                                         e.target.value === ''
                                                             ? undefined
                                                             : e.target
-                                                                .valueAsNumber
+                                                                  .valueAsNumber
                                                     )
                                                 }
                                                 placeholder="0.00"
@@ -520,7 +530,8 @@ export function CreateRuleDrawer({
             ],
             actionType: 'set_category',
             actionTransactionType:
-                getActionTransactionType(transaction).toLowerCase() === 'deposit'
+                getActionTransactionType(transaction).toLowerCase() ===
+                'deposit'
                     ? 'income'
                     : 'expense',
             actionCategory: transaction?.category || '',
@@ -569,7 +580,8 @@ export function CreateRuleDrawer({
                 ],
                 actionType: 'set_category',
                 actionTransactionType:
-                    getActionTransactionType(transaction).toLowerCase() === 'deposit'
+                    getActionTransactionType(transaction).toLowerCase() ===
+                    'deposit'
                         ? 'income'
                         : 'expense',
                 actionCategory: transaction.category || '',
@@ -599,42 +611,44 @@ export function CreateRuleDrawer({
             const mappedConditions =
                 (rule.conditions || []).length > 0
                     ? (rule.conditions || []).map((c) => {
-                        const isAmount = c.field === 'amount';
-                        const vNum =
-                            typeof c.valueNumber === 'string'
-                                ? Number(c.valueNumber)
-                                : c.valueNumber;
-                        const vNumTo =
-                            typeof c.valueNumberTo === 'string'
-                                ? Number(c.valueNumberTo)
-                                : c.valueNumberTo;
-                        return {
-                            field: c.field,
-                            operator: c.operator,
-                            value: isAmount ? undefined : c.valueString || '',
-                            valueNumber: isAmount
-                                ? typeof vNum === 'number' && Number.isFinite(vNum)
-                                    ? vNum
-                                    : undefined
-                                : undefined,
-                            valueNumberTo: isAmount
-                                ? typeof vNumTo === 'number' && Number.isFinite(vNumTo)
-                                    ? vNumTo
-                                    : undefined
-                                : undefined,
-                            caseSensitive: !!c.caseSensitive,
-                        };
-                    })
+                          const isAmount = c.field === 'amount';
+                          const vNum =
+                              typeof c.valueNumber === 'string'
+                                  ? Number(c.valueNumber)
+                                  : c.valueNumber;
+                          const vNumTo =
+                              typeof c.valueNumberTo === 'string'
+                                  ? Number(c.valueNumberTo)
+                                  : c.valueNumberTo;
+                          return {
+                              field: c.field,
+                              operator: c.operator,
+                              value: isAmount ? undefined : c.valueString || '',
+                              valueNumber: isAmount
+                                  ? typeof vNum === 'number' &&
+                                    Number.isFinite(vNum)
+                                      ? vNum
+                                      : undefined
+                                  : undefined,
+                              valueNumberTo: isAmount
+                                  ? typeof vNumTo === 'number' &&
+                                    Number.isFinite(vNumTo)
+                                      ? vNumTo
+                                      : undefined
+                                  : undefined,
+                              caseSensitive: !!c.caseSensitive,
+                          };
+                      })
                     : [
-                        {
-                            field: 'description',
-                            operator: 'contains',
-                            value: '',
-                            valueNumber: undefined,
-                            valueNumberTo: undefined,
-                            caseSensitive: false,
-                        },
-                    ];
+                          {
+                              field: 'description',
+                              operator: 'contains',
+                              value: '',
+                              valueNumber: undefined,
+                              valueNumberTo: undefined,
+                              caseSensitive: false,
+                          },
+                      ];
             const typeAction = (rule.actions || []).find(
                 (a) => a.actionType === 'set_type'
             );
@@ -656,38 +670,61 @@ export function CreateRuleDrawer({
             const splitsAction = (rule.actions || []).find(
                 (a) => a.actionType === 'set_splits'
             );
-            const typePayload = (typeAction?.payload || {}) as Record<string, unknown>;
-            const typeVal = typeof typePayload.type === 'string' ? typePayload.type : '';
+            const typePayload = (typeAction?.payload || {}) as Record<
+                string,
+                unknown
+            >;
+            const typeVal =
+                typeof typePayload.type === 'string' ? typePayload.type : '';
             const actionTypeValue =
                 typeVal.toLowerCase() === 'income'
                     ? 'income'
                     : typeVal.toLowerCase() === 'expense'
-                        ? 'expense'
-                        : '';
-            const categoryPayload = (categoryAction?.payload ||
-                {}) as Record<string, unknown>;
-            const contactPayload = (contactAction?.payload ||
-                {}) as Record<string, unknown>;
-            const taxPayload = (taxAction?.payload || {}) as Record<string, unknown>;
-            const memoPayload = (memoAction?.payload || {}) as Record<string, unknown>;
-            const splitsPayload = (splitsAction?.payload || {}) as Record<string, unknown>;
-            const selectedActionType =
-                categoryAction ? 'set_category' :
-                    contactAction ? 'set_contact' :
-                        memoAction ? 'set_memo' :
-                            taxAction ? 'set_taxes' :
-                                typeAction ? 'set_type' :
-                                    splitsAction ? 'set_splits' :
-                                        excludeAction ? 'exclude' :
-                                            'set_category';
+                      ? 'expense'
+                      : '';
+            const categoryPayload = (categoryAction?.payload || {}) as Record<
+                string,
+                unknown
+            >;
+            const contactPayload = (contactAction?.payload || {}) as Record<
+                string,
+                unknown
+            >;
+            const taxPayload = (taxAction?.payload || {}) as Record<
+                string,
+                unknown
+            >;
+            const memoPayload = (memoAction?.payload || {}) as Record<
+                string,
+                unknown
+            >;
+            const splitsPayload = (splitsAction?.payload || {}) as Record<
+                string,
+                unknown
+            >;
+            const selectedActionType = categoryAction
+                ? 'set_category'
+                : contactAction
+                  ? 'set_contact'
+                  : memoAction
+                    ? 'set_memo'
+                    : taxAction
+                      ? 'set_taxes'
+                      : typeAction
+                        ? 'set_type'
+                        : splitsAction
+                          ? 'set_splits'
+                          : excludeAction
+                            ? 'exclude'
+                            : 'set_category';
             form.reset({
                 name: rule.name || '',
                 description: rule.description || '',
                 transactionType: rule.transactionType || 'any',
                 accountId:
                     rule.accountScope === 'selected' &&
-                        Array.isArray(rule.accountIds) &&
-                        rule.accountIds.length > 0
+                    Array.isArray(rule.accountIds) &&
+                    rule.accountIds.length > 0
                         ? rule.accountIds[0]
                         : 'all',
                 matchType: rule.matchType || 'all',
@@ -708,44 +745,62 @@ export function CreateRuleDrawer({
                         : '',
                 actionTaxIds: (() => {
                     const taxObj = taxPayload as { taxIds?: unknown };
-                    const arr = Array.isArray(taxObj.taxIds) ? taxObj.taxIds : [];
+                    const arr = Array.isArray(taxObj.taxIds)
+                        ? taxObj.taxIds
+                        : [];
                     return (arr as unknown[]).filter(
                         (t): t is string => typeof t === 'string'
                     ) as string[];
                 })(),
                 splitsMode: (() => {
                     const sObj = splitsPayload as { mode?: unknown };
-                    const m = typeof sObj.mode === 'string' ? sObj.mode : undefined;
-                    return m === 'percent' || m === 'amount' ? (m as 'percent' | 'amount') : 'none';
+                    const m =
+                        typeof sObj.mode === 'string' ? sObj.mode : undefined;
+                    return m === 'percent' || m === 'amount'
+                        ? (m as 'percent' | 'amount')
+                        : 'none';
                 })(),
-                splitLines:
-                    (() => {
-                        const sObj = splitsPayload as { lines?: unknown };
-                        const lines = Array.isArray(sObj.lines) ? (sObj.lines as unknown[]) : [];
-                        return lines.map((item) => {
-                            const l = item as {
-                                percent?: unknown;
-                                amount?: unknown;
-                                categoryId?: unknown;
-                                description?: unknown;
-                                taxIds?: unknown;
-                            };
-                            const percent = typeof l.percent === 'number' ? l.percent : undefined;
-                            const amount = typeof l.amount === 'number' ? l.amount : undefined;
-                            const categoryId = typeof l.categoryId === 'string' ? l.categoryId : undefined;
-                            const description = typeof l.description === 'string' ? l.description : undefined;
-                            const taxIds = Array.isArray(l.taxIds) ? (l.taxIds as unknown[]).filter(
-                                (t): t is string => typeof t === 'string'
-                            ) : [];
-                            return {
-                                percent,
-                                amount,
-                                categoryId,
-                                description,
-                                taxIds,
-                            };
-                        });
-                    })(),
+                splitLines: (() => {
+                    const sObj = splitsPayload as { lines?: unknown };
+                    const lines = Array.isArray(sObj.lines)
+                        ? (sObj.lines as unknown[])
+                        : [];
+                    return lines.map((item) => {
+                        const l = item as {
+                            percent?: unknown;
+                            amount?: unknown;
+                            categoryId?: unknown;
+                            description?: unknown;
+                            taxIds?: unknown;
+                        };
+                        const percent =
+                            typeof l.percent === 'number'
+                                ? l.percent
+                                : undefined;
+                        const amount =
+                            typeof l.amount === 'number' ? l.amount : undefined;
+                        const categoryId =
+                            typeof l.categoryId === 'string'
+                                ? l.categoryId
+                                : undefined;
+                        const description =
+                            typeof l.description === 'string'
+                                ? l.description
+                                : undefined;
+                        const taxIds = Array.isArray(l.taxIds)
+                            ? (l.taxIds as unknown[]).filter(
+                                  (t): t is string => typeof t === 'string'
+                              )
+                            : [];
+                        return {
+                            percent,
+                            amount,
+                            categoryId,
+                            description,
+                            taxIds,
+                        };
+                    });
+                })(),
                 autoApply: !!rule.autoApply,
             });
         }
@@ -789,13 +844,18 @@ export function CreateRuleDrawer({
                 : [];
 
         if (mode === 'edit' && rule?.id) {
-            const updateActions: Array<{ actionType: string; payload?: Record<string, unknown> }> = [];
+            const updateActions: Array<{
+                actionType: string;
+                payload?: Record<string, unknown>;
+            }> = [];
             switch (values.actionType) {
                 case 'set_type': {
                     if (values.actionTransactionType) {
                         updateActions.push({
                             actionType: 'set_type',
-                            payload: { type: values.actionTransactionType.toLowerCase() },
+                            payload: {
+                                type: values.actionTransactionType.toLowerCase(),
+                            },
                         });
                     }
                     break;
@@ -816,7 +876,9 @@ export function CreateRuleDrawer({
                         );
                         let contactId = values.actionPayee;
                         if (isDisplayName) {
-                            const contact = contacts.find((c) => c.displayName === values.actionPayee);
+                            const contact = contacts.find(
+                                (c) => c.displayName === values.actionPayee
+                            );
                             if (contact) {
                                 contactId = contact.id;
                             }
@@ -829,7 +891,10 @@ export function CreateRuleDrawer({
                     break;
                 }
                 case 'set_memo': {
-                    if (values.actionMemo && values.actionMemo.trim().length > 0) {
+                    if (
+                        values.actionMemo &&
+                        values.actionMemo.trim().length > 0
+                    ) {
                         updateActions.push({
                             actionType: 'set_memo',
                             payload: { memo: values.actionMemo.trim() },
@@ -838,7 +903,10 @@ export function CreateRuleDrawer({
                     break;
                 }
                 case 'set_taxes': {
-                    if (Array.isArray(values.actionTaxIds) && values.actionTaxIds.length > 0) {
+                    if (
+                        Array.isArray(values.actionTaxIds) &&
+                        values.actionTaxIds.length > 0
+                    ) {
                         updateActions.push({
                             actionType: 'set_taxes',
                             payload: { taxIds: values.actionTaxIds },
@@ -847,27 +915,40 @@ export function CreateRuleDrawer({
                     break;
                 }
                 case 'set_splits': {
-                    if (values.splitsMode !== 'none' && (values.splitLines || []).length > 0) {
-                        const lines = (values.splitLines || []).map((l) => {
-                            const base: Record<string, unknown> = {};
-                            if (values.splitsMode === 'percent') {
-                                if (typeof l.percent === 'number') {
-                                    base.percent = l.percent;
+                    if (
+                        values.splitsMode !== 'none' &&
+                        (values.splitLines || []).length > 0
+                    ) {
+                        const lines = (values.splitLines || [])
+                            .map((l) => {
+                                const base: Record<string, unknown> = {};
+                                if (values.splitsMode === 'percent') {
+                                    if (typeof l.percent === 'number') {
+                                        base.percent = l.percent;
+                                    }
+                                } else if (values.splitsMode === 'amount') {
+                                    if (typeof l.amount === 'number') {
+                                        base.amount = l.amount;
+                                    }
                                 }
-                            } else if (values.splitsMode === 'amount') {
-                                if (typeof l.amount === 'number') {
-                                    base.amount = l.amount;
-                                }
-                            }
-                            if (l.categoryId) base.categoryId = l.categoryId;
-                            if (l.description && l.description.trim().length > 0) base.description = l.description.trim();
-                            return base;
-                        }).filter((b) => Object.keys(b).length > 0);
+                                if (l.categoryId)
+                                    base.categoryId = l.categoryId;
+                                if (
+                                    l.description &&
+                                    l.description.trim().length > 0
+                                )
+                                    base.description = l.description.trim();
+                                return base;
+                            })
+                            .filter((b) => Object.keys(b).length > 0);
                         if (lines.length > 0) {
                             updateActions.push({
                                 actionType: 'set_splits',
                                 payload: {
-                                    mode: values.splitsMode === 'percent' ? 'percent' : 'amount',
+                                    mode:
+                                        values.splitsMode === 'percent'
+                                            ? 'percent'
+                                            : 'amount',
                                     lines,
                                 },
                             });
@@ -931,7 +1012,9 @@ export function CreateRuleDrawer({
                     payload.actions?.push({
                         id: generateId(),
                         actionType: 'set_type',
-                        payload: { type: values.actionTransactionType.toLowerCase() },
+                        payload: {
+                            type: values.actionTransactionType.toLowerCase(),
+                        },
                     });
                 }
                 break;
@@ -953,7 +1036,9 @@ export function CreateRuleDrawer({
                     );
                     let contactId = values.actionPayee;
                     if (isDisplayName) {
-                        const contact = contacts.find((c) => c.displayName === values.actionPayee);
+                        const contact = contacts.find(
+                            (c) => c.displayName === values.actionPayee
+                        );
                         if (contact) {
                             contactId = contact.id;
                         }
@@ -977,7 +1062,10 @@ export function CreateRuleDrawer({
                 break;
             }
             case 'set_taxes': {
-                if (Array.isArray(values.actionTaxIds) && values.actionTaxIds.length > 0) {
+                if (
+                    Array.isArray(values.actionTaxIds) &&
+                    values.actionTaxIds.length > 0
+                ) {
                     payload.actions?.push({
                         id: generateId(),
                         actionType: 'set_taxes',
@@ -987,28 +1075,40 @@ export function CreateRuleDrawer({
                 break;
             }
             case 'set_splits': {
-                if (values.splitsMode !== 'none' && (values.splitLines || []).length > 0) {
-                    const lines = (values.splitLines || []).map((l) => {
-                        const base: Record<string, unknown> = {};
-                        if (values.splitsMode === 'percent') {
-                            if (typeof l.percent === 'number') {
-                                base.percent = l.percent;
+                if (
+                    values.splitsMode !== 'none' &&
+                    (values.splitLines || []).length > 0
+                ) {
+                    const lines = (values.splitLines || [])
+                        .map((l) => {
+                            const base: Record<string, unknown> = {};
+                            if (values.splitsMode === 'percent') {
+                                if (typeof l.percent === 'number') {
+                                    base.percent = l.percent;
+                                }
+                            } else if (values.splitsMode === 'amount') {
+                                if (typeof l.amount === 'number') {
+                                    base.amount = l.amount;
+                                }
                             }
-                        } else if (values.splitsMode === 'amount') {
-                            if (typeof l.amount === 'number') {
-                                base.amount = l.amount;
-                            }
-                        }
-                        if (l.categoryId) base.categoryId = l.categoryId;
-                        if (l.description && l.description.trim().length > 0) base.description = l.description.trim();
-                        return base;
-                    }).filter((b) => Object.keys(b).length > 0);
+                            if (l.categoryId) base.categoryId = l.categoryId;
+                            if (
+                                l.description &&
+                                l.description.trim().length > 0
+                            )
+                                base.description = l.description.trim();
+                            return base;
+                        })
+                        .filter((b) => Object.keys(b).length > 0);
                     if (lines.length > 0) {
                         payload.actions?.push({
                             id: generateId(),
                             actionType: 'set_splits',
                             payload: {
-                                mode: values.splitsMode === 'percent' ? 'percent' : 'amount',
+                                mode:
+                                    values.splitsMode === 'percent'
+                                        ? 'percent'
+                                        : 'amount',
                                 lines,
                             },
                         });
@@ -1073,7 +1173,9 @@ export function CreateRuleDrawer({
         <Drawer open={open} onOpenChange={setOpen} direction="right">
             <DrawerContent className="h-full w-full mt-0 rounded-none flex flex-col">
                 <DrawerHeader className="border-b px-6 py-4 flex flex-col items-start">
-                    <DrawerTitle>{mode === 'edit' ? 'Edit rule' : 'Create rule'}</DrawerTitle>
+                    <DrawerTitle>
+                        {mode === 'edit' ? 'Edit rule' : 'Create rule'}
+                    </DrawerTitle>
                     <p className="text-sm text-muted-foreground mt-1">
                         Rules only apply to unreviewed transactions.
                     </p>
@@ -1334,20 +1436,39 @@ export function CreateRuleDrawer({
                                                     <FormLabel className="text-sm font-normal">
                                                         Action Type
                                                     </FormLabel>
-                                                    <Select onValueChange={field.onChange} value={field.value}>
+                                                    <Select
+                                                        onValueChange={
+                                                            field.onChange
+                                                        }
+                                                        value={field.value}
+                                                    >
                                                         <FormControl>
                                                             <SelectTrigger>
                                                                 <SelectValue />
                                                             </SelectTrigger>
                                                         </FormControl>
                                                         <SelectContent>
-                                                            <SelectItem value="set_category">Set category</SelectItem>
-                                                            <SelectItem value="set_contact">Set contact</SelectItem>
-                                                            <SelectItem value="set_memo">Set memo</SelectItem>
-                                                            <SelectItem value="set_taxes">Set taxes</SelectItem>
-                                                            <SelectItem value="set_type">Set type</SelectItem>
-                                                            <SelectItem value="set_splits">Set splits</SelectItem>
-                                                            <SelectItem value="exclude">Exclude</SelectItem>
+                                                            <SelectItem value="set_category">
+                                                                Set category
+                                                            </SelectItem>
+                                                            <SelectItem value="set_contact">
+                                                                Set contact
+                                                            </SelectItem>
+                                                            <SelectItem value="set_memo">
+                                                                Set memo
+                                                            </SelectItem>
+                                                            <SelectItem value="set_taxes">
+                                                                Set taxes
+                                                            </SelectItem>
+                                                            <SelectItem value="set_type">
+                                                                Set type
+                                                            </SelectItem>
+                                                            <SelectItem value="set_splits">
+                                                                Set splits
+                                                            </SelectItem>
+                                                            <SelectItem value="exclude">
+                                                                Exclude
+                                                            </SelectItem>
                                                         </SelectContent>
                                                     </Select>
                                                     <FormMessage />
@@ -1355,7 +1476,8 @@ export function CreateRuleDrawer({
                                             )}
                                         />
 
-                                        {form.watch('actionType') === 'set_type' && (
+                                        {form.watch('actionType') ===
+                                            'set_type' && (
                                             <FormField
                                                 control={form.control}
                                                 name="actionTransactionType"
@@ -1364,15 +1486,24 @@ export function CreateRuleDrawer({
                                                         <FormLabel className="text-sm font-normal">
                                                             Type
                                                         </FormLabel>
-                                                        <Select onValueChange={field.onChange} value={field.value}>
+                                                        <Select
+                                                            onValueChange={
+                                                                field.onChange
+                                                            }
+                                                            value={field.value}
+                                                        >
                                                             <FormControl>
                                                                 <SelectTrigger>
                                                                     <SelectValue />
                                                                 </SelectTrigger>
                                                             </FormControl>
                                                             <SelectContent>
-                                                                <SelectItem value="income">Income</SelectItem>
-                                                                <SelectItem value="expense">Expense</SelectItem>
+                                                                <SelectItem value="income">
+                                                                    Income
+                                                                </SelectItem>
+                                                                <SelectItem value="expense">
+                                                                    Expense
+                                                                </SelectItem>
                                                             </SelectContent>
                                                         </Select>
                                                         <FormMessage />
@@ -1381,7 +1512,8 @@ export function CreateRuleDrawer({
                                             />
                                         )}
 
-                                        {form.watch('actionType') === 'set_category' && (
+                                        {form.watch('actionType') ===
+                                            'set_category' && (
                                             <FormField
                                                 control={form.control}
                                                 name="actionCategory"
@@ -1407,7 +1539,9 @@ export function CreateRuleDrawer({
                                                                 onValueChange={
                                                                     field.onChange
                                                                 }
-                                                                value={field.value}
+                                                                value={
+                                                                    field.value
+                                                                }
                                                             >
                                                                 <FormControl>
                                                                     <SelectTrigger>
@@ -1417,64 +1551,64 @@ export function CreateRuleDrawer({
                                                                 <SelectContent>
                                                                     {incomeCategories.length >
                                                                         0 && (
-                                                                            <>
-                                                                                <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">
-                                                                                    Income
-                                                                                </div>
-                                                                                {incomeCategories.map(
-                                                                                    (
-                                                                                        account
-                                                                                    ) => (
-                                                                                        <SelectItem
-                                                                                            key={
-                                                                                                account.id
-                                                                                            }
-                                                                                            value={
-                                                                                                account.id
-                                                                                            }
-                                                                                        >
-                                                                                            {
-                                                                                                account.accountName
-                                                                                            }
-                                                                                        </SelectItem>
-                                                                                    )
-                                                                                )}
-                                                                            </>
-                                                                        )}
+                                                                        <>
+                                                                            <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">
+                                                                                Income
+                                                                            </div>
+                                                                            {incomeCategories.map(
+                                                                                (
+                                                                                    account
+                                                                                ) => (
+                                                                                    <SelectItem
+                                                                                        key={
+                                                                                            account.id
+                                                                                        }
+                                                                                        value={
+                                                                                            account.id
+                                                                                        }
+                                                                                    >
+                                                                                        {
+                                                                                            account.accountName
+                                                                                        }
+                                                                                    </SelectItem>
+                                                                                )
+                                                                            )}
+                                                                        </>
+                                                                    )}
                                                                     {expenseCategories.length >
                                                                         0 && (
-                                                                            <>
-                                                                                <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground mt-1">
-                                                                                    Expense
-                                                                                </div>
-                                                                                {expenseCategories.map(
-                                                                                    (
-                                                                                        account
-                                                                                    ) => (
-                                                                                        <SelectItem
-                                                                                            key={
-                                                                                                account.id
-                                                                                            }
-                                                                                            value={
-                                                                                                account.id
-                                                                                            }
-                                                                                        >
-                                                                                            {
-                                                                                                account.accountName
-                                                                                            }
-                                                                                        </SelectItem>
-                                                                                    )
-                                                                                )}
-                                                                            </>
-                                                                        )}
+                                                                        <>
+                                                                            <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground mt-1">
+                                                                                Expense
+                                                                            </div>
+                                                                            {expenseCategories.map(
+                                                                                (
+                                                                                    account
+                                                                                ) => (
+                                                                                    <SelectItem
+                                                                                        key={
+                                                                                            account.id
+                                                                                        }
+                                                                                        value={
+                                                                                            account.id
+                                                                                        }
+                                                                                    >
+                                                                                        {
+                                                                                            account.accountName
+                                                                                        }
+                                                                                    </SelectItem>
+                                                                                )
+                                                                            )}
+                                                                        </>
+                                                                    )}
                                                                     {categories.length ===
                                                                         0 && (
-                                                                            <div className="px-2 py-4 text-sm text-muted-foreground text-center">
-                                                                                No
-                                                                                categories
-                                                                                available
-                                                                            </div>
-                                                                        )}
+                                                                        <div className="px-2 py-4 text-sm text-muted-foreground text-center">
+                                                                            No
+                                                                            categories
+                                                                            available
+                                                                        </div>
+                                                                    )}
                                                                 </SelectContent>
                                                             </Select>
                                                             <FormMessage />
@@ -1484,7 +1618,8 @@ export function CreateRuleDrawer({
                                             />
                                         )}
 
-                                        {form.watch('actionType') === 'set_contact' && (
+                                        {form.watch('actionType') ===
+                                            'set_contact' && (
                                             <FormField
                                                 control={form.control}
                                                 name="actionPayee"
@@ -1506,7 +1641,7 @@ export function CreateRuleDrawer({
                                                             </FormControl>
                                                             <SelectContent>
                                                                 {contacts.length >
-                                                                    0 ? (
+                                                                0 ? (
                                                                     contacts.map(
                                                                         (
                                                                             contact
@@ -1527,7 +1662,8 @@ export function CreateRuleDrawer({
                                                                     )
                                                                 ) : (
                                                                     <div className="px-2 py-4 text-sm text-muted-foreground text-center">
-                                                                        No contacts
+                                                                        No
+                                                                        contacts
                                                                         available
                                                                     </div>
                                                                 )}
@@ -1539,7 +1675,8 @@ export function CreateRuleDrawer({
                                             />
                                         )}
 
-                                        {form.watch('actionType') === 'set_taxes' && (
+                                        {form.watch('actionType') ===
+                                            'set_taxes' && (
                                             <FormField
                                                 control={form.control}
                                                 name="actionTaxIds"
@@ -1550,43 +1687,95 @@ export function CreateRuleDrawer({
                                                         </FormLabel>
                                                         <div className="space-y-2">
                                                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                                                                {taxes.length > 0
-                                                                    ? taxes.map((tax) => {
-                                                                        const checked = Array.isArray(field.value)
-                                                                            ? field.value.includes(tax.id)
-                                                                            : false;
-                                                                        return (
-                                                                            <label
-                                                                                key={tax.id}
-                                                                                className="flex items-center gap-2 rounded border px-2 py-1.5"
-                                                                            >
-                                                                                <Checkbox
-                                                                                    checked={checked}
-                                                                                    onCheckedChange={(c) => {
-                                                                                        const current = Array.isArray(field.value)
-                                                                                            ? [...field.value]
-                                                                                            : [];
-                                                                                        if (c) {
-                                                                                            if (!current.includes(tax.id)) {
-                                                                                                current.push(tax.id);
-                                                                                            }
-                                                                                        } else {
-                                                                                            const idx = current.indexOf(tax.id);
-                                                                                            if (idx >= 0) current.splice(idx, 1);
-                                                                                        }
-                                                                                        field.onChange(current);
-                                                                                    }}
-                                                                                />
-                                                                                <span className="text-sm">
-                                                                                    {tax.name}{' '}
-                                                                                    ({(tax.rate * 100).toFixed(
-                                                                                        (tax.rate * 100) % 1 === 0 ? 0 : 2
-                                                                                    )}
-                                                                                    %)
-                                                                                </span>
-                                                                            </label>
-                                                                        );
-                                                                    })
+                                                                {taxes.length >
+                                                                0
+                                                                    ? taxes.map(
+                                                                          (
+                                                                              tax
+                                                                          ) => {
+                                                                              const checked =
+                                                                                  Array.isArray(
+                                                                                      field.value
+                                                                                  )
+                                                                                      ? field.value.includes(
+                                                                                            tax.id
+                                                                                        )
+                                                                                      : false;
+                                                                              return (
+                                                                                  <label
+                                                                                      key={
+                                                                                          tax.id
+                                                                                      }
+                                                                                      className="flex items-center gap-2 rounded border px-2 py-1.5"
+                                                                                  >
+                                                                                      <Checkbox
+                                                                                          checked={
+                                                                                              checked
+                                                                                          }
+                                                                                          onCheckedChange={(
+                                                                                              c
+                                                                                          ) => {
+                                                                                              const current =
+                                                                                                  Array.isArray(
+                                                                                                      field.value
+                                                                                                  )
+                                                                                                      ? [
+                                                                                                            ...field.value,
+                                                                                                        ]
+                                                                                                      : [];
+                                                                                              if (
+                                                                                                  c
+                                                                                              ) {
+                                                                                                  if (
+                                                                                                      !current.includes(
+                                                                                                          tax.id
+                                                                                                      )
+                                                                                                  ) {
+                                                                                                      current.push(
+                                                                                                          tax.id
+                                                                                                      );
+                                                                                                  }
+                                                                                              } else {
+                                                                                                  const idx =
+                                                                                                      current.indexOf(
+                                                                                                          tax.id
+                                                                                                      );
+                                                                                                  if (
+                                                                                                      idx >=
+                                                                                                      0
+                                                                                                  )
+                                                                                                      current.splice(
+                                                                                                          idx,
+                                                                                                          1
+                                                                                                      );
+                                                                                              }
+                                                                                              field.onChange(
+                                                                                                  current
+                                                                                              );
+                                                                                          }}
+                                                                                      />
+                                                                                      <span className="text-sm">
+                                                                                          {
+                                                                                              tax.name
+                                                                                          }{' '}
+                                                                                          (
+                                                                                          {(
+                                                                                              tax.rate *
+                                                                                              100
+                                                                                          ).toFixed(
+                                                                                              (tax.rate *
+                                                                                                  100) %
+                                                                                                  1 ===
+                                                                                                  0
+                                                                                                  ? 0
+                                                                                                  : 2
+                                                                                          )}
+                                                                                          %)
+                                                                                      </span>
+                                                                                  </label>
+                                                                              );
+                                                                          }
+                                                                      )
                                                                     : null}
                                                             </div>
                                                             <FormMessage />
@@ -1596,7 +1785,8 @@ export function CreateRuleDrawer({
                                             />
                                         )}
 
-                                        {form.watch('actionType') === 'set_memo' && (
+                                        {form.watch('actionType') ===
+                                            'set_memo' && (
                                             <FormField
                                                 control={form.control}
                                                 name="actionMemo"
@@ -1618,7 +1808,8 @@ export function CreateRuleDrawer({
                                             />
                                         )}
 
-                                        {form.watch('actionType') === 'set_splits' && (
+                                        {form.watch('actionType') ===
+                                            'set_splits' && (
                                             <FormField
                                                 control={form.control}
                                                 name="splitsMode"
@@ -1628,7 +1819,9 @@ export function CreateRuleDrawer({
                                                             Splits
                                                         </FormLabel>
                                                         <Select
-                                                            onValueChange={field.onChange}
+                                                            onValueChange={
+                                                                field.onChange
+                                                            }
                                                             value={field.value}
                                                         >
                                                             <FormControl>
@@ -1654,160 +1847,229 @@ export function CreateRuleDrawer({
                                             />
                                         )}
 
-                                        {form.watch('actionType') === 'set_splits' && form.watch('splitsMode') !== 'none' && (
-                                            <div className="space-y-3">
-                                                {splitFields.map((sf, idx) => (
-                                                    <div
-                                                        key={sf.id}
-                                                        className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3 border rounded"
-                                                    >
-                                                        {form.watch('splitsMode') === 'percent' ? (
-                                                            <FormField
-                                                                control={form.control}
-                                                                name={`splitLines.${idx}.percent`}
-                                                                render={({ field }) => (
-                                                                    <FormItem>
-                                                                        <FormLabel className="text-xs">
-                                                                            Percent
-                                                                        </FormLabel>
-                                                                        <FormControl>
-                                                                            <Input
-                                                                                type="number"
-                                                                                {...field}
-                                                                                value={field.value ?? ''}
-                                                                                onChange={(e) =>
-                                                                                    field.onChange(
-                                                                                        e.target.value === ''
-                                                                                            ? undefined
-                                                                                            : e.target.valueAsNumber
-                                                                                    )
-                                                                                }
-                                                                                placeholder="0"
-                                                                            />
-                                                                        </FormControl>
-                                                                        <FormMessage />
-                                                                    </FormItem>
-                                                                )}
-                                                            />
-                                                        ) : (
-                                                            <FormField
-                                                                control={form.control}
-                                                                name={`splitLines.${idx}.amount`}
-                                                                render={({ field }) => (
-                                                                    <FormItem>
-                                                                        <FormLabel className="text-xs">
-                                                                            Amount
-                                                                        </FormLabel>
-                                                                        <FormControl>
-                                                                            <Input
-                                                                                type="number"
-                                                                                {...field}
-                                                                                value={field.value ?? ''}
-                                                                                onChange={(e) =>
-                                                                                    field.onChange(
-                                                                                        e.target.value === ''
-                                                                                            ? undefined
-                                                                                            : e.target.valueAsNumber
-                                                                                    )
-                                                                                }
-                                                                                placeholder="0.00"
-                                                                            />
-                                                                        </FormControl>
-                                                                        <FormMessage />
-                                                                    </FormItem>
-                                                                )}
-                                                            />
-                                                        )}
-                                                        <FormField
-                                                            control={form.control}
-                                                            name={`splitLines.${idx}.categoryId`}
-                                                            render={({ field }) => (
-                                                                <FormItem>
-                                                                    <FormLabel className="text-xs">
-                                                                        Category
-                                                                    </FormLabel>
-                                                                    <Select
-                                                                        onValueChange={field.onChange}
-                                                                        value={field.value}
-                                                                    >
-                                                                        <FormControl>
-                                                                            <SelectTrigger>
-                                                                                <SelectValue placeholder="Select category" />
-                                                                            </SelectTrigger>
-                                                                        </FormControl>
-                                                                        <SelectContent>
-                                                                            {categories.length > 0
-                                                                                ? categories.map((account) => (
-                                                                                    <SelectItem
-                                                                                        key={account.id}
-                                                                                        value={account.id}
-                                                                                    >
-                                                                                        {account.accountName}
-                                                                                    </SelectItem>
-                                                                                ))
-                                                                                : null}
-                                                                        </SelectContent>
-                                                                    </Select>
-                                                                    <FormMessage />
-                                                                </FormItem>
-                                                            )}
-                                                        />
-                                                        <FormField
-                                                            control={form.control}
-                                                            name={`splitLines.${idx}.description`}
-                                                            render={({ field }) => (
-                                                                <FormItem className="sm:col-span-2">
-                                                                    <FormLabel className="text-xs">
-                                                                        Description
-                                                                    </FormLabel>
-                                                                    <FormControl>
-                                                                        <Input
-                                                                            {...field}
-                                                                            placeholder="Optional description"
-                                                                        />
-                                                                    </FormControl>
-                                                                    <FormMessage />
-                                                                </FormItem>
-                                                            )}
-                                                        />
-                                                        <div className="sm:col-span-2 flex justify-end">
-                                                            <Button
-                                                                type="button"
-                                                                variant="ghost"
-                                                                size="icon"
-                                                                onClick={() => removeSplit(idx)}
-                                                                className="h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                                        {form.watch('actionType') ===
+                                            'set_splits' &&
+                                            form.watch('splitsMode') !==
+                                                'none' && (
+                                                <div className="space-y-3">
+                                                    {splitFields.map(
+                                                        (sf, idx) => (
+                                                            <div
+                                                                key={sf.id}
+                                                                className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3 border rounded"
                                                             >
-                                                                <Trash2 className="w-4 h-4" />
-                                                            </Button>
-                                                        </div>
-                                                    </div>
-                                                ))}
-                                                <Button
-                                                    type="button"
-                                                    variant="outline"
-                                                    size="sm"
-                                                    onClick={() =>
-                                                        appendSplit({
-                                                            percent:
-                                                                form.watch('splitsMode') === 'percent'
-                                                                    ? 0
-                                                                    : undefined,
-                                                            amount:
-                                                                form.watch('splitsMode') === 'amount'
-                                                                    ? 0
-                                                                    : undefined,
-                                                            categoryId: '',
-                                                            description: '',
-                                                            taxIds: [],
-                                                        })
-                                                    }
-                                                >
-                                                    <Plus className="w-3 h-3 mr-1" />
-                                                    Add Split Line
-                                                </Button>
-                                            </div>
-                                        )}
+                                                                {form.watch(
+                                                                    'splitsMode'
+                                                                ) ===
+                                                                'percent' ? (
+                                                                    <FormField
+                                                                        control={
+                                                                            form.control
+                                                                        }
+                                                                        name={`splitLines.${idx}.percent`}
+                                                                        render={({
+                                                                            field,
+                                                                        }) => (
+                                                                            <FormItem>
+                                                                                <FormLabel className="text-xs">
+                                                                                    Percent
+                                                                                </FormLabel>
+                                                                                <FormControl>
+                                                                                    <Input
+                                                                                        type="number"
+                                                                                        {...field}
+                                                                                        value={
+                                                                                            field.value ??
+                                                                                            ''
+                                                                                        }
+                                                                                        onChange={(
+                                                                                            e
+                                                                                        ) =>
+                                                                                            field.onChange(
+                                                                                                e
+                                                                                                    .target
+                                                                                                    .value ===
+                                                                                                    ''
+                                                                                                    ? undefined
+                                                                                                    : e
+                                                                                                          .target
+                                                                                                          .valueAsNumber
+                                                                                            )
+                                                                                        }
+                                                                                        placeholder="0"
+                                                                                    />
+                                                                                </FormControl>
+                                                                                <FormMessage />
+                                                                            </FormItem>
+                                                                        )}
+                                                                    />
+                                                                ) : (
+                                                                    <FormField
+                                                                        control={
+                                                                            form.control
+                                                                        }
+                                                                        name={`splitLines.${idx}.amount`}
+                                                                        render={({
+                                                                            field,
+                                                                        }) => (
+                                                                            <FormItem>
+                                                                                <FormLabel className="text-xs">
+                                                                                    Amount
+                                                                                </FormLabel>
+                                                                                <FormControl>
+                                                                                    <Input
+                                                                                        type="number"
+                                                                                        {...field}
+                                                                                        value={
+                                                                                            field.value ??
+                                                                                            ''
+                                                                                        }
+                                                                                        onChange={(
+                                                                                            e
+                                                                                        ) =>
+                                                                                            field.onChange(
+                                                                                                e
+                                                                                                    .target
+                                                                                                    .value ===
+                                                                                                    ''
+                                                                                                    ? undefined
+                                                                                                    : e
+                                                                                                          .target
+                                                                                                          .valueAsNumber
+                                                                                            )
+                                                                                        }
+                                                                                        placeholder="0.00"
+                                                                                    />
+                                                                                </FormControl>
+                                                                                <FormMessage />
+                                                                            </FormItem>
+                                                                        )}
+                                                                    />
+                                                                )}
+                                                                <FormField
+                                                                    control={
+                                                                        form.control
+                                                                    }
+                                                                    name={`splitLines.${idx}.categoryId`}
+                                                                    render={({
+                                                                        field,
+                                                                    }) => (
+                                                                        <FormItem>
+                                                                            <FormLabel className="text-xs">
+                                                                                Category
+                                                                            </FormLabel>
+                                                                            <Select
+                                                                                onValueChange={
+                                                                                    field.onChange
+                                                                                }
+                                                                                value={
+                                                                                    field.value
+                                                                                }
+                                                                            >
+                                                                                <FormControl>
+                                                                                    <SelectTrigger>
+                                                                                        <SelectValue placeholder="Select category" />
+                                                                                    </SelectTrigger>
+                                                                                </FormControl>
+                                                                                <SelectContent>
+                                                                                    {categories.length >
+                                                                                    0
+                                                                                        ? categories.map(
+                                                                                              (
+                                                                                                  account
+                                                                                              ) => (
+                                                                                                  <SelectItem
+                                                                                                      key={
+                                                                                                          account.id
+                                                                                                      }
+                                                                                                      value={
+                                                                                                          account.id
+                                                                                                      }
+                                                                                                  >
+                                                                                                      {
+                                                                                                          account.accountName
+                                                                                                      }
+                                                                                                  </SelectItem>
+                                                                                              )
+                                                                                          )
+                                                                                        : null}
+                                                                                </SelectContent>
+                                                                            </Select>
+                                                                            <FormMessage />
+                                                                        </FormItem>
+                                                                    )}
+                                                                />
+                                                                <FormField
+                                                                    control={
+                                                                        form.control
+                                                                    }
+                                                                    name={`splitLines.${idx}.description`}
+                                                                    render={({
+                                                                        field,
+                                                                    }) => (
+                                                                        <FormItem className="sm:col-span-2">
+                                                                            <FormLabel className="text-xs">
+                                                                                Description
+                                                                            </FormLabel>
+                                                                            <FormControl>
+                                                                                <Input
+                                                                                    {...field}
+                                                                                    placeholder="Optional description"
+                                                                                />
+                                                                            </FormControl>
+                                                                            <FormMessage />
+                                                                        </FormItem>
+                                                                    )}
+                                                                />
+                                                                <div className="sm:col-span-2 flex justify-end">
+                                                                    <Button
+                                                                        type="button"
+                                                                        variant="ghost"
+                                                                        size="icon"
+                                                                        onClick={() =>
+                                                                            removeSplit(
+                                                                                idx
+                                                                            )
+                                                                        }
+                                                                        className="h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                                                                    >
+                                                                        <Trash2 className="w-4 h-4" />
+                                                                    </Button>
+                                                                </div>
+                                                            </div>
+                                                        )
+                                                    )}
+                                                    <Button
+                                                        type="button"
+                                                        variant="outline"
+                                                        size="sm"
+                                                        onClick={() =>
+                                                            appendSplit({
+                                                                percent:
+                                                                    form.watch(
+                                                                        'splitsMode'
+                                                                    ) ===
+                                                                    'percent'
+                                                                        ? 0
+                                                                        : undefined,
+                                                                amount:
+                                                                    form.watch(
+                                                                        'splitsMode'
+                                                                    ) ===
+                                                                    'amount'
+                                                                        ? 0
+                                                                        : undefined,
+                                                                categoryId: '',
+                                                                description: '',
+                                                                taxIds: [],
+                                                            })
+                                                        }
+                                                    >
+                                                        <Plus className="w-3 h-3 mr-1" />
+                                                        Add Split Line
+                                                    </Button>
+                                                </div>
+                                            )}
                                     </div>
                                 </div>
 
@@ -1820,7 +2082,8 @@ export function CreateRuleDrawer({
                                                     Exclude transaction
                                                 </Label>
                                                 <p className="text-xs text-muted-foreground">
-                                                    When matched, void and mark as reviewed
+                                                    When matched, void and mark
+                                                    as reviewed
                                                 </p>
                                             </div>
                                         </div>
@@ -1871,7 +2134,10 @@ export function CreateRuleDrawer({
                         </DrawerClose>
                         <Button
                             type="submit"
-                            disabled={(mode === 'edit' ? isUpdating : isPending) || isLoadingData}
+                            disabled={
+                                (mode === 'edit' ? isUpdating : isPending) ||
+                                isLoadingData
+                            }
                             onClick={form.handleSubmit(onSubmit)}
                             className="flex-1"
                         >
@@ -1880,8 +2146,8 @@ export function CreateRuleDrawer({
                                     ? 'Updating...'
                                     : 'Update Rule'
                                 : isPending
-                                    ? 'Saving...'
-                                    : 'Save Rule'}
+                                  ? 'Saving...'
+                                  : 'Save Rule'}
                         </Button>
                     </div>
                 </DrawerFooter>

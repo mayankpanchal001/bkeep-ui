@@ -142,35 +142,35 @@ Each rule combines:
 - **Tenant‑Scoped Rules**: Rules, conditions, and actions are stored per tenant in the tenant schema.
 - **Transaction Type Filter**: Apply rules to income, expense, or any transaction type.
 - **Account Scope**:
-  - All accounts
-  - Selected accounts only (multiple accounts supported)
+    - All accounts
+    - Selected accounts only (multiple accounts supported)
 - **String Conditions** (description, reference):
-  - contains / not_contains
-  - starts_with / ends_with
-  - equals
-  - optional case sensitivity
+    - contains / not_contains
+    - starts_with / ends_with
+    - equals
+    - optional case sensitivity
 - **Amount Conditions** (amount):
-  - equals (with 2‑decimal rounding)
-  - lt (less than)
-  - gt (greater than)
-  - between (inclusive range)
+    - equals (with 2‑decimal rounding)
+    - lt (less than)
+    - gt (greater than)
+    - between (inclusive range)
 - **Match Strategy**:
-  - all – every condition must match
-  - any – at least one condition must match
+    - all – every condition must match
+    - any – at least one condition must match
 - **Actions**:
-  - set_category
-  - set_contact
-  - set_memo
-  - set_taxes
-  - set_type (income/expense)
-  - set_splits (percent or fixed‑amount splits)
-  - exclude (void and mark as reviewed)
+    - set_category
+    - set_contact
+    - set_memo
+    - set_taxes
+    - set_type (income/expense)
+    - set_splits (percent or fixed‑amount splits)
+    - exclude (void and mark as reviewed)
 - **Auto‑Apply Pipeline**:
-  - Runs after a successful transaction import
-  - Evaluates active, auto‑apply rules against unreviewed transactions
-  - Supports optional account filtering and processing limits
+    - Runs after a successful transaction import
+    - Evaluates active, auto‑apply rules against unreviewed transactions
+    - Supports optional account filtering and processing limits
 - **Soft Delete and Restore**:
-  - Rules can be disabled, soft‑deleted, and later restored
+    - Rules can be disabled, soft‑deleted, and later restored
 
 ## Database Schema
 
@@ -252,13 +252,13 @@ Model: [RuleAction](file:///Users/vaibhavsaini/Developer/Personal/Bkeep/ts-backe
 Each rule controls where and when it can apply:
 
 - **transactionType** (`any` | `income` | `expense`)
-  - Filters by transaction `type`.
-  - `any` matches both income and expense.
+    - Filters by transaction `type`.
+    - `any` matches both income and expense.
 - **accountScope** (`all` | `selected`)
-  - all: rule can apply to any account.
-  - selected: rule only applies if the transaction `accountId` is in `accountIds`.
+    - all: rule can apply to any account.
+    - selected: rule only applies if the transaction `accountId` is in `accountIds`.
 - **accountIds**
-  - Array of account UUIDs used when `accountScope = selected`.
+    - Array of account UUIDs used when `accountScope = selected`.
 
 ### Conditions
 
@@ -281,30 +281,31 @@ Evaluation logic is implemented in
 [rule.queries.ts](file:///Users/vaibhavsaini/Developer/Personal/Bkeep/ts-backend/src/queries/rule.queries.ts#L22-L71):
 
 - **description/reference**
-  - Text is normalized (lowercased) unless `caseSensitive` is true.
-  - Operators:
-    - `contains`: substring match
-    - `not_contains`: negated substring match
-    - `starts_with`: prefix match
-    - `ends_with`: suffix match
-    - `equals`: full‑string equality
+    - Text is normalized (lowercased) unless `caseSensitive` is true.
+    - Operators:
+        - `contains`: substring match
+        - `not_contains`: negated substring match
+        - `starts_with`: prefix match
+        - `ends_with`: suffix match
+        - `equals`: full‑string equality
 - **amount**
-  - The transaction amount and condition values are converted to numbers.
-  - Operators:
-    - `equals`: compares `Number(v.toFixed(2)) === Number(a.toFixed(2))`
-    - `lt`: `v < a`
-    - `gt`: `v > a`
-    - `between`: `v` is between `valueNumber` and `valueNumberTo` (inclusive),
-      regardless of order.
+    - The transaction amount and condition values are converted to numbers.
+    - Operators:
+        - `equals`: compares `Number(v.toFixed(2)) === Number(a.toFixed(2))`
+        - `lt`: `v < a`
+        - `gt`: `v > a`
+        - `between`: `v` is between `valueNumber` and `valueNumberTo` (inclusive),
+          regardless of order.
 
 ### Match Type
 
 - **matchType `all`**
-  - Every condition must evaluate to `true` for the rule to match.
+    - Every condition must evaluate to `true` for the rule to match.
 - **matchType `any`**
-  - At least one condition must evaluate to `true` for the rule to match.
+    - At least one condition must evaluate to `true` for the rule to match.
 
 Implementation:
+
 - Rules are evaluated in memory using `evalCondition` and `matchType` in
   [applyRulesToTransaction](file:///Users/vaibhavsaini/Developer/Personal/Bkeep/ts-backend/src/queries/rule.queries.ts#L374-L423).
 
@@ -345,36 +346,36 @@ Semantics in
 [applyRulesToTransaction](file:///Users/vaibhavsaini/Developer/Personal/Bkeep/ts-backend/src/queries/rule.queries.ts#L425-L609):
 
 - **set_category**
-  - Validates the category account exists in the tenant before applying.
-  - Updates `transaction.categoryId`.
+    - Validates the category account exists in the tenant before applying.
+    - Updates `transaction.categoryId`.
 - **set_contact**
-  - Updates `transaction.contactId`.
+    - Updates `transaction.contactId`.
 - **set_memo**
-  - Updates `transaction.description`.
+    - Updates `transaction.description`.
 - **set_taxes**
-  - Updates associated transaction taxes via `taxIds` payload when combined
-    with transaction update logic.
+    - Updates associated transaction taxes via `taxIds` payload when combined
+      with transaction update logic.
 - **set_type**
-  - Changes transaction `type` between `income` and `expense`.
+    - Changes transaction `type` between `income` and `expense`.
 - **exclude**
-  - Marks the transaction as voided and reviewed:
-    - `status = voided`
-    - `is_reviewed = true`
-    - `reviewed_at` and `reviewed_by` are set.
+    - Marks the transaction as voided and reviewed:
+        - `status = voided`
+        - `is_reviewed = true`
+        - `reviewed_at` and `reviewed_by` are set.
 - **set_splits**
-  - Creates or updates transaction splits via
-    [setTransactionSplits](file:///Users/vaibhavsaini/Developer/Personal/Bkeep/ts-backend/src/queries/transaction.queries.ts).
-  - Percent mode:
-    - Each line specifies `percent` of the transaction amount.
-    - Validation in the schema requires percentages to sum to exactly 100.
-    - Amounts are rounded to 2 decimals when applied, and the last line is
-      adjusted so total matches the transaction amount.
-  - Amount mode:
-    - Each line specifies a fixed `amount`.
-    - Lines are processed sequentially; if intermediate sums exceed the
-      transaction amount, the split set is discarded.
-    - The last line is adjusted so the sum of splits equals the transaction
-      amount (with 2‑decimal rounding in the apply path).
+    - Creates or updates transaction splits via
+      [setTransactionSplits](file:///Users/vaibhavsaini/Developer/Personal/Bkeep/ts-backend/src/queries/transaction.queries.ts).
+    - Percent mode:
+        - Each line specifies `percent` of the transaction amount.
+        - Validation in the schema requires percentages to sum to exactly 100.
+        - Amounts are rounded to 2 decimals when applied, and the last line is
+          adjusted so total matches the transaction amount.
+    - Amount mode:
+        - Each line specifies a fixed `amount`.
+        - Lines are processed sequentially; if intermediate sums exceed the
+          transaction amount, the split set is discarded.
+        - The last line is adjusted so the sum of splits equals the transaction
+          amount (with 2‑decimal rounding in the apply path).
 
 ## Rule Evaluation Flow
 
@@ -387,21 +388,21 @@ High‑level algorithm for a single transaction:
 2. Load active rules for the tenant, ordered by `priority` then `created_at`.
 3. Optionally restrict to `auto_apply = true` when running in auto‑apply mode.
 4. For each rule:
-   - Skip if `accountScope = selected` and transaction `accountId` is not in
-     `accountIds`.
-   - Skip if `transactionType` is not `any` and does not match the transaction
-     `type`.
-   - Evaluate all `conditions` via `evalCondition`.
-   - Apply `matchType` (all/any) to decide if the rule matches.
-   - If the rule matches:
-     - Build a patch based on actions (category, contact, memo, taxes, type).
-     - If `exclude` is present, void and review the transaction.
-     - If there is a patch, call
-       [updateTransaction](file:///Users/vaibhavsaini/Developer/Personal/Bkeep/ts-backend/src/queries/transaction.queries.ts)
-       with the updated fields.
-     - If `set_splits` produced valid splits, call `setTransactionSplits`.
-     - Record the applied rule ID.
-     - If `stopOnMatch` is true on the rule, stop evaluating further rules.
+    - Skip if `accountScope = selected` and transaction `accountId` is not in
+      `accountIds`.
+    - Skip if `transactionType` is not `any` and does not match the transaction
+      `type`.
+    - Evaluate all `conditions` via `evalCondition`.
+    - Apply `matchType` (all/any) to decide if the rule matches.
+    - If the rule matches:
+        - Build a patch based on actions (category, contact, memo, taxes, type).
+        - If `exclude` is present, void and review the transaction.
+        - If there is a patch, call
+          [updateTransaction](file:///Users/vaibhavsaini/Developer/Personal/Bkeep/ts-backend/src/queries/transaction.queries.ts)
+          with the updated fields.
+        - If `set_splits` produced valid splits, call `setTransactionSplits`.
+        - Record the applied rule ID.
+        - If `stopOnMatch` is true on the rule, stop evaluating further rules.
 5. Return the list of applied rule IDs and the transaction ID.
 
 ## Auto‑Apply After Import
@@ -420,16 +421,16 @@ Flow:
 
 1. Import job finishes with status `completed` for entity type `transactions`.
 2. The import processor calls `autoApplyRulesForUnreviewedTransactions` with:
-   - `tenantId`
-   - `schemaName`
-   - `userId` (used as `reviewed_by` for exclude actions)
-   - Optional `accountId` filter from the import job
+    - `tenantId`
+    - `schemaName`
+    - `userId` (used as `reviewed_by` for exclude actions)
+    - Optional `accountId` filter from the import job
 3. Auto‑apply helper:
-   - Queries up to `limit` (default 500) transactions where `is_reviewed = false`.
-   - Optionally filters by `account_id`.
-   - For each transaction ID, calls `applyRulesToTransaction` in auto‑only mode
-     (`auto_apply = true`).
-   - Counts how many transactions had at least one rule applied.
+    - Queries up to `limit` (default 500) transactions where `is_reviewed = false`.
+    - Optionally filters by `account_id`.
+    - For each transaction ID, calls `applyRulesToTransaction` in auto‑only mode
+      (`auto_apply = true`).
+    - Counts how many transactions had at least one rule applied.
 4. Returns statistics: `totalProcessed` and `totalWithMatches`.
 
 ## API Endpoints
@@ -455,32 +456,32 @@ Response:
 
 ```json
 {
-  "success": true,
-  "statusCode": 200,
-  "message": "Resource fetched successfully",
-  "data": {
-    "items": [
-      {
-        "id": "...",
-        "name": "Amazon office supplies",
-        "description": "Split Amazon expenses",
-        "active": true,
-        "transactionType": "expense",
-        "matchType": "all",
-        "autoApply": true,
-        "stopOnMatch": true,
-        "priority": 10,
-        "accountScope": "selected",
-        "accountIds": ["..."]
-      }
-    ],
-    "pagination": {
-      "page": 1,
-      "limit": 20,
-      "total": 1,
-      "pages": 1
+    "success": true,
+    "statusCode": 200,
+    "message": "Resource fetched successfully",
+    "data": {
+        "items": [
+            {
+                "id": "...",
+                "name": "Amazon office supplies",
+                "description": "Split Amazon expenses",
+                "active": true,
+                "transactionType": "expense",
+                "matchType": "all",
+                "autoApply": true,
+                "stopOnMatch": true,
+                "priority": 10,
+                "accountScope": "selected",
+                "accountIds": ["..."]
+            }
+        ],
+        "pagination": {
+            "page": 1,
+            "limit": 20,
+            "total": 1,
+            "pages": 1
+        }
     }
-  }
 }
 ```
 
@@ -495,41 +496,41 @@ Example request:
 
 ```json
 {
-  "name": "Amazon office supplies",
-  "description": "Split Amazon purchases between office supplies and misc",
-  "transactionType": "expense",
-  "matchType": "all",
-  "autoApply": true,
-  "stopOnMatch": true,
-  "priority": 10,
-  "accountScope": "selected",
-  "accountIds": ["11111111-1111-1111-1111-111111111111"],
-  "conditions": [
-    {
-      "field": "description",
-      "operator": "contains",
-      "valueString": "Amazon",
-      "caseSensitive": false
-    }
-  ],
-  "actions": [
-    {
-      "actionType": "set_splits",
-      "payload": {
-        "mode": "percent",
-        "lines": [
-          {
-            "percent": 70,
-            "categoryId": "22222222-2222-2222-2222-222222222222"
-          },
-          {
-            "percent": 30,
-            "categoryId": "33333333-3333-3333-3333-333333333333"
-          }
-        ]
-      }
-    }
-  ]
+    "name": "Amazon office supplies",
+    "description": "Split Amazon purchases between office supplies and misc",
+    "transactionType": "expense",
+    "matchType": "all",
+    "autoApply": true,
+    "stopOnMatch": true,
+    "priority": 10,
+    "accountScope": "selected",
+    "accountIds": ["11111111-1111-1111-1111-111111111111"],
+    "conditions": [
+        {
+            "field": "description",
+            "operator": "contains",
+            "valueString": "Amazon",
+            "caseSensitive": false
+        }
+    ],
+    "actions": [
+        {
+            "actionType": "set_splits",
+            "payload": {
+                "mode": "percent",
+                "lines": [
+                    {
+                        "percent": 70,
+                        "categoryId": "22222222-2222-2222-2222-222222222222"
+                    },
+                    {
+                        "percent": 30,
+                        "categoryId": "33333333-3333-3333-3333-333333333333"
+                    }
+                ]
+            }
+        }
+    ]
 }
 ```
 
@@ -571,27 +572,27 @@ Example request:
 
 ```json
 {
-  "transactionType": "expense",
-  "matchType": "all",
-  "conditions": [
-    {
-      "field": "description",
-      "operator": "contains",
-      "valueString": "Amazon"
-    }
-  ],
-  "actions": [
-    {
-      "actionType": "set_category",
-      "payload": {
-        "categoryId": "22222222-2222-2222-2222-222222222222"
-      }
-    }
-  ],
-  "accountScope": "selected",
-  "accountIds": ["11111111-1111-1111-1111-111111111111"],
-  "testAgainstAll": true,
-  "limit": 25
+    "transactionType": "expense",
+    "matchType": "all",
+    "conditions": [
+        {
+            "field": "description",
+            "operator": "contains",
+            "valueString": "Amazon"
+        }
+    ],
+    "actions": [
+        {
+            "actionType": "set_category",
+            "payload": {
+                "categoryId": "22222222-2222-2222-2222-222222222222"
+            }
+        }
+    ],
+    "accountScope": "selected",
+    "accountIds": ["11111111-1111-1111-1111-111111111111"],
+    "testAgainstAll": true,
+    "limit": 25
 }
 ```
 
@@ -599,37 +600,37 @@ Response shape (simplified):
 
 ```json
 {
-  "success": true,
-  "statusCode": 200,
-  "message": "Test result generated successfully",
-  "data": {
-    "totalTested": 10,
-    "totalMatched": 4,
-    "matches": [
-      {
-        "transactionId": "...",
-        "match": true,
-        "preview": {
-          "type": "expense",
-          "categoryId": "2222...",
-          "contactId": null,
-          "description": "Amazon Marketplace",
-          "taxIds": ["..."],
-          "splits": [
+    "success": true,
+    "statusCode": 200,
+    "message": "Test result generated successfully",
+    "data": {
+        "totalTested": 10,
+        "totalMatched": 4,
+        "matches": [
             {
-              "amount": 70,
-              "categoryId": "2222..."
-            },
-            {
-              "amount": 30,
-              "categoryId": "3333..."
+                "transactionId": "...",
+                "match": true,
+                "preview": {
+                    "type": "expense",
+                    "categoryId": "2222...",
+                    "contactId": null,
+                    "description": "Amazon Marketplace",
+                    "taxIds": ["..."],
+                    "splits": [
+                        {
+                            "amount": 70,
+                            "categoryId": "2222..."
+                        },
+                        {
+                            "amount": 30,
+                            "categoryId": "3333..."
+                        }
+                    ],
+                    "excluded": false
+                }
             }
-          ],
-          "excluded": false
-        }
-      }
-    ]
-  }
+        ]
+    }
 }
 ```
 
@@ -651,13 +652,13 @@ Response (simplified):
 
 ```json
 {
-  "success": true,
-  "statusCode": 200,
-  "message": "Transaction updated successfully",
-  "data": {
-    "transactionId": "...",
-    "appliedRuleIds": ["..."]
-  }
+    "success": true,
+    "statusCode": 200,
+    "message": "Transaction updated successfully",
+    "data": {
+        "transactionId": "...",
+        "appliedRuleIds": ["..."]
+    }
 }
 ```
 
