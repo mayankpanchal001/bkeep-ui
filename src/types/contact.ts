@@ -108,3 +108,33 @@ export type ImportFieldsResponse = {
         fields: ImportField[];
     };
 };
+
+// ===== Import Contacts (Types for API) =====
+export type StartImportPayload = {
+    file: File;
+    mapping: Record<string, string>;
+};
+
+export type ImportSuccessResponse = {
+    success: boolean;
+    statusCode: number;
+    message: string;
+    data?: {
+        importId?: string;
+    };
+};
+
+export type ImportProgressResponse = {
+    success: boolean;
+    statusCode: number;
+    message: string;
+    data?: {
+        importId: string;
+        status: 'pending' | 'processing' | 'completed' | 'failed';
+        processed?: number;
+        total?: number;
+        created?: number;
+        skipped?: number;
+        failed?: number;
+    };
+};
