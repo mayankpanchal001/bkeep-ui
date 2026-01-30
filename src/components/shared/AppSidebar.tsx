@@ -417,9 +417,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                                                                     <SidebarMenuSubButton
                                                                         asChild
                                                                         isActive={
-                                                                            child.path === item.path
-                                                                                ? location.pathname === child.path
-                                                                                : isItemActive(child.path)
+                                                                            child.path ===
+                                                                            item.path
+                                                                                ? location.pathname ===
+                                                                                  child.path
+                                                                                : isItemActive(
+                                                                                      child.path
+                                                                                  )
                                                                         }
                                                                         className="transition-all duration-200 ease-in-out"
                                                                     >

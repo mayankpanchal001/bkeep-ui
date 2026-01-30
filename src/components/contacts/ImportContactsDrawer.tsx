@@ -157,7 +157,7 @@ const ImportContactsDrawer = ({
     const handleFile = (file: File) => {
         if (
             file.type ===
-            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
             file.type === 'application/vnd.ms-excel' ||
             file.name.endsWith('.xlsx') ||
             file.name.endsWith('.xls') ||
@@ -255,9 +255,9 @@ const ImportContactsDrawer = ({
         step === 'file-upload'
             ? selectedFile !== null
             : Array.isArray(importFields) &&
-            importFields
-                .filter((f) => f.required)
-                .every((f) => mapping[f.key]);
+              importFields
+                  .filter((f) => f.required)
+                  .every((f) => mapping[f.key]);
 
     const handleClose = () => {
         if (importMutation.isPending) {
@@ -286,8 +286,8 @@ const ImportContactsDrawer = ({
                             {step === 'file-upload'
                                 ? 'Import Contacts from File'
                                 : step === 'mapping'
-                                    ? 'Map Import Fields'
-                                    : 'Import Progress'}
+                                  ? 'Map Import Fields'
+                                  : 'Import Progress'}
                         </DrawerTitle>
                         <button
                             onClick={handleClose}
@@ -303,19 +303,17 @@ const ImportContactsDrawer = ({
                         {step === 'file-upload' ? (
                             <div className="space-y-6 py-4">
                                 <div className="text-center pt-4">
-                                    <Button
-                                        onClick={handleDownloadSample}
-                                    >
+                                    <Button onClick={handleDownloadSample}>
                                         Download Sample File
                                     </Button>
-
                                 </div>
                                 <div className="flex flex-col gap-2">
                                     <div
-                                        className={`relative flex flex-col items-center justify-center w-full h-48 border-2 border-dashed rounded-lg transition-colors cursor-pointer ${dragActive
+                                        className={`relative flex flex-col items-center justify-center w-full h-48 border-2 border-dashed rounded-lg transition-colors cursor-pointer ${
+                                            dragActive
                                                 ? 'border-primary bg-primary/10'
                                                 : 'border-primary/25 hover:border-primary/50 hover:bg-card'
-                                            } ${selectedFile ? 'bg-primary/20 border-primary' : ''}`}
+                                        } ${selectedFile ? 'bg-primary/20 border-primary' : ''}`}
                                         onDragEnter={handleDrag}
                                         onDragLeave={handleDrag}
                                         onDragOver={handleDrag}
