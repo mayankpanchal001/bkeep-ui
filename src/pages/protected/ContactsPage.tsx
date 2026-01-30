@@ -37,6 +37,8 @@ import {
     useRestoreContact,
 } from '../../services/apis/contactsApi';
 import { Contact, ContactsQueryParams } from '../../types/contact';
+import { FileUp } from 'lucide-react';
+import ImportContactsDrawer from '../../components/contacts/ImportContactsDrawer';
 
 // Helper function to get contact initials
 const getContactInitials = (contact: Contact): string => {
@@ -88,6 +90,7 @@ const ContactsPage = () => {
         order: 'desc',
     });
     const navigate = useNavigate();
+    const [isImportDrawerOpen, setIsImportDrawerOpen] = useState(false);
 
     const { data, isLoading, isError } = useContacts(filters);
     const pagination = data?.data?.pagination;
@@ -194,8 +197,12 @@ const ContactsPage = () => {
         }
     };
 
+    const handleImportClick = () => {
+        setIsImportDrawerOpen(true);
+    };
+
     return (
-        <div className="h-full flex flex-col gap-6">
+        <div className="flex flex-col gap-6">
             {/* Header */}
             <PageHeader
                 title="Contacts"
@@ -294,6 +301,11 @@ const ContactsPage = () => {
                             Clear
                         </Button>
                     )}
+
+                    <Button onClick={handleImportClick} variant="outline">
+                        <FileUp size={16} className="mr-2" /> Import
+                    </Button>
+
                     <Button
                         type="button"
                         size="sm"
@@ -610,6 +622,10 @@ const ContactsPage = () => {
                     onPageChange={handlePageChange}
                 />
             )}
+            <ImportContactsDrawer
+                isOpen={isImportDrawerOpen}
+                onClose={() => setIsImportDrawerOpen(false)}
+            />
         </div>
     );
 };
