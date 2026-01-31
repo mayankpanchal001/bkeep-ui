@@ -8,7 +8,7 @@ import { SidebarItemProps } from '../types';
 const CAP_SINGULAR =
     SINGLE_TENANT_PREFIX.charAt(0).toUpperCase() +
     SINGLE_TENANT_PREFIX.slice(1);
-const CAP_PLURAL =
+export const CAP_PLURAL =
     PLURAL_TENANT_PREFIX.charAt(0).toUpperCase() +
     PLURAL_TENANT_PREFIX.slice(1);
 
@@ -77,53 +77,6 @@ export const SIDEBAR_ITEMS: SidebarItemProps[] = [
         label: 'Settings',
         icon: <Icons.Settings />,
         path: '/settings',
-        children: [
-            {
-                label: 'Profile',
-                icon: <Icons.Profile />,
-                path: '/settings/profile',
-            },
-            {
-                label: CAP_PLURAL,
-                icon: <Icons.Building />,
-                path: '/settings/tenants',
-            },
-            {
-                label: 'Users',
-                icon: <Icons.Users />,
-                path: '/settings/users',
-            },
-            {
-                label: 'Preferences',
-                icon: <Icons.Settings />,
-                path: '/settings/preferences',
-            },
-            {
-                label: 'Roles',
-                icon: <Icons.Roles />,
-                path: '/settings/roles',
-            },
-            {
-                label: 'Security',
-                icon: <Icons.Shield />,
-                path: '/settings/security',
-            },
-            {
-                label: 'Taxes',
-                icon: <Icons.Expenses />,
-                path: '/settings/taxes',
-            },
-            {
-                label: 'Data Privacy',
-                icon: <Icons.Database />,
-                path: '/settings/data',
-            },
-            {
-                label: 'Notifications',
-                icon: <Icons.Notifications />,
-                path: '/settings/notifications',
-            },
-        ],
     },
 ];
 

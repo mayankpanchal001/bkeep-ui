@@ -1,4 +1,4 @@
-import { MoreHorizontal } from 'lucide-react';
+import { MoreVertical } from 'lucide-react';
 import * as React from 'react';
 import { Button } from '../ui/button';
 import {
@@ -61,7 +61,7 @@ export interface ActionMenuProps {
 
 /**
  * Reusable ActionMenu component for table rows and other action contexts.
- * Displays a three-dot menu button that opens a dropdown with action items.
+ * Displays a vertical three-dot menu button that opens a dropdown with action items.
  *
  * @example
  * ```tsx
@@ -116,7 +116,7 @@ export function ActionMenu({
             disabled={disabled}
             aria-label="Row actions"
         >
-            <MoreHorizontal className="h-4 w-4" />
+            <MoreVertical className="h-4 w-4" />
             <span className="sr-only">Open menu</span>
         </Button>
     );

@@ -1,5 +1,4 @@
 import { CreateRuleDrawer } from '@/components/transactions/CreateRuleDrawer';
-import { CreateTransactionDrawer } from '@/components/transactions/CreateTransactionDrawer';
 import { PostTransactionModal } from '@/components/transactions/PostTransactionModal';
 import { SplitTransactionDrawer } from '@/components/transactions/SplitTransactionModal';
 import { TransactionHeader } from '@/components/transactions/TransactionHeader';
@@ -293,10 +292,10 @@ const Transactionpage = () => {
                         status === 'pending'
                             ? 'draft'
                             : status === 'all'
-                              ? 'all'
-                              : status === 'posted'
-                                ? 'posted'
-                                : 'all'
+                                ? 'all'
+                                : status === 'posted'
+                                    ? 'posted'
+                                    : 'all'
                     }
                     onValueChange={(value) => {
                         if (value === 'draft') {
@@ -335,9 +334,7 @@ const Transactionpage = () => {
                             startIcon={<Search className="w-4 h-4" />}
                         />
                     </div>
-                    <CreateTransactionDrawer
-                        selectedAccountId={selectedAccountId}
-                    />
+
                     <Drawer
                         open={isFilterDrawerOpen}
                         onOpenChange={setIsFilterDrawerOpen}
@@ -356,8 +353,8 @@ const Transactionpage = () => {
                                     filterStore.filterEndDate ||
                                     filterStore.filterMinAmount ||
                                     filterStore.filterMaxAmount) && (
-                                    <span className="ml-2 h-2 w-2 rounded-full bg-accent" />
-                                )}
+                                        <span className="ml-2 h-2 w-2 rounded-full bg-accent" />
+                                    )}
                             </Button>
                         </DrawerTrigger>
                         <DrawerContent className="h-full w-full sm:w-[400px]">

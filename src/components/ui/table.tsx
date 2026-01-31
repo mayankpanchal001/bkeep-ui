@@ -125,6 +125,8 @@ interface TableProps extends React.ComponentProps<'table'> {
     containerClassName?: string;
     /** Transpose table axis on mobile (rows become columns, columns become rows) */
     transposeOnMobile?: boolean;
+    /** Max height for scrollable table (default: calc(100vh - 16rem)) */
+    maxHeight?: string;
 }
 
 function Table({
@@ -143,6 +145,7 @@ function Table({
     enableColumnResize = true,
     containerClassName,
     transposeOnMobile = false,
+    maxHeight = 'calc(100vh - 16rem)',
     children,
     ...props
 }: TableProps) {
@@ -374,7 +377,7 @@ function Table({
 
     // Container styles based on borderStyle
     const containerClasses = cn(
-        'relative w-full overflow-hidden max-h-full',
+        'relative w-full max-w-full min-w-0 overflow-hidden',
         borderStyle === 'default' &&
             'rounded-md border border-border bg-background',
         borderStyle === 'minimal' &&
@@ -438,10 +441,11 @@ function Table({
                                 <div
                                     ref={scrollRef}
                                     className={cn(
-                                        'relative overflow-auto h-full',
+                                        'relative overflow-auto w-full max-w-full min-w-0',
                                         transposeOnMobile &&
                                             'md:overflow-auto overflow-visible'
                                     )}
+                                    style={{ maxHeight }}
                                 >
                                     {hasResizableColumns && computedLayout && (
                                         <div
@@ -564,11 +568,13 @@ function TableHeader({ className, sticky = true, ...props }: TableHeaderProps) {
             className={cn(
                 sticky && 'sticky top-0 z-10',
                 // Modern gradient background using theme colors
-                'backdrop-blur-md backdrop-saturate-150',
+                'bg-background/95 backdrop-blur-md backdrop-saturate-150',
                 'border-b-2',
                 'border-border',
                 // Smooth transitions
                 'transition-all duration-200',
+                // Shadow for better separation when scrolling
+                sticky && 'shadow-sm',
                 transposeOnMobile && 'hidden md:table-header-group',
                 className
             )}
@@ -758,7 +764,7 @@ function TableHead({
             className={cn(
                 // Compact spacing and sizing
                 'relative align-middle',
-                isCompact ? 'h-8 px-1.5 py-1' : 'h-9 px-2 py-1.5',
+                isCompact ? 'h-7 px-1 py-0.5' : 'h-8 px-2 py-1',
                 // Modern typography with better hierarchy
                 'text-xs font-semibold uppercase tracking-wider',
                 'text-muted-foreground',
@@ -767,8 +773,8 @@ function TableHead({
                 transposeOnMobile && 'hidden md:table-cell',
                 // Checkbox column styling
                 isCompact
-                    ? '[&:has([role=checkbox])]:w-8 [&:has([role=checkbox])]:px-1.5 [&:has([role=checkbox])>div]:justify-center'
-                    : '[&:has([role=checkbox])]:w-10 [&:has([role=checkbox])]:px-2 [&:has([role=checkbox])>div]:justify-center',
+                    ? '[&:has([role=checkbox])]:w-8 [&:has([role=checkbox])]:px-1 [&:has([role=checkbox])>div]:justify-center'
+                    : '[&:has([role=checkbox])]:w-9 [&:has([role=checkbox])]:px-1.5 [&:has([role=checkbox])>div]:justify-center',
                 // Interactive states for sortable columns
                 sortable && [
                     'cursor-pointer',
@@ -789,7 +795,7 @@ function TableHead({
             <div
                 className={cn(
                     'flex items-center',
-                    isCompact ? 'gap-1' : 'gap-1.5',
+                    isCompact ? 'gap-0.5' : 'gap-1',
                     align === 'center' && 'justify-center',
                     align === 'right' && 'justify-end'
                 )}
@@ -903,16 +909,16 @@ function TableCell({
             className={cn(
                 // Compact cell padding
                 'align-middle text-foreground',
-                isCompact ? 'px-1.5 py-1 text-xs' : 'px-2 py-1.5 text-sm',
+                isCompact ? 'px-1 py-0.5 text-xs' : 'px-2 py-1 text-sm',
                 noTruncate
                     ? 'whitespace-normal wrap-break-word'
                     : 'whitespace-nowrap',
                 alignClass,
                 isCompact
-                    ? '[&:has([role=checkbox])]:w-8 [&:has([role=checkbox])]:px-1.5'
-                    : '[&:has([role=checkbox])]:w-10 [&:has([role=checkbox])]:px-2',
+                    ? '[&:has([role=checkbox])]:w-8 [&:has([role=checkbox])]:px-1'
+                    : '[&:has([role=checkbox])]:w-9 [&:has([role=checkbox])]:px-1.5',
                 transposeOnMobile &&
-                    'flex md:table-cell items-start md:items-middle gap-2 md:gap-0 px-3 md:px-2 py-2.5 md:py-1.5 border-b border-primary/10 md:border-b-0 last:border-b-0',
+                    'flex md:table-cell items-start md:items-middle gap-2 md:gap-0 px-3 md:px-2 py-2 md:py-1 border-b border-primary/10 md:border-b-0 last:border-b-0',
                 className
             )}
             {...props}
