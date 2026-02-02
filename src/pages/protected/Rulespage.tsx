@@ -369,7 +369,9 @@ const Rulespage = () => {
                             <TableHead>Settings</TableHead>
                             <TableHead>Auto‑apply</TableHead>
                             <TableHead>Status</TableHead>
-                            <TableHead>Actions</TableHead>
+                            <TableHead className="w-[1%] whitespace-nowrap">
+                                Actions
+                            </TableHead>
                         </tr>
                     </TableHeader>
                     <TableBody>
@@ -449,7 +451,7 @@ const Rulespage = () => {
                                                     <Button
                                                         variant="ghost"
                                                         size="sm"
-                                                        className="h-8 w-8 p-0"
+                                                        className="h-8 w-8 p-0 min-w-[1rem]"
                                                     >
                                                         <MoreVertical className="h-4 w-4" />
                                                     </Button>

@@ -27,12 +27,12 @@ const ThemeSwitcher = () => {
                     aria-label="Toggle theme"
                     role="switch"
                     aria-checked={isDark}
-                    className={`inline-flex items-center justify-center w-9 h-9 rounded-full bg-card border border-primary/25 text-primary  transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-card hover:border-primary/20 cursor-pointer`}
+                    className={`w-8 h-8 flex justify-center items-center cursor-pointer `}
                 >
                     {isDark ? (
                         <Moon className="h-5 w-5 text-primary" />
                     ) : (
-                        <Sun className="h-5 w-5 text-yellow-500" />
+                        <Sun className="h-5  w-5 text-primary" />
                     )}
                 </button>
             </TooltipTrigger>

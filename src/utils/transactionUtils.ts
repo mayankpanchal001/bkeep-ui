@@ -356,15 +356,23 @@ export const buildTaxOptions = (taxesResponse?: {
 
 export const computeCounts = (
     allTransactions: TransactionItem[]
-): { pendingCount: number; postedCount: number; allCount: number } => {
+): {
+    pendingCount: number;
+    postedCount: number;
+    excludedCount: number;
+    allCount: number;
+} => {
     const pendingCount = (allTransactions || []).filter(
         (tx) => getTransactionStatus(tx) === 'pending'
     ).length;
     const postedCount = (allTransactions || []).filter(
         (tx) => getTransactionStatus(tx) === 'posted'
     ).length;
+    const excludedCount = (allTransactions || []).filter(
+        (tx) => getTransactionStatus(tx) === 'voided'
+    ).length;
     const allCount = (allTransactions || []).length;
-    return { pendingCount, postedCount, allCount };
+    return { pendingCount, postedCount, excludedCount, allCount };
 };
 
 export const currency = (n?: number): string =>

@@ -1,6 +1,6 @@
 import AcceptInvitationForm from '@/components/auth/AcceptInvitationForm';
 import ThemeSwitcher from '@/components/shared/ThemeSwitcher';
-import { Mail, Sparkles, UserCheck } from 'lucide-react';
+import { ArrowLeft, Check, Sparkles } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router';
 import { APP_TITLE } from '../../constants';
@@ -13,8 +13,7 @@ const AcceptInvitationpage = () => {
     const token = searchParams.get('token');
     const hasLoggedOut = useRef(false);
 
-    // Logout user immediately when they visit this page (before any redirects)
-    // Call clearAuth directly from store to ensure it happens synchronously
+    // Logout user immediately when they visit this page
     useEffect(() => {
         if (!hasLoggedOut.current) {
             AuthStore.getState().clearAuth();
@@ -29,201 +28,123 @@ const AcceptInvitationpage = () => {
     }, [token, navigate]);
 
     return (
-        <div className="grid h-dvh justify-center p-2 lg:grid-cols-2 overflow-hidden relative bg-muted">
-            {/* Background Glow Effects */}
-            <div className="absolute top-0 left-0 w-[600px] h-[600px] bg-primary/10 blur-[150px] rounded-full -translate-x-1/2 -translate-y-1/2 pointer-events-none animate-pulse"></div>
-            <div
-                className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-indigo-500/10 blur-[150px] rounded-full translate-x-1/2 translate-y-1/2 pointer-events-none animate-pulse"
-                style={{ animationDelay: '1s' }}
-            ></div>
-            <div
-                className="absolute top-1/2 left-1/2 w-[400px] h-[400px] bg-purple-500/5 blur-[100px] rounded-full -translate-x-1/2 -translate-y-1/2 pointer-events-none animate-pulse"
-                style={{ animationDelay: '2s' }}
-            ></div>
-
-            {/* Left Side - Accept Invitation Form Section */}
-            <div className="flex max-sm:w-screen items-center justify-center h-full relative z-10 bg-transparent overflow-y-auto">
-                <div className="absolute top-8 right-8 z-20">
-                    <ThemeSwitcher />
-                </div>
-                <div className="w-full max-w-md py-8">
-                    <div className="lg:hidden flex flex-col items-center mb-8">
-                        <Link to="/" className="inline-block mb-4">
-                            <img
-                                src={logo}
-                                alt="BKeep Accounting Logo"
-                                className="h-12 w-auto"
-                            />
-                        </Link>
-                    </div>
-
-                    {/* Accept Invitation Form Card */}
-                    <div className="p-8 lg:p-12">
-                        <div className="mb-8 text-center">
-                            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mb-4 relative">
-                                <Mail className="w-8 h-8 text-primary" />
-                                <div className="absolute -top-1 -right-1 w-6 h-6 rounded-full bg-primary flex items-center justify-center">
-                                    <Sparkles className="w-3 h-3 text-primary-foreground" />
-                                </div>
-                            </div>
-                            <h2 className="text-2xl sm:text-3xl font-semibold leading-tight text-primary mb-2 tracking-tight">
-                                You're Invited!
-                            </h2>
-                            <p className="text-sm sm:text-base text-primary/70 dark:text-primary/65 font-medium leading-relaxed">
-                                Complete your account setup to join the team
-                            </p>
-                        </div>
-                        <AcceptInvitationForm />
-                    </div>
-
-                    {/* Footer */}
-                    <div className="absolute bottom-8 left-8 right-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0">
-                        <p className="text-xs sm:text-sm text-primary/70 dark:text-primary/65 font-medium tracking-normal">
-                            © {new Date().getFullYear()}, {APP_TITLE}.
-                        </p>
-                        <div className="flex items-center gap-4 sm:gap-6">
-                            <Link
-                                to="/privacy"
-                                className="text-xs sm:text-sm text-primary/70 dark:text-primary/65 font-medium hover:text-primary dark:hover:text-primary/90 transition-colors tracking-normal"
-                            >
-                                Privacy Policy
-                            </Link>
-                            <Link
-                                to="/terms"
-                                className="text-xs sm:text-sm text-primary/70 dark:text-primary/65 font-medium hover:text-primary dark:hover:text-primary/90 transition-colors tracking-normal"
-                            >
-                                Terms of Service
-                            </Link>
-                        </div>
-                    </div>
-                </div>
+        <div className="min-h-screen w-full relative flex items-center justify-center bg-background overflow-hidden selection:bg-primary/20 font-sans">
+            {/* Ambient Background Effects */}
+            <div className="absolute inset-0 overflow-hidden">
+                <div className="absolute -top-[30%] -left-[10%] w-[70%] h-[70%] rounded-full bg-gradient-to-br from-primary/20 via-purple-500/20 to-blue-500/20 blur-[120px] animate-pulse duration-[10s]" />
+                <div className="absolute -bottom-[30%] -right-[10%] w-[70%] h-[70%] rounded-full bg-gradient-to-tl from-indigo-500/20 via-pink-500/20 to-primary/20 blur-[120px] animate-pulse duration-[10s] delay-1000" />
+                <div className="absolute top-[20%] left-[20%] w-[60%] h-[60%] rounded-full bg-primary/5 blur-[100px] animate-pulse duration-[15s] delay-2000" />
             </div>
 
-            {/* Right Side - Branding Section */}
-            <div className="hidden lg:flex p-1 h-full">
-                <div className="w-full bg-card rounded-[24px] p-10 relative overflow-hidden h-full">
-                    {/* Animated Background Pattern */}
-                    <div className="absolute inset-0 opacity-5">
-                        <div
-                            className="absolute inset-0"
-                            style={{
-                                backgroundImage: `url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='1'%3E%3Cpath d='M40 40v-8h-4v8h-8v4h8v8h4v-8h8v-4h-8zm0-40V0h-4v4h-8v4h8v4h4V8h8V4h-8zM0 40v-8H-4v8h-8v4h8v8H-4v-8h-8v-4h8zM0 4V0H-4v4h-8v4h8v4H-4V8h-8V4h8z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-                                backgroundSize: '80px 80px',
-                                animation: 'pattern-move 20s linear infinite',
-                            }}
-                        />
-                    </div>
+            {/* Grid Pattern Overlay */}
+            <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808008_1px,transparent_1px),linear-gradient(to_bottom,#80808008_1px,transparent_1px)] bg-[size:32px_32px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] pointer-events-none" />
 
-                    {/* Gradient Overlay */}
-                    <div className="absolute inset-0 bg-linear-to-br from-primary/5 via-transparent to-indigo-500/5"></div>
+            <div className="absolute top-6 right-6 z-50 animate-in fade-in slide-in-from-top-4 duration-700 delay-200">
+                <ThemeSwitcher />
+            </div>
 
-                    {/* Content */}
-                    <div className="relative z-10 w-full flex flex-col h-full">
-                        {/* Logo and Header */}
-                        <div className="mb-8">
-                            <div className="mb-6">
+            <div className="w-full max-w-5xl px-4 relative z-10 animate-in fade-in zoom-in-95 slide-in-from-bottom-8 duration-700">
+                <div className="grid lg:grid-cols-5 gap-0 bg-card/80 backdrop-blur-xl border border-white/10 dark:border-white/5 shadow-2xl rounded-[30px] overflow-hidden min-h-[600px]">
+                    {/* Left Section - Branding & Info */}
+                    <div className="lg:col-span-2 bg-muted/30 p-8 lg:p-12 flex flex-col justify-between relative overflow-hidden">
+                        {/* Decorative Background for Left Panel */}
+                        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent" />
+
+                        <div className="relative z-10">
+                            <Link
+                                to="/"
+                                className="inline-block mb-12 transition-transform hover:scale-105 active:scale-95 duration-200"
+                            >
                                 <img
                                     src={logo}
-                                    alt="Bkeep Logo"
-                                    className="h-24 w-24 object-contain"
+                                    alt={APP_TITLE}
+                                    className="h-12 w-auto drop-shadow-sm"
                                 />
-                            </div>
-                            <h1 className="text-3xl lg:text-4xl font-semibold leading-tight text-primary mb-3 tracking-tight">
-                                Welcome to the Team
-                            </h1>
-                            <p className="text-base lg:text-lg text-primary/70 dark:text-primary/65 font-medium tracking-normal leading-relaxed">
-                                You've been invited to join {APP_TITLE}. Let's
-                                get you set up!
-                            </p>
-                        </div>
+                            </Link>
 
-                        {/* Feature Cards */}
-                        <div className="flex-1 flex flex-col justify-center gap-6 mb-8">
-                            <div className="flex items-start gap-4 p-6 bg-primary/5 rounded-xl border border-primary/10 backdrop-blur-sm hover:bg-primary/10 transition-all duration-300">
-                                <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-                                    <UserCheck className="w-6 h-6 text-primary" />
+                            <div className="space-y-6">
+                                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-background/50 border border-border/50 text-foreground text-xs font-medium backdrop-blur-sm">
+                                    <Sparkles className="w-3.5 h-3.5 text-primary" />
+                                    <span>You're invited!</span>
                                 </div>
-                                <div>
-                                    <h3 className="text-primary text-lg font-semibold mb-1">
-                                        Join Your Organization
-                                    </h3>
-                                    <p className="text-primary/70 dark:text-primary/65 text-sm leading-relaxed font-medium">
-                                        Connect with your team and start
-                                        collaborating on accounting tasks
-                                        seamlessly.
-                                    </p>
-                                </div>
-                            </div>
-
-                            <div className="flex items-start gap-4 p-6 bg-indigo-500/5 rounded-xl border border-indigo-500/10 backdrop-blur-sm hover:bg-indigo-500/10 transition-all duration-300">
-                                <div className="w-12 h-12 rounded-lg bg-indigo-500/10 flex items-center justify-center shrink-0">
-                                    <Sparkles className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
-                                </div>
-                                <div>
-                                    <h3 className="text-primary text-lg font-semibold mb-1">
-                                        Get Started Instantly
-                                    </h3>
-                                    <p className="text-primary/70 dark:text-primary/65 text-sm leading-relaxed font-medium">
-                                        Complete your setup in minutes and
-                                        access all features right away.
-                                    </p>
-                                </div>
-                            </div>
-
-                            <div className="flex items-start gap-4 p-6 bg-purple-500/5 rounded-xl border border-purple-500/10 backdrop-blur-sm hover:bg-purple-500/10 transition-all duration-300">
-                                <div className="w-12 h-12 rounded-lg bg-purple-500/10 flex items-center justify-center shrink-0">
-                                    <Mail className="w-6 h-6 text-purple-600 dark:text-purple-400" />
-                                </div>
-                                <div>
-                                    <h3 className="text-primary text-lg font-semibold mb-1">
-                                        Secure & Private
-                                    </h3>
-                                    <p className="text-primary/70 dark:text-primary/65 text-sm leading-relaxed font-medium">
-                                        Your data is encrypted and secure. We
-                                        take privacy seriously.
-                                    </p>
-                                </div>
+                                <h1 className="text-3xl lg:text-4xl font-bold tracking-tight text-foreground leading-tight">
+                                    Join the team on{' '}
+                                    <span className="text-primary">
+                                        {APP_TITLE}
+                                    </span>
+                                </h1>
+                                <p className="text-muted-foreground text-lg leading-relaxed">
+                                    Collaborate, manage finances, and grow
+                                    together. Your workspace is ready.
+                                </p>
                             </div>
                         </div>
 
-                        {/* Footer Info */}
-                        <div className="mt-auto pt-6 border-t border-primary/10">
-                            <div className="grid grid-cols-2 gap-6">
-                                <div>
-                                    <h3 className="text-primary text-base font-semibold mb-2">
-                                        Quick Setup
-                                    </h3>
-                                    <p className="text-primary/70 dark:text-primary/65 text-sm leading-relaxed font-medium">
-                                        Just a few steps to complete your
-                                        account and start using {APP_TITLE}.
-                                    </p>
+                        <div className="relative z-10 mt-12 space-y-4">
+                            <div className="flex items-center gap-3 text-sm text-muted-foreground">
+                                <div className="w-8 h-8 rounded-full bg-background/50 flex items-center justify-center border border-border/50">
+                                    <Check className="w-4 h-4 text-green-500" />
                                 </div>
-                                <div>
-                                    <h3 className="text-primary text-base font-semibold mb-2">
-                                        Need Help?
-                                    </h3>
-                                    <p className="text-primary/70 dark:text-primary/65 text-sm leading-relaxed font-medium">
-                                        Contact your administrator or check our
-                                        support documentation for assistance.
-                                    </p>
+                                <span>Secure invitation link</span>
+                            </div>
+                            <div className="flex items-center gap-3 text-sm text-muted-foreground">
+                                <div className="w-8 h-8 rounded-full bg-background/50 flex items-center justify-center border border-border/50">
+                                    <Check className="w-4 h-4 text-green-500" />
                                 </div>
+                                <span>Instant access setup</span>
                             </div>
                         </div>
                     </div>
 
-                    {/* Decorative Elements */}
-                    <div className="absolute top-20 right-20 w-32 h-32 rounded-full bg-primary/5 blur-3xl pointer-events-none"></div>
-                    <div className="absolute bottom-20 left-20 w-40 h-40 rounded-full bg-indigo-500/5 blur-3xl pointer-events-none"></div>
+                    {/* Right Section - Form */}
+                    <div className="lg:col-span-3 p-8 lg:p-12 flex flex-col justify-center bg-card/50 relative">
+                        <div className="max-w-md mx-auto w-full">
+                            <div className="mb-8">
+                                <h2 className="text-2xl font-semibold text-foreground mb-2">
+                                    Create your account
+                                </h2>
+                                <p className="text-muted-foreground text-sm">
+                                    Fill in your details to complete the setup.
+                                </p>
+                            </div>
+
+                            <AcceptInvitationForm />
+
+                            <div className="mt-8 pt-6 border-t border-border/40 flex items-center justify-between text-xs font-medium text-muted-foreground">
+                                <Link
+                                    to="/login"
+                                    className="flex items-center gap-1.5 hover:text-primary transition-colors group"
+                                >
+                                    <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" />
+                                    Return to Login
+                                </Link>
+                                <div className="flex gap-5">
+                                    <Link
+                                        to="/privacy"
+                                        className="hover:text-primary transition-colors"
+                                    >
+                                        Privacy
+                                    </Link>
+                                    <Link
+                                        to="/terms"
+                                        className="hover:text-primary transition-colors"
+                                    >
+                                        Terms
+                                    </Link>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Bottom Copyright */}
+                <div className="mt-8 text-center animate-in fade-in duration-700 delay-500">
+                    <p className="text-xs text-muted-foreground/40 font-medium">
+                        &copy; {new Date().getFullYear()} {APP_TITLE}. Securely
+                        powered by Bkeep.
+                    </p>
                 </div>
             </div>
-
-            {/* CSS Animation for Pattern */}
-            <style>{`
-                @keyframes pattern-move {
-                    0% { background-position: 0 0; }
-                    100% { background-position: 80px 80px; }
-                }
-            `}</style>
         </div>
     );
 };

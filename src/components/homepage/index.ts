@@ -10,3 +10,16 @@ export { default as TestimonialsSection } from './TestimonialsSection';
 export { default as FAQSection } from './FAQSection';
 export { default as CTASection } from './CTASection';
 export { default as Footer } from './Footer';
+
+// GSAP Animation Components
+export {
+    GSAPScrollAnimation,
+    GSAPParallaxSection,
+    GSAPCountUp,
+    GSAPMagneticElement,
+    GSAPTextReveal,
+    GSAPHorizontalScroll,
+    GSAPPageLoad,
+    GSAPCursorFollower,
+    GSAPScrollProgress,
+} from './GSAPAnimations';

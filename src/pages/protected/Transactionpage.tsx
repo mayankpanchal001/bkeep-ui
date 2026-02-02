@@ -220,6 +220,12 @@ const Transactionpage = () => {
     };
 
     useEffect(() => {
+        if (status === 'all') {
+            filterStore.setStatus('pending');
+        }
+    }, [status, filterStore]);
+
+    useEffect(() => {
         if (isLoading) return;
         if (error) {
             console.error('Error fetching transactions:', error);
@@ -289,36 +295,35 @@ const Transactionpage = () => {
             <div className="flex items-center gap-2 flex-wrap">
                 <Tabs
                     value={
-                        status === 'pending'
-                            ? 'draft'
-                            : status === 'all'
-                              ? 'all'
-                              : status === 'posted'
-                                ? 'posted'
-                                : 'all'
+                        status === 'posted'
+                            ? 'posted'
+                            : status === 'voided'
+                              ? 'excluded'
+                              : 'pending'
                     }
                     onValueChange={(value) => {
-                        if (value === 'draft') {
+                        if (value === 'pending') {
                             filterStore.setStatus('pending');
-                        } else if (value === 'all') {
-                            filterStore.setStatus('all');
                         } else if (value === 'posted') {
                             filterStore.setStatus('posted');
+                        } else if (value === 'excluded') {
+                            filterStore.setStatus('voided');
                         }
                     }}
                     className="w-fit"
                 >
                     <TabsList>
-                        <TabsTrigger value="all">
-                            All ({computeCounts(allTransactions).allCount})
-                        </TabsTrigger>
-                        <TabsTrigger value="draft">
-                            Draft ({computeCounts(allTransactions).pendingCount}
-                            )
+                        <TabsTrigger value="pending">
+                            Pending (
+                            {computeCounts(allTransactions).pendingCount})
                         </TabsTrigger>
                         <TabsTrigger value="posted">
                             Posted ({computeCounts(allTransactions).postedCount}
                             )
+                        </TabsTrigger>
+                        <TabsTrigger value="excluded">
+                            Excluded (
+                            {computeCounts(allTransactions).excludedCount})
                         </TabsTrigger>
                     </TabsList>
                 </Tabs>

@@ -226,6 +226,7 @@ const MobileOffcanvas = ({ isOpen, onClose }: MobileOffcanvasProps) => {
                                         </div>
 
                                         {/* Children */}
+
                                         <div
                                             className={`
                                                 overflow-hidden transition-all duration-300 ease-in-out

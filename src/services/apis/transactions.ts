@@ -436,7 +436,8 @@ export type TransactionImportStartResponse = {
     statusCode: number;
     message: string;
     data?: {
-        importId?: string;
+        id?: string;
+        originalFilename?: string;
     };
 };
 
@@ -445,13 +446,17 @@ export type TransactionImportProgressResponse = {
     statusCode: number;
     message: string;
     data?: {
-        importId: string;
+        id: string;
         status: 'pending' | 'processing' | 'completed' | 'failed';
-        processed?: number;
-        total?: number;
-        created?: number;
-        skipped?: number;
-        failed?: number;
+        totalRows: number;
+        processedRows: number;
+        successfulRows: number;
+        failedRows: number;
+        progress: number;
+        errorMessage: string | null;
+        errorDetails: string | null;
+        startedAt: string;
+        completedAt: string | null;
     };
 };
 

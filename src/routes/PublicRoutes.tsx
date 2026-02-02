@@ -1,10 +1,10 @@
-import { Navigate, Outlet, useLocation } from 'react-router';
-import { useThemeSync } from '../hooks/useThemeSync';
-import { AuthStore } from '../stores/auth/authStore';
-import { useAuth } from '../stores/auth/authSelectore';
 import PublicLayout from '@/components/layouts/PublicLayout';
 import Loading from '@/components/shared/Loading';
 import SEOUpdater from '@/components/shared/SEOUpdater';
+import { Navigate, Outlet, useLocation } from 'react-router';
+import { useThemeSync } from '../hooks/useThemeSync';
+import { useAuth } from '../stores/auth/authSelectore';
+import { AuthStore } from '../stores/auth/authStore';
 
 const PublicRoutes = () => {
     useThemeSync();

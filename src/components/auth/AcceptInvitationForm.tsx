@@ -5,7 +5,6 @@ import {
     CheckCircle,
     Loader2,
     Lock,
-    LogIn,
     Mail,
     User,
     X,
@@ -180,24 +179,23 @@ const AcceptInvitationForm = () => {
     // Error state
     if (verificationError || !verificationData?.success) {
         return (
-            <div className="flex flex-col items-center justify-center py-12">
-                <div className="w-20 h-20 rounded-full bg-red-50 flex items-center justify-center mb-6">
-                    <AlertTriangle className="w-10 h-10 text-red-500" />
+            <div className="flex flex-col items-center justify-center py-8 text-center animate-in fade-in duration-500">
+                <div className="w-16 h-16 rounded-full bg-destructive/10 flex items-center justify-center mb-6 ring-8 ring-destructive/5">
+                    <AlertTriangle className="w-8 h-8 text-destructive" />
                 </div>
-                <h2 className="text-2xl font-bold text-primary mb-3">
-                    Invalid or Expired Invitation
+                <h2 className="text-xl font-semibold text-foreground mb-2">
+                    Invitation Invalid
                 </h2>
-                <p className="text-sm text-primary/50 text-center mb-8 max-w-md">
+                <p className="text-sm text-muted-foreground mb-8 max-w-[280px] leading-relaxed">
                     {verificationData?.message ||
-                        'This invitation link is invalid or has expired. Please contact your administrator for a new invitation.'}
+                        'The invitation link is invalid or has expired. Please request a new invitation.'}
                 </p>
                 <Button
                     variant="default"
                     onClick={() => navigate('/login')}
-                    className="w-full"
-                    startIcon={<LogIn className="w-4 h-4" />}
+                    className="w-full h-11 font-medium"
                 >
-                    Go to Login
+                    Return to Login
                 </Button>
             </div>
         );
