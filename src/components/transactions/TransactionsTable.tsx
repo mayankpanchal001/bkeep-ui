@@ -241,7 +241,7 @@ export const TransactionsTable = ({
                                                     const rate =
                                                         (value &&
                                                             taxRateById[
-                                                            value
+                                                                value
                                                             ]) ||
                                                         0;
                                                     setTransactions((prev) =>
@@ -304,14 +304,14 @@ export const TransactionsTable = ({
                                                     prev.map((tx) =>
                                                         tx.id === t.id
                                                             ? {
-                                                                ...tx,
-                                                                fromTo:
-                                                                    value ||
-                                                                    undefined,
-                                                                contactId:
-                                                                    contactId ||
-                                                                    undefined,
-                                                            }
+                                                                  ...tx,
+                                                                  fromTo:
+                                                                      value ||
+                                                                      undefined,
+                                                                  contactId:
+                                                                      contactId ||
+                                                                      undefined,
+                                                              }
                                                             : tx
                                                     )
                                                 );
@@ -353,11 +353,11 @@ export const TransactionsTable = ({
                                                         prev.map((tx) =>
                                                             tx.id === t.id
                                                                 ? {
-                                                                    ...tx,
-                                                                    category:
-                                                                        value ||
-                                                                        undefined,
-                                                                }
+                                                                      ...tx,
+                                                                      category:
+                                                                          value ||
+                                                                          undefined,
+                                                                  }
                                                                 : tx
                                                         )
                                                     );
@@ -387,10 +387,10 @@ export const TransactionsTable = ({
                                                     prev.map((tx) =>
                                                         tx.id === t.id
                                                             ? {
-                                                                ...tx,
-                                                                matched:
-                                                                    !tx.matched,
-                                                            }
+                                                                  ...tx,
+                                                                  matched:
+                                                                      !tx.matched,
+                                                              }
                                                             : tx
                                                     )
                                                 );
@@ -449,74 +449,74 @@ export const TransactionsTable = ({
                                         {['pending', 'posted'].includes(
                                             t.status
                                         ) && (
-                                                <DropdownMenu>
-                                                    <DropdownMenuTrigger asChild>
-                                                        <Button
-                                                            variant="outline"
-                                                            size="sm"
-                                                            className="min-w-[1rem]"
-                                                        >
-                                                            <MoreVertical className="h-4 w-4" />
-                                                        </Button>
-                                                    </DropdownMenuTrigger>
-                                                    <DropdownMenuContent align="end">
-                                                        {t.status === 'pending' && (
-                                                            <>
-                                                                <DropdownMenuItem
-                                                                    onClick={() => {
-                                                                        console.log(
-                                                                            `[AUDIT] Action: Exclude, Transaction: ${t.id}, Status: ${t.status}, Time: ${new Date().toISOString()}`
-                                                                        );
-                                                                        voidTransaction(
-                                                                            t.id
-                                                                        );
-                                                                    }}
-                                                                >
-                                                                    Exclude
-                                                                </DropdownMenuItem>
-                                                                <DropdownMenuItem
-                                                                    onClick={() => {
-                                                                        console.log(
-                                                                            `[AUDIT] Action: Split, Transaction: ${t.id}, Status: ${t.status}, Time: ${new Date().toISOString()}`
-                                                                        );
-                                                                        onSplitClick(
-                                                                            t
-                                                                        );
-                                                                    }}
-                                                                >
-                                                                    Split
-                                                                </DropdownMenuItem>
-                                                                <DropdownMenuItem
-                                                                    onClick={() => {
-                                                                        console.log(
-                                                                            `[AUDIT] Action: Create Rule, Transaction: ${t.id}, Status: ${t.status}, Time: ${new Date().toISOString()}`
-                                                                        );
-                                                                        onCreateRuleClick(
-                                                                            t
-                                                                        );
-                                                                    }}
-                                                                >
-                                                                    Create Rule
-                                                                </DropdownMenuItem>
-                                                            </>
-                                                        )}
-                                                        {t.status === 'posted' && (
+                                            <DropdownMenu>
+                                                <DropdownMenuTrigger asChild>
+                                                    <Button
+                                                        variant="outline"
+                                                        size="sm"
+                                                        className="min-w-[1rem]"
+                                                    >
+                                                        <MoreVertical className="h-4 w-4" />
+                                                    </Button>
+                                                </DropdownMenuTrigger>
+                                                <DropdownMenuContent align="end">
+                                                    {t.status === 'pending' && (
+                                                        <>
                                                             <DropdownMenuItem
                                                                 onClick={() => {
                                                                     console.log(
-                                                                        `[AUDIT] Action: Reverse, Transaction: ${t.id}, Status: ${t.status}, Time: ${new Date().toISOString()}`
+                                                                        `[AUDIT] Action: Exclude, Transaction: ${t.id}, Status: ${t.status}, Time: ${new Date().toISOString()}`
                                                                     );
-                                                                    reverseTransaction(
+                                                                    voidTransaction(
                                                                         t.id
                                                                     );
                                                                 }}
                                                             >
-                                                                Reverse
+                                                                Exclude
                                                             </DropdownMenuItem>
-                                                        )}
-                                                    </DropdownMenuContent>
-                                                </DropdownMenu>
-                                            )}
+                                                            <DropdownMenuItem
+                                                                onClick={() => {
+                                                                    console.log(
+                                                                        `[AUDIT] Action: Split, Transaction: ${t.id}, Status: ${t.status}, Time: ${new Date().toISOString()}`
+                                                                    );
+                                                                    onSplitClick(
+                                                                        t
+                                                                    );
+                                                                }}
+                                                            >
+                                                                Split
+                                                            </DropdownMenuItem>
+                                                            <DropdownMenuItem
+                                                                onClick={() => {
+                                                                    console.log(
+                                                                        `[AUDIT] Action: Create Rule, Transaction: ${t.id}, Status: ${t.status}, Time: ${new Date().toISOString()}`
+                                                                    );
+                                                                    onCreateRuleClick(
+                                                                        t
+                                                                    );
+                                                                }}
+                                                            >
+                                                                Create Rule
+                                                            </DropdownMenuItem>
+                                                        </>
+                                                    )}
+                                                    {t.status === 'posted' && (
+                                                        <DropdownMenuItem
+                                                            onClick={() => {
+                                                                console.log(
+                                                                    `[AUDIT] Action: Reverse, Transaction: ${t.id}, Status: ${t.status}, Time: ${new Date().toISOString()}`
+                                                                );
+                                                                reverseTransaction(
+                                                                    t.id
+                                                                );
+                                                            }}
+                                                        >
+                                                            Reverse
+                                                        </DropdownMenuItem>
+                                                    )}
+                                                </DropdownMenuContent>
+                                            </DropdownMenu>
+                                        )}
                                     </div>
                                 </TableCell>
                             </TableRow>

@@ -28,9 +28,7 @@ import { useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { useChartOfAccounts } from '../../services/apis/chartsAccountApi';
-import {
-    usePostTransaction,
-} from '../../services/apis/transactions';
+import { usePostTransaction } from '../../services/apis/transactions';
 
 const formSchema = z.object({
     counterAccountId: z.string().min(1, 'Counter Account is required'),
