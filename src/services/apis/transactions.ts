@@ -209,10 +209,7 @@ export const useUpdateTransaction = () => {
             id: string;
             payload: Partial<CreateTransactionPayload>;
         }) => updateTransaction(id, payload),
-        onSuccess: (data) => {
-            showSuccessToast(
-                data?.message || 'Transaction updated successfully'
-            );
+        onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['transactions'] });
         },
         onError: (error) => {
@@ -296,26 +293,16 @@ export type PostTransactionPayload = {
 };
 
 export const postTransaction = async (
-    id: string,
-    payload: PostTransactionPayload
+    id: string
 ): Promise<CreateTransactionResponse> => {
-    const response = await axiosInstance.post(
-        `/transactions/${id}/post`,
-        payload
-    );
+    const response = await axiosInstance.post(`/transactions/${id}/post`);
     return response.data;
 };
 
 export const usePostTransaction = () => {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: ({
-            id,
-            payload,
-        }: {
-            id: string;
-            payload: PostTransactionPayload;
-        }) => postTransaction(id, payload),
+        mutationFn: (id: string) => postTransaction(id),
         onSuccess: (data) => {
             showSuccessToast(
                 data?.message || 'Transaction posted successfully'

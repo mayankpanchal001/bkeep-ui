@@ -30,7 +30,6 @@ import { z } from 'zod';
 import { useChartOfAccounts } from '../../services/apis/chartsAccountApi';
 import {
     usePostTransaction,
-    type PostTransactionPayload,
 } from '../../services/apis/transactions';
 
 const formSchema = z.object({
@@ -96,24 +95,15 @@ export function PostTransactionModal({
         }
     }, [transactionId, transactionDate, defaultCounterAccountId, open, form]);
 
-    const onSubmit = (values: FormValues) => {
-        const payload: PostTransactionPayload = {
-            counterAccountId: values.counterAccountId,
-            entryDate: new Date(values.entryDate).toISOString(),
-            reference: values.reference || undefined,
-            memo: values.memo || undefined,
-        };
-
-        postTransaction(
-            { id: transactionId, payload },
-            {
-                onSuccess: () => {
-                    form.reset();
-                    onSuccess?.();
-                    onOpenChange(false);
-                },
-            }
-        );
+    const onSubmit = () => {
+        // API now only requires ID, payload is ignored/removed as per requirements
+        postTransaction(transactionId, {
+            onSuccess: () => {
+                form.reset();
+                onSuccess?.();
+                onOpenChange(false);
+            },
+        });
     };
 
     return (

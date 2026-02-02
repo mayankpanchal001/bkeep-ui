@@ -37,7 +37,7 @@ const AcceptInvitationpage = () => {
             </div>
 
             {/* Grid Pattern Overlay */}
-            <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808008_1px,transparent_1px),linear-gradient(to_bottom,#80808008_1px,transparent_1px)] bg-[size:32px_32px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] pointer-events-none" />
+            <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808008_1px,transparent_1px),linear-gradient(to_bottom,#80808008_1px,transparent_1px)] bg-size-[32px_32px] mask-[radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] pointer-events-none" />
 
             <div className="absolute top-6 right-6 z-50 animate-in fade-in slide-in-from-top-4 duration-700 delay-200">
                 <ThemeSwitcher />
@@ -48,7 +48,7 @@ const AcceptInvitationpage = () => {
                     {/* Left Section - Branding & Info */}
                     <div className="lg:col-span-2 bg-muted/30 p-8 lg:p-12 flex flex-col justify-between relative overflow-hidden">
                         {/* Decorative Background for Left Panel */}
-                        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent" />
+                        <div className="absolute inset-0 bg-linear-to-br from-primary/5 to-transparent" />
 
                         <div className="relative z-10">
                             <Link

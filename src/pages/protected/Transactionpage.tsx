@@ -529,10 +529,6 @@ const Transactionpage = () => {
                 contactNameById={contactNameById}
                 updateTransaction={updateTransaction}
                 setTransactions={setTransactions}
-                onPostClick={(id) => {
-                    setSelectedTransactionForPost(id);
-                    setPostModalOpen(true);
-                }}
                 onSplitClick={(t) => {
                     const transactionAmount = Math.abs(
                         t.spent || t.received || 0
