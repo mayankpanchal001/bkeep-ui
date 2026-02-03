@@ -135,7 +135,6 @@ const Transactionpage = () => {
         ]
     );
 
-
     const [transactions, setTransactions] = useState<BankTransaction[]>([]);
     const { data: apiResponse, isLoading, error } = useTransactions(apiFilters);
     const apiTransactions = useMemo(

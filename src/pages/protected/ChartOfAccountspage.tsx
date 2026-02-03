@@ -479,7 +479,10 @@ const ChartOfAccountspage = () => {
                                 <TableCell>
                                     <span className="text-sm text-primary">
                                         {(() => {
-                                            const subtypes = ACCOUNT_HIERARCHY[account.accountType];
+                                            const subtypes =
+                                                ACCOUNT_HIERARCHY[
+                                                    account.accountType
+                                                ];
                                             if (subtypes) {
                                                 for (const subtype of subtypes) {
                                                     if (

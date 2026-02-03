@@ -104,7 +104,8 @@ export default function ViewJournalEntrypage() {
         useState<CreateJournalEntryPayload | null>(null);
 
     const createMutation = useCreateJournalEntry();
-    const { mutate: updateEntry, isPending: isUpdating } = useUpdateJournalEntry();
+    const { mutate: updateEntry, isPending: isUpdating } =
+        useUpdateJournalEntry();
 
     const { data: allEntriesData } = useJournalEntries({
         page: 1,
@@ -285,9 +286,7 @@ export default function ViewJournalEntrypage() {
                             disabled={createMutation.isPending}
                         >
                             <Copy className="w-4 h-4 mr-2" />
-                            {createMutation.isPending
-                                ? 'Copying...'
-                                : 'Copy'}
+                            {createMutation.isPending ? 'Copying...' : 'Copy'}
                         </Button>
                     </div>
                 }
@@ -298,14 +297,24 @@ export default function ViewJournalEntrypage() {
                     initialData={{
                         entryNumber: journalEntry.entryNumber,
                         entryDate: normalizeDate(journalEntry.entryDate),
-                        entryType: journalEntry.entryType || (journalEntry.isAdjusting ? 'adjusting' : 'standard'),
+                        entryType:
+                            journalEntry.entryType ||
+                            (journalEntry.isAdjusting
+                                ? 'adjusting'
+                                : 'standard'),
                         isAdjusting: journalEntry.isAdjusting,
                         lines: journalEntry.lines.map((line, index) => ({
                             id: line.id,
                             accountId: line.accountId,
                             lineNumber: index + 1,
-                            debit: typeof line.debit === 'string' ? parseFloat(line.debit) || 0 : line.debit,
-                            credit: typeof line.credit === 'string' ? parseFloat(line.credit) || 0 : line.credit,
+                            debit:
+                                typeof line.debit === 'string'
+                                    ? parseFloat(line.debit) || 0
+                                    : line.debit,
+                            credit:
+                                typeof line.credit === 'string'
+                                    ? parseFloat(line.credit) || 0
+                                    : line.credit,
                             description: line.description,
                             memo: line.memo || line.description,
                             contactId: line.contactId || '',
@@ -376,17 +385,17 @@ export default function ViewJournalEntrypage() {
 
                             {(copyPreviewData.memo ||
                                 copyPreviewData.description) && (
-                                    <div className="p-4 bg-card rounded-lg border border-primary/10">
-                                        <label className="block text-sm font-medium text-primary/50 mb-2">
-                                            Memo
-                                        </label>
-                                        <p className="text-primary text-sm whitespace-pre-wrap">
-                                            {copyPreviewData.memo ||
-                                                copyPreviewData.description ||
-                                                '—'}
-                                        </p>
-                                    </div>
-                                )}
+                                <div className="p-4 bg-card rounded-lg border border-primary/10">
+                                    <label className="block text-sm font-medium text-primary/50 mb-2">
+                                        Memo
+                                    </label>
+                                    <p className="text-primary text-sm whitespace-pre-wrap">
+                                        {copyPreviewData.memo ||
+                                            copyPreviewData.description ||
+                                            '—'}
+                                    </p>
+                                </div>
+                            )}
 
                             <div className="border border-primary/10 rounded-lg overflow-hidden">
                                 <div className="px-4 py-2 bg-primary/5 border-b border-primary/10">
