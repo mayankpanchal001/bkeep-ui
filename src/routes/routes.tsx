@@ -112,9 +112,9 @@ const CreateJournalEntrypage = lazyWithRetry(
 const ViewJournalEntrypage = lazyWithRetry(
     () => import('../pages/protected/ViewJournalEntrypage')
 );
-const EditJournalEntrypage = lazyWithRetry(
-    () => import('../pages/protected/EditJournalEntrypage')
-);
+// const EditJournalEntrypage = lazyWithRetry(
+//     () => import('../pages/protected/EditJournalEntrypage')
+// );
 
 // Lazy load settings components
 const ProfileTabWrapper = lazyWithRetry(() =>
@@ -327,10 +327,10 @@ const routes = createBrowserRouter([
                 path: '/journal-entries/:id',
                 element: withSuspense(ViewJournalEntrypage),
             },
-            {
-                path: '/journal-entries/:id/edit',
-                element: withSuspense(EditJournalEntrypage),
-            },
+            // {
+            //     path: '/journal-entries/:id/edit',
+            //     element: withSuspense(EditJournalEntrypage),
+            // },
         ],
     },
 ]);

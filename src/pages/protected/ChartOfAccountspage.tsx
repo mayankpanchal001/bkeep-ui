@@ -478,11 +478,26 @@ const ChartOfAccountspage = () => {
                                 </TableCell>
                                 <TableCell>
                                     <span className="text-sm text-primary">
-                                        {
-                                            ACCOUNT_TYPE_DISPLAY[
+                                        {(() => {
+                                            const subtypes = ACCOUNT_HIERARCHY[account.accountType];
+                                            if (subtypes) {
+                                                for (const subtype of subtypes) {
+                                                    if (
+                                                        subtype.detailTypes.some(
+                                                            (d) =>
+                                                                d.value ===
+                                                                account.accountDetailType
+                                                        )
+                                                    ) {
+                                                        return subtype.label;
+                                                    }
+                                                }
+                                            }
+                                            // Fallback to generic type
+                                            return ACCOUNT_TYPE_DISPLAY[
                                                 account.accountType
-                                            ]
-                                        }
+                                            ];
+                                        })()}
                                     </span>
                                 </TableCell>
                                 <TableCell>
