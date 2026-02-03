@@ -1,4 +1,3 @@
-
 import { cn } from '../../../../utils/cn';
 import { Checkbox } from '../../../ui/checkbox';
 import { ImportField, ParsedContact } from '../types';
@@ -38,7 +37,9 @@ export function ContactPreviewTable({
     };
 
     // Determine which columns to show (only mapped ones)
-    const columnsToShow = importFields.filter((field) => mappedFields[field.key]);
+    const columnsToShow = importFields.filter(
+        (field) => mappedFields[field.key]
+    );
 
     return (
         <div

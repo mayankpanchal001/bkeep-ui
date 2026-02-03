@@ -12,10 +12,7 @@ interface ImportContactsModalProps {
     onClose: () => void;
 }
 
-const ImportContactsModal = ({
-    isOpen,
-    onClose,
-}: ImportContactsModalProps) => {
+const ImportContactsModal = ({ isOpen, onClose }: ImportContactsModalProps) => {
     const [dragActive, setDragActive] = useState(false);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [isProcessing, setIsProcessing] = useState(false);
@@ -52,7 +49,7 @@ const ImportContactsModal = ({
     const handleFile = (file: File) => {
         if (
             file.type ===
-            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
             file.type === 'application/vnd.ms-excel' ||
             file.name.endsWith('.xlsx') ||
             file.name.endsWith('.xls') ||
@@ -114,8 +111,7 @@ const ImportContactsModal = ({
                         normalizedRow['firstname'] ||
                         normalizedRow['first name'];
                     const lastNameRaw =
-                        normalizedRow['lastname'] ||
-                        normalizedRow['last name'];
+                        normalizedRow['lastname'] || normalizedRow['last name'];
                     const companyNameRaw =
                         normalizedRow['companyname'] ||
                         normalizedRow['company name'] ||
@@ -172,7 +168,9 @@ const ImportContactsModal = ({
                     } else if (type === 'customer' || type === 'client') {
                         contactType = 'customer';
                     } else if (type && type !== 'customer') {
-                        console.warn(`Unknown contact type "${type}", defaulting to customer`);
+                        console.warn(
+                            `Unknown contact type "${type}", defaulting to customer`
+                        );
                     }
 
                     // Construct Payload
@@ -260,9 +258,10 @@ const ImportContactsModal = ({
                     </label>
                     <div
                         className={`relative flex flex-col items-center justify-center w-full h-40 border-2 border-dashed rounded-lg transition-colors cursor-pointer
-                            ${dragActive
-                                ? 'border-primary bg-primary/5'
-                                : 'border-gray-300 hover:border-primary/50 hover:bg-gray-50'
+                            ${
+                                dragActive
+                                    ? 'border-primary bg-primary/5'
+                                    : 'border-gray-300 hover:border-primary/50 hover:bg-gray-50'
                             }
                             ${selectedFile ? 'bg-primary/5 border-primary' : ''}
                         `}
@@ -316,7 +315,8 @@ const ImportContactsModal = ({
                                     Supports Excel (.xlsx) and CSV (.csv)
                                 </p>
                                 <p className="text-xs text-gray-400 mt-2 italic">
-                                    Expected columns: Display Name, Type (customer/supplier), Email, Phone
+                                    Expected columns: Display Name, Type
+                                    (customer/supplier), Email, Phone
                                 </p>
                             </div>
                         )}

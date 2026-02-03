@@ -1,4 +1,3 @@
-
 import { AlertTriangle } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 import { Alert, AlertDescription, AlertTitle } from '../../../ui/alert';
@@ -6,7 +5,8 @@ import { ContactPreviewTable } from '../components/ContactPreviewTable';
 import { useImportContactsWizard } from '../useImportContactsWizard';
 
 export function Step3Review() {
-    const { state, actions, prepareReview, importFields } = useImportContactsWizard();
+    const { state, actions, prepareReview, importFields } =
+        useImportContactsWizard();
     const hasInitialized = useRef(false);
 
     // Parse contacts when entering this step (only once)
@@ -36,7 +36,8 @@ export function Step3Review() {
                     Before you import
                 </AlertTitle>
                 <AlertDescription className="text-amber-700">
-                    Please review the contacts below. Ensure columns are mapped correctly.
+                    Please review the contacts below. Ensure columns are mapped
+                    correctly.
                 </AlertDescription>
             </Alert>
 

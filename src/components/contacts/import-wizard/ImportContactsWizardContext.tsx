@@ -1,4 +1,3 @@
-
 /* eslint-disable react-refresh/only-export-components */
 import {
     createContext,
@@ -34,9 +33,8 @@ const initialState: ImportContactsWizardState = {
     error: null,
 };
 
-const ImportContactsWizardContext = createContext<ImportContactsWizardContextValue | null>(
-    null
-);
+const ImportContactsWizardContext =
+    createContext<ImportContactsWizardContextValue | null>(null);
 
 export function useImportContactsWizardContext(): ImportContactsWizardContextValue {
     const context = useContext(ImportContactsWizardContext);
@@ -52,7 +50,9 @@ interface ImportContactsWizardProviderProps {
     children: ReactNode;
 }
 
-export function ImportContactsWizardProvider({ children }: ImportContactsWizardProviderProps) {
+export function ImportContactsWizardProvider({
+    children,
+}: ImportContactsWizardProviderProps) {
     const [state, setState] = useState<ImportContactsWizardState>(initialState);
 
     // Navigation actions
@@ -118,25 +118,25 @@ export function ImportContactsWizardProvider({ children }: ImportContactsWizardP
         },
         []
     );
-    const setContactType = useCallback((type: 'supplier' | 'customer' | 'employee') => {
-        setState((prev) => ({ ...prev, contactType: type }));
-    }, []);
+    const setContactType = useCallback(
+        (type: 'supplier' | 'customer' | 'employee') => {
+            setState((prev) => ({ ...prev, contactType: type }));
+        },
+        []
+    );
 
     const setDateFormat = useCallback((format: string) => {
         setState((prev) => ({ ...prev, dateFormat: format }));
     }, []);
 
     // Step 3 actions
-    const setParsedContacts = useCallback(
-        (contacts: ParsedContact[]) => {
-            setState((prev) => ({
-                ...prev,
-                parsedContacts: contacts,
-                selectedContactIds: new Set(contacts.map((t) => t.id)),
-            }));
-        },
-        []
-    );
+    const setParsedContacts = useCallback((contacts: ParsedContact[]) => {
+        setState((prev) => ({
+            ...prev,
+            parsedContacts: contacts,
+            selectedContactIds: new Set(contacts.map((t) => t.id)),
+        }));
+    }, []);
 
     const toggleContactSelection = useCallback((id: string) => {
         setState((prev) => {
@@ -153,9 +153,7 @@ export function ImportContactsWizardProvider({ children }: ImportContactsWizardP
     const selectAllContacts = useCallback(() => {
         setState((prev) => ({
             ...prev,
-            selectedContactIds: new Set(
-                prev.parsedContacts.map((t) => t.id)
-            ),
+            selectedContactIds: new Set(prev.parsedContacts.map((t) => t.id)),
         }));
     }, []);
 

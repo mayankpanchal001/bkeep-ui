@@ -1,14 +1,8 @@
-
 import { X } from 'lucide-react';
 import { Button } from '../../ui/button';
 import { ImportContactsWizardProvider } from './ImportContactsWizardContext';
 import { StepIndicator } from './StepIndicator';
-import {
-    Step1Upload,
-    Step2Mapping,
-    Step3Review,
-    Step4Results,
-} from './steps';
+import { Step1Upload, Step2Mapping, Step3Review, Step4Results } from './steps';
 import { useImportContactsWizard } from './useImportContactsWizard';
 
 interface ImportContactsWizardProps {
@@ -144,9 +138,7 @@ function WizardContent({ onClose }: ImportContactsWizardProps) {
     );
 }
 
-export function ImportContactsWizard({
-    onClose,
-}: ImportContactsWizardProps) {
+export function ImportContactsWizard({ onClose }: ImportContactsWizardProps) {
     return (
         <ImportContactsWizardProvider>
             <WizardContent onClose={onClose} />

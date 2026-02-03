@@ -1,4 +1,3 @@
-
 import { AlertCircle, ArrowRight, Loader2, RefreshCw } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '../../../ui/alert';
 import { Button } from '../../../ui/button';
@@ -113,7 +112,10 @@ export function Step2Mapping() {
                                     value="supplier"
                                     id="r-supplier"
                                 />
-                                <Label htmlFor="r-supplier" className="font-normal">
+                                <Label
+                                    htmlFor="r-supplier"
+                                    className="font-normal"
+                                >
                                     Supplier
                                 </Label>
                             </div>
@@ -122,7 +124,10 @@ export function Step2Mapping() {
                                     value="customer"
                                     id="r-customer"
                                 />
-                                <Label htmlFor="r-customer" className="font-normal">
+                                <Label
+                                    htmlFor="r-customer"
+                                    className="font-normal"
+                                >
                                     Customer
                                 </Label>
                             </div>
@@ -131,7 +136,10 @@ export function Step2Mapping() {
                                     value="employee"
                                     id="r-employee"
                                 />
-                                <Label htmlFor="r-employee" className="font-normal">
+                                <Label
+                                    htmlFor="r-employee"
+                                    className="font-normal"
+                                >
                                     Employee
                                 </Label>
                             </div>
@@ -263,7 +271,7 @@ export function Step2Mapping() {
                                             <Select
                                                 value={
                                                     state.fieldMappings[
-                                                    field.key
+                                                        field.key
                                                     ] || '__none__'
                                                 }
                                                 onValueChange={(value) =>

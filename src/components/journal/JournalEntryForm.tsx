@@ -25,10 +25,6 @@ import { FileText, Save, Upload, X } from 'lucide-react';
 import { useMemo, useRef, useState } from 'react';
 import { FaPlus, FaTrash } from 'react-icons/fa';
 
-
-
-
-
 type JournalEntryFormProps = {
     initialData?: Partial<CreateJournalEntryPayload>;
     onSubmit: (data: CreateJournalEntryPayload) => void;
@@ -126,9 +122,9 @@ export function JournalEntryForm({
     }, [contacts]);
 
     const [attachments, setAttachments] = useState<File[]>([]);
-    const [existingAttachments, setExistingAttachments] = useState<Attachment[]>(
-        initialData?.existingAttachments || []
-    );
+    const [existingAttachments, setExistingAttachments] = useState<
+        Attachment[]
+    >(initialData?.existingAttachments || []);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [dragActive, setDragActive] = useState(false);
 
@@ -155,11 +151,15 @@ export function JournalEntryForm({
     };
 
     const removeAttachment = (indexToRemove: number) => {
-        setAttachments(attachments.filter((_, index) => index !== indexToRemove));
-    }
+        setAttachments(
+            attachments.filter((_, index) => index !== indexToRemove)
+        );
+    };
 
     const removeExistingAttachment = (indexToRemove: number) => {
-        setExistingAttachments(prev => prev.filter((_, index) => index !== indexToRemove));
+        setExistingAttachments((prev) =>
+            prev.filter((_, index) => index !== indexToRemove)
+        );
     };
 
     const [entryNumber, setEntryNumber] = useState(
@@ -330,28 +330,26 @@ export function JournalEntryForm({
         e.preventDefault();
         if (!validate()) return;
 
-
         let uploadedIds: string[] = [];
         if (attachments.length > 0) {
-
             try {
-                const uploadPromises = attachments.map(file =>
+                const uploadPromises = attachments.map((file) =>
                     uploadAttachment(file, {
                         tag: 'journal_entry',
-                        description: file.name
+                        description: file.name,
                     })
                 );
 
                 const responses = await Promise.all(uploadPromises);
-                uploadedIds = responses.map(res => res.data.id);
+                uploadedIds = responses.map((res) => res.data.id);
             } catch (error) {
-                console.error("Failed to upload attachments", error);
+                console.error('Failed to upload attachments', error);
                 // You might want to show an error toast here and abort
                 return;
             }
         }
 
-        const existingIds = existingAttachments.map(a => a.id);
+        const existingIds = existingAttachments.map((a) => a.id);
         const finalAttachmentIds = [...existingIds, ...uploadedIds];
 
         const filled = lines.filter((l) => {
@@ -383,7 +381,8 @@ export function JournalEntryForm({
                 contactId: l.contactId || undefined,
                 taxId: l.taxId || undefined,
             })),
-            attachmentIds: finalAttachmentIds.length > 0 ? finalAttachmentIds : undefined
+            attachmentIds:
+                finalAttachmentIds.length > 0 ? finalAttachmentIds : undefined,
         };
 
         onSubmit(payload);
@@ -392,7 +391,7 @@ export function JournalEntryForm({
         if (e.target.files) {
             setAttachments([...attachments, ...Array.from(e.target.files)]);
         }
-    }
+    };
 
     return (
         <form onSubmit={handleSubmit} className="space-y-6 ">
@@ -645,10 +644,11 @@ export function JournalEntryForm({
                         </span>
                     </span>
                     <span
-                        className={`px-2 py-1 rounded-full text-xs font-semibold ${isBalanced
-                            ? 'bg-green-100 text-green-700'
-                            : 'bg-red-100 text-red-700'
-                            }`}
+                        className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                            isBalanced
+                                ? 'bg-green-100 text-green-700'
+                                : 'bg-red-100 text-red-700'
+                        }`}
                     >
                         {isBalanced ? 'Balanced' : 'Not balanced'}
                     </span>
@@ -656,8 +656,7 @@ export function JournalEntryForm({
             </div>
 
             <div className="flex flex-col gap-2">
-                <label className='input-label'>Attachments
-                </label>
+                <label className="input-label">Attachments</label>
                 <div
                     onClick={(e) => {
                         // Don't trigger file picker if clicking remove button
@@ -668,10 +667,11 @@ export function JournalEntryForm({
                     onDragLeave={handleDrag}
                     onDragOver={handleDrag}
                     onDrop={handleDrop}
-                    className={`border-2 border-dashed rounded-lg p-4 flex flex-col items-center justify-center text-center cursor-pointer transition-colors min-h-[100px] ${dragActive
-                        ? 'border-primary bg-primary/10'
-                        : 'border-input hover:bg-muted/50 hover:border-primary/50'
-                        }`}
+                    className={`border-2 border-dashed rounded-lg p-4 flex flex-col items-center justify-center text-center cursor-pointer transition-colors min-h-[100px] ${
+                        dragActive
+                            ? 'border-primary bg-primary/10'
+                            : 'border-input hover:bg-muted/50 hover:border-primary/50'
+                    }`}
                 >
                     <input
                         ref={fileInputRef}
@@ -681,7 +681,8 @@ export function JournalEntryForm({
                         onChange={handleFileSelect}
                     />
 
-                    {attachments.length > 0 || existingAttachments.length > 0 ? (
+                    {attachments.length > 0 ||
+                    existingAttachments.length > 0 ? (
                         <div className="w-full flex flex-col gap-2">
                             <div className="flex flex-col gap-2 mb-2">
                                 {/* Existing Attachments */}
@@ -699,7 +700,10 @@ export function JournalEntryForm({
                                                     {file.filename}
                                                 </span>
                                                 <span className="text-xs text-muted-foreground">
-                                                    {(file.size / 1024).toFixed(1)} KB (Existing)
+                                                    {(file.size / 1024).toFixed(
+                                                        1
+                                                    )}{' '}
+                                                    KB (Existing)
                                                 </span>
                                             </div>
                                         </div>
@@ -732,7 +736,10 @@ export function JournalEntryForm({
                                                     {file.name}
                                                 </span>
                                                 <span className="text-xs text-muted-foreground">
-                                                    {(file.size / 1024).toFixed(1)} KB
+                                                    {(file.size / 1024).toFixed(
+                                                        1
+                                                    )}{' '}
+                                                    KB
                                                 </span>
                                             </div>
                                         </div>
@@ -753,9 +760,13 @@ export function JournalEntryForm({
                         </div>
                     ) : (
                         <>
-                            <Upload className={`h-8 w-8 mb-3 ${dragActive ? 'text-primary' : 'text-muted-foreground'}`} />
+                            <Upload
+                                className={`h-8 w-8 mb-3 ${dragActive ? 'text-primary' : 'text-muted-foreground'}`}
+                            />
                             <p className="text-sm font-medium">
-                                {dragActive ? 'Drop files here' : 'Click or drag files to upload'}
+                                {dragActive
+                                    ? 'Drop files here'
+                                    : 'Click or drag files to upload'}
                             </p>
                             <p className="text-xs text-muted-foreground mt-1">
                                 Max size 10MB per file

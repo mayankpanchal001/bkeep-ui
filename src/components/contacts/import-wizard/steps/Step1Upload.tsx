@@ -1,16 +1,11 @@
-
 import { Download } from 'lucide-react';
 import { Button } from '../../../ui/button';
 import { FileDropzone } from '../components/FileDropzone';
 import { useImportContactsWizard } from '../useImportContactsWizard';
 
 export function Step1Upload() {
-    const {
-        state,
-        handleFileSelect,
-        handleRemoveFile,
-        handleDownloadSample,
-    } = useImportContactsWizard();
+    const { state, handleFileSelect, handleRemoveFile, handleDownloadSample } =
+        useImportContactsWizard();
 
     return (
         <div className="space-y-6">

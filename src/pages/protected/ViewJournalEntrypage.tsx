@@ -1094,7 +1094,9 @@ export default function ViewJournalEntrypage() {
                                     className="flex items-center justify-between p-3 border border-primary/10 rounded-lg"
                                 >
                                     <span className="text-sm text-primary">
-                                        {typeof attachment === 'object' ? attachment.filename : attachment}
+                                        {typeof attachment === 'object'
+                                            ? attachment.filename
+                                            : attachment}
                                     </span>
                                     <button
                                         disabled

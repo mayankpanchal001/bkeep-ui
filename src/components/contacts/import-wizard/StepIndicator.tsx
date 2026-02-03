@@ -1,4 +1,3 @@
-
 import { Check } from 'lucide-react';
 import { cn } from '../../../utils/cn';
 import { ImportStep, STEP_TITLES } from './types';
@@ -36,12 +35,12 @@ export function StepIndicator({
                                         className={cn(
                                             'flex items-center justify-center w-8 h-8 rounded-full border-2 transition-all duration-200',
                                             isCompleted &&
-                                            'bg-secondary border-secondary text-secondary-foreground',
+                                                'bg-secondary border-secondary text-secondary-foreground',
                                             isCurrent &&
-                                            'bg-primary border-primary text-primary-foreground',
+                                                'bg-primary border-primary text-primary-foreground',
                                             !isCompleted &&
-                                            !isCurrent &&
-                                            'bg-card border-border text-muted-foreground'
+                                                !isCurrent &&
+                                                'bg-card border-border text-muted-foreground'
                                         )}
                                     >
                                         {isCompleted ? (
@@ -58,8 +57,8 @@ export function StepIndicator({
                                             isCurrent && 'text-primary',
                                             isCompleted && 'text-secondary',
                                             !isCompleted &&
-                                            !isCurrent &&
-                                            'text-muted-foreground'
+                                                !isCurrent &&
+                                                'text-muted-foreground'
                                         )}
                                     >
                                         {STEP_TITLES[step]}
@@ -101,12 +100,12 @@ export function StepIndicator({
                                 className={cn(
                                     'flex items-center justify-center w-8 h-8 rounded-full border-2 transition-all duration-200 shrink-0',
                                     isCompleted &&
-                                    'bg-secondary border-secondary text-secondary-foreground',
+                                        'bg-secondary border-secondary text-secondary-foreground',
                                     isCurrent &&
-                                    'bg-primary border-primary text-primary-foreground',
+                                        'bg-primary border-primary text-primary-foreground',
                                     !isCompleted &&
-                                    !isCurrent &&
-                                    'bg-card border-border text-muted-foreground'
+                                        !isCurrent &&
+                                        'bg-card border-border text-muted-foreground'
                                 )}
                             >
                                 {isCompleted ? (
@@ -139,8 +138,8 @@ export function StepIndicator({
                                     isCurrent && 'text-primary',
                                     isCompleted && 'text-secondary',
                                     !isCompleted &&
-                                    !isCurrent &&
-                                    'text-muted-foreground'
+                                        !isCurrent &&
+                                        'text-muted-foreground'
                                 )}
                             >
                                 {STEP_TITLES[step]}
