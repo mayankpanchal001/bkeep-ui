@@ -80,6 +80,7 @@ export default function EditJournalEntrypage() {
                         })),
                         description: journalEntry.memo,
                         memo: journalEntry.memo || '',
+                        existingAttachments: journalEntry.attachments || [],
                     }}
                     onSubmit={handleSubmit}
                     onCancel={handleCancel}
