@@ -16,13 +16,18 @@ import {
     TableRow,
 } from '@/components/ui/table';
 import { CurrencyInput } from '@/pages/protected/CreateJournalEntrypage';
+import { uploadAttachment } from '@/services/apis/attachmentApi';
 import { useChartOfAccounts } from '@/services/apis/chartsAccountApi';
 import { useContacts } from '@/services/apis/contactsApi';
 import { useTaxes } from '@/services/apis/taxApi';
-import type { CreateJournalEntryPayload } from '@/types/journal';
-import { Save } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import type { Attachment, CreateJournalEntryPayload } from '@/types/journal';
+import { FileText, Save, Upload, X } from 'lucide-react';
+import { useMemo, useRef, useState } from 'react';
 import { FaPlus, FaTrash } from 'react-icons/fa';
+
+
+
+
 
 type JournalEntryFormProps = {
     initialData?: Partial<CreateJournalEntryPayload>;
@@ -119,6 +124,43 @@ export function JournalEntryForm({
             label: contact.displayName,
         }));
     }, [contacts]);
+
+    const [attachments, setAttachments] = useState<File[]>([]);
+    const [existingAttachments, setExistingAttachments] = useState<Attachment[]>(
+        initialData?.existingAttachments || []
+    );
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const [dragActive, setDragActive] = useState(false);
+
+    const handleDrag = (e: React.DragEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (e.type === 'dragenter' || e.type === 'dragover') {
+            setDragActive(true);
+        } else if (e.type === 'dragleave') {
+            setDragActive(false);
+        }
+    };
+
+    const handleDrop = (e: React.DragEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setDragActive(false);
+        if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+            setAttachments((prev) => [
+                ...prev,
+                ...Array.from(e.dataTransfer.files),
+            ]);
+        }
+    };
+
+    const removeAttachment = (indexToRemove: number) => {
+        setAttachments(attachments.filter((_, index) => index !== indexToRemove));
+    }
+
+    const removeExistingAttachment = (indexToRemove: number) => {
+        setExistingAttachments(prev => prev.filter((_, index) => index !== indexToRemove));
+    };
 
     const [entryNumber, setEntryNumber] = useState(
         initialData?.entryNumber || ''
@@ -284,9 +326,33 @@ export function JournalEntryForm({
         return true;
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!validate()) return;
+
+
+        let uploadedIds: string[] = [];
+        if (attachments.length > 0) {
+
+            try {
+                const uploadPromises = attachments.map(file =>
+                    uploadAttachment(file, {
+                        tag: 'journal_entry',
+                        description: file.name
+                    })
+                );
+
+                const responses = await Promise.all(uploadPromises);
+                uploadedIds = responses.map(res => res.data.id);
+            } catch (error) {
+                console.error("Failed to upload attachments", error);
+                // You might want to show an error toast here and abort
+                return;
+            }
+        }
+
+        const existingIds = existingAttachments.map(a => a.id);
+        const finalAttachmentIds = [...existingIds, ...uploadedIds];
 
         const filled = lines.filter((l) => {
             const hasAmount =
@@ -317,10 +383,16 @@ export function JournalEntryForm({
                 contactId: l.contactId || undefined,
                 taxId: l.taxId || undefined,
             })),
+            attachmentIds: finalAttachmentIds.length > 0 ? finalAttachmentIds : undefined
         };
 
         onSubmit(payload);
     };
+    const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files) {
+            setAttachments([...attachments, ...Array.from(e.target.files)]);
+        }
+    }
 
     return (
         <form onSubmit={handleSubmit} className="space-y-6 ">
@@ -573,14 +645,123 @@ export function JournalEntryForm({
                         </span>
                     </span>
                     <span
-                        className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                            isBalanced
-                                ? 'bg-green-100 text-green-700'
-                                : 'bg-red-100 text-red-700'
-                        }`}
+                        className={`px-2 py-1 rounded-full text-xs font-semibold ${isBalanced
+                            ? 'bg-green-100 text-green-700'
+                            : 'bg-red-100 text-red-700'
+                            }`}
                     >
                         {isBalanced ? 'Balanced' : 'Not balanced'}
                     </span>
+                </div>
+            </div>
+
+            <div className="flex flex-col gap-2">
+                <label className='input-label'>Attachments
+                </label>
+                <div
+                    onClick={(e) => {
+                        // Don't trigger file picker if clicking remove button
+                        if ((e.target as HTMLElement).closest('button')) return;
+                        fileInputRef.current?.click();
+                    }}
+                    onDragEnter={handleDrag}
+                    onDragLeave={handleDrag}
+                    onDragOver={handleDrag}
+                    onDrop={handleDrop}
+                    className={`border-2 border-dashed rounded-lg p-4 flex flex-col items-center justify-center text-center cursor-pointer transition-colors min-h-[100px] ${dragActive
+                        ? 'border-primary bg-primary/10'
+                        : 'border-input hover:bg-muted/50 hover:border-primary/50'
+                        }`}
+                >
+                    <input
+                        ref={fileInputRef}
+                        type="file"
+                        className="hidden"
+                        multiple
+                        onChange={handleFileSelect}
+                    />
+
+                    {attachments.length > 0 || existingAttachments.length > 0 ? (
+                        <div className="w-full flex flex-col gap-2">
+                            <div className="flex flex-col gap-2 mb-2">
+                                {/* Existing Attachments */}
+                                {existingAttachments.map((file, index) => (
+                                    <div
+                                        key={`existing-${file.id}`}
+                                        className="flex items-center justify-between p-2 bg-card border rounded-md shadow-sm"
+                                    >
+                                        <div className="flex items-center gap-3 overflow-hidden">
+                                            <div className="h-8 w-8 rounded bg-primary/10 flex items-center justify-center shrink-0">
+                                                <FileText className="h-4 w-4 text-primary" />
+                                            </div>
+                                            <div className="flex flex-col overflow-hidden text-left">
+                                                <span className="text-sm font-medium truncate max-w-[200px]">
+                                                    {file.filename}
+                                                </span>
+                                                <span className="text-xs text-muted-foreground">
+                                                    {(file.size / 1024).toFixed(1)} KB (Existing)
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <button
+                                            type="button"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                removeExistingAttachment(index);
+                                            }}
+                                            className="p-1 text-muted-foreground hover:text-red-500 transition-colors"
+                                            title="Remove file"
+                                        >
+                                            <X className="h-4 w-4" />
+                                        </button>
+                                    </div>
+                                ))}
+
+                                {/* New Attachments */}
+                                {attachments.map((file, index) => (
+                                    <div
+                                        key={`new-${index}`}
+                                        className="flex items-center justify-between p-2 bg-card border rounded-md shadow-sm"
+                                    >
+                                        <div className="flex items-center gap-3 overflow-hidden">
+                                            <div className="h-8 w-8 rounded bg-primary/10 flex items-center justify-center shrink-0">
+                                                <FileText className="h-4 w-4 text-primary" />
+                                            </div>
+                                            <div className="flex flex-col overflow-hidden text-left">
+                                                <span className="text-sm font-medium truncate max-w-[200px]">
+                                                    {file.name}
+                                                </span>
+                                                <span className="text-xs text-muted-foreground">
+                                                    {(file.size / 1024).toFixed(1)} KB
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <button
+                                            type="button"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                removeAttachment(index);
+                                            }}
+                                            className="p-1 text-muted-foreground hover:text-red-500 transition-colors"
+                                            title="Remove file"
+                                        >
+                                            <X className="h-4 w-4" />
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    ) : (
+                        <>
+                            <Upload className={`h-8 w-8 mb-3 ${dragActive ? 'text-primary' : 'text-muted-foreground'}`} />
+                            <p className="text-sm font-medium">
+                                {dragActive ? 'Drop files here' : 'Click or drag files to upload'}
+                            </p>
+                            <p className="text-xs text-muted-foreground mt-1">
+                                Max size 10MB per file
+                            </p>
+                        </>
+                    )}
                 </div>
             </div>
 
