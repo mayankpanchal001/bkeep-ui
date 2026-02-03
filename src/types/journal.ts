@@ -28,6 +28,15 @@ export type CreateJournalEntryLine = Omit<JournalEntryLine, 'id'> & {
     taxId?: string;
 };
 
+export type Attachment = {
+    id: string;
+    filename: string;
+    mimeType: string;
+    size: number;
+    description?: string;
+    storageKey?: string;
+};
+
 export type JournalEntry = {
     id: string;
     entryNumber: string;
@@ -40,7 +49,7 @@ export type JournalEntry = {
     reference?: string | null;
     lines: JournalEntryLine[];
     memo?: string;
-    attachments?: string[];
+    attachments?: Attachment[];
     status: 'draft' | 'posted' | 'voided';
     isRecurring?: boolean;
     recurringFrequency?: 'daily' | 'weekly' | 'monthly' | 'yearly';
@@ -74,6 +83,9 @@ export type CreateJournalEntryPayload = {
     sourceModule?: string;
     sourceId?: string;
     lines: CreateJournalEntryLine[];
+    attachments?: File[];
+    existingAttachments?: Attachment[];
+    attachmentIds?: string[];
 };
 
 export type UpdateJournalEntryPayload = Partial<CreateJournalEntryPayload>;

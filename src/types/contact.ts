@@ -1,4 +1,4 @@
-export type ContactType = 'supplier' | 'customer';
+export type ContactType = 'supplier' | 'customer' | 'employee';
 
 export type ContactAddress = {
     streetAddress1?: string | null;
@@ -113,6 +113,8 @@ export type ImportFieldsResponse = {
 export type StartImportPayload = {
     file: File;
     mapping: Record<string, string>;
+    type: ContactType;
+    dateFormat: string;
 };
 
 export type ImportSuccessResponse = {

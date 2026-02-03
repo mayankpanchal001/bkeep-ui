@@ -1094,16 +1094,16 @@ export default function ViewJournalEntrypage() {
                                     className="flex items-center justify-between p-3 border border-primary/10 rounded-lg"
                                 >
                                     <span className="text-sm text-primary">
-                                        {attachment}
+                                        {typeof attachment === 'object'
+                                            ? attachment.filename
+                                            : attachment}
                                     </span>
-                                    <a
-                                        href={attachment}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="text-sm text-primary hover:underline"
+                                    <button
+                                        disabled
+                                        className="text-sm text-primary/50 cursor-not-allowed"
                                     >
                                         Download
-                                    </a>
+                                    </button>
                                 </div>
                             ))}
                         </div>
