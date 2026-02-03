@@ -248,7 +248,11 @@ export async function startContactImport(
 ): Promise<ImportSuccessResponse> {
     const formData = new FormData();
     formData.append('file', payload.file);
-    formData.append('mapping', JSON.stringify(payload.mapping));
+    formData.append('fieldMappings', JSON.stringify(payload.mapping));
+    formData.append('type', payload.type);
+    if (payload.dateFormat) {
+        formData.append('dateFormat', payload.dateFormat);
+    }
 
     const response = await axiosInstance.post('/contacts/import', formData, {
         headers: {

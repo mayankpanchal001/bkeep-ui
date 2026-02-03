@@ -186,7 +186,6 @@ const ImportContactsModal = ({
                             companyName,
                             phoneNumber,
                             openingBalance,
-                            isActive: true,
                         });
                         successCount++;
                     } catch (err) {
