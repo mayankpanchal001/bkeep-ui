@@ -70,17 +70,12 @@ export function TransactionHeader({
 
     // Filter for bank/credit card accounts usually relevant for transactions view
     // or just show all for now if not specified.
-    const allowedDetailTypes = [
-        'cash-on-hand',
-        'chequing',
-        'money-market',
-        'rents-held-in-trust',
-        'savings',
-        'trust-account',
-    ];
-
-    const displayAccounts = accounts.filter((a) =>
-        allowedDetailTypes.includes(a.accountDetailType)
+    const displayAccounts = accounts.filter(
+        (a) =>
+            a.accountType === 'asset' ||
+            a.accountType === 'liability' ||
+            a.accountDetailType === 'credit-card' ||
+            a.accountDetailType === 'chequing'
     );
 
     const activeAccount = accounts.find((a) => a.id === selectedAccountId);
