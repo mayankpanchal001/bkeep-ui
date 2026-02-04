@@ -50,9 +50,7 @@ const BillDetailpage = () => {
                     {CURRENCY_FORMAT.format(bill.billAmount)}
                 </p>
                 <p>
-                    <span className="text-muted-foreground">
-                        Open balance:
-                    </span>{' '}
+                    <span className="text-muted-foreground">Open balance:</span>{' '}
                     {CURRENCY_FORMAT.format(bill.openBalance)}
                 </p>
                 <p>

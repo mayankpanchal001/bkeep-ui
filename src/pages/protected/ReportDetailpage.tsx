@@ -43,10 +43,7 @@ import {
 } from '../../components/ui/table';
 import { APP_TITLE } from '../../constants';
 import { useChartOfAccounts } from '../../services/apis/chartsAccountApi';
-import {
-    ReportTypeKey,
-    useReport,
-} from '../../services/apis/reportsApi';
+import { ReportTypeKey, useReport } from '../../services/apis/reportsApi';
 import { useTenant } from '../../stores/tenant/tenantSelectore';
 import {
     BalanceSheetReportData,
@@ -70,22 +67,38 @@ const REPORT_CATEGORIES: ReportCategory[] = [
         key: 'business-overview',
         title: 'Business overview',
         reports: [
-            { key: 'balance-sheet', title: 'Balance Sheet', apiKey: 'balance-sheet' },
+            {
+                key: 'balance-sheet',
+                title: 'Balance Sheet',
+                apiKey: 'balance-sheet',
+            },
             {
                 key: 'statement-of-cash-flows',
                 title: 'Statement of Cash Flows',
                 apiKey: 'cash-flow',
             },
-            { key: 'profit-and-loss', title: 'Profit and Loss', apiKey: 'profit-loss' },
+            {
+                key: 'profit-and-loss',
+                title: 'Profit and Loss',
+                apiKey: 'profit-loss',
+            },
         ],
     },
     {
         key: 'accounting',
         title: 'Accounting',
         reports: [
-            { key: 'general-ledger', title: 'General Ledger', apiKey: 'general-ledger' },
+            {
+                key: 'general-ledger',
+                title: 'General Ledger',
+                apiKey: 'general-ledger',
+            },
             { key: 'audit-log', title: 'Audit Log' },
-            { key: 'unpaid-bills', title: 'Unpaid Bills', apiKey: 'unpaid-bills' },
+            {
+                key: 'unpaid-bills',
+                title: 'Unpaid Bills',
+                apiKey: 'unpaid-bills',
+            },
         ],
     },
 ];
@@ -143,13 +156,19 @@ const PERIOD_PRESETS: { value: string; label: string }[] = [
     { value: 'this-quarter', label: 'This quarter' },
     { value: 'this-quarter-to-date', label: 'This quarter to date' },
     { value: 'this-fiscal-quarter', label: 'This fiscal quarter' },
-    { value: 'this-fiscal-quarter-to-date', label: 'This fiscal quarter to date' },
+    {
+        value: 'this-fiscal-quarter-to-date',
+        label: 'This fiscal quarter to date',
+    },
     { value: 'this-year', label: 'This year' },
     { value: 'this-year-to-date', label: 'This year to date' },
     { value: 'this-year-to-last-month', label: 'This year to last month' },
     { value: 'this-fiscal-year', label: 'This fiscal year' },
     { value: 'this-fiscal-year-to-date', label: 'This fiscal year to date' },
-    { value: 'this-fiscal-year-to-last-month', label: 'This fiscal year to last month' },
+    {
+        value: 'this-fiscal-year-to-last-month',
+        label: 'This fiscal year to last month',
+    },
     { value: 'last-6-months', label: 'Last 6 months' },
     { value: 'yesterday', label: 'Yesterday' },
     { value: 'recent', label: 'Recent' },
@@ -163,7 +182,10 @@ const PERIOD_PRESETS: { value: string; label: string }[] = [
     { value: 'last-quarter-to-date', label: 'Last quarter to date' },
     { value: 'last-quarter-to-today', label: 'Last quarter to today' },
     { value: 'last-fiscal-quarter', label: 'Last fiscal quarter' },
-    { value: 'last-fiscal-quarter-to-date', label: 'Last fiscal quarter to date' },
+    {
+        value: 'last-fiscal-quarter-to-date',
+        label: 'Last fiscal quarter to date',
+    },
     { value: 'last-year', label: 'Last year' },
     { value: 'last-year-to-date', label: 'Last year to date' },
     { value: 'last-year-to-today', label: 'Last year to today' },
@@ -507,10 +529,17 @@ function getReportExportData(
     switch (reportType) {
         case 'profit-loss': {
             const breakdown = p.breakdown as
-                | { income?: Array<{ accountName: string; amount: number }>; expense?: Array<{ accountName: string; amount: number }> }
+                | {
+                      income?: Array<{ accountName: string; amount: number }>;
+                      expense?: Array<{ accountName: string; amount: number }>;
+                  }
                 | undefined;
-            const income = Array.isArray(breakdown?.income) ? breakdown.income : [];
-            const expense = Array.isArray(breakdown?.expense) ? breakdown.expense : [];
+            const income = Array.isArray(breakdown?.income)
+                ? breakdown.income
+                : [];
+            const expense = Array.isArray(breakdown?.expense)
+                ? breakdown.expense
+                : [];
             const rows: ExportData[] = [];
             income.forEach((item) => {
                 rows.push({
@@ -526,24 +555,43 @@ function getReportExportData(
                     Amount: Number(item.amount ?? 0),
                 });
             });
-            const totals = p.totals as { income?: number; expense?: number; netIncome?: number } | undefined;
+            const totals = p.totals as
+                | { income?: number; expense?: number; netIncome?: number }
+                | undefined;
             if (totals) {
-                rows.push({ Account: 'Total Income', Type: '', Amount: Number(totals.income ?? 0) });
-                rows.push({ Account: 'Total Expense', Type: '', Amount: Number(totals.expense ?? 0) });
-                rows.push({ Account: 'Net Income', Type: '', Amount: Number(totals.netIncome ?? 0) });
+                rows.push({
+                    Account: 'Total Income',
+                    Type: '',
+                    Amount: Number(totals.income ?? 0),
+                });
+                rows.push({
+                    Account: 'Total Expense',
+                    Type: '',
+                    Amount: Number(totals.expense ?? 0),
+                });
+                rows.push({
+                    Account: 'Net Income',
+                    Type: '',
+                    Amount: Number(totals.netIncome ?? 0),
+                });
             }
             return rows;
         }
         case 'balance-sheet': {
             const breakdown = p.breakdown as
                 | {
-                    assets?: Array<{ accountName: string; amount: number }>;
-                    liabilities?: Array<{ accountName: string; amount: number }>;
-                    equity?: Array<{ accountName: string; amount: number }>;
-                }
+                      assets?: Array<{ accountName: string; amount: number }>;
+                      liabilities?: Array<{
+                          accountName: string;
+                          amount: number;
+                      }>;
+                      equity?: Array<{ accountName: string; amount: number }>;
+                  }
                 | undefined;
             const rows: ExportData[] = [];
-            const assets = Array.isArray(breakdown?.assets) ? breakdown.assets : [];
+            const assets = Array.isArray(breakdown?.assets)
+                ? breakdown.assets
+                : [];
             assets.forEach((item) => {
                 rows.push({
                     Account: item.accountName ?? '',
@@ -551,7 +599,9 @@ function getReportExportData(
                     Amount: Number(item.amount ?? 0),
                 });
             });
-            const liabilities = Array.isArray(breakdown?.liabilities) ? breakdown.liabilities : [];
+            const liabilities = Array.isArray(breakdown?.liabilities)
+                ? breakdown.liabilities
+                : [];
             liabilities.forEach((item) => {
                 rows.push({
                     Account: item.accountName ?? '',
@@ -559,7 +609,9 @@ function getReportExportData(
                     Amount: Number(item.amount ?? 0),
                 });
             });
-            const equity = Array.isArray(breakdown?.equity) ? breakdown.equity : [];
+            const equity = Array.isArray(breakdown?.equity)
+                ? breakdown.equity
+                : [];
             equity.forEach((item) => {
                 rows.push({
                     Account: item.accountName ?? '',
@@ -567,11 +619,25 @@ function getReportExportData(
                     Amount: Number(item.amount ?? 0),
                 });
             });
-            const totals = p.totals as { assets?: number; liabilities?: number; equity?: number } | undefined;
+            const totals = p.totals as
+                | { assets?: number; liabilities?: number; equity?: number }
+                | undefined;
             if (totals) {
-                rows.push({ Account: 'Total Assets', Type: '', Amount: Number(totals.assets ?? 0) });
-                rows.push({ Account: 'Total Liabilities', Type: '', Amount: Number(totals.liabilities ?? 0) });
-                rows.push({ Account: 'Total Equity', Type: '', Amount: Number(totals.equity ?? 0) });
+                rows.push({
+                    Account: 'Total Assets',
+                    Type: '',
+                    Amount: Number(totals.assets ?? 0),
+                });
+                rows.push({
+                    Account: 'Total Liabilities',
+                    Type: '',
+                    Amount: Number(totals.liabilities ?? 0),
+                });
+                rows.push({
+                    Account: 'Total Equity',
+                    Type: '',
+                    Amount: Number(totals.equity ?? 0),
+                });
             }
             return rows;
         }
@@ -652,11 +718,7 @@ const ReportDetailpage = () => {
         isLoading,
         error,
         refetch,
-    } = useReport(
-        reportApiKey,
-        reportParams,
-        reportEnabled
-    );
+    } = useReport(reportApiKey, reportParams, reportEnabled);
 
     const handleRunReport = () => {
         if (reportApiKey) {
@@ -681,14 +743,19 @@ const ReportDetailpage = () => {
         const payload = response?.data;
         const companyName = selectedTenant?.name ?? 'Report';
         const periodLabel =
-            payload != null && typeof payload === 'object' && 'from' in payload && 'to' in payload
+            payload != null &&
+            typeof payload === 'object' &&
+            'from' in payload &&
+            'to' in payload
                 ? formatPeriodMonthYear(
-                    (payload as { from: string }).from,
-                    (payload as { to: string }).to
-                )
-                : payload != null && typeof payload === 'object' && 'asOf' in payload
-                    ? formatDate((payload as { asOf: string }).asOf)
-                    : '';
+                      (payload as { from: string }).from,
+                      (payload as { to: string }).to
+                  )
+                : payload != null &&
+                    typeof payload === 'object' &&
+                    'asOf' in payload
+                  ? formatDate((payload as { asOf: string }).asOf)
+                  : '';
 
         if (format === 'pdf') {
             window.print();
@@ -702,7 +769,13 @@ const ReportDetailpage = () => {
         if (format === 'csv') {
             exportToCSV(rows, baseName);
         } else {
-            exportToExcel(rows, baseName, report?.title ?? 'Report', companyName, periodLabel);
+            exportToExcel(
+                rows,
+                baseName,
+                report?.title ?? 'Report',
+                companyName,
+                periodLabel
+            );
         }
     };
 
@@ -783,14 +856,13 @@ const ReportDetailpage = () => {
         }
 
         // Render based on report type
-        const companyName =
-            selectedTenant?.name?.toUpperCase() || 'COMPANY';
+        const companyName = selectedTenant?.name?.toUpperCase() || 'COMPANY';
         const periodLabel =
             'from' in payload && 'to' in payload
                 ? formatPeriodMonthYear(
-                    (payload as { from: string }).from,
-                    (payload as { to: string }).to
-                )
+                      (payload as { from: string }).from,
+                      (payload as { to: string }).to
+                  )
                 : '';
         switch (reportApiKey) {
             case 'profit-loss':
@@ -814,11 +886,21 @@ const ReportDetailpage = () => {
                     />
                 );
             case 'general-ledger':
-                return <GeneralLedgerReportView data={payload as GeneralLedgerReportData} />;
+                return (
+                    <GeneralLedgerReportView
+                        data={payload as GeneralLedgerReportData}
+                    />
+                );
             case 'cash-flow':
-                return <CashFlowReportView data={payload as CashFlowReportData} />;
+                return (
+                    <CashFlowReportView data={payload as CashFlowReportData} />
+                );
             case 'unpaid-bills':
-                return <UnpaidBillsReportView data={payload as UnpaidBillsReportData} />;
+                return (
+                    <UnpaidBillsReportView
+                        data={payload as UnpaidBillsReportData}
+                    />
+                );
             default:
                 return (
                     <div className="border border-primary/10 rounded p-8 text-center text-primary/60">
@@ -871,10 +953,7 @@ const ReportDetailpage = () => {
                         </SelectTrigger>
                         <SelectContent className="max-h-[320px]">
                             {PERIOD_PRESETS.map((p) => (
-                                <SelectItem
-                                    key={p.value}
-                                    value={p.value}
-                                >
+                                <SelectItem key={p.value} value={p.value}>
                                     {p.label}
                                 </SelectItem>
                             ))}
@@ -890,8 +969,8 @@ const ReportDetailpage = () => {
                         type="date"
                         value={customFrom}
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                            setCustomFrom(e.target.value)}
-
+                            setCustomFrom(e.target.value)
+                        }
                     />
                 </div>
                 <div className="space-y-2">
@@ -902,8 +981,8 @@ const ReportDetailpage = () => {
                         type="date"
                         value={customTo}
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                            setCustomTo(e.target.value)}
-
+                            setCustomTo(e.target.value)
+                        }
                     />
                 </div>
 
@@ -921,7 +1000,10 @@ const ReportDetailpage = () => {
                             </SelectTrigger>
                             <SelectContent>
                                 {accountOptions.map((opt) => (
-                                    <SelectItem key={opt.value} value={opt.value}>
+                                    <SelectItem
+                                        key={opt.value}
+                                        value={opt.value}
+                                    >
                                         {opt.label}
                                     </SelectItem>
                                 ))}
@@ -974,9 +1056,7 @@ const ReportDetailpage = () => {
                             <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="active">
-                                Active only
-                            </SelectItem>
+                            <SelectItem value="active">Active only</SelectItem>
                         </SelectContent>
                     </Select>
                 </div>
@@ -1018,7 +1098,9 @@ const ReportDetailpage = () => {
                     </div>
                     <div className="print:text-right print:text-xs print:text-muted-foreground">
                         {typeof window !== 'undefined' && (
-                            <p className="print:m-0">{window.location.origin}</p>
+                            <p className="print:m-0">
+                                {window.location.origin}
+                            </p>
                         )}
                     </div>
                 </div>
@@ -1043,7 +1125,7 @@ const ReportDetailpage = () => {
                     )}
                 </div>
             </section>
-        </div >
+        </div>
     );
 };
 
@@ -1076,8 +1158,12 @@ const ProfitLossReportView = ({
     const to = data.to ?? '';
     const totals = data.totals ?? {};
     const breakdown = data.breakdown;
-    const incomeItems = Array.isArray(breakdown?.income) ? breakdown.income : [];
-    const expenseItems = Array.isArray(breakdown?.expense) ? breakdown.expense : [];
+    const incomeItems = Array.isArray(breakdown?.income)
+        ? breakdown.income
+        : [];
+    const expenseItems = Array.isArray(breakdown?.expense)
+        ? breakdown.expense
+        : [];
     const reportGeneratedAt = new Date().toLocaleString('en-US', {
         weekday: 'long',
         year: 'numeric',
@@ -1088,8 +1174,12 @@ const ProfitLossReportView = ({
         timeZoneName: 'short',
     });
     const totalIncome = Number((totals as { income?: number })?.income ?? 0);
-    const totalExpenses = Number((totals as { expense?: number })?.expense ?? 0);
-    const netIncome = Number((totals as { netIncome?: number })?.netIncome ?? 0);
+    const totalExpenses = Number(
+        (totals as { expense?: number })?.expense ?? 0
+    );
+    const netIncome = Number(
+        (totals as { netIncome?: number })?.netIncome ?? 0
+    );
 
     return (
         <div className="overflow-hidden rounded-lg border bg-card shadow-sm">
@@ -1139,14 +1229,10 @@ const ProfitLossReportView = ({
                             >
                                 Export to Excel
                             </DropdownMenuItem>
-                            <DropdownMenuItem
-                                onClick={() => onExport?.('pdf')}
-                            >
+                            <DropdownMenuItem onClick={() => onExport?.('pdf')}>
                                 Export to PDF
                             </DropdownMenuItem>
-                            <DropdownMenuItem
-                                onClick={() => onExport?.('csv')}
-                            >
+                            <DropdownMenuItem onClick={() => onExport?.('csv')}>
                                 Export as CSV
                             </DropdownMenuItem>
                         </DropdownMenuContent>
@@ -1166,7 +1252,8 @@ const ProfitLossReportView = ({
                     {companyName}
                 </p>
                 <p className="mt-1 text-sm text-muted-foreground">
-                    {periodLabel || (from && to ? formatPeriodMonthYear(from, to) : '')}
+                    {periodLabel ||
+                        (from && to ? formatPeriodMonthYear(from, to) : '')}
                 </p>
             </div>
 
@@ -1180,7 +1267,10 @@ const ProfitLossReportView = ({
                     <TableHeader>
                         <TableRow className="hover:bg-transparent">
                             <TableHead align="left">Account</TableHead>
-                            <TableHead align="right" className={TOTAL_COL_WIDTH}>
+                            <TableHead
+                                align="right"
+                                className={TOTAL_COL_WIDTH}
+                            >
                                 <span className="inline-flex items-center gap-1">
                                     Total
                                     <ArrowUpDown className="size-3.5" />
@@ -1248,10 +1338,7 @@ const ProfitLossReportView = ({
                             <TableCell>Gross Profit</TableCell>
                             <TableCell
                                 align="right"
-                                className={cn(
-                                    'tabular-nums',
-                                    TOTAL_COL_WIDTH
-                                )}
+                                className={cn('tabular-nums', TOTAL_COL_WIDTH)}
                             >
                                 {formatCurrency(totalIncome)}
                             </TableCell>
@@ -1341,7 +1428,8 @@ const ProfitLossReportView = ({
                     Add note
                 </button>
                 <span className="text-xs text-muted-foreground">
-                    {accountingMethod === 'accrual' ? 'Accrual' : 'Cash'} basis | {reportGeneratedAt}
+                    {accountingMethod === 'accrual' ? 'Accrual' : 'Cash'} basis
+                    | {reportGeneratedAt}
                 </span>
             </div>
         </div>
@@ -1406,7 +1494,9 @@ const BalanceSheetReportView = ({
     const breakdown = data.breakdown ?? {};
     const totals = data.totals ?? {};
     const assets = Array.isArray(breakdown.assets) ? breakdown.assets : [];
-    const liabilities = Array.isArray(breakdown.liabilities) ? breakdown.liabilities : [];
+    const liabilities = Array.isArray(breakdown.liabilities)
+        ? breakdown.liabilities
+        : [];
     const equity = Array.isArray(breakdown.equity) ? breakdown.equity : [];
     const asOf = data.asOf ?? '';
     const asOfLabel = asOf ? `As of ${formatDate(asOf)}` : '—';
@@ -1474,14 +1564,10 @@ const BalanceSheetReportView = ({
                             >
                                 Export to Excel
                             </DropdownMenuItem>
-                            <DropdownMenuItem
-                                onClick={() => onExport?.('pdf')}
-                            >
+                            <DropdownMenuItem onClick={() => onExport?.('pdf')}>
                                 Export to PDF
                             </DropdownMenuItem>
-                            <DropdownMenuItem
-                                onClick={() => onExport?.('csv')}
-                            >
+                            <DropdownMenuItem onClick={() => onExport?.('csv')}>
                                 Export as CSV
                             </DropdownMenuItem>
                         </DropdownMenuContent>
@@ -1517,7 +1603,10 @@ const BalanceSheetReportView = ({
                     <TableHeader>
                         <TableRow className="hover:bg-transparent">
                             <TableHead align="left">Account</TableHead>
-                            <TableHead align="right" className={AMOUNT_WIDTH_BS}>
+                            <TableHead
+                                align="right"
+                                className={AMOUNT_WIDTH_BS}
+                            >
                                 Amount
                             </TableHead>
                         </TableRow>
@@ -1604,10 +1693,7 @@ const BalanceSheetReportView = ({
                             <TableCell>Total Assets</TableCell>
                             <TableCell
                                 align="right"
-                                className={cn(
-                                    'tabular-nums',
-                                    AMOUNT_WIDTH_BS
-                                )}
+                                className={cn('tabular-nums', AMOUNT_WIDTH_BS)}
                             >
                                 {formatCurrency(totals.assets ?? 0)}
                             </TableCell>
@@ -1646,7 +1732,7 @@ const BalanceSheetReportView = ({
                                                     className={cn(
                                                         'size-4 shrink-0 text-muted-foreground transition-transform',
                                                         !liabilitiesOpen &&
-                                                        '-rotate-90'
+                                                            '-rotate-90'
                                                     )}
                                                 />
                                                 Liabilities
@@ -1657,17 +1743,43 @@ const BalanceSheetReportView = ({
                                 {liabEquityOpen &&
                                     liabilitiesOpen &&
                                     liabilitiesByType.size > 0 &&
-                                    Array.from(
-                                        liabilitiesByType.entries()
-                                    ).map(([type, items]) => (
-                                        <Fragment key={type}>
-                                            {(items ?? []).map((acc, idx) => (
-                                                <TableRow
-                                                    key={acc.accountId ?? idx}
-                                                    className="hover:bg-muted/30"
-                                                >
-                                                    <TableCell className="pl-14 text-foreground">
-                                                        {acc.accountName}
+                                    Array.from(liabilitiesByType.entries()).map(
+                                        ([type, items]) => (
+                                            <Fragment key={type}>
+                                                {(items ?? []).map(
+                                                    (acc, idx) => (
+                                                        <TableRow
+                                                            key={
+                                                                acc.accountId ??
+                                                                idx
+                                                            }
+                                                            className="hover:bg-muted/30"
+                                                        >
+                                                            <TableCell className="pl-14 text-foreground">
+                                                                {
+                                                                    acc.accountName
+                                                                }
+                                                            </TableCell>
+                                                            <TableCell
+                                                                align="right"
+                                                                className={cn(
+                                                                    'tabular-nums',
+                                                                    AMOUNT_WIDTH_BS
+                                                                )}
+                                                            >
+                                                                {formatAmount(
+                                                                    acc.amount
+                                                                )}
+                                                            </TableCell>
+                                                        </TableRow>
+                                                    )
+                                                )}
+                                                <TableRow className="bg-muted/20 hover:bg-muted/30 font-semibold">
+                                                    <TableCell className="pl-14">
+                                                        Total{' '}
+                                                        {balanceSheetSectionLabel(
+                                                            type
+                                                        )}
                                                     </TableCell>
                                                     <TableCell
                                                         align="right"
@@ -1676,38 +1788,20 @@ const BalanceSheetReportView = ({
                                                             AMOUNT_WIDTH_BS
                                                         )}
                                                     >
-                                                        {formatAmount(
-                                                            acc.amount
+                                                        {formatCurrency(
+                                                            items.reduce(
+                                                                (s, i) =>
+                                                                    s +
+                                                                    (i.amount ??
+                                                                        0),
+                                                                0
+                                                            )
                                                         )}
                                                     </TableCell>
                                                 </TableRow>
-                                            ))}
-                                            <TableRow className="bg-muted/20 hover:bg-muted/30 font-semibold">
-                                                <TableCell className="pl-14">
-                                                    Total{' '}
-                                                    {balanceSheetSectionLabel(
-                                                        type
-                                                    )}
-                                                </TableCell>
-                                                <TableCell
-                                                    align="right"
-                                                    className={cn(
-                                                        'tabular-nums',
-                                                        AMOUNT_WIDTH_BS
-                                                    )}
-                                                >
-                                                    {formatCurrency(
-                                                        items.reduce(
-                                                            (s, i) =>
-                                                                s +
-                                                                (i.amount ?? 0),
-                                                            0
-                                                        )
-                                                    )}
-                                                </TableCell>
-                                            </TableRow>
-                                        </Fragment>
-                                    ))}
+                                            </Fragment>
+                                        )
+                                    )}
                                 {liabEquityOpen &&
                                     liabilitiesOpen &&
                                     liabilitiesByType.size === 0 && (
@@ -1749,7 +1843,7 @@ const BalanceSheetReportView = ({
                                                     className={cn(
                                                         'size-4 shrink-0 text-muted-foreground transition-transform',
                                                         !equityOpen &&
-                                                        '-rotate-90'
+                                                            '-rotate-90'
                                                     )}
                                                 />
                                                 Equity
@@ -1826,7 +1920,7 @@ const BalanceSheetReportView = ({
                                     >
                                         {formatCurrency(
                                             (totals.liabilities ?? 0) +
-                                            (totals.equity ?? 0)
+                                                (totals.equity ?? 0)
                                         )}
                                     </TableCell>
                                 </TableRow>
@@ -1846,17 +1940,19 @@ const BalanceSheetReportView = ({
                     Add note
                 </button>
                 <span className="text-xs text-muted-foreground">
-                    {accountingMethod === 'accrual'
-                        ? 'Accrual'
-                        : 'Cash'}{' '}
-                    basis | {reportGeneratedAt}
+                    {accountingMethod === 'accrual' ? 'Accrual' : 'Cash'} basis
+                    | {reportGeneratedAt}
                 </span>
             </div>
         </div>
     );
 };
 
-const GeneralLedgerReportView = ({ data }: { data: GeneralLedgerReportData }) => {
+const GeneralLedgerReportView = ({
+    data,
+}: {
+    data: GeneralLedgerReportData;
+}) => {
     if (!data || typeof data !== 'object') return null;
     const accounts = Array.isArray(data.accounts) ? data.accounts : [];
     const from = data.from ?? '';
@@ -1864,50 +1960,87 @@ const GeneralLedgerReportView = ({ data }: { data: GeneralLedgerReportData }) =>
     return (
         <div className="border border-primary/10 rounded overflow-hidden">
             <div className="bg-primary/5 px-4 py-2 text-sm font-medium">
-                Period: {from ? formatDate(from) : '—'} – {to ? formatDate(to) : '—'}
+                Period: {from ? formatDate(from) : '—'} –{' '}
+                {to ? formatDate(to) : '—'}
             </div>
             <div className="divide-y divide-primary/10">
                 {accounts.map((account, idx) => {
-                    const lines = Array.isArray(account.lines) ? account.lines : [];
+                    const lines = Array.isArray(account.lines)
+                        ? account.lines
+                        : [];
                     return (
                         <div key={account.accountId ?? idx} className="p-4">
                             <div className="flex justify-between items-center mb-2">
                                 <div>
-                                    <span className="font-medium">{account.accountName}</span>
+                                    <span className="font-medium">
+                                        {account.accountName}
+                                    </span>
                                     <span className="text-muted-foreground text-sm ml-2">
                                         ({account.accountNumber})
                                     </span>
                                 </div>
                                 <span className="text-sm text-muted-foreground">
-                                    Opening: {formatCurrency(account.openingBalance ?? 0)}
+                                    Opening:{' '}
+                                    {formatCurrency(
+                                        account.openingBalance ?? 0
+                                    )}
                                 </span>
                             </div>
                             <div className="overflow-x-auto">
                                 <table className="w-full text-sm">
                                     <thead className="bg-muted/50">
                                         <tr>
-                                            <th className="text-left px-2 py-1">Date</th>
-                                            <th className="text-left px-2 py-1">Description</th>
-                                            <th className="text-right px-2 py-1">Debit</th>
-                                            <th className="text-right px-2 py-1">Credit</th>
-                                            <th className="text-right px-2 py-1">Balance</th>
+                                            <th className="text-left px-2 py-1">
+                                                Date
+                                            </th>
+                                            <th className="text-left px-2 py-1">
+                                                Description
+                                            </th>
+                                            <th className="text-right px-2 py-1">
+                                                Debit
+                                            </th>
+                                            <th className="text-right px-2 py-1">
+                                                Credit
+                                            </th>
+                                            <th className="text-right px-2 py-1">
+                                                Balance
+                                            </th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {lines.map((line, lineIdx) => (
-                                            <tr key={lineIdx} className="border-t border-primary/5">
+                                            <tr
+                                                key={lineIdx}
+                                                className="border-t border-primary/5"
+                                            >
                                                 <td className="px-2 py-1">
-                                                    {line.date ? formatDate(line.date) : '—'}
+                                                    {line.date
+                                                        ? formatDate(line.date)
+                                                        : '—'}
                                                 </td>
-                                                <td className="px-2 py-1">{line.description ?? '—'}</td>
-                                                <td className="px-2 py-1 text-right">
-                                                    {(line.debit ?? 0) > 0 ? formatCurrency(line.debit ?? 0) : '-'}
+                                                <td className="px-2 py-1">
+                                                    {line.description ?? '—'}
                                                 </td>
                                                 <td className="px-2 py-1 text-right">
-                                                    {(line.credit ?? 0) > 0 ? formatCurrency(line.credit ?? 0) : '-'}
+                                                    {(line.debit ?? 0) > 0
+                                                        ? formatCurrency(
+                                                              line.debit ?? 0
+                                                          )
+                                                        : '-'}
+                                                </td>
+                                                <td className="px-2 py-1 text-right">
+                                                    {(line.credit ?? 0) > 0
+                                                        ? formatCurrency(
+                                                              line.credit ?? 0
+                                                          )
+                                                        : '-'}
                                                 </td>
                                                 <td className="px-2 py-1 text-right font-medium">
-                                                    {line.balance != null ? formatCurrency(line.balance) : '—'}
+                                                    {line.balance != null
+                                                        ? formatCurrency(
+                                                              line.balance
+                                                          )
+                                                        : '—'}
                                                 </td>
                                             </tr>
                                         ))}
@@ -1916,10 +2049,17 @@ const GeneralLedgerReportView = ({ data }: { data: GeneralLedgerReportData }) =>
                             </div>
                             <div className="flex justify-between mt-2 text-sm font-medium">
                                 <span className="text-muted-foreground">
-                                    Total Debit: {formatCurrency(account.totalDebit ?? 0)} · Total Credit:{' '}
+                                    Total Debit:{' '}
+                                    {formatCurrency(account.totalDebit ?? 0)} ·
+                                    Total Credit:{' '}
                                     {formatCurrency(account.totalCredit ?? 0)}
                                 </span>
-                                <span>Closing Balance: {formatCurrency(account.closingBalance ?? 0)}</span>
+                                <span>
+                                    Closing Balance:{' '}
+                                    {formatCurrency(
+                                        account.closingBalance ?? 0
+                                    )}
+                                </span>
                             </div>
                         </div>
                     );
@@ -1932,22 +2072,42 @@ const GeneralLedgerReportView = ({ data }: { data: GeneralLedgerReportData }) =>
 const CashFlowReportView = ({ data }: { data: CashFlowReportData }) => {
     if (!data || typeof data !== 'object') return null;
     const period = data.period ?? {};
-    const operating = Array.isArray(data.operatingActivities) ? data.operatingActivities : [];
-    const investing = Array.isArray(data.investingActivities) ? data.investingActivities : [];
-    const financing = Array.isArray(data.financingActivities) ? data.financingActivities : [];
+    const operating = Array.isArray(data.operatingActivities)
+        ? data.operatingActivities
+        : [];
+    const investing = Array.isArray(data.investingActivities)
+        ? data.investingActivities
+        : [];
+    const financing = Array.isArray(data.financingActivities)
+        ? data.financingActivities
+        : [];
     return (
         <div className="border border-primary/10 rounded overflow-hidden">
             <div className="bg-primary/5 px-4 py-2 text-sm font-medium">
-                Period: {period.startDate ? formatDate(period.startDate) : '—'} - {period.endDate ? formatDate(period.endDate) : '—'}
+                Period: {period.startDate ? formatDate(period.startDate) : '—'}{' '}
+                - {period.endDate ? formatDate(period.endDate) : '—'}
             </div>
             <div className="divide-y divide-primary/10">
                 <div className="p-4">
-                    <h3 className="font-semibold mb-2">Cash Flows from Operating Activities</h3>
+                    <h3 className="font-semibold mb-2">
+                        Cash Flows from Operating Activities
+                    </h3>
                     <div className="space-y-1">
                         {operating.map((item, idx) => (
-                            <div key={idx} className="flex justify-between text-sm">
-                                <span className="text-muted-foreground">{item.item}</span>
-                                <span className={item.amount >= 0 ? '' : 'text-destructive'}>
+                            <div
+                                key={idx}
+                                className="flex justify-between text-sm"
+                            >
+                                <span className="text-muted-foreground">
+                                    {item.item}
+                                </span>
+                                <span
+                                    className={
+                                        item.amount >= 0
+                                            ? ''
+                                            : 'text-destructive'
+                                    }
+                                >
                                     {formatCurrency(item.amount)}
                                 </span>
                             </div>
@@ -1955,18 +2115,37 @@ const CashFlowReportView = ({ data }: { data: CashFlowReportData }) => {
                     </div>
                     <div className="flex justify-between font-medium mt-2 pt-2 border-t border-primary/10">
                         <span>Net Cash from Operating</span>
-                        <span className={(data.netCashFromOperating ?? 0) >= 0 ? 'text-primary' : 'text-destructive'}>
+                        <span
+                            className={
+                                (data.netCashFromOperating ?? 0) >= 0
+                                    ? 'text-primary'
+                                    : 'text-destructive'
+                            }
+                        >
                             {formatCurrency(data.netCashFromOperating ?? 0)}
                         </span>
                     </div>
                 </div>
                 <div className="p-4">
-                    <h3 className="font-semibold mb-2">Cash Flows from Investing Activities</h3>
+                    <h3 className="font-semibold mb-2">
+                        Cash Flows from Investing Activities
+                    </h3>
                     <div className="space-y-1">
                         {investing.map((item, idx) => (
-                            <div key={idx} className="flex justify-between text-sm">
-                                <span className="text-muted-foreground">{item.item}</span>
-                                <span className={item.amount >= 0 ? '' : 'text-destructive'}>
+                            <div
+                                key={idx}
+                                className="flex justify-between text-sm"
+                            >
+                                <span className="text-muted-foreground">
+                                    {item.item}
+                                </span>
+                                <span
+                                    className={
+                                        item.amount >= 0
+                                            ? ''
+                                            : 'text-destructive'
+                                    }
+                                >
                                     {formatCurrency(item.amount)}
                                 </span>
                             </div>
@@ -1974,18 +2153,37 @@ const CashFlowReportView = ({ data }: { data: CashFlowReportData }) => {
                     </div>
                     <div className="flex justify-between font-medium mt-2 pt-2 border-t border-primary/10">
                         <span>Net Cash from Investing</span>
-                        <span className={(data.netCashFromInvesting ?? 0) >= 0 ? 'text-primary' : 'text-destructive'}>
+                        <span
+                            className={
+                                (data.netCashFromInvesting ?? 0) >= 0
+                                    ? 'text-primary'
+                                    : 'text-destructive'
+                            }
+                        >
                             {formatCurrency(data.netCashFromInvesting ?? 0)}
                         </span>
                     </div>
                 </div>
                 <div className="p-4">
-                    <h3 className="font-semibold mb-2">Cash Flows from Financing Activities</h3>
+                    <h3 className="font-semibold mb-2">
+                        Cash Flows from Financing Activities
+                    </h3>
                     <div className="space-y-1">
                         {financing.map((item, idx) => (
-                            <div key={idx} className="flex justify-between text-sm">
-                                <span className="text-muted-foreground">{item.item}</span>
-                                <span className={item.amount >= 0 ? '' : 'text-destructive'}>
+                            <div
+                                key={idx}
+                                className="flex justify-between text-sm"
+                            >
+                                <span className="text-muted-foreground">
+                                    {item.item}
+                                </span>
+                                <span
+                                    className={
+                                        item.amount >= 0
+                                            ? ''
+                                            : 'text-destructive'
+                                    }
+                                >
                                     {formatCurrency(item.amount)}
                                 </span>
                             </div>
@@ -1993,7 +2191,13 @@ const CashFlowReportView = ({ data }: { data: CashFlowReportData }) => {
                     </div>
                     <div className="flex justify-between font-medium mt-2 pt-2 border-t border-primary/10">
                         <span>Net Cash from Financing</span>
-                        <span className={(data.netCashFromFinancing ?? 0) >= 0 ? 'text-primary' : 'text-destructive'}>
+                        <span
+                            className={
+                                (data.netCashFromFinancing ?? 0) >= 0
+                                    ? 'text-primary'
+                                    : 'text-destructive'
+                            }
+                        >
                             {formatCurrency(data.netCashFromFinancing ?? 0)}
                         </span>
                     </div>
@@ -2002,17 +2206,27 @@ const CashFlowReportView = ({ data }: { data: CashFlowReportData }) => {
                     <div className="space-y-2">
                         <div className="flex justify-between text-sm">
                             <span>Beginning Cash Balance</span>
-                            <span>{formatCurrency(data.beginningCashBalance ?? 0)}</span>
+                            <span>
+                                {formatCurrency(data.beginningCashBalance ?? 0)}
+                            </span>
                         </div>
                         <div className="flex justify-between font-medium">
                             <span>Net Change in Cash</span>
-                            <span className={(data.netChangeInCash ?? 0) >= 0 ? 'text-primary' : 'text-destructive'}>
+                            <span
+                                className={
+                                    (data.netChangeInCash ?? 0) >= 0
+                                        ? 'text-primary'
+                                        : 'text-destructive'
+                                }
+                            >
                                 {formatCurrency(data.netChangeInCash ?? 0)}
                             </span>
                         </div>
                         <div className="flex justify-between font-semibold text-lg pt-2 border-t border-primary/10">
                             <span>Ending Cash Balance</span>
-                            <span>{formatCurrency(data.endingCashBalance ?? 0)}</span>
+                            <span>
+                                {formatCurrency(data.endingCashBalance ?? 0)}
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -2032,15 +2246,25 @@ const UnpaidBillsReportView = ({ data }: { data: UnpaidBillsReportData }) => {
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 border-b border-primary/10">
                 <div className="bg-muted/30 rounded p-3">
-                    <div className="text-sm text-muted-foreground">Total Bills</div>
-                    <div className="text-lg font-semibold">{summary.totalBills ?? 0}</div>
+                    <div className="text-sm text-muted-foreground">
+                        Total Bills
+                    </div>
+                    <div className="text-lg font-semibold">
+                        {summary.totalBills ?? 0}
+                    </div>
                 </div>
                 <div className="bg-muted/30 rounded p-3">
-                    <div className="text-sm text-muted-foreground">Total Amount</div>
-                    <div className="text-lg font-semibold">{formatCurrency(summary.totalAmount ?? 0)}</div>
+                    <div className="text-sm text-muted-foreground">
+                        Total Amount
+                    </div>
+                    <div className="text-lg font-semibold">
+                        {formatCurrency(summary.totalAmount ?? 0)}
+                    </div>
                 </div>
                 <div className="bg-muted/30 rounded p-3">
-                    <div className="text-sm text-muted-foreground">Amount Due</div>
+                    <div className="text-sm text-muted-foreground">
+                        Amount Due
+                    </div>
                     <div className="text-lg font-semibold text-primary">
                         {formatCurrency(summary.totalDue ?? 0)}
                     </div>
@@ -2048,7 +2272,8 @@ const UnpaidBillsReportView = ({ data }: { data: UnpaidBillsReportData }) => {
                 <div className="bg-destructive/10 rounded p-3">
                     <div className="text-sm text-muted-foreground">Overdue</div>
                     <div className="text-lg font-semibold text-destructive">
-                        {summary.overdueBills ?? 0} ({formatCurrency(summary.overdueAmount ?? 0)})
+                        {summary.overdueBills ?? 0} (
+                        {formatCurrency(summary.overdueAmount ?? 0)})
                     </div>
                 </div>
             </div>
@@ -2067,11 +2292,22 @@ const UnpaidBillsReportView = ({ data }: { data: UnpaidBillsReportData }) => {
                     </thead>
                     <tbody>
                         {bills.map((bill, idx) => (
-                            <tr key={idx} className="border-t border-primary/5 hover:bg-muted/30">
-                                <td className="px-4 py-2 font-medium">{bill.billNumber}</td>
+                            <tr
+                                key={idx}
+                                className="border-t border-primary/5 hover:bg-muted/30"
+                            >
+                                <td className="px-4 py-2 font-medium">
+                                    {bill.billNumber}
+                                </td>
                                 <td className="px-4 py-2">{bill.vendorName}</td>
                                 <td className="px-4 py-2">
-                                    <span className={bill.daysOverdue > 0 ? 'text-destructive' : ''}>
+                                    <span
+                                        className={
+                                            bill.daysOverdue > 0
+                                                ? 'text-destructive'
+                                                : ''
+                                        }
+                                    >
                                         {formatDate(bill.dueDate)}
                                         {bill.daysOverdue > 0 && (
                                             <span className="ml-1 text-xs">
@@ -2080,7 +2316,9 @@ const UnpaidBillsReportView = ({ data }: { data: UnpaidBillsReportData }) => {
                                         )}
                                     </span>
                                 </td>
-                                <td className="px-4 py-2 text-right">{formatCurrency(bill.totalAmount)}</td>
+                                <td className="px-4 py-2 text-right">
+                                    {formatCurrency(bill.totalAmount)}
+                                </td>
                                 <td className="px-4 py-2 text-right text-primary">
                                     {formatCurrency(bill.amountPaid)}
                                 </td>
@@ -2091,9 +2329,12 @@ const UnpaidBillsReportView = ({ data }: { data: UnpaidBillsReportData }) => {
                                     <span
                                         className={cn(
                                             'px-2 py-1 rounded-full text-xs font-medium',
-                                            bill.status === 'overdue' && 'bg-destructive/15 text-destructive',
-                                            bill.status === 'pending' && 'bg-muted text-muted-foreground',
-                                            bill.status === 'partial' && 'bg-primary/10 text-primary'
+                                            bill.status === 'overdue' &&
+                                                'bg-destructive/15 text-destructive',
+                                            bill.status === 'pending' &&
+                                                'bg-muted text-muted-foreground',
+                                            bill.status === 'partial' &&
+                                                'bg-primary/10 text-primary'
                                         )}
                                     >
                                         {bill.status}

@@ -91,9 +91,7 @@ const Invoicepage = lazyWithRetry(
 const Expensespage = lazyWithRetry(
     () => import('../pages/protected/Expensespage')
 );
-const Billspage = lazyWithRetry(
-    () => import('../pages/protected/Billspage')
-);
+const Billspage = lazyWithRetry(() => import('../pages/protected/Billspage'));
 const CreateBillpage = lazyWithRetry(
     () => import('../pages/protected/CreateBillpage')
 );

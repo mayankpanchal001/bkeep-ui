@@ -182,15 +182,7 @@ const Billspage = () => {
             sort: sortKey,
             order: sortOrder,
         }),
-        [
-            page,
-            limit,
-            statusTab,
-            supplierId,
-            billDateRange,
-            sortKey,
-            sortOrder,
-        ]
+        [page, limit, statusTab, supplierId, billDateRange, sortKey, sortOrder]
     );
 
     const { data, isLoading, isError } = useBills(queryParams);
@@ -274,8 +266,7 @@ const Billspage = () => {
                                             const bill = bills.find(
                                                 (b) => b.id === id
                                             );
-                                            if (bill)
-                                                handleMarkAsPaid(bill);
+                                            if (bill) handleMarkAsPaid(bill);
                                         })
                                     }
                                     disabled={selectedItems.length === 0}
@@ -290,9 +281,7 @@ const Billspage = () => {
                                 asChild
                                 className="rounded-r-none border-r border-primary/30 px-4"
                             >
-                                <Link to="/expenses/bills/new">
-                                    Add bill
-                                </Link>
+                                <Link to="/expenses/bills/new">Add bill</Link>
                             </Button>
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
@@ -311,7 +300,7 @@ const Billspage = () => {
                                         </Link>
                                     </DropdownMenuItem>
                                     <DropdownMenuItem
-                                        onClick={() => { }}
+                                        onClick={() => {}}
                                         className="gap-2"
                                     >
                                         <Upload className="size-4" />
@@ -324,7 +313,7 @@ const Billspage = () => {
                                     </DropdownMenuItem>
                                     <DropdownMenuSeparator />
                                     <DropdownMenuItem
-                                        onClick={() => { }}
+                                        onClick={() => {}}
                                         className="gap-2"
                                     >
                                         <SlidersHorizontal className="size-4" />
@@ -384,10 +373,7 @@ const Billspage = () => {
                             </SelectTrigger>
                             <SelectContent>
                                 {BILL_DATE_PRESETS.map((p) => (
-                                    <SelectItem
-                                        key={p.label}
-                                        value={p.label}
-                                    >
+                                    <SelectItem key={p.label} value={p.label}>
                                         {p.label}
                                     </SelectItem>
                                 ))}
@@ -551,7 +537,7 @@ const Billspage = () => {
                                                     className="gap-1 text-primary h-8"
                                                 >
                                                     {bill.status === 'paid' ||
-                                                        bill.status === 'voided'
+                                                    bill.status === 'voided'
                                                         ? 'View'
                                                         : 'Mark as paid'}
                                                     <ChevronDown className="size-4" />
@@ -560,7 +546,7 @@ const Billspage = () => {
                                             <DropdownMenuContent align="end">
                                                 {bill.status !== 'paid' &&
                                                     bill.status !==
-                                                    'voided' && (
+                                                        'voided' && (
                                                         <DropdownMenuItem
                                                             onClick={() =>
                                                                 handleMarkAsPaid(

@@ -36,10 +36,11 @@ export default function Navigation() {
 
     return (
         <nav
-            className={`homepage-nav fixed top-0 left-0 right-0 z-50 border-b border-border transition-all duration-300 ${isScrolled
-                ? 'bg-background/80 backdrop-blur-md shadow-sm'
-                : 'bg-transparent border-transparent'
-                }`}
+            className={`homepage-nav fixed top-0 left-0 right-0 z-50 border-b border-border transition-all duration-300 ${
+                isScrolled
+                    ? 'bg-background/80 backdrop-blur-md shadow-sm'
+                    : 'bg-transparent border-transparent'
+            }`}
         >
             <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6">
                 <Link to="/" className="flex items-center gap-3 z-50">
@@ -67,7 +68,6 @@ export default function Navigation() {
                     ))}
 
                     <div className="ml-4 flex items-center gap-3 pl-4 border-l border-border/50">
-
                         <Link to="/login">
                             <Button
                                 size="sm"

@@ -141,11 +141,12 @@ export function BulkUpdateTransactionsDrawer({
                         onClick={handleSubmit}
                         disabled={!hasAnyValue || isPending}
                     >
-                        {isPending ? 'Updating...' : `Update ${selectedIds.length} transaction${selectedIds.length !== 1 ? 's' : ''}`}
+                        {isPending
+                            ? 'Updating...'
+                            : `Update ${selectedIds.length} transaction${selectedIds.length !== 1 ? 's' : ''}`}
                     </Button>
                 </DrawerFooter>
             </DrawerContent>
         </Drawer>
     );
 }
-

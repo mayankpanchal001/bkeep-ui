@@ -75,7 +75,9 @@ export function MatchTransactionDrawer({
     const [billDateFrom, setBillDateFrom] = useState<string>('');
     const [billDateTo, setBillDateTo] = useState<string>('');
     const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
-    const [paymentAmounts, setPaymentAmounts] = useState<Record<string, string>>({});
+    const [paymentAmounts, setPaymentAmounts] = useState<
+        Record<string, string>
+    >({});
     const [resolveOpen, setResolveOpen] = useState(false);
     const [billsPage, setBillsPage] = useState(1);
     const limit = 10;
@@ -230,10 +232,10 @@ export function MatchTransactionDrawer({
         billDateFrom && billDateTo
             ? `Date: ${formatDisplayDate(billDateFrom)}–${formatDisplayDate(billDateTo)}`
             : billDateFrom
-                ? `Date: from ${formatDisplayDate(billDateFrom)}`
-                : billDateTo
-                    ? `Date: to ${formatDisplayDate(billDateTo)}`
-                    : '';
+              ? `Date: from ${formatDisplayDate(billDateFrom)}`
+              : billDateTo
+                ? `Date: to ${formatDisplayDate(billDateTo)}`
+                : '';
 
     if (!transaction) return null;
 
@@ -276,16 +278,14 @@ export function MatchTransactionDrawer({
                             <div className="text-right">
                                 <p className="text-xs font-medium text-muted-foreground">
                                     {transaction.received != null &&
-                                        transaction.received > 0
+                                    transaction.received > 0
                                         ? 'Received'
                                         : 'Spent'}
                                 </p>
                                 <p
                                     className={`text-xl font-bold ${(transaction.received ?? 0) > 0 ? 'text-green-600' : 'text-red-600'}`}
                                 >
-                                    {(transaction.received ?? 0) > 0
-                                        ? ''
-                                        : '-'}
+                                    {(transaction.received ?? 0) > 0 ? '' : '-'}
                                     {currency(bankAmount)}
                                 </p>
                             </div>
@@ -354,7 +354,11 @@ export function MatchTransactionDrawer({
                                     ))}
                                 </SelectContent>
                             </Select>
-                            <Button variant="ghost" size="sm" className="h-9 gap-1">
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-9 gap-1"
+                            >
                                 <FilterIcon className="size-4" />
                                 Filters
                             </Button>
@@ -382,7 +386,9 @@ export function MatchTransactionDrawer({
                                     <thead className="sticky top-0 z-10 border-b bg-muted/50">
                                         <tr>
                                             <th className="w-10 px-3 py-2 text-left font-medium">
-                                                <span className="sr-only">Select</span>
+                                                <span className="sr-only">
+                                                    Select
+                                                </span>
                                             </th>
                                             <th className="w-24 px-3 py-2 text-left font-medium">
                                                 DATE ↑
@@ -422,7 +428,9 @@ export function MatchTransactionDrawer({
                                         ? `1 - ${Math.min(limit, filteredBills.length)} of ${totalItems} items`
                                         : '0 items'}
                                 </span>
-                                <span>Page {billsPage} of {totalPages}</span>
+                                <span>
+                                    Page {billsPage} of {totalPages}
+                                </span>
                                 <Button
                                     variant="ghost"
                                     size="sm"
@@ -470,8 +478,8 @@ export function MatchTransactionDrawer({
                                 <CollapsibleContent>
                                     <div className="mt-2 rounded border bg-muted/30 p-3 text-sm text-muted-foreground">
                                         Options for handling the remaining
-                                        difference (e.g. bank fee, rounding)
-                                        can be added here.
+                                        difference (e.g. bank fee, rounding) can
+                                        be added here.
                                     </div>
                                 </CollapsibleContent>
                             </Collapsible>
@@ -555,8 +563,7 @@ function TableBody({
                         colSpan={8}
                         className="px-3 py-8 text-center text-sm text-muted-foreground"
                     >
-                        No records found. Try adjusting search
-                        or filters.
+                        No records found. Try adjusting search or filters.
                     </td>
                 </tr>
             </tbody>

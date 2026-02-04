@@ -256,15 +256,12 @@ const CreateBillpage = () => {
             <div className="flex items-center justify-between border-b border-border pb-4">
                 <div className="flex items-center gap-2">
                     <div className="text-right text-sm">
-                        <div className="text-muted-foreground">
-                            BALANCE DUE
-                        </div>
+                        <div className="text-muted-foreground">BALANCE DUE</div>
                         <div className="font-semibold text-primary">
                             {CURRENCY_FORMAT.format(balanceDue)}
                         </div>
                     </div>
                 </div>
-
             </div>
 
             <form
@@ -427,13 +424,14 @@ const CreateBillpage = () => {
                                             }
                                         }}
                                         onDragOver={(e) => {
-                                            if (index > 0) handleDragOver(e, index);
+                                            if (index > 0)
+                                                handleDragOver(e, index);
                                         }}
                                         onDragEnd={handleDragEnd}
                                         className={cn(
                                             'border-b border-border last:border-0 transition-colors',
                                             draggedIndex === index &&
-                                            'opacity-50 bg-muted/50'
+                                                'opacity-50 bg-muted/50'
                                         )}
                                     >
                                         <td className="p-1 w-10 align-middle">
@@ -480,7 +478,9 @@ const CreateBillpage = () => {
                                                         (opt) => (
                                                             <SelectItem
                                                                 key={opt.value}
-                                                                value={opt.value}
+                                                                value={
+                                                                    opt.value
+                                                                }
                                                             >
                                                                 {opt.label}
                                                             </SelectItem>
@@ -605,9 +605,7 @@ const CreateBillpage = () => {
                 {/* Summary */}
                 <div className="flex flex-col items-end gap-1 max-w-xs ml-auto">
                     <div className="flex justify-between w-full text-sm">
-                        <span className="text-muted-foreground">
-                            Subtotal
-                        </span>
+                        <span className="text-muted-foreground">Subtotal</span>
                         <span>{CURRENCY_FORMAT.format(subtotal)}</span>
                     </div>
                     <div className="flex justify-between w-full text-sm font-semibold">
@@ -634,9 +632,7 @@ const CreateBillpage = () => {
                             <p className="font-medium text-primary mb-1">
                                 Add attachment
                             </p>
-                            <p className="text-xs mb-2">
-                                Max file size: 20 MB
-                            </p>
+                            <p className="text-xs mb-2">Max file size: 20 MB</p>
                             <div className="flex gap-2 justify-center">
                                 <button
                                     type="button"
