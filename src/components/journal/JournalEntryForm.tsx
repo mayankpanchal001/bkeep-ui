@@ -524,17 +524,21 @@ export function JournalEntryForm({
                             <TableRow
                                 key={index}
                                 draggable
-                                onDragStart={(e) => handleRowDragStart(e, index)}
+                                onDragStart={(e) =>
+                                    handleRowDragStart(e, index)
+                                }
                                 onDragOver={(e) => handleRowDragOver(e, index)}
                                 onDragEnd={handleRowDragEnd}
                                 onDrop={(e) => handleRowDrop(e, index)}
-                                className={`transition-colors ${draggedLineIndex === index
-                                    ? 'opacity-50 bg-muted/50'
-                                    : ''
-                                    } ${dragOverLineIndex === index
+                                className={`transition-colors ${
+                                    draggedLineIndex === index
+                                        ? 'opacity-50 bg-muted/50'
+                                        : ''
+                                } ${
+                                    dragOverLineIndex === index
                                         ? 'border-t-2 border-primary'
                                         : ''
-                                    }`}
+                                }`}
                             >
                                 <TableCell className="text-primary/60 font-medium text-center">
                                     {index + 1}
