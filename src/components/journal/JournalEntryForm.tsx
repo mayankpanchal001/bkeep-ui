@@ -21,7 +21,7 @@ import { useChartOfAccounts } from '@/services/apis/chartsAccountApi';
 import { useContacts } from '@/services/apis/contactsApi';
 import { useTaxes } from '@/services/apis/taxApi';
 import type { Attachment, CreateJournalEntryPayload } from '@/types/journal';
-import { FileText, Save, Upload, X } from 'lucide-react';
+import { FileText, GripVertical, Save, Upload, X } from 'lucide-react';
 import { useMemo, useRef, useState } from 'react';
 import { FaPlus, FaTrash } from 'react-icons/fa';
 
@@ -127,6 +127,12 @@ export function JournalEntryForm({
     >(initialData?.existingAttachments || []);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [dragActive, setDragActive] = useState(false);
+    const [draggedLineIndex, setDraggedLineIndex] = useState<number | null>(
+        null
+    );
+    const [dragOverLineIndex, setDragOverLineIndex] = useState<number | null>(
+        null
+    );
 
     const handleDrag = (e: React.DragEvent) => {
         e.preventDefault();
@@ -259,6 +265,65 @@ export function JournalEntryForm({
             return next.map((l, i) => ({ ...l, lineNumber: i + 1 }));
         });
         setLineErrors((prev) => prev.filter((_, i) => i !== index));
+    };
+
+    const handleRowDragStart = (e: React.DragEvent, index: number) => {
+        setDraggedLineIndex(index);
+        e.dataTransfer.effectAllowed = 'move';
+        // Create a drag image
+        const row = e.currentTarget as HTMLElement;
+        const dragImage = row.cloneNode(true) as HTMLElement;
+        dragImage.style.opacity = '0.5';
+        dragImage.style.position = 'absolute';
+        dragImage.style.top = '-1000px';
+        document.body.appendChild(dragImage);
+        e.dataTransfer.setDragImage(dragImage, 0, 0);
+        setTimeout(() => document.body.removeChild(dragImage), 0);
+    };
+
+    const handleRowDragOver = (e: React.DragEvent, index: number) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (draggedLineIndex === null || draggedLineIndex === index) return;
+        setDragOverLineIndex(index);
+    };
+
+    const handleRowDragEnd = () => {
+        setDraggedLineIndex(null);
+        setDragOverLineIndex(null);
+    };
+
+    const handleRowDrop = (e: React.DragEvent, dropIndex: number) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        if (draggedLineIndex === null || draggedLineIndex === dropIndex) {
+            handleRowDragEnd();
+            return;
+        }
+
+        const newLines = [...lines];
+        const [draggedItem] = newLines.splice(draggedLineIndex, 1);
+        newLines.splice(dropIndex, 0, draggedItem);
+
+        // Recalculate line numbers
+        const reorderedLines = newLines.map((line, idx) => ({
+            ...line,
+            lineNumber: idx + 1,
+        }));
+
+        setLines(reorderedLines);
+
+        // We also need to reorder the errors to permit the user to keep tracking them
+        setLineErrors((prev) => {
+            if (prev.length === 0) return prev;
+            const newErrors = [...prev];
+            const [draggedError] = newErrors.splice(draggedLineIndex, 1);
+            newErrors.splice(dropIndex, 0, draggedError);
+            return newErrors;
+        });
+
+        handleRowDragEnd();
     };
 
     const validate = () => {
@@ -435,6 +500,7 @@ export function JournalEntryForm({
                 <TableHeader sticky>
                     <tr>
                         <TableHead className="w-12">#</TableHead>
+                        <TableHead className="w-8"></TableHead>
                         <TableHead className="min-w-[260px]">Account</TableHead>
                         <TableHead align="right" className="w-44">
                             Debit
@@ -455,9 +521,28 @@ export function JournalEntryForm({
                     {lines.map((line, index) => {
                         const rowError = lineErrors[index] || {};
                         return (
-                            <TableRow key={index}>
-                                <TableCell className="text-primary/60 font-medium">
+                            <TableRow
+                                key={index}
+                                draggable
+                                onDragStart={(e) => handleRowDragStart(e, index)}
+                                onDragOver={(e) => handleRowDragOver(e, index)}
+                                onDragEnd={handleRowDragEnd}
+                                onDrop={(e) => handleRowDrop(e, index)}
+                                className={`transition-colors ${draggedLineIndex === index
+                                    ? 'opacity-50 bg-muted/50'
+                                    : ''
+                                    } ${dragOverLineIndex === index
+                                        ? 'border-t-2 border-primary'
+                                        : ''
+                                    }`}
+                            >
+                                <TableCell className="text-primary/60 font-medium text-center">
                                     {index + 1}
+                                </TableCell>
+                                <TableCell className="text-center p-0">
+                                    <div className="flex items-center justify-center cursor-grab hover:text-primary text-muted-foreground">
+                                        <GripVertical className="h-4 w-4" />
+                                    </div>
                                 </TableCell>
                                 <TableCell noTruncate>
                                     <Select

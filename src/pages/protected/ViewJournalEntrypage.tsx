@@ -217,7 +217,6 @@ export default function ViewJournalEntrypage() {
             isAdjusting: journalEntry.isAdjusting,
             isClosing: journalEntry.isClosing || false,
             isReversing: false,
-            reversalDate: null,
             description: journalEntry.memo || '',
             memo: journalEntry.memo || '',
             reference: journalEntry.reference || '',
@@ -234,8 +233,8 @@ export default function ViewJournalEntrypage() {
                         : line.credit,
                 description: line.description || '',
                 memo: line.memo || line.description || '',
-                contactId: line.contactId || '',
-                taxId: line.taxId || '',
+                contactId: line.contactId || undefined,
+                taxId: line.taxId || undefined,
             })),
         };
 
