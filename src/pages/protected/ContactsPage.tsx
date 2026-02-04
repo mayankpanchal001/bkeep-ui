@@ -267,7 +267,6 @@ const ContactsPage = () => {
                     <Button
                         type="button"
                         variant="outline"
-                        size="sm"
                         onClick={() =>
                             handleFilterChange(
                                 'isActive',
@@ -308,7 +307,6 @@ const ContactsPage = () => {
 
                     <Button
                         type="button"
-                        size="sm"
                         onClick={handleGoToCreate}
                         className="shrink-0"
                     >
@@ -319,8 +317,9 @@ const ContactsPage = () => {
             </div>
 
             {/* Table */}
-            <div className="bg-card border border-primary/10 rounded-lg overflow-hidden">
+            <div className="flex flex-col flex-1 min-h-0">
                 <Table
+                    containerClassName="h-full"
                     enableSelection
                     rowIds={rowIds}
                     selectedIds={selectedItems}
@@ -429,12 +428,11 @@ const ContactsPage = () => {
                                     onClick={() => handleEdit(contact)}
                                 >
                                     <TableCell
-                                        className="py-4"
                                         onClick={(e) => e.stopPropagation()}
                                     >
                                         <TableRowCheckbox rowId={contact.id} />
                                     </TableCell>
-                                    <TableCell className="py-4">
+                                    <TableCell className="">
                                         <div className="flex items-center gap-3">
                                             <Avatar className="size-10">
                                                 <AvatarFallback className="bg-linear-to-br from-primary/20 to-secondary/20 text-primary font-semibold">
@@ -444,18 +442,18 @@ const ContactsPage = () => {
                                                 </AvatarFallback>
                                             </Avatar>
                                             <div className="flex flex-col">
-                                                <span className="font-medium text-primary text-sm">
+                                                <span className="font-medium text-primary text-xm">
                                                     {contact.displayName}
                                                 </span>
                                                 {contact.companyName && (
-                                                    <span className="text-xs text-primary/60">
+                                                    <span className="text-[10px] text-primary/60">
                                                         {contact.companyName}
                                                     </span>
                                                 )}
                                             </div>
                                         </div>
                                     </TableCell>
-                                    <TableCell className="py-4">
+                                    <TableCell className="">
                                         <Badge
                                             variant={
                                                 contact.type === 'customer'
@@ -467,7 +465,7 @@ const ContactsPage = () => {
                                             {contact.type}
                                         </Badge>
                                     </TableCell>
-                                    <TableCell className="py-4">
+                                    <TableCell className="">
                                         <div className="flex flex-col gap-1">
                                             {contact.email && (
                                                 <div className="flex items-center gap-2 text-sm text-primary/75">
@@ -487,33 +485,34 @@ const ContactsPage = () => {
                                             )}
                                             {!contact.email &&
                                                 !contact.phoneNumber && (
-                                                    <span className="text-sm text-primary/50">
+                                                    <span className="text-xm text-primary/50">
                                                         No contact info
                                                     </span>
                                                 )}
                                         </div>
                                     </TableCell>
-                                    <TableCell className="py-4">
+                                    <TableCell className="">
                                         <Badge
                                             variant={
                                                 contact.isActive
                                                     ? 'success'
                                                     : 'destructive'
                                             }
+                                            className="text-[10px] px-1.5 py-0 h-5"
                                         >
                                             {contact.isActive
                                                 ? 'Active'
                                                 : 'Inactive'}
                                         </Badge>
                                     </TableCell>
-                                    <TableCell className="py-4">
+                                    <TableCell className="">
                                         <div className="flex flex-col">
-                                            <span className="text-sm text-primary/75">
+                                            <span className="text-xm text-primary/75">
                                                 {new Date(
                                                     contact.createdAt
                                                 ).toLocaleDateString()}
                                             </span>
-                                            <span className="text-xs text-primary/50">
+                                            <span className="text-[10px] text-primary/50">
                                                 {formatRelativeTime(
                                                     contact.createdAt
                                                 )}
@@ -521,7 +520,7 @@ const ContactsPage = () => {
                                         </div>
                                     </TableCell>
                                     <TableCell
-                                        className="py-4"
+                                        className=""
                                         onClick={(e) => e.stopPropagation()}
                                     >
                                         <DropdownMenu>
