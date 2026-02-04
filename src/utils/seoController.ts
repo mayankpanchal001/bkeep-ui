@@ -198,6 +198,12 @@ export const seoController: Record<string, SEOData> = {
         keywords:
             'expenses, expense tracking, business expenses, cost management, expense reports',
     },
+    '/expenses/bills': {
+        title: `Bills - ${APP_TITLE}`,
+        description: `Manage and pay your bills. View unpaid and paid bills, record payments.`,
+        keywords:
+            'bills, pay bills, bill management, accounts payable, supplier bills',
+    },
 
     // Documents
     '/documents': {

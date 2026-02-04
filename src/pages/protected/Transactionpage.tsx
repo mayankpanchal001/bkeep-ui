@@ -1,3 +1,4 @@
+import { BulkUpdateTransactionsDrawer } from '@/components/transactions/BulkUpdateTransactionsDrawer';
 import { CreateRuleDrawer } from '@/components/transactions/CreateRuleDrawer';
 import { PostTransactionModal } from '@/components/transactions/PostTransactionModal';
 import { SplitTransactionDrawer } from '@/components/transactions/SplitTransactionModal';
@@ -173,6 +174,7 @@ const Transactionpage = () => {
     const [ruleDrawerOpen, setRuleDrawerOpen] = useState(false);
     const [selectedTransactionForRule, setSelectedTransactionForRule] =
         useState<BankTransaction | null>(null);
+    const [bulkUpdateDrawerOpen, setBulkUpdateDrawerOpen] = useState(false);
     const {
         mutate: reconcileTransaction,
         mutateAsync: reconcileTransactionAsync,
@@ -255,6 +257,24 @@ const Transactionpage = () => {
         [accountsData]
     );
 
+    const ACCOUNT_OPTIONS: ComboboxOption[] = useMemo(() => {
+        const items = accountsData?.data?.items || [];
+        return items.map((acc) => ({
+            value: acc.id,
+            label: `${acc.accountNumber || ''} ${acc.accountName}`.trim() || acc.accountName,
+        }));
+    }, [accountsData]);
+
+    const CONTACT_OPTIONS_FOR_BULK: ComboboxOption[] = useMemo(() => {
+        const items = contactsData?.data?.items || [];
+        return items
+            .filter((c) => c.displayName)
+            .map((c) => ({
+                value: c.id as string,
+                label: c.displayName as string,
+            }));
+    }, [contactsData]);
+
     // Use API data directly - all filtering is handled by the API
     const filtered = transactions;
 
@@ -298,8 +318,8 @@ const Transactionpage = () => {
                         status === 'posted'
                             ? 'posted'
                             : status === 'voided'
-                              ? 'excluded'
-                              : 'pending'
+                                ? 'excluded'
+                                : 'pending'
                     }
                     onValueChange={(value) => {
                         if (value === 'pending') {
@@ -358,8 +378,8 @@ const Transactionpage = () => {
                                     filterStore.filterEndDate ||
                                     filterStore.filterMinAmount ||
                                     filterStore.filterMaxAmount) && (
-                                    <span className="ml-2 h-2 w-2 rounded-full bg-accent" />
-                                )}
+                                        <span className="ml-2 h-2 w-2 rounded-full bg-accent" />
+                                    )}
                             </Button>
                         </DrawerTrigger>
                         <DrawerContent className="h-full w-full sm:w-[400px]">
@@ -546,6 +566,7 @@ const Transactionpage = () => {
                     setSelectedTransactionForRule(t);
                     setRuleDrawerOpen(true);
                 }}
+                onBulkUpdateClick={() => setBulkUpdateDrawerOpen(true)}
                 reconcileTransaction={(id) => reconcileTransaction(id)}
                 voidTransaction={(id) => voidTransaction(id)}
                 reverseTransaction={(id) => reverseTransaction(id)}
@@ -556,6 +577,18 @@ const Transactionpage = () => {
                     itemsPerPage: itemsPerPage,
                     onPageChange: (page) => filterStore.setPage(page),
                 }}
+            />
+
+            {/* Bulk Update Transactions Drawer */}
+            <BulkUpdateTransactionsDrawer
+                open={bulkUpdateDrawerOpen}
+                onOpenChange={setBulkUpdateDrawerOpen}
+                selectedIds={selectedItems.map(String)}
+                accountOptions={ACCOUNT_OPTIONS}
+                categoryOptions={CATEGORY_OPTIONS}
+                contactOptions={CONTACT_OPTIONS_FOR_BULK}
+                taxOptions={TAX_OPTIONS}
+                onSuccess={() => setSelectedItems([])}
             />
 
             {/* Post Transaction Modal */}

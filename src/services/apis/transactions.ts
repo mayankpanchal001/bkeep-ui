@@ -329,6 +329,54 @@ export const reverseTransaction = async (
     return response.data;
 };
 
+// ========= Match Transaction =========
+export type MatchTransactionPayload = {
+    module: string;
+    targetId: string;
+    matchAmount: number;
+    matchType: string;
+    reconcile: boolean;
+};
+
+export const matchTransaction = async (
+    transactionId: string,
+    payload: MatchTransactionPayload
+): Promise<CreateTransactionResponse> => {
+    const response = await axiosInstance.post(
+        `/transactions/${transactionId}/match`,
+        payload
+    );
+    return response.data;
+};
+
+export const useMatchTransaction = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: ({
+            transactionId,
+            payload,
+        }: {
+            transactionId: string;
+            payload: MatchTransactionPayload;
+        }) => matchTransaction(transactionId, payload),
+        onSuccess: (data) => {
+            showSuccessToast(
+                data?.message || 'Transaction matched successfully'
+            );
+            queryClient.invalidateQueries({ queryKey: ['transactions'] });
+        },
+        onError: (error) => {
+            const maybeAxiosError = error as {
+                response?: { data?: { message?: string } };
+            };
+            const message =
+                maybeAxiosError.response?.data?.message ||
+                'Failed to match transaction';
+            showErrorToast(message);
+        },
+    });
+};
+
 export const useReverseTransaction = () => {
     const queryClient = useQueryClient();
     return useMutation({
@@ -346,6 +394,50 @@ export const useReverseTransaction = () => {
             const message =
                 maybeAxiosError.response?.data?.message ||
                 'Failed to reverse transaction';
+            showErrorToast(message);
+        },
+    });
+};
+
+// ========= Bulk Update Transactions =========
+export type BulkUpdateTransactionsPayload = {
+    ids: string[];
+    accountId?: string;
+    categoryId?: string;
+    contactId?: string;
+    taxIds?: string[];
+};
+
+export const bulkUpdateTransactions = async (
+    payload: BulkUpdateTransactionsPayload
+): Promise<{ success: boolean; message?: string }> => {
+    const body: Record<string, unknown> = { ids: payload.ids };
+    if (payload.accountId !== undefined) body.accountId = payload.accountId;
+    if (payload.categoryId !== undefined) body.categoryId = payload.categoryId;
+    if (payload.contactId !== undefined) body.contactId = payload.contactId;
+    if (payload.taxIds !== undefined) body.taxIds = payload.taxIds;
+    const response = await axiosInstance.post('/transactions/bulk', body);
+    return response.data;
+};
+
+export const useBulkUpdateTransactions = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (payload: BulkUpdateTransactionsPayload) =>
+            bulkUpdateTransactions(payload),
+        onSuccess: (data) => {
+            showSuccessToast(
+                data?.message || 'Transactions updated successfully'
+            );
+            queryClient.invalidateQueries({ queryKey: ['transactions'] });
+        },
+        onError: (error) => {
+            const maybeAxiosError = error as {
+                response?: { data?: { message?: string } };
+            };
+            const message =
+                maybeAxiosError.response?.data?.message ||
+                'Failed to update some transactions';
             showErrorToast(message);
         },
     });

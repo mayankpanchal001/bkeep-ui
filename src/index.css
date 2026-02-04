@@ -145,3 +145,64 @@
         --ring: var(--ring);
     }
 }
+
+/* Report print: modern document layout with BKeep branding (matches codebase design system) */
+@media print {
+    body.report-print-page * {
+        visibility: hidden;
+    }
+
+    body.report-print-page #report-print-wrapper,
+    body.report-print-page #report-print-wrapper * {
+        visibility: visible;
+    }
+
+    body.report-print-page #report-print-wrapper {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        max-width: 100%;
+        min-height: 100%;
+        padding: 0;
+        margin: 0;
+        background: white;
+        color: #111;
+        box-shadow: none;
+        border: none;
+    }
+
+    body.report-print-page .report-print-header,
+    body.report-print-page .report-print-footer {
+        visibility: visible;
+    }
+
+    /* Document-style container: centered, readable width, consistent padding */
+    body.report-print-page .report-print-section {
+        max-width: 210mm;
+        margin: 0 auto;
+        padding: 0 1.5rem;
+        background: white;
+    }
+
+    body.report-print-page .report-print-content {
+        padding-top: 1.5rem;
+        padding-bottom: 1.5rem;
+    }
+
+    /* Report card: clean borders and no shadow in print */
+    body.report-print-page .report-print-content .overflow-hidden {
+        box-shadow: none;
+        border: 1px solid #e5e7eb;
+    }
+
+    /* Keep table and typography readable */
+    body.report-print-page .report-print-content table {
+        border-collapse: collapse;
+    }
+
+    body.report-print-page .report-print-content th,
+    body.report-print-page .report-print-content td {
+        border-color: #e5e7eb;
+    }
+}

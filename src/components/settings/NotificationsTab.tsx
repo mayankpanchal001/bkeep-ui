@@ -14,8 +14,8 @@ const NotificationsTab = ({
     onSubmit,
 }: NotificationsTabProps) => {
     return (
-        <div className="space-y-6">
-            <h3 className="text-lg font-semibold text-primary mb-4">
+        <div className="flex flex-col gap-4">
+            <h3 className="text-lg font-semibold text-primary">
                 Notification Preferences
             </h3>
             <div className="flex flex-col gap-4">

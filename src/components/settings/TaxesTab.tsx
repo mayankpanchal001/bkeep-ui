@@ -41,6 +41,12 @@ import {
 import TaxDetailDrawer from './TaxDetailDrawer';
 import TaxForm from './TaxForm';
 
+/** Coerce rate to number and format; handles API returning string or null/undefined. */
+function formatRate(rate: unknown): string {
+    const n = Number(rate);
+    return (Number.isFinite(n) ? n : 0).toFixed(2);
+}
+
 const TaxesTab = () => {
     const [sorting, setSorting] = React.useState<SortingState>([]);
     const [columnFilters, setColumnFilters] =
@@ -113,7 +119,7 @@ const TaxesTab = () => {
                 header: 'Rate',
                 cell: ({ row }) => (
                     <span className="font-medium text-primary">
-                        {(row.original.rate || 0).toFixed(2)}%
+                        {formatRate(row.original.rate)}%
                     </span>
                 ),
             },
@@ -122,11 +128,10 @@ const TaxesTab = () => {
                 header: 'Status',
                 cell: ({ row }) => (
                     <span
-                        className={`text-xs px-2 py-1 rounded ${
-                            row.original.isActive
-                                ? 'bg-green-100 text-green-700'
-                                : 'bg-primary/10 text-primary/50'
-                        }`}
+                        className={`text-xs px-2 py-1 rounded ${row.original.isActive
+                            ? 'bg-green-100 text-green-700'
+                            : 'bg-primary/10 text-primary/50'
+                            }`}
                     >
                         {row.original.isActive ? 'Active' : 'Inactive'}
                     </span>
@@ -158,15 +163,15 @@ const TaxesTab = () => {
                         },
                         tax.isActive
                             ? {
-                                  label: 'Disable',
-                                  onClick: () => handleDisable(tax.id),
-                                  separator: true,
-                              }
+                                label: 'Disable',
+                                onClick: () => handleDisable(tax.id),
+                                separator: true,
+                            }
                             : {
-                                  label: 'Enable',
-                                  onClick: () => handleEnable(tax.id),
-                                  separator: true,
-                              },
+                                label: 'Enable',
+                                onClick: () => handleEnable(tax.id),
+                                separator: true,
+                            },
                         {
                             label: 'Delete',
                             icon: <Icons.Trash className="mr-2 w-4 h-4" />,
@@ -229,30 +234,7 @@ const TaxesTab = () => {
                 </div>
             </div>
 
-            {/* <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div className="bg-card rounded  border border-primary/10 p-4">
-                    <p className="text-xs text-primary/50 uppercase">Total</p>
-                    <p className="text-lg font-bold text-primary">
-                        {statsData?.data?.total ?? taxes.length}
-                    </p>
-                </div>
-                <div className="bg-card rounded  border border-primary/10 p-4">
-                    <p className="text-xs text-primary/50 uppercase">Active</p>
-                    <p className="text-lg font-bold text-primary">
-                        {statsData?.data?.active ??
-                            taxes.filter((t) => t.isActive).length}
-                    </p>
-                </div>
-                <div className="bg-card rounded  border border-primary/10 p-4">
-                    <p className="text-xs text-primary/50 uppercase">
-                        Inactive
-                    </p>
-                    <p className="text-lg font-bold text-primary">
-                        {statsData?.data?.inactive ??
-                            taxes.filter((t) => !t.isActive).length}
-                    </p>
-                </div>
-            </div> */}
+
 
             <Table>
                 <TableHeader>
@@ -264,10 +246,10 @@ const TaxesTab = () => {
                                         {header.isPlaceholder
                                             ? null
                                             : flexRender(
-                                                  header.column.columnDef
-                                                      .header,
-                                                  header.getContext()
-                                              )}
+                                                header.column.columnDef
+                                                    .header,
+                                                header.getContext()
+                                            )}
                                     </TableHead>
                                 );
                             })}

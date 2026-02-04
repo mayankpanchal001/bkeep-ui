@@ -42,9 +42,9 @@ export function GSAPScrollAnimation({
     duration = 1,
     stagger = 0.1,
     ease = 'power3.out',
-    start = 'top 80%',
-    end = 'bottom 20%',
-    scrub = false,
+    start = 'top bottom',
+    end = 'top top',
+    scrub = true,
     pin = false,
     markers = false,
     className = '',
@@ -56,109 +56,67 @@ export function GSAPScrollAnimation({
         if (!element) return;
 
         const ctx = gsap.context(() => {
-            // Base animation configurations
-            const animations = {
-                fadeUp: {
-                    y: 60,
-                    opacity: 0,
-                },
-                fadeDown: {
-                    y: -60,
-                    opacity: 0,
-                },
-                fadeLeft: {
-                    x: -60,
-                    opacity: 0,
-                },
-                fadeRight: {
-                    x: 60,
-                    opacity: 0,
-                },
-                scale: {
-                    scale: 0.8,
-                    opacity: 0,
-                },
-                rotate: {
-                    rotation: 15,
-                    opacity: 0,
-                },
-                blur: {
-                    filter: 'blur(10px)',
-                    opacity: 0,
-                },
-                parallax: {
-                    y: 100,
-                },
-                stagger: {
-                    y: 40,
-                    opacity: 0,
-                },
-                wave: {
-                    y: 30,
-                    rotation: 5,
-                    opacity: 0,
-                },
-                magnetic: {
-                    scale: 0.95,
-                    opacity: 0,
-                },
-                reveal: {
-                    clipPath: 'inset(0 100% 0 0)',
-                },
-                slide: {
-                    x: -100,
-                    opacity: 0,
-                },
+            // Base animation configurations (initial hidden state)
+            const animations: Record<string, Record<string, unknown>> = {
+                fadeUp: { y: 60, opacity: 0 },
+                fadeDown: { y: -60, opacity: 0 },
+                fadeLeft: { x: -60, opacity: 0 },
+                fadeRight: { x: 60, opacity: 0 },
+                scale: { scale: 0.8, opacity: 0 },
+                rotate: { rotation: 15, opacity: 0 },
+                blur: { filter: 'blur(10px)', opacity: 0 },
+                parallax: { y: 100 },
+                stagger: { y: 40, opacity: 0 },
+                wave: { y: 30, rotation: 5, opacity: 0 },
+                magnetic: { scale: 0.95, opacity: 0 },
+                reveal: { clipPath: 'inset(0 100% 0 0)' },
+                slide: { x: -100, opacity: 0 },
             };
 
             const initialState = animations[animation] || animations.fadeUp;
 
-            // Set initial state
+            // Set initial state so content is hidden when below viewport
             gsap.set(element, initialState);
 
-            // Create animation
+            // Scrub ties timeline progress to scroll: 0 = before start (hidden), 1 = at/after end (visible)
+            // start: "top bottom" = when element top hits viewport bottom (entering), end: "top top" = when element top hits viewport top (fully in view)
             const tl = gsap.timeline({
                 scrollTrigger: {
                     trigger: element,
-                    start: start,
-                    end: end,
-                    scrub: scrub,
-                    pin: pin,
-                    markers: markers,
-                    toggleActions: 'play none none reverse',
+                    start,
+                    end,
+                    scrub: scrub ? 1 : false,
+                    pin,
+                    markers,
                 },
             });
 
-            // Animate based on type
             if (animation === 'stagger') {
-                const children = element.children;
+                const childElements = element.children;
                 tl.to(
-                    children,
+                    childElements,
                     {
                         y: 0,
                         opacity: 1,
-                        duration: duration,
-                        ease: ease,
-                        stagger: stagger,
-                        delay: delay,
+                        duration: 1,
+                        ease,
+                        stagger,
+                        delay,
                     },
                     0
                 );
             } else if (animation === 'wave') {
-                const children = element.children;
+                const childElements = element.children;
                 tl.to(
-                    children,
+                    childElements,
                     {
                         y: 0,
                         rotation: 0,
                         opacity: 1,
-                        duration: duration,
+                        duration: 1,
                         ease: 'elastic.out(1, 0.5)',
-                        stagger: {
-                            each: stagger,
-                            from: 'start',
-                        },
-                        delay: delay,
+                        stagger: { each: stagger, from: 'start' },
+                        delay,
                     },
                     0
                 );
@@ -167,29 +125,23 @@ export function GSAPScrollAnimation({
                     element,
                     {
                         clipPath: 'inset(0 0% 0 0)',
-                        duration: duration,
-                        ease: ease,
-                        delay: delay,
+                        duration: 1,
+                        ease,
+                        delay,
                     },
                     0
                 );
             } else {
-                tl.to(
-                    element,
-                    {
-                        ...Object.fromEntries(
-                            Object.keys(initialState).map((key) => [
-                                key,
-                                key === 'filter' ? 'blur(0px)' : 0,
-                            ])
-                        ),
-                        opacity: 1,
-                        duration: duration,
-                        ease: ease,
-                        delay: delay,
-                    },
-                    0
-                );
+                const toState: Record<string, unknown> = {
+                    opacity: 1,
+                    duration: 1,
+                    ease,
+                    delay,
+                };
+                Object.keys(initialState).forEach((key) => {
+                    toState[key] = key === 'filter' ? 'blur(0px)' : 0;
+                });
+                tl.to(element, toState, 0);
             }
         }, elementRef);
 

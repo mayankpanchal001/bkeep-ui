@@ -58,6 +58,10 @@ export const SIDEBAR_ITEMS: SidebarItemProps[] = [
                 path: '/expenses',
             },
             {
+                label: 'Bills',
+                path: '/expenses/bills',
+            },
+            {
                 label: 'Contacts',
                 path: '/expenses/contacts',
             },

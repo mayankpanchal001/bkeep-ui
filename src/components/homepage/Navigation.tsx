@@ -36,11 +36,10 @@ export default function Navigation() {
 
     return (
         <nav
-            className={`homepage-nav fixed top-0 left-0 right-0 z-50 border-b border-border transition-all duration-300 ${
-                isScrolled
-                    ? 'bg-background/80 backdrop-blur-md shadow-sm'
-                    : 'bg-transparent border-transparent'
-            }`}
+            className={`homepage-nav fixed top-0 left-0 right-0 z-50 border-b border-border transition-all duration-300 ${isScrolled
+                ? 'bg-background/80 backdrop-blur-md shadow-sm'
+                : 'bg-transparent border-transparent'
+                }`}
         >
             <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6">
                 <Link to="/" className="flex items-center gap-3 z-50">
@@ -63,26 +62,18 @@ export default function Navigation() {
                             className="group relative px-4 py-2 text-muted-foreground transition-colors hover:text-foreground"
                         >
                             {link.label}
-                            <span className="absolute inset-x-4 -bottom-px h-px bg-gradient-to-r from-primary/0 via-primary/70 to-primary/0 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                            <span className="absolute inset-x-4 -bottom-px h-px bg-linear-to-r from-primary/0 via-primary/70 to-primary/0 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                         </a>
                     ))}
 
                     <div className="ml-4 flex items-center gap-3 pl-4 border-l border-border/50">
+
                         <Link to="/login">
-                            <Button
-                                variant="ghost"
-                                size="sm"
-                                className="text-muted-foreground hover:text-foreground"
-                            >
-                                Sign in
-                            </Button>
-                        </Link>
-                        <Link to="/register">
                             <Button
                                 size="sm"
                                 className="rounded-full px-6 shadow-lg shadow-primary/20 transition-all hover:shadow-primary/40 hover:-translate-y-0.5"
                             >
-                                Get Started
+                                Sign In
                             </Button>
                         </Link>
                     </div>

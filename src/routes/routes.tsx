@@ -91,6 +91,21 @@ const Invoicepage = lazyWithRetry(
 const Expensespage = lazyWithRetry(
     () => import('../pages/protected/Expensespage')
 );
+const Billspage = lazyWithRetry(
+    () => import('../pages/protected/Billspage')
+);
+const CreateBillpage = lazyWithRetry(
+    () => import('../pages/protected/CreateBillpage')
+);
+const BillDetailpage = lazyWithRetry(
+    () => import('../pages/protected/BillDetailpage')
+);
+const MileagePlaceholderpage = lazyWithRetry(
+    () => import('../pages/protected/MileagePlaceholderpage')
+);
+const ExpensesLayout = lazyWithRetry(
+    () => import('../components/expenses/ExpensesLayout')
+);
 const ContactsPage = lazyWithRetry(
     () => import('../pages/protected/ContactsPage')
 );
@@ -292,10 +307,27 @@ const routes = createBrowserRouter([
             },
             {
                 path: '/expenses',
+                element: withSuspense(ExpensesLayout),
                 children: [
                     {
                         index: true,
                         element: withSuspense(Expensespage),
+                    },
+                    {
+                        path: 'bills',
+                        element: withSuspense(Billspage),
+                    },
+                    {
+                        path: 'bills/new',
+                        element: withSuspense(CreateBillpage),
+                    },
+                    {
+                        path: 'bills/recurring',
+                        element: withSuspense(CreateBillpage),
+                    },
+                    {
+                        path: 'bills/:id',
+                        element: withSuspense(BillDetailpage),
                     },
                     {
                         path: 'contacts',
@@ -304,6 +336,10 @@ const routes = createBrowserRouter([
                     {
                         path: 'contacts/:id',
                         element: withSuspense(ContactDetailPage),
+                    },
+                    {
+                        path: 'mileage',
+                        element: withSuspense(MileagePlaceholderpage),
                     },
                 ],
             },
