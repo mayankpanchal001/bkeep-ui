@@ -23,7 +23,7 @@ import { useTaxes } from '@/services/apis/taxApi';
 import type { Attachment, CreateJournalEntryPayload } from '@/types/journal';
 import { FileText, GripVertical, Save, Upload, X } from 'lucide-react';
 import { useMemo, useRef, useState } from 'react';
-import { FaPlus, FaTrash } from 'react-icons/fa';
+import { FaPlus, FaTrash, FaCopy } from 'react-icons/fa';
 
 type JournalEntryFormProps = {
     initialData?: Partial<CreateJournalEntryPayload>;
@@ -257,6 +257,27 @@ export function JournalEntryForm({
     const handleAddLine = () => {
         setLines((prev) => [...prev, emptyLine(prev.length + 1)]);
     };
+
+    const handleDuplicateLine = (index: number) => {
+        setLines((prev) => {
+            const newLine = [...prev];
+            const lineToCopy = newLine[index];
+
+            const duplicateLine:DraftLine = {
+                ...lineToCopy,
+                id: undefined,
+            };
+            newLine.splice(index + 1, 0, duplicateLine);
+            return newLine.map((l, i) => ({...l, lineNumber: i+1,}));
+        });
+
+        setLineErrors((prev) => {
+            if (prev.length === 0) return prev;
+            const newErrors = [...prev];
+            newErrors.splice(index + 1, 0,{});
+            return newErrors;
+        });
+    }
 
     const handleRemoveLine = (index: number) => {
         setLines((prev) => {
@@ -682,6 +703,24 @@ export function JournalEntryForm({
                                         </SelectContent>
                                     </Select>
                                 </TableCell>
+
+                                <TableCell noTruncate>
+                                    <div className='flex items-center gap-1'>
+                                        <button
+                                        type ="button"
+                                        onClick={() => handleDuplicateLine(index)}
+                                        disabled={isLoading}
+                                        className="p-2 text-primary/40 hover:text-primary disabled:opacity-40 disabled:hover:text-primary/40"
+                                        title="Duplicate line"
+                                        >
+                                            <FaCopy className="w-4 h-4" />
+
+                                        </button>
+                                    </div>
+                                </TableCell>
+
+
+
                                 <TableCell noTruncate>
                                     <button
                                         type="button"

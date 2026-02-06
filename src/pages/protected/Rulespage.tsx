@@ -449,9 +449,9 @@ const Rulespage = () => {
                                             <DropdownMenu>
                                                 <DropdownMenuTrigger asChild>
                                                     <Button
-                                                        variant="ghost"
+                                                        variant="outline"
                                                         size="sm"
-                                                        className="h-8 w-8 p-0 min-w-[1rem]"
+                                                        className="min-w-[1rem]"
                                                     >
                                                         <MoreVertical className="h-4 w-4" />
                                                     </Button>

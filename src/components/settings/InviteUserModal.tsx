@@ -86,6 +86,7 @@ const InviteUserModal = ({
             title="Add user"
             size="2xl"
             loading={isPending}
+            closeOnBackdropClick={false}
             footer={
                 <div className="flex justify-end gap-3">
                     <Button

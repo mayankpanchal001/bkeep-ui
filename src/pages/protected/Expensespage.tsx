@@ -1,4 +1,10 @@
 import { Button } from '@/components/ui/button';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import Input from '@/components/ui/input';
 import {
     Table,
@@ -12,7 +18,15 @@ import {
     TableSelectAllCheckbox,
     TableSelectionToolbar,
 } from '@/components/ui/table';
-import { Filter, Pencil, Receipt, Search, Tag, Trash2 } from 'lucide-react';
+import {
+    Filter,
+    Pencil,
+    Receipt,
+    Search,
+    Tag,
+    Trash2,
+    MoreVertical,
+} from 'lucide-react';
 import { useState } from 'react';
 
 type Expense = {
@@ -272,28 +286,33 @@ const Expensespage = () => {
                                     </span>
                                 </TableCell>
                                 <TableCell align="center">
-                                    <div className="flex items-center justify-center gap-2">
-                                        {expense.receipt && (
-                                            <button
-                                                className="p-2 text-primary/50 hover:text-primary hover:bg-primary/10 rounded transition-colors"
-                                                title="View Receipt"
+                                    <DropdownMenu>
+                                        <DropdownMenuTrigger asChild>
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                className="min-w-[1rem]"
                                             >
-                                                <Receipt className="w-4 h-4" />
-                                            </button>
-                                        )}
-                                        <button
-                                            className="p-2 text-primary/50 hover:text-primary hover:bg-primary/10 rounded transition-colors"
-                                            title="Edit"
-                                        >
-                                            <Pencil className="w-4 h-4" />
-                                        </button>
-                                        <button
-                                            className="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
-                                            title="Delete"
-                                        >
-                                            <Trash2 className="w-4 h-4" />
-                                        </button>
-                                    </div>
+                                                <MoreVertical className="h-4 w-4" />
+                                            </Button>
+                                        </DropdownMenuTrigger>
+                                        <DropdownMenuContent align="end">
+                                            {expense.receipt && (
+                                                <DropdownMenuItem>
+                                                    <Receipt className="mr-2 h-4 w-4" />
+                                                    View Receipt
+                                                </DropdownMenuItem>
+                                            )}
+                                            <DropdownMenuItem>
+                                                <Pencil className="mr-2 h-4 w-4" />
+                                                Edit
+                                            </DropdownMenuItem>
+                                            <DropdownMenuItem className="text-red-600 focus:text-red-600 focus:bg-red-50">
+                                                <Trash2 className="mr-2 h-4 w-4" />
+                                                Delete
+                                            </DropdownMenuItem>
+                                        </DropdownMenuContent>
+                                    </DropdownMenu>
                                 </TableCell>
                             </TableRow>
                         ))
