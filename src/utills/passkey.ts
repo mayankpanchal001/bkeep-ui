@@ -115,13 +115,33 @@ export function getInsecureContextMessage(): string {
 }
 
 /**
- * Check if WebAuthn is supported in the browser
+ * Check if WebAuthn is supported in the browser.
+ * Browsers only expose PublicKeyCredential in secure contexts (HTTPS or localhost),
+ * so in insecure context this returns false even if the browser supports WebAuthn.
  */
 export function isWebAuthnSupported(): boolean {
-    return (
-        window.PublicKeyCredential !== undefined &&
-        typeof window.PublicKeyCredential === 'function'
-    );
+    if (typeof window === 'undefined') return false;
+    // PublicKeyCredential is the WebAuthn API; browsers hide it when not in secure context
+    const hasPublicKeyCredential =
+        typeof window.PublicKeyCredential !== 'undefined' &&
+        typeof window.PublicKeyCredential === 'function';
+    return hasPublicKeyCredential;
+}
+
+/**
+ * Reason passkeys are unavailable. Use this to show the right message:
+ * - 'insecure-context': use getInsecureContextMessage() (HTTPS or localhost)
+ * - 'unsupported': browser doesn't support WebAuthn
+ * - null: passkeys are available
+ */
+export function getPasskeyUnavailableReason():
+    | 'insecure-context'
+    | 'unsupported'
+    | null {
+    if (typeof window === 'undefined') return 'unsupported';
+    if (!isSecureContext()) return 'insecure-context';
+    if (!isWebAuthnSupported()) return 'unsupported';
+    return null;
 }
 
 /**

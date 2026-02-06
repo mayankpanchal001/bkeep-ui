@@ -11,6 +11,7 @@ import {
 } from '../../services/apis/authApi';
 import {
     getInsecureContextMessage,
+    getPasskeyUnavailableReason,
     getStoredPasskeyUser,
     isSecureContext,
     isWebAuthnSupported,
@@ -216,13 +217,14 @@ export function PasskeyLoginForm() {
         showSuccessToast('User ID removed');
     };
 
-    if (!webAuthnSupported) {
+    const passkeyUnavailableReason = getPasskeyUnavailableReason();
+    if (!webAuthnSupported && passkeyUnavailableReason !== null) {
         return (
             <div className="text-center py-8">
                 <p className="text-sm text-red-600 mb-4">
-                    Passkey authentication is not supported in this browser.
-                    Please use a modern browser or sign in with email and
-                    password.
+                    {passkeyUnavailableReason === 'insecure-context'
+                        ? getInsecureContextMessage()
+                        : 'Passkey authentication is not supported in this browser. Please use a modern browser or sign in with email and password.'}
                 </p>
                 <Link to="/login">
                     <Button

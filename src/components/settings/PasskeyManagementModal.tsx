@@ -22,6 +22,7 @@ import {
 } from '../../services/apis/passkeyApi';
 import {
     getInsecureContextMessage,
+    getPasskeyUnavailableReason,
     isSecureContext,
     isWebAuthnSupported,
 } from '../../utills/passkey';
@@ -300,16 +301,20 @@ const PasskeyManagementModal = ({
 
                     {/* Content */}
                     <div className="space-y-6">
-                        {/* WebAuthn Not Supported */}
-                        {!webAuthnSupported && (
-                            <div className="bg-destructive/10 border border-destructive/20 rounded p-4">
-                                <p className="text-sm text-destructive">
-                                    Your browser doesn't support passkeys.
-                                    Please use a modern browser like Chrome,
-                                    Edge, Safari, or Firefox.
-                                </p>
-                            </div>
-                        )}
+                        {/* Passkeys unavailable: insecure context or unsupported browser */}
+                        {(() => {
+                            const reason = getPasskeyUnavailableReason();
+                            if (reason === null) return null;
+                            return (
+                                <div className="bg-destructive/10 border border-destructive/20 rounded p-4">
+                                    <p className="text-sm text-destructive">
+                                        {reason === 'insecure-context'
+                                            ? getInsecureContextMessage()
+                                            : "Your browser doesn't support passkeys. Please use a modern browser like Chrome, Edge, Safari, or Firefox."}
+                                    </p>
+                                </div>
+                            );
+                        })()}
 
                         {/* List View */}
                         {currentStep === 'list' && (
