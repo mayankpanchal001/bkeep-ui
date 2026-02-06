@@ -44,6 +44,7 @@ import {
     ChevronUp,
     FileText,
     Filter,
+    MoreVertical,
     Redo2,
     Search,
     Undo2,
@@ -1051,8 +1052,9 @@ export default function JournalEntriespage() {
                                                 <Button
                                                     variant="outline"
                                                     size="sm"
+                                                    className="min-w-[1rem]"
                                                 >
-                                                    ⋯
+                                                    <MoreVertical className="h-4 w-4" />
                                                 </Button>
                                             </DropdownMenuTrigger>
                                             <DropdownMenuContent align="end">

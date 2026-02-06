@@ -19,13 +19,13 @@ export function SettingsSidebar({
     // Desktop: Sidebar style (vertical, no border)
     const navClasses = `
          flex overflow-x-auto scrollbar-hide -mx-4 px-4 border-b border-primary/10
-        lg:flex-col lg:space-x-0 lg:space-y-1 lg:border-0 lg:mx-0 lg:px-0 lg:overflow-visible
+        md:flex-col md:space-x-0 md:space-y-1 md:border-0 md:mx-0 md:px-0 md:overflow-visible
         ${className || ''}
     `;
 
     return (
         <nav className={navClasses} {...props}>
-            <div className="flex gap-4 sm:gap-0.5 sm:flex-col lg:bg-card lg:border lg:border-primary/10 lg:rounded-md lg:p-2">
+            <div className="flex gap-4 md:gap-0.5 md:flex-col md:bg-card md:border md:border-primary/10 md:rounded-md md:p-2">
                 {items.map((item) => {
                     const isActive =
                         location.pathname === item.href ||

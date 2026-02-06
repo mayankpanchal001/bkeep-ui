@@ -182,7 +182,11 @@ const TaxesTab = () => {
                         },
                     ];
 
-                    return <ActionMenu items={actionItems} />;
+                    return (
+                        <div className="">
+                            <ActionMenu items={actionItems} />
+                        </div>
+                    );
                 },
             },
         ];

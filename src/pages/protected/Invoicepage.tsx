@@ -358,9 +358,9 @@ const Invoicepage = () => {
                                         <DropdownMenu>
                                             <DropdownMenuTrigger asChild>
                                                 <Button
-                                                    variant="ghost"
+                                                    variant="outline"
                                                     size="icon"
-                                                    className="h-8 w-8"
+                                                    className="min-w-[1rem]"
                                                     onClick={(e) =>
                                                         e.stopPropagation()
                                                     }

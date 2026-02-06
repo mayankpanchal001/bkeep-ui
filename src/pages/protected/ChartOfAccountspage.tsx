@@ -8,6 +8,12 @@ import {
     DrawerHeader,
     DrawerTitle,
 } from '@/components/ui/drawer';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import Input from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
@@ -32,11 +38,15 @@ import {
     TablePagination,
 } from '@/components/ui/table';
 import {
-    Tooltip,
-    TooltipContent,
-    TooltipTrigger,
-} from '@/components/ui/tooltip';
-import { FileUp, Filter, Pencil, Plus, Search, Trash2, X } from 'lucide-react';
+    FileUp,
+    Filter,
+    MoreVertical,
+    Pencil,
+    Plus,
+    Search,
+    Trash2,
+    X,
+} from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { ACCOUNT_HIERARCHY } from '../../components/homepage/constants';
 import {
@@ -478,11 +488,29 @@ const ChartOfAccountspage = () => {
                                 </TableCell>
                                 <TableCell>
                                     <span className="text-sm text-primary">
-                                        {
-                                            ACCOUNT_TYPE_DISPLAY[
+                                        {(() => {
+                                            const subtypes =
+                                                ACCOUNT_HIERARCHY[
                                                 account.accountType
-                                            ]
-                                        }
+                                                ];
+                                            if (subtypes) {
+                                                for (const subtype of subtypes) {
+                                                    if (
+                                                        subtype.detailTypes.some(
+                                                            (d) =>
+                                                                d.value ===
+                                                                account.accountDetailType
+                                                        )
+                                                    ) {
+                                                        return subtype.label;
+                                                    }
+                                                }
+                                            }
+                                            // Fallback to generic type
+                                            return ACCOUNT_TYPE_DISPLAY[
+                                                account.accountType
+                                            ];
+                                        })()}
                                     </span>
                                 </TableCell>
                                 <TableCell>
@@ -505,42 +533,42 @@ const ChartOfAccountspage = () => {
                                         )}
                                     </span>
                                 </TableCell>
-                                <TableCell align="center">
+                                <TableCell>
                                     <div className="flex items-center justify-center gap-2">
-                                        <Tooltip>
-                                            <TooltipTrigger asChild>
-                                                <button
+                                        <DropdownMenu>
+                                            <DropdownMenuTrigger asChild>
+                                                <Button
+                                                    variant="outline"
+                                                    size="sm"
+                                                    className="min-w-[1rem]"
+                                                >
+                                                    <MoreVertical className="h-4 w-4" />
+                                                </Button>
+                                            </DropdownMenuTrigger>
+                                            <DropdownMenuContent align="end">
+                                                <DropdownMenuItem
                                                     onClick={() =>
                                                         handleOpenEditModal(
                                                             account
                                                         )
                                                     }
-                                                    className="p-2 text-primary/50 hover:text-primary hover:bg-primary/10 rounded transition-colors"
                                                 >
                                                     <Pencil className="w-4 h-4" />
-                                                </button>
-                                            </TooltipTrigger>
-                                            <TooltipContent>
-                                                Edit
-                                            </TooltipContent>
-                                        </Tooltip>
-                                        <Tooltip>
-                                            <TooltipTrigger asChild>
-                                                <button
+                                                    Edit
+                                                </DropdownMenuItem>
+
+                                                <DropdownMenuItem
                                                     onClick={() =>
                                                         setDeleteAccount(
                                                             account
                                                         )
                                                     }
-                                                    className="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
                                                 >
                                                     <Trash2 className="w-4 h-4" />
-                                                </button>
-                                            </TooltipTrigger>
-                                            <TooltipContent>
-                                                Delete
-                                            </TooltipContent>
-                                        </Tooltip>
+                                                    Delete
+                                                </DropdownMenuItem>
+                                            </DropdownMenuContent>
+                                        </DropdownMenu>
                                     </div>
                                 </TableCell>
                             </TableRow>
@@ -936,39 +964,51 @@ const ChartOfAccountspage = () => {
                                 )}
                             </div>
 
-                            {/* <div className="flex flex-col gap-2">
+                            <div className="flex flex-col gap-2">
                                 <Label htmlFor="opening-balance">
                                     Opening Balance{' '}
-                                    <span className="text-red-500">*</span>
+                                    {!editingAccount && (
+                                        <span className="text-red-500">*</span>
+                                    )}
                                 </Label>
-                                <Input
-                                    id="opening-balance"
-                                    type="number"
-                                    step="0.01"
-                                    placeholder="0.00"
-                                    value={formData.openingBalance.toString()}
-                                    onChange={(e) => {
-                                        const value =
+                                {editingAccount ? (
+                                    <div className="px-3 py-2 text-sm border rounded-md bg-muted/50 text-muted-foreground">
+                                        {currencyFormatter.format(
+                                            formData.openingBalance
+                                        )}
+                                    </div>
+                                ) : (
+                                    <>
+                                        <Input
+                                            id="opening-balance"
+                                            type="number"
+                                            step="0.01"
+                                            placeholder="0.00"
+                                            value={formData.openingBalance.toString()}
+                                            onChange={(e) => {
+                                                const value =
                                             parseFloat(e.target.value) || 0;
-                                        setFormData({
-                                            ...formData,
-                                            openingBalance: value,
-                                        });
-                                        if (formErrors.openingBalance) {
-                                            setFormErrors((prev) => ({
-                                                ...prev,
-                                                openingBalance: '',
-                                            }));
-                                        }
-                                    }}
-                                    required
-                                />
-                                {formErrors.openingBalance && (
-                                    <p className="text-red-500 text-xs mt-1">
-                                        {formErrors.openingBalance}
-                                    </p>
+                                                setFormData({
+                                                    ...formData,
+                                                    openingBalance: value,
+                                                });
+                                                if (formErrors.openingBalance) {
+                                                    setFormErrors((prev) => ({
+                                                        ...prev,
+                                                        openingBalance: '',
+                                                    }));
+                                                }
+                                            }}
+                                            required
+                                        />
+                                        {formErrors.openingBalance && (
+                                            <p className="text-red-500 text-xs mt-1">
+                                                {formErrors.openingBalance}
+                                            </p>
+                                        )}
+                                    </>
                                 )}
-                            </div> */}
+                            </div>
 
                             <div className="flex flex-col gap-2">
                                 <Label htmlFor="description">Description</Label>
