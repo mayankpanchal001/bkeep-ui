@@ -23,8 +23,7 @@ export function useResolvedTheme(): 'light' | 'dark' {
         setResolved(getResolvedTheme(theme));
         if (theme !== 'system') return;
         const mq = window.matchMedia('(prefers-color-scheme: dark)');
-        const handler = () =>
-            setResolved(mq.matches ? 'dark' : 'light');
+        const handler = () => setResolved(mq.matches ? 'dark' : 'light');
         mq.addEventListener('change', handler);
         return () => mq.removeEventListener('change', handler);
     }, [theme]);
@@ -54,10 +53,7 @@ export function switchThemeAt(newTheme: Theme, x: number, y: number) {
     // Set CSS custom properties for the animation origin
     document.documentElement.style.setProperty('--theme-x', `${x}px`);
     document.documentElement.style.setProperty('--theme-y', `${y}px`);
-    document.documentElement.style.setProperty(
-        '--theme-r',
-        `${maxRadius}px`
-    );
+    document.documentElement.style.setProperty('--theme-r', `${maxRadius}px`);
 
     if (document.startViewTransition) {
         const transition = document.startViewTransition(() => {
@@ -107,10 +103,8 @@ export function useThemeSync() {
     useEffect(() => {
         if (theme !== 'system') return;
         const mq = window.matchMedia('(prefers-color-scheme: dark)');
-        const handler = () =>
-            applyThemeInstant(mq.matches);
+        const handler = () => applyThemeInstant(mq.matches);
         mq.addEventListener('change', handler);
         return () => mq.removeEventListener('change', handler);
     }, [theme]);
 }
-

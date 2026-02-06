@@ -41,7 +41,7 @@ import {
     SidebarMenuSubItem,
     SidebarRail,
     SidebarSeparator,
-    useSidebar
+    useSidebar,
 } from '../ui/sidebar';
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -184,12 +184,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                                     <div className="grid flex-1 text-left text-sm leading-tight">
                                         <span className="truncate font-semibold">
                                             {selectedTenant?.name ||
-                                                `Select ${SINGLE_TENANT_PREFIX.charAt(
-                                                    0
-                                                ).toUpperCase() +
-                                                SINGLE_TENANT_PREFIX.slice(
-                                                    1
-                                                )
+                                                `Select ${
+                                                    SINGLE_TENANT_PREFIX.charAt(
+                                                        0
+                                                    ).toUpperCase() +
+                                                    SINGLE_TENANT_PREFIX.slice(
+                                                        1
+                                                    )
                                                 }`}
                                         </span>
                                         <span className="truncate text-xs">
@@ -206,11 +207,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                                 sideOffset={4}
                             >
                                 <DropdownMenuLabel className="text-xs text-muted-foreground">
-                                    {`Switch ${SINGLE_TENANT_PREFIX.charAt(
-                                        0
-                                    ).toUpperCase() +
+                                    {`Switch ${
+                                        SINGLE_TENANT_PREFIX.charAt(
+                                            0
+                                        ).toUpperCase() +
                                         SINGLE_TENANT_PREFIX.slice(1)
-                                        }`}
+                                    }`}
                                 </DropdownMenuLabel>
                                 {tenants.map((tenant) => (
                                     <DropdownMenuItem
@@ -233,7 +235,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                         </DropdownMenu>
                     </SidebarMenuItem>
                 </SidebarMenu>
-
             </SidebarHeader>
             <SidebarContent>
                 {/* {favLinks.length > 0 && (
@@ -274,12 +275,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                                 const isReports = item.path === '/reports';
                                 const baseChildren = isReports
                                     ? [
-                                        ...favLinks.map((f) => ({
-                                            label: f.label,
-                                            path: f.path,
-                                        })),
-                                        ...(item.children || []),
-                                    ]
+                                          ...favLinks.map((f) => ({
+                                              label: f.label,
+                                              path: f.path,
+                                          })),
+                                          ...(item.children || []),
+                                      ]
                                     : item.children || [];
                                 const q = query.trim().toLowerCase();
                                 const itemMatches =
@@ -289,10 +290,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                                 const computedChildren =
                                     q.length > 0
                                         ? (baseChildren || []).filter((c) =>
-                                            (c.label || '')
-                                                .toLowerCase()
-                                                .includes(q)
-                                        )
+                                              (c.label || '')
+                                                  .toLowerCase()
+                                                  .includes(q)
+                                          )
                                         : baseChildren || [];
                                 const shouldRender =
                                     itemMatches ||
@@ -410,12 +411,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                                                                         asChild
                                                                         isActive={
                                                                             child.path ===
-                                                                                item.path
+                                                                            item.path
                                                                                 ? location.pathname ===
-                                                                                child.path
+                                                                                  child.path
                                                                                 : isItemActive(
-                                                                                    child.path
-                                                                                )
+                                                                                      child.path
+                                                                                  )
                                                                         }
                                                                         className="transition-all duration-200 ease-in-out"
                                                                     >

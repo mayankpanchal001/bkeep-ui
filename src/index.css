@@ -78,7 +78,6 @@
 
     /* Respect reduced motion preference */
     @media (prefers-reduced-motion: reduce) {
-
         *,
         *::before,
         *::after {
@@ -87,7 +86,6 @@
             transition-duration: 0.01ms !important;
         }
     }
-
 }
 
 /* Report print: modern document layout with BKeep branding (matches codebase design system) */
