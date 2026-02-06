@@ -491,7 +491,7 @@ const ChartOfAccountspage = () => {
                                         {(() => {
                                             const subtypes =
                                                 ACCOUNT_HIERARCHY[
-                                                account.accountType
+                                                    account.accountType
                                                 ];
                                             if (subtypes) {
                                                 for (const subtype of subtypes) {
@@ -987,7 +987,9 @@ const ChartOfAccountspage = () => {
                                             value={formData.openingBalance.toString()}
                                             onChange={(e) => {
                                                 const value =
-                                            parseFloat(e.target.value) || 0;
+                                                    parseFloat(
+                                                        e.target.value
+                                                    ) || 0;
                                                 setFormData({
                                                     ...formData,
                                                     openingBalance: value,

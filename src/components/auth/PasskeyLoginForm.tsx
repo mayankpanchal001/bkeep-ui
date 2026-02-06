@@ -31,9 +31,7 @@ function normalizePasskeyLoginOptions(data: {
 }): PasskeyLoginOptionsJSON {
     const options: Partial<PasskeyLoginOptionsJSON> = data.options ?? {};
     const allowCredentials =
-        options.allowCredentials ??
-        data.allowCredentials ??
-        [];
+        options.allowCredentials ?? data.allowCredentials ?? [];
     if (!options.challenge) {
         throw new Error('Invalid passkey options: missing challenge');
     }
@@ -42,7 +40,9 @@ function normalizePasskeyLoginOptions(data: {
         rpId: options.rpId,
         timeout: options.timeout,
         userVerification: options.userVerification,
-        allowCredentials: Array.isArray(allowCredentials) ? allowCredentials : [],
+        allowCredentials: Array.isArray(allowCredentials)
+            ? allowCredentials
+            : [],
     };
 }
 
@@ -101,7 +101,10 @@ export function PasskeyLoginForm() {
 
         setIsAuthenticating(true);
         if (import.meta.env.DEV) {
-            console.log('Starting passkey authentication for:', storedUser.email);
+            console.log(
+                'Starting passkey authentication for:',
+                storedUser.email
+            );
         }
 
         try {
@@ -122,7 +125,10 @@ export function PasskeyLoginForm() {
             });
 
             if (import.meta.env.DEV) {
-                console.log('🔐 Credential from startAuthentication:', credential);
+                console.log(
+                    '🔐 Credential from startAuthentication:',
+                    credential
+                );
                 console.log('🔐 Credential structure:', {
                     id: credential.id,
                     rawId: credential.rawId,
@@ -139,10 +145,11 @@ export function PasskeyLoginForm() {
                     rawId: credential.rawId,
                     response: credential.response,
                     type: credential.type,
-                    clientExtensionResults: credential.clientExtensionResults as Record<
-                        string,
-                        unknown
-                    >,
+                    clientExtensionResults:
+                        credential.clientExtensionResults as Record<
+                            string,
+                            unknown
+                        >,
                     authenticatorAttachment: credential.authenticatorAttachment,
                 },
             });

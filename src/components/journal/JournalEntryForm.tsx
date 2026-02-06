@@ -263,21 +263,21 @@ export function JournalEntryForm({
             const newLine = [...prev];
             const lineToCopy = newLine[index];
 
-            const duplicateLine:DraftLine = {
+            const duplicateLine: DraftLine = {
                 ...lineToCopy,
                 id: undefined,
             };
             newLine.splice(index + 1, 0, duplicateLine);
-            return newLine.map((l, i) => ({...l, lineNumber: i+1,}));
+            return newLine.map((l, i) => ({ ...l, lineNumber: i + 1 }));
         });
 
         setLineErrors((prev) => {
             if (prev.length === 0) return prev;
             const newErrors = [...prev];
-            newErrors.splice(index + 1, 0,{});
+            newErrors.splice(index + 1, 0, {});
             return newErrors;
         });
-    }
+    };
 
     const handleRemoveLine = (index: number) => {
         setLines((prev) => {
@@ -705,21 +705,20 @@ export function JournalEntryForm({
                                 </TableCell>
 
                                 <TableCell noTruncate>
-                                    <div className='flex items-center gap-1'>
+                                    <div className="flex items-center gap-1">
                                         <button
-                                        type ="button"
-                                        onClick={() => handleDuplicateLine(index)}
-                                        disabled={isLoading}
-                                        className="p-2 text-primary/40 hover:text-primary disabled:opacity-40 disabled:hover:text-primary/40"
-                                        title="Duplicate line"
+                                            type="button"
+                                            onClick={() =>
+                                                handleDuplicateLine(index)
+                                            }
+                                            disabled={isLoading}
+                                            className="p-2 text-primary/40 hover:text-primary disabled:opacity-40 disabled:hover:text-primary/40"
+                                            title="Duplicate line"
                                         >
                                             <FaCopy className="w-4 h-4" />
-
                                         </button>
                                     </div>
                                 </TableCell>
-
-
 
                                 <TableCell noTruncate>
                                     <button

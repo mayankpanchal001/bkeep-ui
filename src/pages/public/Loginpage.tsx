@@ -68,10 +68,7 @@ const Loginpage = () => {
     const renderLoginContent = () => {
         if (step === 'email') {
             return (
-                <form
-                    onSubmit={handleEmailSubmit}
-                    className="space-y-6"
-                >
+                <form onSubmit={handleEmailSubmit} className="space-y-6">
                     <div className="space-y-5">
                         <Input
                             id="login-email-first"
@@ -84,16 +81,12 @@ const Loginpage = () => {
                             }}
                             error={!!emailError}
                             required
-                            startIcon={
-                                <Icons.UserCircle className="w-4 h-4" />
-                            }
+                            startIcon={<Icons.UserCircle className="w-4 h-4" />}
                             disabled={isCheckingPasskey}
                         />
                     </div>
                     {emailError && (
-                        <p className="text-sm text-destructive">
-                            {emailError}
-                        </p>
+                        <p className="text-sm text-destructive">{emailError}</p>
                     )}
                     <Button
                         type="submit"
@@ -122,9 +115,7 @@ const Loginpage = () => {
                             type="button"
                             variant="default"
                             className="w-full"
-                            startIcon={
-                                <FaFingerprint className="w-5 h-5" />
-                            }
+                            startIcon={<FaFingerprint className="w-5 h-5" />}
                             onClick={handleUsePasskey}
                         >
                             Use passkey
@@ -153,12 +144,7 @@ const Loginpage = () => {
             );
         }
 
-        return (
-            <LoginForm
-                initialEmail={email}
-                lockEmail={true}
-            />
-        );
+        return <LoginForm initialEmail={email} lockEmail={true} />;
     };
 
     const getStepHeading = () => {
@@ -171,8 +157,7 @@ const Loginpage = () => {
         if (step === 'verify') {
             return {
                 title: "Verify it's you",
-                subtitle:
-                    'Choose how you want to verify your identity',
+                subtitle: 'Choose how you want to verify your identity',
             };
         }
         return {
@@ -251,7 +236,6 @@ const Loginpage = () => {
                 <div className="w-full bg-card rounded-[24px] p-10 relative overflow-hidden h-full">
                     <div className="relative z-10 w-full flex flex-col items-start">
                         <Link to="/" className="mb-4 cursor-pointer">
-
                             <img
                                 src={logo}
                                 alt="Bkeep Logo"

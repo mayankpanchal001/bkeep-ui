@@ -107,8 +107,7 @@ export function isSecureContext(): boolean {
  */
 export function getInsecureContextMessage(): string {
     const { protocol, hostname } = window.location;
-    const isLocalhost =
-        hostname === 'localhost' || hostname === '127.0.0.1';
+    const isLocalhost = hostname === 'localhost' || hostname === '127.0.0.1';
     if (protocol === 'http:' && !isLocalhost) {
         return `Passkeys require a secure connection. You're on ${protocol}//${hostname}. For development, use http://localhost with the same port (e.g. http://localhost:${window.location.port || '5173'}). For production, use HTTPS.`;
     }

@@ -141,10 +141,11 @@ const PasskeyManagementModal = ({
                             .transports as AuthenticatorTransport[],
                     },
                     type: credential.type,
-                    clientExtensionResults: credential.clientExtensionResults as Record<
-                        string,
-                        unknown
-                    >,
+                    clientExtensionResults:
+                        credential.clientExtensionResults as Record<
+                            string,
+                            unknown
+                        >,
                     authenticatorAttachment:
                         credential.authenticatorAttachment || undefined,
                 },
@@ -179,7 +180,7 @@ const PasskeyManagementModal = ({
                 } else {
                     showErrorToast(
                         error.message ||
-                        'Passkey registration failed. Please try again.'
+                            'Passkey registration failed. Please try again.'
                     );
                 }
             }
@@ -358,24 +359,27 @@ const PasskeyManagementModal = ({
                                         {passkeys.map((passkey) => (
                                             <div
                                                 key={passkey.id}
-                                                className={`border rounded p-4 transition-colors ${passkey.isActive
+                                                className={`border rounded p-4 transition-colors ${
+                                                    passkey.isActive
                                                         ? 'border-primary/10 bg-card'
                                                         : 'border-primary/10 bg-card'
-                                                    }`}
+                                                }`}
                                             >
                                                 <div className="flex items-start justify-between">
                                                     <div className="flex items-start gap-3 flex-1">
                                                         <div
-                                                            className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${passkey.isActive
+                                                            className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${
+                                                                passkey.isActive
                                                                     ? 'bg-primary/10'
                                                                     : 'bg-gray-200'
-                                                                }`}
+                                                            }`}
                                                         >
                                                             <FaFingerprint
-                                                                className={`w-5 h-5 ${passkey.isActive
+                                                                className={`w-5 h-5 ${
+                                                                    passkey.isActive
                                                                         ? 'text-primary'
                                                                         : 'text-primary/40'
-                                                                    }`}
+                                                                }`}
                                                             />
                                                         </div>
                                                         <div className="flex-1 min-w-0">
@@ -412,7 +416,7 @@ const PasskeyManagementModal = ({
                                                             <p className="text-xs text-primary/40">
                                                                 Type:{' '}
                                                                 {passkey.credentialType ===
-                                                                    'platform'
+                                                                'platform'
                                                                     ? 'Device'
                                                                     : 'Security Key'}
                                                                 {passkey.backupEligible &&
@@ -438,10 +442,11 @@ const PasskeyManagementModal = ({
                                                                     passkey
                                                                 )
                                                             }
-                                                            className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors ${passkey.isActive
+                                                            className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors ${
+                                                                passkey.isActive
                                                                     ? 'bg-yellow-100 text-yellow-700 hover:bg-yellow-200'
                                                                     : 'bg-green-100 text-green-700 hover:bg-green-200'
-                                                                }`}
+                                                            }`}
                                                             disabled={
                                                                 isEnabling ||
                                                                 isDisabling

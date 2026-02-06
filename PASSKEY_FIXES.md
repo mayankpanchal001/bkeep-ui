@@ -23,7 +23,10 @@ await verifyPasskeyLogin({
         rawId: credential.rawId,
         response: credential.response,
         type: credential.type,
-        clientExtensionResults: credential.clientExtensionResults as Record<string, unknown>,
+        clientExtensionResults: credential.clientExtensionResults as Record<
+            string,
+            unknown
+        >,
         authenticatorAttachment: credential.authenticatorAttachment,
     },
 });
@@ -34,10 +37,12 @@ This ensures all required fields (id, rawId, response, type) and optional fields
 ### 2. API Endpoint Corrections (`src/services/apis/authApi.ts`)
 
 **Before:**
+
 - Authentication options: `POST /auth/passkey/login/options`
 - Authentication verify: `POST /auth/passkey/login/verify`
 
 **After:**
+
 - Authentication options: `POST /passkey/authenticate/options`
 - Authentication verify: `POST /passkey/authenticate/verify`
 
@@ -46,6 +51,7 @@ This ensures all required fields (id, rawId, response, type) and optional fields
 ### 3. Verify Payload Type Definition (`src/services/apis/authApi.ts`)
 
 **Before:**
+
 ```typescript
 type PasskeyLoginVerifyPayload = {
     email: string;
@@ -54,6 +60,7 @@ type PasskeyLoginVerifyPayload = {
 ```
 
 **After:**
+
 ```typescript
 type PasskeyLoginVerifyPayload = {
     credential: {
@@ -72,7 +79,8 @@ type PasskeyLoginVerifyPayload = {
 };
 ```
 
-**Reasons:** 
+**Reasons:**
+
 1. Removed email field (not needed - credential ID identifies the user)
 2. Explicitly defined credential structure to match backend expectations
 3. Ensures proper type checking and serialization
@@ -91,6 +99,7 @@ if (import.meta.env.DEV) {
 ### 5. Frontend Authentication Call (`src/components/auth/PasskeyLoginForm.tsx`)
 
 **Before:**
+
 ```typescript
 await verifyPasskeyLogin({
     email: storedUser.email,
@@ -99,6 +108,7 @@ await verifyPasskeyLogin({
 ```
 
 **After:**
+
 ```typescript
 await verifyPasskeyLogin({
     credential,
@@ -110,17 +120,19 @@ await verifyPasskeyLogin({
 ### 6. Debug Utility Update (`src/utills/passkeyDebug.ts`)
 
 **Before:**
+
 ```typescript
 const response = await fetch(
-    `${apiBaseUrl}/auth/passkey/login/options`,
+    `${apiBaseUrl}/auth/passkey/login/options`
     // ...
 );
 ```
 
 **After:**
+
 ```typescript
 const response = await fetch(
-    `${apiBaseUrl}/passkey/authenticate/options`,
+    `${apiBaseUrl}/passkey/authenticate/options`
     // ...
 );
 ```
@@ -130,12 +142,14 @@ const response = await fetch(
 ### 7. Type Safety Improvements (`src/components/settings/PasskeyManagementModal.tsx`)
 
 **Before:**
+
 ```typescript
 transports: credential.response.transports,
 clientExtensionResults: credential.clientExtensionResults,
 ```
 
 **After:**
+
 ```typescript
 transports: credential.response.transports as AuthenticatorTransport[],
 clientExtensionResults: credential.clientExtensionResults as Record<string, unknown>,
@@ -146,9 +160,11 @@ clientExtensionResults: credential.clientExtensionResults as Record<string, unkn
 ### 8. Cleanup
 
 **`src/services/apis/passkeyApi.ts`:**
+
 - Removed unused `RegistrationResponseJSON` import to fix linting errors.
 
 **`src/services/apis/authApi.ts`:**
+
 - Removed unused `AuthenticationResponseJSON` import (now using explicit type definition).
 
 - Removed unused `RegistrationResponseJSON` import to fix linting errors.
@@ -158,19 +174,22 @@ clientExtensionResults: credential.clientExtensionResults as Record<string, unkn
 The changes now align with the backend API specification:
 
 ### Authentication Flow
+
 1. **Get Options**: `POST /passkey/authenticate/options`
-   - Payload: `{ email?: string }` (optional)
-   - Response: `{ success, message, data: { options } }`
+    - Payload: `{ email?: string }` (optional)
+    - Response: `{ success, message, data: { options } }`
 
 2. **Verify Authentication**: `POST /passkey/authenticate/verify`
-   - Payload: `{ credential }` (only)
-   - Response: `{ success, message, data: { accessToken, refreshToken, user } }`
+    - Payload: `{ credential }` (only)
+    - Response: `{ success, message, data: { accessToken, refreshToken, user } }`
 
 ### Registration Flow (Already Correct)
+
 1. **Get Options**: `POST /passkey/register/options`
 2. **Verify Registration**: `POST /passkey/register/verify`
 
 ### Management Endpoints (Already Correct)
+
 - `GET /passkey` - List passkeys
 - `GET /passkey/stats` - Get statistics
 - `GET /passkey/:id` - Get single passkey
@@ -181,14 +200,25 @@ The changes now align with the backend API specification:
 ## Key Issues Resolved
 
 ### Issue 1: Empty Credential Object
+
 **Error:** Backend returning validation errors with all credential fields undefined
+
 ```json
 {
-  "errors": [
-    {"field": "credential.id", "message": "Invalid input: expected string, received undefined"},
-    {"field": "credential.rawId", "message": "Invalid input: expected string, received undefined"},
-    {"field": "credential.response", "message": "Invalid input: expected object, received undefined"}
-  ]
+    "errors": [
+        {
+            "field": "credential.id",
+            "message": "Invalid input: expected string, received undefined"
+        },
+        {
+            "field": "credential.rawId",
+            "message": "Invalid input: expected string, received undefined"
+        },
+        {
+            "field": "credential.response",
+            "message": "Invalid input: expected object, received undefined"
+        }
+    ]
 }
 ```
 
@@ -197,6 +227,7 @@ The changes now align with the backend API specification:
 **Solution:** Explicitly construct the credential object with all required fields before sending to backend.
 
 ### Issue 2: Incorrect API Endpoints
+
 **Error:** 404 Not Found or authentication failures
 **Solution:** Updated endpoints from `/auth/passkey/login/*` to `/passkey/authenticate/*`
 
@@ -210,12 +241,14 @@ The changes now align with the backend API specification:
 ## Expected Behavior After Fixes
 
 ### For Users
+
 1. Passkey authentication should now work correctly with the backend
 2. The "Verify it's you" flow on login should properly detect passkeys
 3. Passkey login from the dedicated `/passkey-login` page should work
 4. Passkey registration and management in settings should continue to work
 
 ### For Developers
+
 1. API calls now use the correct endpoints
 2. Request/response structures match backend expectations
 3. Type safety is maintained throughout the flow
@@ -224,14 +257,18 @@ The changes now align with the backend API specification:
 ## Additional Notes
 
 ### Response Structure Handling
+
 The frontend already handles multiple response structures correctly:
+
 - `data.options` (standard structure)
 - `data.allowCredentials` (alternative structure)
 
 This flexibility ensures compatibility with different backend response formats.
 
 ### Existing Flow Intact
+
 The following features remain unchanged and functional:
+
 - Email-first login flow with passkey detection
 - "Verify it's you" choice screen
 - Traditional password login fallback
@@ -241,6 +278,7 @@ The following features remain unchanged and functional:
 ## Related Files
 
 ### Modified Files
+
 - `src/services/apis/authApi.ts` - API endpoint and payload updates
 - `src/components/auth/PasskeyLoginForm.tsx` - Removed email from verify call
 - `src/utills/passkeyDebug.ts` - Updated debug endpoint
@@ -248,6 +286,7 @@ The following features remain unchanged and functional:
 - `src/services/apis/passkeyApi.ts` - Cleanup unused import
 
 ### Files Verified (No Changes Needed)
+
 - `src/pages/public/Loginpage.tsx` - Already handles response correctly
 - `src/services/axiosClient.ts` - Already whitelists passkey routes
 - `src/components/auth/LoginForm.tsx` - Already supports passkey flow
@@ -256,12 +295,14 @@ The following features remain unchanged and functional:
 ## Backend Documentation Reference
 
 These fixes are based on the official backend documentation:
+
 - Setup Guide: `docs/PASSKEY_AUTHENTICATION_SETUP.md`
 - Full Documentation: `docs/PASSKEY_AUTHENTICATION.md`
 
 ## Verification Checklist
 
 Before deploying, verify:
+
 - [ ] Backend is running with correct endpoints
 - [ ] Backend has `WEBAUTHN_RP_ID` configured correctly
 - [ ] Frontend `VITE_API_ENDPOINT` points to correct backend
@@ -274,6 +315,7 @@ Before deploying, verify:
 ## Support
 
 For issues:
+
 1. Check browser console for WebAuthn errors
 2. Verify backend logs for authentication failures
 3. Use `window.passkeyDebug.log()` in browser console for diagnostics
