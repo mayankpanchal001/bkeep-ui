@@ -93,7 +93,7 @@ export function ActionMenu({
     items,
     label = 'Actions',
     disabled = false,
-    variant = 'ghost',
+    variant = 'outline',
     size = 'sm',
     align = 'end',
     tooltip,
@@ -112,7 +112,7 @@ export function ActionMenu({
         <Button
             variant={variant}
             size={size}
-            className={`h-8 w-8 p-0 ${className || ''}`}
+            className={`min-w-[1rem] ${className || ''}`}
             disabled={disabled}
             aria-label="Row actions"
         >

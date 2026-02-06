@@ -243,7 +243,7 @@ export function MatchTransactionDrawer({
         <Sheet open={open} onOpenChange={onOpenChange}>
             <SheetContent
                 side="right"
-                className="flex h-full w-full max-w-full flex-col gap-0 overflow-hidden border-l bg-background p-0 sm:max-w-[min(960px,95vw)]"
+                className="flex h-full w-[100vw] sm:max-w-none flex-col gap-0 overflow-hidden border-l bg-background p-0"
             >
                 {/* Header */}
                 <SheetHeader className="flex flex-row items-center justify-between border-b px-6 py-4">

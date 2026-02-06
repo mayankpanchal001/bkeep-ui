@@ -424,7 +424,7 @@ const UsersTab = () => {
                                         <TableHead sortable sortKey="createdAt">
                                             Invited At
                                         </TableHead>
-                                        <TableHead align="right">
+                                        <TableHead align="center">
                                             Actions
                                         </TableHead>
                                     </tr>
@@ -494,7 +494,7 @@ const UsersTab = () => {
                                                             </span>
                                                         </div>
                                                     </TableCell>
-                                                    <TableCell align="right">
+                                                    <TableCell align="center">
                                                         <DropdownMenu>
                                                             <DropdownMenuTrigger
                                                                 asChild
@@ -502,12 +502,12 @@ const UsersTab = () => {
                                                                 <Button
                                                                     variant="outline"
                                                                     size="sm"
-                                                                    className="h-8 w-8 p-0"
+                                                                    className="min-w-[1rem]"
                                                                 >
                                                                     <Icons.More className="w-4 shrink-0 h-4" />
                                                                 </Button>
                                                             </DropdownMenuTrigger>
-                                                            <DropdownMenuContent align="end">
+                                                            <DropdownMenuContent align="center">
                                                                 <DropdownMenuLabel>
                                                                     Actions
                                                                 </DropdownMenuLabel>
@@ -619,7 +619,7 @@ const UsersTab = () => {
                             <TableHead sortable sortKey="createdAt">
                                 Joined
                             </TableHead>
-                            <TableHead align="right">Actions</TableHead>
+                            <TableHead align="center">Actions</TableHead>
                         </tr>
                     </TableHeader>
                     <TableBody>
@@ -732,18 +732,18 @@ const UsersTab = () => {
                                             )}
                                         </div>
                                     </TableCell>
-                                    <TableCell align="right">
+                                    <TableCell align="center">
                                         <DropdownMenu>
                                             <DropdownMenuTrigger asChild>
                                                 <Button
                                                     variant="outline"
                                                     size="sm"
-                                                    className="h-8 w-8 p-0"
+                                                    className="min-w-[1rem]"
                                                 >
                                                     <Icons.More className="w-4 shrink-0 h-4" />
                                                 </Button>
                                             </DropdownMenuTrigger>
-                                            <DropdownMenuContent align="end">
+                                            <DropdownMenuContent align="center">
                                                 <DropdownMenuLabel>
                                                     Actions
                                                 </DropdownMenuLabel>
