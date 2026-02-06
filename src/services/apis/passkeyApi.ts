@@ -1,3 +1,4 @@
+import type { PublicKeyCredentialCreationOptionsJSON } from '@simplewebauthn/browser';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { showErrorToast, showSuccessToast } from '../../utills/toast';
 import axiosInstance from '../axiosClient';
@@ -5,45 +6,15 @@ import axiosInstance from '../axiosClient';
 // ============= Types =============
 
 /**
- * Response structure for passkey registration options
+ * Response structure for passkey registration options.
+ * Uses SimpleWebAuthn's PublicKeyCredentialCreationOptionsJSON for type safety.
  */
 export type PasskeyRegistrationOptionsResponse = {
     success: boolean;
     statusCode: number;
     message: string;
     data: {
-        options: {
-            challenge: string;
-            rp: {
-                name: string;
-                id: string;
-            };
-            user: {
-                id: string;
-                name: string;
-                displayName: string;
-            };
-            pubKeyCredParams: Array<{
-                alg: number;
-                type: string;
-            }>;
-            timeout: number;
-            attestation: string;
-            excludeCredentials: Array<{
-                id: string;
-                type: string;
-                transports?: AuthenticatorTransport[];
-            }>;
-            authenticatorSelection: {
-                userVerification: UserVerificationRequirement;
-                residentKey?: ResidentKeyRequirement;
-                requireResidentKey?: boolean;
-            };
-            extensions?: {
-                credProps?: boolean;
-            };
-            hints?: string[];
-        };
+        options: PublicKeyCredentialCreationOptionsJSON;
     };
 };
 

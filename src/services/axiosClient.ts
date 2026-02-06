@@ -39,11 +39,13 @@ axiosInstance.interceptors.response.use(
             localStorage.removeItem('user');
             localStorage.removeItem('mfaEnabled');
 
-            // Only redirect if we're not already on the login page
-            if (
-                window.location.pathname !== '/login' &&
-                window.location.pathname !== '/'
-            ) {
+            // Only redirect if we're not already on a login-related page
+            const pathname = window.location.pathname;
+            const isLoginPage =
+                pathname === '/login' ||
+                pathname === '/' ||
+                pathname === '/passkey-login';
+            if (!isLoginPage) {
                 window.location.href = '/login';
             }
         } else if (error.response?.status === 403) {

@@ -1,15 +1,26 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Link } from 'react-router';
 import { useLogin } from '../../services/apis/authApi';
-
+import { getStoredPasskeyUser } from '../../utills/passkey';
 import { showErrorToast } from '../../utills/toast';
-
 import { LogIn } from 'lucide-react';
+import { FaFingerprint } from 'react-icons/fa';
 import { Icons } from '../shared/Icons';
 import { Button } from '../ui/button';
 import Input from '../ui/input';
 
-export function LoginForm() {
-    const [email, setEmail] = useState('');
+export type LoginFormProps = {
+    /** Pre-fill email (e.g. from "Other method" after verify step) */
+    initialEmail?: string;
+    /** When true, email field is read-only */
+    lockEmail?: boolean;
+};
+
+export function LoginForm({
+    initialEmail,
+    lockEmail = false,
+}: LoginFormProps = {}) {
+    const [email, setEmail] = useState(initialEmail ?? '');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [fieldErrors, setFieldErrors] = useState<{
@@ -21,6 +32,18 @@ export function LoginForm() {
         isPending: isLoading,
         error: loginError,
     } = useLogin();
+
+    useEffect(() => {
+        if (initialEmail !== undefined) {
+            setEmail(initialEmail);
+        }
+    }, [initialEmail]);
+
+    const hasStoredPasskeyUser = useMemo(
+        () => getStoredPasskeyUser() !== null,
+        []
+    );
+    const showPasskeyLink = hasStoredPasskeyUser && !initialEmail;
 
     const validateForm = () => {
         const errors: { email?: string; password?: string } = {};
@@ -85,13 +108,16 @@ export function LoginForm() {
                         placeholder="you@example.com"
                         value={email}
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                            setEmail(e.target.value);
-                            if (fieldErrors.email)
-                                setFieldErrors({
-                                    ...fieldErrors,
-                                    email: undefined,
-                                });
+                            if (!lockEmail) {
+                                setEmail(e.target.value);
+                                if (fieldErrors.email)
+                                    setFieldErrors({
+                                        ...fieldErrors,
+                                        email: undefined,
+                                    });
+                            }
                         }}
+                        readOnly={lockEmail}
                         error={!!fieldErrors.email}
                         required
                         startIcon={<Icons.UserCircle className="w-4 h-4" />}
@@ -146,6 +172,31 @@ export function LoginForm() {
                 >
                     Login
                 </Button>
+
+                {showPasskeyLink && (
+                    <div className="relative">
+                        <div className="absolute inset-0 flex items-center">
+                            <span className="w-full border-t border-primary/10" />
+                        </div>
+                        <div className="relative flex justify-center text-xs">
+                            <span className="bg-transparent px-2 text-primary/60">
+                                or
+                            </span>
+                        </div>
+                        <Link to="/passkey-login" className="mt-3 block">
+                            <Button
+                                type="button"
+                                variant="outline"
+                                className="w-full"
+                                startIcon={
+                                    <FaFingerprint className="w-4 h-4" />
+                                }
+                            >
+                                Sign in with passkey
+                            </Button>
+                        </Link>
+                    </div>
+                )}
             </form>
         </div>
     );

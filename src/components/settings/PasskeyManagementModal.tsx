@@ -1,3 +1,4 @@
+import { startRegistration } from '@simplewebauthn/browser';
 import { SaveIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import {
@@ -20,8 +21,8 @@ import {
     useRenamePasskey,
 } from '../../services/apis/passkeyApi';
 import {
-    arrayBufferToBase64url,
-    base64urlToArrayBuffer,
+    getInsecureContextMessage,
+    isSecureContext,
     isWebAuthnSupported,
 } from '../../utills/passkey';
 import { showErrorToast } from '../../utills/toast';
@@ -105,6 +106,11 @@ const PasskeyManagementModal = ({
             return;
         }
 
+        if (!isSecureContext()) {
+            showErrorToast(getInsecureContextMessage());
+            return;
+        }
+
         setIsRegistering(true);
 
         try {
@@ -112,92 +118,36 @@ const PasskeyManagementModal = ({
             const optionsResponse = await getRegistrationOptions();
             const options = optionsResponse.data.options;
 
-            // Step 2: Convert challenge and user.id to ArrayBuffer for WebAuthn
-            const publicKeyCredentialCreationOptions: PublicKeyCredentialCreationOptions =
-                {
-                    challenge: base64urlToArrayBuffer(options.challenge),
-                    rp: {
-                        name: options.rp.name,
-                        id: options.rp.id,
+            // Step 2: Use SimpleWebAuthn to handle the registration ceremony
+            // This handles all base64url <-> ArrayBuffer conversions, RP ID
+            // validation, and browser compatibility automatically.
+            const credential = await startRegistration({
+                optionsJSON: options,
+            });
+
+            // Step 3: Send credential to server for verification
+            // startRegistration returns a RegistrationResponseJSON with all
+            // fields already base64url-encoded, ready for the backend.
+            await verifyRegistration({
+                name: friendlyName.trim(),
+                credential: {
+                    id: credential.id,
+                    rawId: credential.rawId,
+                    response: {
+                        attestationObject:
+                            credential.response.attestationObject,
+                        clientDataJSON: credential.response.clientDataJSON,
+                        transports: credential.response
+                            .transports as AuthenticatorTransport[],
                     },
-                    user: {
-                        id: base64urlToArrayBuffer(options.user.id),
-                        name: options.user.name,
-                        displayName: options.user.displayName,
-                    },
-                    pubKeyCredParams: options.pubKeyCredParams.map((param) => ({
-                        alg: param.alg,
-                        type: param.type as PublicKeyCredentialType,
-                    })),
-                    timeout: options.timeout,
-                    attestation:
-                        options.attestation as AttestationConveyancePreference,
-                    excludeCredentials: options.excludeCredentials.map(
-                        (cred) => ({
-                            id: base64urlToArrayBuffer(cred.id),
-                            type: cred.type as PublicKeyCredentialType,
-                            transports: cred.transports,
-                        })
-                    ),
-                    authenticatorSelection: {
-                        userVerification:
-                            options.authenticatorSelection.userVerification,
-                        residentKey: options.authenticatorSelection.residentKey,
-                        requireResidentKey:
-                            options.authenticatorSelection.requireResidentKey,
-                    },
-                    extensions: options.extensions,
-                };
-
-            // Step 3: Create credential using WebAuthn API
-            const credential = (await navigator.credentials.create({
-                publicKey: publicKeyCredentialCreationOptions,
-            })) as PublicKeyCredential | null;
-
-            if (!credential) {
-                throw new Error('No credential returned from authenticator');
-            }
-
-            const response =
-                credential.response as AuthenticatorAttestationResponse;
-
-            // Step 4: Extract transports if available
-            let transports: AuthenticatorTransport[] | undefined;
-            if (
-                'getTransports' in response &&
-                typeof response.getTransports === 'function'
-            ) {
-                transports =
-                    response.getTransports() as AuthenticatorTransport[];
-            }
-
-            // Step 5: Build credential object in SimpleWebAuthn format
-            const credentialForBackend = {
-                id: credential.id,
-                rawId: arrayBufferToBase64url(credential.rawId),
-                response: {
-                    attestationObject: arrayBufferToBase64url(
-                        response.attestationObject
-                    ),
-                    clientDataJSON: arrayBufferToBase64url(
-                        response.clientDataJSON
-                    ),
-                    transports: transports,
-                },
-                type: credential.type,
-                clientExtensionResults:
-                    credential.getClientExtensionResults() as Record<
+                    type: credential.type,
+                    clientExtensionResults: credential.clientExtensionResults as Record<
                         string,
                         unknown
                     >,
-                authenticatorAttachment:
-                    credential.authenticatorAttachment || undefined,
-            };
-
-            // Step 6: Send credential to server for verification
-            await verifyRegistration({
-                name: friendlyName.trim(),
-                credential: credentialForBackend,
+                    authenticatorAttachment:
+                        credential.authenticatorAttachment || undefined,
+                },
             });
 
             // Success - go back to list
@@ -205,19 +155,31 @@ const PasskeyManagementModal = ({
             setFriendlyName('');
         } catch (error) {
             console.error('Passkey registration failed:', error);
-            // Error toast is shown by the hook, but handle WebAuthn-specific errors
-            if (error instanceof DOMException) {
+
+            if (error instanceof Error) {
+                // SimpleWebAuthn wraps WebAuthn errors with descriptive messages
                 if (error.name === 'NotAllowedError') {
-                    showErrorToast('Registration was cancelled or not allowed');
-                } else if (error.name === 'SecurityError') {
                     showErrorToast(
-                        'Security error during registration. Please try again.'
+                        'Registration was cancelled or not allowed. Please try again.'
                     );
+                } else if (error.name === 'SecurityError') {
+                    showErrorToast(getInsecureContextMessage());
                 } else if (error.name === 'AbortError') {
-                    showErrorToast('Registration was aborted');
+                    showErrorToast('Registration was aborted.');
                 } else if (error.name === 'InvalidStateError') {
                     showErrorToast(
                         'This authenticator is already registered. Please use a different one.'
+                    );
+                } else if (
+                    error.message?.includes('ceremony') ||
+                    error.message?.includes('cancelled')
+                ) {
+                    // User cancelled the registration prompt
+                    showErrorToast('Registration was cancelled.');
+                } else {
+                    showErrorToast(
+                        error.message ||
+                        'Passkey registration failed. Please try again.'
                     );
                 }
             }
@@ -396,27 +358,24 @@ const PasskeyManagementModal = ({
                                         {passkeys.map((passkey) => (
                                             <div
                                                 key={passkey.id}
-                                                className={`border rounded p-4 transition-colors ${
-                                                    passkey.isActive
+                                                className={`border rounded p-4 transition-colors ${passkey.isActive
                                                         ? 'border-primary/10 bg-card'
                                                         : 'border-primary/10 bg-card'
-                                                }`}
+                                                    }`}
                                             >
                                                 <div className="flex items-start justify-between">
                                                     <div className="flex items-start gap-3 flex-1">
                                                         <div
-                                                            className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${
-                                                                passkey.isActive
+                                                            className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${passkey.isActive
                                                                     ? 'bg-primary/10'
                                                                     : 'bg-gray-200'
-                                                            }`}
+                                                                }`}
                                                         >
                                                             <FaFingerprint
-                                                                className={`w-5 h-5 ${
-                                                                    passkey.isActive
+                                                                className={`w-5 h-5 ${passkey.isActive
                                                                         ? 'text-primary'
                                                                         : 'text-primary/40'
-                                                                }`}
+                                                                    }`}
                                                             />
                                                         </div>
                                                         <div className="flex-1 min-w-0">
@@ -453,7 +412,7 @@ const PasskeyManagementModal = ({
                                                             <p className="text-xs text-primary/40">
                                                                 Type:{' '}
                                                                 {passkey.credentialType ===
-                                                                'platform'
+                                                                    'platform'
                                                                     ? 'Device'
                                                                     : 'Security Key'}
                                                                 {passkey.backupEligible &&
@@ -479,11 +438,10 @@ const PasskeyManagementModal = ({
                                                                     passkey
                                                                 )
                                                             }
-                                                            className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors ${
-                                                                passkey.isActive
+                                                            className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors ${passkey.isActive
                                                                     ? 'bg-yellow-100 text-yellow-700 hover:bg-yellow-200'
                                                                     : 'bg-green-100 text-green-700 hover:bg-green-200'
-                                                            }`}
+                                                                }`}
                                                             disabled={
                                                                 isEnabling ||
                                                                 isDisabling

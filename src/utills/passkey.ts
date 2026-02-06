@@ -93,6 +93,29 @@ export function arrayBufferToBase64url(buffer: ArrayBuffer): string {
 }
 
 /**
+ * Check if the current context is secure for WebAuthn/passkeys.
+ * Secure contexts: https://, localhost, 127.0.0.1 (any port).
+ */
+export function isSecureContext(): boolean {
+    if (typeof window === 'undefined') return false;
+    return window.isSecureContext;
+}
+
+/**
+ * Get a user-friendly message when passkeys are not available due to insecure context.
+ * Suggests using localhost for development or HTTPS for production.
+ */
+export function getInsecureContextMessage(): string {
+    const { protocol, hostname } = window.location;
+    const isLocalhost =
+        hostname === 'localhost' || hostname === '127.0.0.1';
+    if (protocol === 'http:' && !isLocalhost) {
+        return `Passkeys require a secure connection. You're on ${protocol}//${hostname}. For development, use http://localhost with the same port (e.g. http://localhost:${window.location.port || '5173'}). For production, use HTTPS.`;
+    }
+    return 'Passkeys require a secure connection (HTTPS or localhost). Please use https:// or http://localhost.';
+}
+
+/**
  * Check if WebAuthn is supported in the browser
  */
 export function isWebAuthnSupported(): boolean {

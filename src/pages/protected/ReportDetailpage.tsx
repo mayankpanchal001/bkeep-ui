@@ -530,9 +530,9 @@ function getReportExportData(
         case 'profit-loss': {
             const breakdown = p.breakdown as
                 | {
-                      income?: Array<{ accountName: string; amount: number }>;
-                      expense?: Array<{ accountName: string; amount: number }>;
-                  }
+                    income?: Array<{ accountName: string; amount: number }>;
+                    expense?: Array<{ accountName: string; amount: number }>;
+                }
                 | undefined;
             const income = Array.isArray(breakdown?.income)
                 ? breakdown.income
@@ -580,13 +580,13 @@ function getReportExportData(
         case 'balance-sheet': {
             const breakdown = p.breakdown as
                 | {
-                      assets?: Array<{ accountName: string; amount: number }>;
-                      liabilities?: Array<{
-                          accountName: string;
-                          amount: number;
-                      }>;
-                      equity?: Array<{ accountName: string; amount: number }>;
-                  }
+                    assets?: Array<{ accountName: string; amount: number }>;
+                    liabilities?: Array<{
+                        accountName: string;
+                        amount: number;
+                    }>;
+                    equity?: Array<{ accountName: string; amount: number }>;
+                }
                 | undefined;
             const rows: ExportData[] = [];
             const assets = Array.isArray(breakdown?.assets)
@@ -744,18 +744,18 @@ const ReportDetailpage = () => {
         const companyName = selectedTenant?.name ?? 'Report';
         const periodLabel =
             payload != null &&
-            typeof payload === 'object' &&
-            'from' in payload &&
-            'to' in payload
+                typeof payload === 'object' &&
+                'from' in payload &&
+                'to' in payload
                 ? formatPeriodMonthYear(
-                      (payload as { from: string }).from,
-                      (payload as { to: string }).to
-                  )
+                    (payload as { from: string }).from,
+                    (payload as { to: string }).to
+                )
                 : payload != null &&
                     typeof payload === 'object' &&
                     'asOf' in payload
-                  ? formatDate((payload as { asOf: string }).asOf)
-                  : '';
+                    ? formatDate((payload as { asOf: string }).asOf)
+                    : '';
 
         if (format === 'pdf') {
             window.print();
@@ -860,9 +860,9 @@ const ReportDetailpage = () => {
         const periodLabel =
             'from' in payload && 'to' in payload
                 ? formatPeriodMonthYear(
-                      (payload as { from: string }).from,
-                      (payload as { to: string }).to
-                  )
+                    (payload as { from: string }).from,
+                    (payload as { to: string }).to
+                )
                 : '';
         switch (reportApiKey) {
             case 'profit-loss':
@@ -1732,7 +1732,7 @@ const BalanceSheetReportView = ({
                                                     className={cn(
                                                         'size-4 shrink-0 text-muted-foreground transition-transform',
                                                         !liabilitiesOpen &&
-                                                            '-rotate-90'
+                                                        '-rotate-90'
                                                     )}
                                                 />
                                                 Liabilities
@@ -1843,7 +1843,7 @@ const BalanceSheetReportView = ({
                                                     className={cn(
                                                         'size-4 shrink-0 text-muted-foreground transition-transform',
                                                         !equityOpen &&
-                                                            '-rotate-90'
+                                                        '-rotate-90'
                                                     )}
                                                 />
                                                 Equity
@@ -1920,7 +1920,7 @@ const BalanceSheetReportView = ({
                                     >
                                         {formatCurrency(
                                             (totals.liabilities ?? 0) +
-                                                (totals.equity ?? 0)
+                                            (totals.equity ?? 0)
                                         )}
                                     </TableCell>
                                 </TableRow>
@@ -2024,22 +2024,22 @@ const GeneralLedgerReportView = ({
                                                 <td className="px-2 py-1 text-right">
                                                     {(line.debit ?? 0) > 0
                                                         ? formatCurrency(
-                                                              line.debit ?? 0
-                                                          )
+                                                            line.debit ?? 0
+                                                        )
                                                         : '-'}
                                                 </td>
                                                 <td className="px-2 py-1 text-right">
                                                     {(line.credit ?? 0) > 0
                                                         ? formatCurrency(
-                                                              line.credit ?? 0
-                                                          )
+                                                            line.credit ?? 0
+                                                        )
                                                         : '-'}
                                                 </td>
                                                 <td className="px-2 py-1 text-right font-medium">
                                                     {line.balance != null
                                                         ? formatCurrency(
-                                                              line.balance
-                                                          )
+                                                            line.balance
+                                                        )
                                                         : '—'}
                                                 </td>
                                             </tr>
@@ -2330,11 +2330,11 @@ const UnpaidBillsReportView = ({ data }: { data: UnpaidBillsReportData }) => {
                                         className={cn(
                                             'px-2 py-1 rounded-full text-xs font-medium',
                                             bill.status === 'overdue' &&
-                                                'bg-destructive/15 text-destructive',
+                                            'bg-destructive/15 text-destructive',
                                             bill.status === 'pending' &&
-                                                'bg-muted text-muted-foreground',
+                                            'bg-muted text-muted-foreground',
                                             bill.status === 'partial' &&
-                                                'bg-primary/10 text-primary'
+                                            'bg-primary/10 text-primary'
                                         )}
                                     >
                                         {bill.status}

@@ -4,12 +4,15 @@ import { useEffect, useState } from 'react';
 import { FaFingerprint, FaTimes, FaUser } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router';
 import { APP_TITLE } from '../../constants';
+import type { PasskeyLoginOptionsJSON } from '../../services/apis/authApi';
 import {
     usePasskeyLoginInit,
     usePasskeyLoginVerify,
 } from '../../services/apis/authApi';
 import {
+    getInsecureContextMessage,
     getStoredPasskeyUser,
+    isSecureContext,
     isWebAuthnSupported,
     removePasskeyUser,
     storePasskeyUser,
@@ -17,6 +20,31 @@ import {
 import { logPasskeyDiagnostics } from '../../utills/passkeyDebug';
 import { showErrorToast, showSuccessToast } from '../../utills/toast';
 import { Button } from '../ui/button';
+
+/**
+ * Normalize backend response to options shape expected by startAuthentication.
+ * Handles data.options or allowCredentials at data level; ensures allowCredentials is an array.
+ */
+function normalizePasskeyLoginOptions(data: {
+    options?: Partial<PasskeyLoginOptionsJSON>;
+    allowCredentials?: PasskeyLoginOptionsJSON['allowCredentials'];
+}): PasskeyLoginOptionsJSON {
+    const options: Partial<PasskeyLoginOptionsJSON> = data.options ?? {};
+    const allowCredentials =
+        options.allowCredentials ??
+        data.allowCredentials ??
+        [];
+    if (!options.challenge) {
+        throw new Error('Invalid passkey options: missing challenge');
+    }
+    return {
+        challenge: options.challenge,
+        rpId: options.rpId,
+        timeout: options.timeout,
+        userVerification: options.userVerification,
+        allowCredentials: Array.isArray(allowCredentials) ? allowCredentials : [],
+    };
+}
 
 export function PasskeyLoginForm() {
     const [storedUser, setStoredUser] = useState(getStoredPasskeyUser());
@@ -35,16 +63,20 @@ export function PasskeyLoginForm() {
         // Check for stored user ID
         const user = getStoredPasskeyUser();
 
-        console.log('Stored passkey user:', user);
+        if (import.meta.env.DEV) {
+            console.log('Stored passkey user:', user);
+        }
         if (user) {
             setStoredUser(user);
-        } else {
+        } else if (import.meta.env.DEV) {
             console.warn('No stored passkey user found in localStorage');
         }
 
         // Check if WebAuthn is supported
         const isSupported = isWebAuthnSupported();
-        console.log('WebAuthn supported:', isSupported);
+        if (import.meta.env.DEV) {
+            console.log('WebAuthn supported:', isSupported);
+        }
         setWebAuthnSupported(isSupported);
 
         // Check if redirected from session timeout
@@ -62,46 +94,67 @@ export function PasskeyLoginForm() {
             return;
         }
 
+        if (!isSecureContext()) {
+            showErrorToast(getInsecureContextMessage());
+            return;
+        }
+
         setIsAuthenticating(true);
-        console.log('Starting passkey authentication for:', storedUser.email);
+        if (import.meta.env.DEV) {
+            console.log('Starting passkey authentication for:', storedUser.email);
+        }
 
         try {
             // Step 1: Get challenge and credentials from server
-            console.log('Step 1: Requesting passkey login options...');
             const initResponse = await initPasskeyLogin({
                 email: storedUser.email,
             });
 
             if (!initResponse?.data) {
-                console.error('No data in init response:', initResponse);
                 throw new Error('Failed to get passkey options from server');
             }
 
-            console.log('initResponse', initResponse);
-            const options = initResponse.data.options;
+            const options = normalizePasskeyLoginOptions(initResponse.data);
 
             // Step 2: Start authentication ceremony using SimpleWebAuthn
-            console.log('Step 2: Starting authentication with passkey...');
             const credential = await startAuthentication({
                 optionsJSON: options,
             });
 
+            if (import.meta.env.DEV) {
+                console.log('🔐 Credential from startAuthentication:', credential);
+                console.log('🔐 Credential structure:', {
+                    id: credential.id,
+                    rawId: credential.rawId,
+                    type: credential.type,
+                    response: credential.response,
+                });
+            }
+
             // Step 3: Send credential to server for verification
-            console.log('Step 3: Verifying credential with backend...');
+            // Explicitly structure the credential to ensure all fields are serializable
             await verifyPasskeyLogin({
-                email: storedUser.email,
-                credential,
+                credential: {
+                    id: credential.id,
+                    rawId: credential.rawId,
+                    response: credential.response,
+                    type: credential.type,
+                    clientExtensionResults: credential.clientExtensionResults as Record<
+                        string,
+                        unknown
+                    >,
+                    authenticatorAttachment: credential.authenticatorAttachment,
+                },
             });
 
             // Update last accessed timestamp
-            console.log('Authentication successful, updating stored user...');
             storePasskeyUser(storedUser.email, credential.id);
             setStoredUser(getStoredPasskeyUser());
-
             // Navigation is handled by the verifyPasskeyLogin hook
-            console.log('Passkey login completed successfully');
         } catch (error) {
-            console.error('Passkey authentication failed:', error);
+            if (import.meta.env.DEV) {
+                console.error('Passkey authentication failed:', error);
+            }
 
             // Handle different error types
             if (
@@ -117,9 +170,7 @@ export function PasskeyLoginForm() {
                         'Authentication was cancelled or not allowed. Please try again.'
                     );
                 } else if (error.name === 'SecurityError') {
-                    showErrorToast(
-                        'Security error during authentication. Please ensure you are on a secure connection (HTTPS).'
-                    );
+                    showErrorToast(getInsecureContextMessage());
                 } else if (error.name === 'AbortError') {
                     showErrorToast(
                         'Authentication was aborted. Please try again.'

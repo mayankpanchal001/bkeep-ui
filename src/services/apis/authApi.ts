@@ -1,11 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { AuthenticationResponseJSON } from '@simplewebauthn/types';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router';
 import { useAuth } from '../../stores/auth/authSelectore';
 import { useTenant } from '../../stores/tenant/tenantSelectore';
 import { LoginResponse, Tenant } from '../../types';
-import { storePasskeyUser } from '../../utills/passkey';
+import { removePasskeyUser, storePasskeyUser } from '../../utills/passkey';
 import { showErrorToast, showSuccessToast } from '../../utills/toast';
 import axiosInstance from '../axiosClient';
 import { invalidateTenantQueries } from './tenantApi';
@@ -40,28 +39,47 @@ type PasskeyLoginInitPayload = {
     email: string;
 };
 
+/**
+ * Options shape returned by backend for passkey login (PublicKeyCredentialRequestOptions-compatible).
+ * Backend should return challenge, allowCredentials, timeout, userVerification, rpId (all camelCase, base64url strings).
+ */
+export type PasskeyLoginOptionsJSON = {
+    challenge: string;
+    allowCredentials?: {
+        id: string;
+        type: 'public-key';
+        transports?: AuthenticatorTransport[];
+    }[];
+    timeout?: number;
+    userVerification?: UserVerificationRequirement;
+    rpId?: string;
+};
+
 type PasskeyLoginInitResponse = {
     success: boolean;
     statusCode: number;
     message: string;
     data: {
-        options: {
-            challenge: string;
-            allowCredentials: {
-                id: string;
-                type: 'public-key';
-                transports?: AuthenticatorTransport[];
-            }[];
-            timeout: number;
-            userVerification: UserVerificationRequirement;
-            rpId: string;
-        };
+        options?: PasskeyLoginOptionsJSON;
+        /** Some backends may nest allowCredentials at data level */
+        allowCredentials?: PasskeyLoginOptionsJSON['allowCredentials'];
     };
 };
 
 type PasskeyLoginVerifyPayload = {
-    email: string;
-    credential: AuthenticationResponseJSON;
+    credential: {
+        id: string;
+        rawId: string;
+        response: {
+            authenticatorData: string;
+            clientDataJSON: string;
+            signature: string;
+            userHandle?: string;
+        };
+        type: 'public-key';
+        clientExtensionResults?: Record<string, unknown>;
+        authenticatorAttachment?: string;
+    };
 };
 
 type PasskeyLoginVerifyResponse = LoginResponse;
@@ -75,7 +93,7 @@ export async function getMfaStatusRequest(): Promise<MfaStatusResponse> {
 export async function passkeyLoginInitRequest(
     payload: PasskeyLoginInitPayload
 ): Promise<PasskeyLoginInitResponse> {
-    const response = await axiosInstance.post('/auth/passkey/login/options', {
+    const response = await axiosInstance.post('/passkey/authenticate/options', {
         email: payload.email,
     });
     return response.data;
@@ -84,8 +102,13 @@ export async function passkeyLoginInitRequest(
 export async function passkeyLoginVerifyRequest(
     payload: PasskeyLoginVerifyPayload
 ): Promise<PasskeyLoginVerifyResponse> {
+    if (import.meta.env.DEV) {
+        console.log('🔐 passkeyLoginVerifyRequest payload:', payload);
+        console.log('🔐 payload.credential:', payload.credential);
+        console.log('🔐 Stringified:', JSON.stringify(payload, null, 2));
+    }
     const response = await axiosInstance.post(
-        '/auth/passkey/login/verify',
+        '/passkey/authenticate/verify',
         payload
     );
     return response.data;
@@ -206,6 +229,7 @@ export const useLogout = () => {
         mutationFn: logoutRequest,
         onSuccess: () => {
             clearAuth();
+            removePasskeyUser();
             navigate('/login');
         },
         onError: (error) => {
@@ -410,22 +434,23 @@ export const usePasskeyLoginVerify = () => {
         mutationFn: (payload: PasskeyLoginVerifyPayload) =>
             passkeyLoginVerifyRequest(payload),
         onSuccess: (data) => {
-            const payload = data?.data;
+            // Normalize: backend may return { data: { user, accessToken, refreshToken } } or flat { user, accessToken, refreshToken }
+            const raw = data?.data ?? data;
+            const payload =
+                raw?.user && raw?.accessToken && raw?.refreshToken ? raw : null;
 
             if (
-                payload?.user &&
-                payload?.accessToken &&
-                payload?.refreshToken
+                payload &&
+                payload.user &&
+                payload.accessToken &&
+                payload.refreshToken
             ) {
-                setAuth(
-                    payload.user,
-                    payload.accessToken,
-                    payload.refreshToken
-                );
+                const { user, accessToken, refreshToken } = payload;
+                setAuth(user, accessToken, refreshToken);
 
-                const tenants = buildTenantsFromLogin(payload.user.tenants);
+                const tenants = buildTenantsFromLogin(user.tenants);
                 setTenants(tenants, {
-                    selectTenantId: payload.user.selectedTenantId,
+                    selectTenantId: user.selectedTenantId,
                 });
 
                 showSuccessToast(
@@ -434,7 +459,8 @@ export const usePasskeyLoginVerify = () => {
                 navigate('/dashboard');
             } else {
                 showErrorToast(
-                    'Passkey verification failed. Please try again.'
+                    data?.message ||
+                        'Invalid response from server. Please try again.'
                 );
             }
         },

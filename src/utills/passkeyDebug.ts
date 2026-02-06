@@ -144,7 +144,7 @@ export async function testPasskeyLoginOptions(
 }> {
     try {
         const response = await fetch(
-            `${apiBaseUrl}/auth/passkey/login/options`,
+            `${apiBaseUrl}/passkey/authenticate/options`,
             {
                 method: 'POST',
                 headers: {
@@ -165,7 +165,8 @@ export async function testPasskeyLoginOptions(
             };
         }
 
-        const credentialCount = data.data?.allowCredentials?.length || 0;
+        const credentialCount =
+            data.data?.options?.allowCredentials?.length ?? 0;
 
         return {
             success: true,

@@ -1,9 +1,191 @@
 import { LoginForm } from '@/components/auth/LoginForm';
 import ThemeSwitcher from '@/components/shared/ThemeSwitcher';
-import { Link } from 'react-router';
+import { passkeyLoginInitRequest } from '@/services/apis/authApi';
+import { storePasskeyUser } from '@/utills/passkey';
+import { Lock, LogIn } from 'lucide-react';
+import { FaFingerprint } from 'react-icons/fa';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router';
 import { logo } from '../../utills/image';
+import { Button } from '@/components/ui/button';
+import Input from '@/components/ui/input';
+import { Icons } from '@/components/shared/Icons';
+
+type LoginStep = 'email' | 'verify' | 'password';
 
 const Loginpage = () => {
+    const navigate = useNavigate();
+    const [step, setStep] = useState<LoginStep>('email');
+    const [email, setEmail] = useState('');
+    const [emailError, setEmailError] = useState('');
+    const [isCheckingPasskey, setIsCheckingPasskey] = useState(false);
+    const [fromVerifyStep, setFromVerifyStep] = useState(false);
+
+    const handleEmailSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setEmailError('');
+        const trimmed = email.trim();
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!trimmed) {
+            setEmailError('Email address is required');
+            return;
+        }
+        if (!emailRegex.test(trimmed)) {
+            setEmailError('Please enter a valid email address.');
+            return;
+        }
+        setIsCheckingPasskey(true);
+        try {
+            const response = await passkeyLoginInitRequest({ email: trimmed });
+            const options = response?.data?.options;
+            const allowCredentials =
+                options?.allowCredentials ?? response?.data?.allowCredentials;
+            const hasPasskey =
+                Array.isArray(allowCredentials) && allowCredentials.length > 0;
+            setEmail(trimmed);
+            setFromVerifyStep(false);
+            setStep(hasPasskey ? 'verify' : 'password');
+        } catch {
+            setEmail(trimmed);
+            setFromVerifyStep(false);
+            setStep('password');
+        } finally {
+            setIsCheckingPasskey(false);
+        }
+    };
+
+    const handleUsePasskey = () => {
+        storePasskeyUser(email);
+        navigate('/passkey-login');
+    };
+
+    const handleUseDifferentEmail = () => {
+        setEmail('');
+        setStep('email');
+        setEmailError('');
+    };
+
+    const renderLoginContent = () => {
+        if (step === 'email') {
+            return (
+                <form
+                    onSubmit={handleEmailSubmit}
+                    className="space-y-6"
+                >
+                    <div className="space-y-5">
+                        <Input
+                            id="login-email-first"
+                            type="email"
+                            placeholder="you@example.com"
+                            value={email}
+                            onChange={(e) => {
+                                setEmail(e.target.value);
+                                if (emailError) setEmailError('');
+                            }}
+                            error={!!emailError}
+                            required
+                            startIcon={
+                                <Icons.UserCircle className="w-4 h-4" />
+                            }
+                            disabled={isCheckingPasskey}
+                        />
+                    </div>
+                    {emailError && (
+                        <p className="text-sm text-destructive">
+                            {emailError}
+                        </p>
+                    )}
+                    <Button
+                        type="submit"
+                        disabled={isCheckingPasskey}
+                        loading={isCheckingPasskey}
+                        variant="default"
+                        className="w-full"
+                        startIcon={<LogIn className="w-4 h-4" />}
+                    >
+                        Continue
+                    </Button>
+                </form>
+            );
+        }
+
+        if (step === 'verify') {
+            return (
+                <div className="space-y-6">
+                    <div className="rounded-lg border border-primary/10 bg-muted/30 p-3">
+                        <p className="text-sm font-medium text-primary">
+                            {email}
+                        </p>
+                    </div>
+                    <div className="space-y-3">
+                        <Button
+                            type="button"
+                            variant="default"
+                            className="w-full"
+                            startIcon={
+                                <FaFingerprint className="w-5 h-5" />
+                            }
+                            onClick={handleUsePasskey}
+                        >
+                            Use passkey
+                        </Button>
+                        <Button
+                            type="button"
+                            variant="outline"
+                            className="w-full"
+                            startIcon={<Lock className="w-4 h-4" />}
+                            onClick={() => {
+                                setFromVerifyStep(true);
+                                setStep('password');
+                            }}
+                        >
+                            Enter password
+                        </Button>
+                    </div>
+                    <button
+                        type="button"
+                        onClick={handleUseDifferentEmail}
+                        className="w-full text-center text-sm text-primary/70 hover:text-primary hover:underline"
+                    >
+                        Use a different email
+                    </button>
+                </div>
+            );
+        }
+
+        return (
+            <LoginForm
+                initialEmail={email}
+                lockEmail={true}
+            />
+        );
+    };
+
+    const getStepHeading = () => {
+        if (step === 'email') {
+            return {
+                title: 'Login to your account',
+                subtitle: 'Please enter your details to login.',
+            };
+        }
+        if (step === 'verify') {
+            return {
+                title: "Verify it's you",
+                subtitle:
+                    'Choose how you want to verify your identity',
+            };
+        }
+        return {
+            title: 'Enter your password',
+            subtitle: `Sign in as ${email}`,
+        };
+    };
+
+    const showBackFromPassword = step === 'password';
+    const handleBackFromPassword = () => {
+        setStep(fromVerifyStep ? 'verify' : 'email');
+    };
+
     return (
         <div className="grid h-dvh justify-center p-2 lg:grid-cols-2 overflow-hidden relative bg-muted">
             {/* Left Side - Login Form Section */}
@@ -24,13 +206,22 @@ const Loginpage = () => {
                     <div className="p-8 lg:p-12">
                         <div className="mb-8 text-center">
                             <h2 className="text-xl sm:text-2xl font-semibold leading-tight text-primary mb-2 tracking-tight">
-                                Login to your account
+                                {getStepHeading().title}
                             </h2>
                             <p className="text-sm sm:text-base text-primary/70 dark:text-primary/65 font-medium leading-relaxed">
-                                Please enter your details to login.
+                                {getStepHeading().subtitle}
                             </p>
                         </div>
-                        <LoginForm />
+                        {showBackFromPassword && (
+                            <button
+                                type="button"
+                                onClick={handleBackFromPassword}
+                                className="mb-4 text-sm text-primary/70 hover:text-primary hover:underline"
+                            >
+                                Back
+                            </button>
+                        )}
+                        {renderLoginContent()}
                     </div>
                 </div>
 
@@ -59,13 +250,14 @@ const Loginpage = () => {
             <div className="hidden lg:flex p-1 h-full">
                 <div className="w-full bg-card rounded-[24px] p-10 relative overflow-hidden h-full">
                     <div className="relative z-10 w-full flex flex-col items-start">
-                        <div className="mb-4">
+                        <Link to="/" className="mb-4 cursor-pointer">
+
                             <img
                                 src={logo}
                                 alt="Bkeep Logo"
                                 className="h-24 w-24 object-contain"
                             />
-                        </div>
+                        </Link>
                         <h1 className="text-2xl lg:text-3xl font-semibold leading-tight text-primary mb-2 tracking-tight">
                             Bkeep Accounting
                         </h1>
