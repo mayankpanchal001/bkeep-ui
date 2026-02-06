@@ -34,46 +34,11 @@
         @apply bg-background text-foreground;
     }
 
-    /* Theme transition animations with View Transitions API support */
-    :root {
-        --theme-transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-        --theme-transition-fast: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    /* View Transitions API support */
-    @view-transition {
-        navigation: auto;
-    }
-
+    /* View Transitions API: circular reveal for theme switches */
     ::view-transition-old(root),
     ::view-transition-new(root) {
-        animation-duration: 0.5s;
-        animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    body.theme-transitioning * {
-        transition:
-            background-color var(--theme-transition),
-            border-color var(--theme-transition),
-            color var(--theme-transition),
-            fill var(--theme-transition),
-            stroke var(--theme-transition),
-            opacity var(--theme-transition),
-            outline-color var(--theme-transition);
-    }
-
-    body.theme-transitioning {
-        transition:
-            background-color var(--theme-transition),
-            color var(--theme-transition);
-    }
-
-    /* Smooth color transitions for theme variables */
-    * {
-        transition:
-            background-color 0.3s ease,
-            border-color 0.3s ease,
-            color 0.3s ease;
+        animation: none;
+        mix-blend-mode: normal;
     }
 
     /* Drag and Drop Improvements */
@@ -113,6 +78,7 @@
 
     /* Respect reduced motion preference */
     @media (prefers-reduced-motion: reduce) {
+
         *,
         *::before,
         *::after {
@@ -122,28 +88,6 @@
         }
     }
 
-    /* Smooth color transitions for theme variables */
-    :root {
-        --background: var(--background);
-        --foreground: var(--foreground);
-        --card: var(--card);
-        --card-foreground: var(--card-foreground);
-        --popover: var(--popover);
-        --popover-foreground: var(--popover-foreground);
-        --primary: var(--primary);
-        --primary-foreground: var(--primary-foreground);
-        --secondary: var(--secondary);
-        --secondary-foreground: var(--secondary-foreground);
-        --muted: var(--muted);
-        --muted-foreground: var(--muted-foreground);
-        --accent: var(--accent);
-        --accent-foreground: var(--accent-foreground);
-        --destructive: var(--destructive);
-        --destructive-foreground: var(--destructive-foreground);
-        --border: var(--border);
-        --input: var(--input);
-        --ring: var(--ring);
-    }
 }
 
 /* Report print: modern document layout with BKeep branding (matches codebase design system) */

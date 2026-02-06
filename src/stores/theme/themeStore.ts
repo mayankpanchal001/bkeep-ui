@@ -14,8 +14,6 @@ export const useThemeStore = create<ThemeState>()(
             theme: 'system',
             setTheme: (theme) => set({ theme }),
         }),
-        {
-            name: 'bkeep-theme-storage',
-        }
+        { name: 'bkeep-theme-storage' }
     )
 );

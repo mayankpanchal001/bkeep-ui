@@ -1,48 +1,32 @@
 import { Moon, Sun } from 'lucide-react';
-import { useTheme, useThemeActions } from '../../stores/theme/themeSelectors';
-import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
+import type { MouseEvent } from 'react';
+import { switchThemeAt } from '../../hooks/useThemeSync';
+import { useTheme } from '../../stores/theme/themeSelectors';
+import { Button } from '../ui/button';
 
 const ThemeSwitcher = () => {
     const theme = useTheme();
-    const { setTheme } = useThemeActions();
 
-    const systemPrefersDark =
-        typeof window !== 'undefined' &&
-        typeof window.matchMedia === 'function' &&
-        window.matchMedia('(prefers-color-scheme: dark)').matches;
-
-    const isDark =
-        theme === 'dark' || (theme === 'system' && systemPrefersDark);
-
-    const toggleTheme = () => {
-        setTheme(isDark ? 'light' : 'dark');
+    const handleClick = (e: MouseEvent<HTMLButtonElement>) => {
+        const newTheme = theme === 'light' ? 'dark' : 'light';
+        switchThemeAt(newTheme, e.clientX, e.clientY);
     };
 
     return (
-        <Tooltip>
-            <TooltipTrigger asChild>
-                <button
-                    type="button"
-                    onClick={toggleTheme}
-                    aria-label="Toggle theme"
-                    role="switch"
-                    aria-checked={isDark}
-                    className={`w-8 h-8 flex justify-center items-center cursor-pointer `}
-                >
-                    {isDark ? (
-                        <Moon className="h-5 w-5 text-primary" />
-                    ) : (
-                        <Sun className="h-5  w-5 text-primary" />
-                    )}
-                </button>
-            </TooltipTrigger>
-            <TooltipContent>
-                {isDark ? 'Switch to light mode' : 'Switch to dark mode'}
-            </TooltipContent>
-        </Tooltip>
+        <Button
+            variant="ghost"
+            size="icon"
+            className="size-9"
+            aria-label="Toggle theme"
+            onClick={handleClick}
+        >
+            {theme === 'light' ? (
+                <Sun className="size-4" />
+            ) : (
+                <Moon className="size-4" />
+            )}
+        </Button>
     );
 };
-
-export const ThemeOnOffToggle = ThemeSwitcher;
 
 export default ThemeSwitcher;

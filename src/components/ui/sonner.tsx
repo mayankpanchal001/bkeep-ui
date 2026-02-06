@@ -1,4 +1,4 @@
-import { useTheme as useAppTheme } from '@/stores/theme/themeSelectors';
+import { useResolvedTheme } from '@/hooks/useThemeSync';
 import { cn } from '@/utils/cn';
 import { X } from 'lucide-react';
 import { Toaster as Sonner, type ToasterProps } from 'sonner';
@@ -24,8 +24,7 @@ const CustomCloseButton = ({ closeToast }: { closeToast: () => void }) => {
 };
 
 const Toaster = ({ ...props }: ToasterProps) => {
-    const theme = useAppTheme();
-
+    const theme = useResolvedTheme();
     const toastOptions: ToasterProps['toastOptions'] = {
         ...props.toastOptions,
         style: {
@@ -53,7 +52,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
 
     return (
         <Sonner
-            theme={theme as ToasterProps['theme']}
+            theme={theme}
             closeButton={
                 ((props: { closeToast: () => void }) => (
                     <CustomCloseButton {...props} />

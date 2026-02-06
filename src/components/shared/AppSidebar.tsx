@@ -32,7 +32,6 @@ import {
     SidebarGroupContent,
     SidebarGroupLabel,
     SidebarHeader,
-    SidebarInput,
     SidebarMenu,
     SidebarMenuAction,
     SidebarMenuButton,
@@ -42,7 +41,7 @@ import {
     SidebarMenuSubItem,
     SidebarRail,
     SidebarSeparator,
-    useSidebar,
+    useSidebar
 } from '../ui/sidebar';
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -119,7 +118,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     const LS_FAV_LABEL_KEY = 'bkeep-report-favourites-labels';
     type FavLink = { label: string; path: string };
     const [favLinks, setFavLinks] = useState<FavLink[]>([]);
-    const [query, setQuery] = useState('');
+    const [query] = useState('');
     const { isMobile, setOpenMobile } = useSidebar();
     const [hoveredItem, setHoveredItem] = useState<string | null>(null);
     const hoverTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -166,7 +165,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
     return (
         <Sidebar collapsible="icon" {...props}>
-            <SidebarHeader className="mb-4">
+            <SidebarHeader className="mb-1 bg-background">
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <DropdownMenu>
@@ -185,13 +184,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                                     <div className="grid flex-1 text-left text-sm leading-tight">
                                         <span className="truncate font-semibold">
                                             {selectedTenant?.name ||
-                                                `Select ${
-                                                    SINGLE_TENANT_PREFIX.charAt(
-                                                        0
-                                                    ).toUpperCase() +
-                                                    SINGLE_TENANT_PREFIX.slice(
-                                                        1
-                                                    )
+                                                `Select ${SINGLE_TENANT_PREFIX.charAt(
+                                                    0
+                                                ).toUpperCase() +
+                                                SINGLE_TENANT_PREFIX.slice(
+                                                    1
+                                                )
                                                 }`}
                                         </span>
                                         <span className="truncate text-xs">
@@ -208,12 +206,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                                 sideOffset={4}
                             >
                                 <DropdownMenuLabel className="text-xs text-muted-foreground">
-                                    {`Switch ${
-                                        SINGLE_TENANT_PREFIX.charAt(
-                                            0
-                                        ).toUpperCase() +
+                                    {`Switch ${SINGLE_TENANT_PREFIX.charAt(
+                                        0
+                                    ).toUpperCase() +
                                         SINGLE_TENANT_PREFIX.slice(1)
-                                    }`}
+                                        }`}
                                 </DropdownMenuLabel>
                                 {tenants.map((tenant) => (
                                     <DropdownMenuItem
@@ -236,12 +233,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                         </DropdownMenu>
                     </SidebarMenuItem>
                 </SidebarMenu>
-                <SidebarInput
-                    placeholder="Search"
-                    value={query}
-                    onChange={(e) => setQuery(e.target.value)}
-                    className="group-data-[collapsible=icon]:hidden"
-                />
+
             </SidebarHeader>
             <SidebarContent>
                 {/* {favLinks.length > 0 && (
@@ -282,12 +274,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                                 const isReports = item.path === '/reports';
                                 const baseChildren = isReports
                                     ? [
-                                          ...favLinks.map((f) => ({
-                                              label: f.label,
-                                              path: f.path,
-                                          })),
-                                          ...(item.children || []),
-                                      ]
+                                        ...favLinks.map((f) => ({
+                                            label: f.label,
+                                            path: f.path,
+                                        })),
+                                        ...(item.children || []),
+                                    ]
                                     : item.children || [];
                                 const q = query.trim().toLowerCase();
                                 const itemMatches =
@@ -297,10 +289,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                                 const computedChildren =
                                     q.length > 0
                                         ? (baseChildren || []).filter((c) =>
-                                              (c.label || '')
-                                                  .toLowerCase()
-                                                  .includes(q)
-                                          )
+                                            (c.label || '')
+                                                .toLowerCase()
+                                                .includes(q)
+                                        )
                                         : baseChildren || [];
                                 const shouldRender =
                                     itemMatches ||
@@ -418,12 +410,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                                                                         asChild
                                                                         isActive={
                                                                             child.path ===
-                                                                            item.path
+                                                                                item.path
                                                                                 ? location.pathname ===
-                                                                                  child.path
+                                                                                child.path
                                                                                 : isItemActive(
-                                                                                      child.path
-                                                                                  )
+                                                                                    child.path
+                                                                                )
                                                                         }
                                                                         className="transition-all duration-200 ease-in-out"
                                                                     >

@@ -39,10 +39,9 @@ const AcceptInvitationpage = () => {
             {/* Grid Pattern Overlay */}
             <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808008_1px,transparent_1px),linear-gradient(to_bottom,#80808008_1px,transparent_1px)] bg-size-[32px_32px] mask-[radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] pointer-events-none" />
 
-            <div className="absolute top-6 right-6 z-50 animate-in fade-in slide-in-from-top-4 duration-700 delay-200">
+            <div className="absolute top-6 right-6 z-50">
                 <ThemeSwitcher />
             </div>
-
             <div className="w-full max-w-5xl px-4 relative z-10 animate-in fade-in zoom-in-95 slide-in-from-bottom-8 duration-700">
                 <div className="grid lg:grid-cols-5 gap-0 bg-card/80 backdrop-blur-xl border border-white/10 dark:border-white/5 shadow-2xl rounded-[30px] overflow-hidden min-h-[600px]">
                     {/* Left Section - Branding & Info */}
