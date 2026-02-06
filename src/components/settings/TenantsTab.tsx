@@ -362,7 +362,11 @@ export default function TenantsTab() {
                         },
                     ];
 
-                    return <ActionMenu items={actionItems} />;
+                    return (
+                        <div className="flex justify-center">
+                            <ActionMenu items={actionItems} />
+                        </div>
+                    );
                 },
             },
         ],
@@ -481,7 +485,10 @@ export default function TenantsTab() {
             >
                 <TableHeader>
                     {table.getHeaderGroups().map((headerGroup) => (
-                        <TableRow key={headerGroup.id}>
+                        <TableRow
+                            key={headerGroup.id}
+                            className="hover:bg-transparent"
+                        >
                             {headerGroup.headers.map((header) => {
                                 const isSelect = header.id === 'select';
                                 const isActions = header.id === 'actions';

@@ -100,8 +100,7 @@ export default function AutoBreadcrumbs({ className }: { className?: string }) {
         segments.forEach((seg, index) => {
             currentPath = currentPath + '/' + seg;
             const match =
-                flat.find((f) => f.path === currentPath) ||
-                flat.find((f) => currentPath.startsWith(f.path));
+                flat.find((f) => f.path === currentPath);
 
             let label = match?.label ?? titleize(seg);
 

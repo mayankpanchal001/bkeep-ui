@@ -93,11 +93,11 @@ export function ActionMenu({
     items,
     label = 'Actions',
     disabled = false,
-    variant = 'ghost',
+    variant = 'outline',
     size = 'sm',
     align = 'end',
     tooltip,
-    className,
+    className = 'min-w-[1rem]',
     showLabel = true,
 }: ActionMenuProps) {
     const filteredItems = items.filter(
