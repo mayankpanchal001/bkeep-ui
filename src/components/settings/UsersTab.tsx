@@ -732,13 +732,13 @@ const UsersTab = () => {
                                             )}
                                         </div>
                                     </TableCell>
-                                    <TableCell align="right">
+                                    <TableCell align="center">
                                         <DropdownMenu>
                                             <DropdownMenuTrigger asChild>
                                                 <Button
                                                     variant="outline"
                                                     size="sm"
-                                                    className="h-8 w-8 p-0"
+                                                    className="min-w-[1rem]"
                                                 >
                                                     <Icons.More className="w-4 shrink-0 h-4" />
                                                 </Button>

@@ -97,7 +97,7 @@ export function ActionMenu({
     size = 'sm',
     align = 'end',
     tooltip,
-    className = 'min-w-[1rem]',
+    className,
     showLabel = true,
 }: ActionMenuProps) {
     const filteredItems = items.filter(
@@ -112,7 +112,7 @@ export function ActionMenu({
         <Button
             variant={variant}
             size={size}
-            className={`h-8 w-8 p-0 ${className || ''}`}
+            className={`min-w-[1rem] ${className || ''}`}
             disabled={disabled}
             aria-label="Row actions"
         >
