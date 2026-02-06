@@ -8,6 +8,12 @@ import {
     DrawerHeader,
     DrawerTitle,
 } from '@/components/ui/drawer';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import Input from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
@@ -32,11 +38,15 @@ import {
     TablePagination,
 } from '@/components/ui/table';
 import {
-    Tooltip,
-    TooltipContent,
-    TooltipTrigger,
-} from '@/components/ui/tooltip';
-import { FileUp, Filter, Pencil, Plus, Search, Trash2, X } from 'lucide-react';
+    FileUp,
+    Filter,
+    MoreVertical,
+    Pencil,
+    Plus,
+    Search,
+    Trash2,
+    X,
+} from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { ACCOUNT_HIERARCHY } from '../../components/homepage/constants';
 import {
@@ -505,42 +515,42 @@ const ChartOfAccountspage = () => {
                                         )}
                                     </span>
                                 </TableCell>
-                                <TableCell align="center">
+                                <TableCell>
                                     <div className="flex items-center justify-center gap-2">
-                                        <Tooltip>
-                                            <TooltipTrigger asChild>
-                                                <button
+                                        <DropdownMenu>
+                                            <DropdownMenuTrigger asChild>
+                                                <Button
+                                                    variant="outline"
+                                                    size="sm"
+                                                    className="min-w-[1rem]"
+                                                >
+                                                    <MoreVertical className="h-4 w-4" />
+                                                </Button>
+                                            </DropdownMenuTrigger>
+                                            <DropdownMenuContent align="end">
+                                                <DropdownMenuItem
                                                     onClick={() =>
                                                         handleOpenEditModal(
                                                             account
                                                         )
                                                     }
-                                                    className="p-2 text-primary/50 hover:text-primary hover:bg-primary/10 rounded transition-colors"
                                                 >
                                                     <Pencil className="w-4 h-4" />
-                                                </button>
-                                            </TooltipTrigger>
-                                            <TooltipContent>
-                                                Edit
-                                            </TooltipContent>
-                                        </Tooltip>
-                                        <Tooltip>
-                                            <TooltipTrigger asChild>
-                                                <button
+                                                    Edit
+                                                </DropdownMenuItem>
+
+                                                <DropdownMenuItem
                                                     onClick={() =>
                                                         setDeleteAccount(
                                                             account
                                                         )
                                                     }
-                                                    className="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
                                                 >
                                                     <Trash2 className="w-4 h-4" />
-                                                </button>
-                                            </TooltipTrigger>
-                                            <TooltipContent>
-                                                Delete
-                                            </TooltipContent>
-                                        </Tooltip>
+                                                    Delete
+                                                </DropdownMenuItem>
+                                            </DropdownMenuContent>
+                                        </DropdownMenu>
                                     </div>
                                 </TableCell>
                             </TableRow>

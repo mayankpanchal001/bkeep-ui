@@ -37,7 +37,7 @@ import {
     useRestoreContact,
 } from '../../services/apis/contactsApi';
 import { Contact, ContactsQueryParams } from '../../types/contact';
-import { FileUp } from 'lucide-react';
+import { FileUp, MoreVertical } from 'lucide-react';
 import ImportContactsDrawer from '../../components/contacts/ImportContactsDrawer';
 
 // Helper function to get contact initials
@@ -526,12 +526,12 @@ const ContactsPage = () => {
                                         <DropdownMenu>
                                             <DropdownMenuTrigger asChild>
                                                 <Button
-                                                    variant="ghost"
+                                                    variant="outline"
                                                     size="sm"
-                                                    className="h-8 w-8 p-0"
+                                                    className="min-w-[1rem]"
                                                     disabled={isRowActionBusy}
                                                 >
-                                                    <Icons.More className="w-4 h-4" />
+                                                    <MoreVertical className="w-4 h-4" />
                                                 </Button>
                                             </DropdownMenuTrigger>
                                             <DropdownMenuContent align="end">

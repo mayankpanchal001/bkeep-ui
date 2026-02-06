@@ -461,7 +461,7 @@ const Billspage = () => {
                         </TableHead>
                         <TableHead>OPEN BALANCE</TableHead>
                         <TableHead>STATUS</TableHead>
-                        <TableHead align="right">ACTION</TableHead>
+                        <TableHead align="center">ACTION</TableHead>
                     </tr>
                 </TableHeader>
                 <TableBody>
