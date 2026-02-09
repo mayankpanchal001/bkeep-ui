@@ -103,16 +103,23 @@ export function SidebarNavMain() {
                         const isReports = item.path === '/reports';
                         const baseChildren = isReports
                             ? [
-                                ...favLinks.map((f) => ({
-                                    label: f.label,
-                                    path: f.path,
-                                })),
-                                ...(item.children || []),
-                            ]
+                                  ...favLinks.map((f) => ({
+                                      label: f.label,
+                                      path: f.path,
+                                  })),
+                                  ...(item.children || []),
+                              ]
                             : item.children || [];
 
-                        const hasChildren = baseChildren && baseChildren.length > 0;
-                        const isGroupExpanded = isGroupActive({ ...item, children: baseChildren } as typeof item) || (isReports && baseChildren.some(c => isItemActive(c.path)));
+                        const hasChildren =
+                            baseChildren && baseChildren.length > 0;
+                        const isGroupExpanded =
+                            isGroupActive({
+                                ...item,
+                                children: baseChildren,
+                            } as typeof item) ||
+                            (isReports &&
+                                baseChildren.some((c) => isItemActive(c.path)));
 
                         if (hasChildren) {
                             const isHovered = hoveredItem === item.label;
@@ -157,19 +164,27 @@ export function SidebarNavMain() {
                                                     to={item.path || '#'}
                                                     onClick={() => {
                                                         if (isMobile)
-                                                            setOpenMobile(false);
+                                                            setOpenMobile(
+                                                                false
+                                                            );
                                                     }}
                                                 >
                                                     {item.icon}
-                                                    <span className="font-medium">{item.label}</span>
+                                                    <span className="font-medium">
+                                                        {item.label}
+                                                    </span>
                                                 </Link>
                                             </SidebarMenuButton>
                                             <CollapsibleTrigger asChild>
                                                 <SidebarMenuAction
                                                     className="hover:bg-sidebar-accent hover:text-sidebar-accent-foreground data-[state=open]:rotate-90 transition-transform duration-200"
                                                     showOnHover
-                                                    onMouseEnter={handleMouseEnter}
-                                                    onMouseLeave={handleMouseLeave}
+                                                    onMouseEnter={
+                                                        handleMouseEnter
+                                                    }
+                                                    onMouseLeave={
+                                                        handleMouseLeave
+                                                    }
                                                 >
                                                     <ChevronRight className="size-4" />
                                                 </SidebarMenuAction>
@@ -178,29 +193,50 @@ export function SidebarNavMain() {
                                         <CollapsibleContent>
                                             <SidebarMenuSub>
                                                 {baseChildren.map((child) => (
-                                                    <SidebarMenuSubItem key={child.label}>
+                                                    <SidebarMenuSubItem
+                                                        key={child.label}
+                                                    >
                                                         <SidebarMenuSubButton
                                                             asChild
                                                             isActive={
-                                                                child.path === item.path
-                                                                    ? location.pathname === child.path
-                                                                    : isItemActive(child.path)
+                                                                child.path ===
+                                                                item.path
+                                                                    ? location.pathname ===
+                                                                      child.path
+                                                                    : isItemActive(
+                                                                          child.path
+                                                                      )
                                                             }
                                                             className="data-[active=true]:bg-sidebar-accent data-[active=true]:text-sidebar-accent-foreground transition-colors duration-200"
                                                         >
                                                             <Link
-                                                                to={child.path || '#'}
+                                                                to={
+                                                                    child.path ||
+                                                                    '#'
+                                                                }
                                                                 onClick={() => {
-                                                                    if (isMobile)
-                                                                        setOpenMobile(false);
+                                                                    if (
+                                                                        isMobile
+                                                                    )
+                                                                        setOpenMobile(
+                                                                            false
+                                                                        );
                                                                 }}
                                                             >
-                                                                {'icon' in child && child.icon && (
-                                                                    <span className="mr-2 [&>svg]:size-4">
-                                                                        {child.icon}
-                                                                    </span>
-                                                                )}
-                                                                <span>{child.label}</span>
+                                                                {'icon' in
+                                                                    child &&
+                                                                    child.icon && (
+                                                                        <span className="mr-2 [&>svg]:size-4">
+                                                                            {
+                                                                                child.icon
+                                                                            }
+                                                                        </span>
+                                                                    )}
+                                                                <span>
+                                                                    {
+                                                                        child.label
+                                                                    }
+                                                                </span>
                                                             </Link>
                                                         </SidebarMenuSubButton>
                                                     </SidebarMenuSubItem>
@@ -227,7 +263,9 @@ export function SidebarNavMain() {
                                         }}
                                     >
                                         {item.icon}
-                                        <span className="font-medium">{item.label}</span>
+                                        <span className="font-medium">
+                                            {item.label}
+                                        </span>
                                     </Link>
                                 </SidebarMenuButton>
                             </SidebarMenuItem>

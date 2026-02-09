@@ -114,13 +114,13 @@ export function SidebarTenantSwitcher() {
                             <div className="grid flex-1 text-left text-sm leading-tight">
                                 <span className="truncate font-semibold text-sidebar-foreground">
                                     {selectedTenant?.name ||
-                                        `Select ${SINGLE_TENANT_PREFIX.charAt(
-                                            0
-                                        ).toUpperCase() +
-                                        SINGLE_TENANT_PREFIX.slice(1)
+                                        `Select ${
+                                            SINGLE_TENANT_PREFIX.charAt(
+                                                0
+                                            ).toUpperCase() +
+                                            SINGLE_TENANT_PREFIX.slice(1)
                                         }`}
                                 </span>
-
                             </div>
                             <ChevronsUpDown className="ml-auto size-4 text-muted-foreground" />
                         </SidebarMenuButton>
@@ -132,9 +132,10 @@ export function SidebarTenantSwitcher() {
                         sideOffset={4}
                     >
                         <DropdownMenuLabel className="text-xs text-muted-foreground">
-                            {`Switch ${SINGLE_TENANT_PREFIX.charAt(0).toUpperCase() +
+                            {`Switch ${
+                                SINGLE_TENANT_PREFIX.charAt(0).toUpperCase() +
                                 SINGLE_TENANT_PREFIX.slice(1)
-                                }`}
+                            }`}
                         </DropdownMenuLabel>
                         {tenants.map((tenant) => (
                             <DropdownMenuItem
