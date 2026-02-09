@@ -5,7 +5,7 @@
 @custom-variant dark (&:is(.dark *));
 
 /* Font Face Declarations */
-@font-face {
+/* @font-face {
     font-family: 'Frutiger';
     src: url('/fonts/Frutiger.ttf') format('truetype');
     font-weight: normal;
@@ -19,7 +19,7 @@
     font-weight: bold;
     font-style: normal;
     font-display: swap;
-}
+} */
 
 * {
     letter-spacing: 0.25px;
@@ -78,6 +78,7 @@
 
     /* Respect reduced motion preference */
     @media (prefers-reduced-motion: reduce) {
+
         *,
         *::before,
         *::after {

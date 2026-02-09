@@ -76,11 +76,9 @@ export const TenantStore = create<TenantState>((set, get) => ({
         const tenants = getInitialTenants();
         const storedSelected = getInitialSelectedTenant();
 
+        // Trust storedSelected if it exists, otherwise fall back to list logic
         const selected =
-            (storedSelected &&
-                tenants.find((tenant) => tenant.id === storedSelected.id)) ||
-            tenants[0] ||
-            null;
+            storedSelected || (tenants.length > 0 ? tenants[0] : null);
 
         set({
             tenants,

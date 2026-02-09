@@ -230,7 +230,7 @@ const Navbar = ({ onSearchClick, onShortcutsClick }: NavbarProps) => {
                                     'relative p-2 rounded-lg transition-all duration-200',
                                     'hover:bg-primary/10 text-primary/70 hover:text-primary',
                                     isNotificationsOpen &&
-                                        'bg-primary/10 text-primary'
+                                    'bg-primary/10 text-primary'
                                 )}
                                 aria-label="Notifications"
                             >
@@ -312,13 +312,13 @@ const Navbar = ({ onSearchClick, onShortcutsClick }: NavbarProps) => {
                                                         className={cn(
                                                             'flex items-center justify-center w-9 h-9 rounded-lg shrink-0',
                                                             notificationColors[
-                                                                n.type
+                                                            n.type
                                                             ]
                                                         )}
                                                     >
                                                         {
                                                             notificationIcons[
-                                                                n.type
+                                                            n.type
                                                             ]
                                                         }
                                                     </div>
@@ -402,7 +402,7 @@ const Navbar = ({ onSearchClick, onShortcutsClick }: NavbarProps) => {
                                             'relative p-2 rounded-lg transition-all duration-200',
                                             'hover:bg-primary/10 text-primary/70 hover:text-primary',
                                             isNotificationsOpen &&
-                                                'bg-primary/10 text-primary'
+                                            'bg-primary/10 text-primary'
                                         )}
                                         aria-label="Notifications"
                                     >
@@ -523,13 +523,13 @@ const Navbar = ({ onSearchClick, onShortcutsClick }: NavbarProps) => {
                                                         className={cn(
                                                             'flex items-center justify-center w-9 h-9 rounded-lg shrink-0',
                                                             notificationColors[
-                                                                n.type
+                                                            n.type
                                                             ]
                                                         )}
                                                     >
                                                         {
                                                             notificationIcons[
-                                                                n.type
+                                                            n.type
                                                             ]
                                                         }
                                                     </div>
