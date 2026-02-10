@@ -46,6 +46,7 @@ import {
     TableSelectAllCheckbox,
     TableSelectionToolbar,
 } from '@/components/ui/table';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import {
     dismissToast,
     showErrorToast,
@@ -961,42 +962,28 @@ const ChartOfAccountspage = () => {
                                 <div className="text-sm font-semibold text-primary mb-2">
                                     Account Types
                                 </div>
-                                <div className="flex flex-wrap gap-2">
-                                    {ACCOUNT_TYPE_OPTIONS.map((opt) => {
-                                        const active =
-                                            tempSelectedTypes.includes(
-                                                opt.value
-                                            );
-                                        return (
-                                            <Button
-                                                key={opt.value}
-                                                variant={
-                                                    active
-                                                        ? 'default'
-                                                        : 'outline'
-                                                }
-                                                size="sm"
-                                                onClick={() => {
-                                                    setTempSelectedTypes(
-                                                        (prev) =>
-                                                            active
-                                                                ? prev.filter(
-                                                                      (t) =>
-                                                                          t !==
-                                                                          opt.value
-                                                                  )
-                                                                : [
-                                                                      ...prev,
-                                                                      opt.value,
-                                                                  ]
-                                                    );
-                                                }}
-                                            >
-                                                {opt.label}
-                                            </Button>
-                                        );
-                                    })}
-                                </div>
+                                <ToggleGroup
+                                    type="multiple"
+                                    variant="outline"
+                                    value={tempSelectedTypes}
+                                    onValueChange={(vals) =>
+                                        setTempSelectedTypes(
+                                            vals as AccountType[]
+                                        )
+                                    }
+                                    className="flex-wrap justify-start gap-2"
+                                >
+                                    {ACCOUNT_TYPE_OPTIONS.map((opt) => (
+                                        <ToggleGroupItem
+                                            key={opt.value}
+                                            value={opt.value}
+                                            aria-label={opt.label}
+                                            className="h-8 px-3 text-xs"
+                                        >
+                                            {opt.label}
+                                        </ToggleGroupItem>
+                                    ))}
+                                </ToggleGroup>
                             </div>
 
                             {/* Detail Types */}
@@ -1004,72 +991,60 @@ const ChartOfAccountspage = () => {
                                 <div className="text-sm font-semibold text-primary mb-2">
                                     Detail Types
                                 </div>
-                                <div className="flex flex-wrap gap-2 max-h-40 overflow-y-auto pr-1 border rounded-md p-2 bg-muted/20">
-                                    {Object.entries(ACCOUNT_HIERARCHY)
-                                        .filter(
-                                            ([type]) =>
-                                                tempSelectedTypes.length ===
-                                                    0 ||
-                                                tempSelectedTypes.includes(
-                                                    type as AccountType
-                                                )
-                                        )
-                                        .flatMap(([, subs]) =>
-                                            subs.flatMap(
-                                                (sub) => sub.detailTypes
+                                <div className="max-h-40 overflow-y-auto pr-1 border rounded-md p-2 bg-muted/20">
+                                    <ToggleGroup
+                                        type="multiple"
+                                        variant="outline"
+                                        value={tempSelectedDetailTypes}
+                                        onValueChange={(vals) =>
+                                            setTempSelectedDetailTypes(
+                                                vals as AccountDetailType[]
                                             )
-                                        )
-                                        .reduce(
-                                            (acc, dt) => {
-                                                if (
-                                                    !acc.some(
-                                                        (x) =>
-                                                            x.value === dt.value
+                                        }
+                                        className="flex-wrap justify-start gap-2"
+                                    >
+                                        {Object.entries(ACCOUNT_HIERARCHY)
+                                            .filter(
+                                                ([type]) =>
+                                                    tempSelectedTypes.length ===
+                                                        0 ||
+                                                    tempSelectedTypes.includes(
+                                                        type as AccountType
                                                     )
-                                                ) {
-                                                    acc.push(dt);
-                                                }
-                                                return acc;
-                                            },
-                                            [] as {
-                                                value: AccountDetailType;
-                                                label: string;
-                                            }[]
-                                        )
-                                        .map((dt) => {
-                                            const active =
-                                                tempSelectedDetailTypes.includes(
-                                                    dt.value
-                                                );
-                                            return (
-                                                <Button
-                                                    key={dt.value}
-                                                    variant={
-                                                        active
-                                                            ? 'default'
-                                                            : 'outline'
+                                            )
+                                            .flatMap(([, subs]) =>
+                                                subs.flatMap(
+                                                    (sub) => sub.detailTypes
+                                                )
+                                            )
+                                            .reduce(
+                                                (acc, dt) => {
+                                                    if (
+                                                        !acc.some(
+                                                            (x) =>
+                                                                x.value ===
+                                                                dt.value
+                                                        )
+                                                    ) {
+                                                        acc.push(dt);
                                                     }
-                                                    size="sm"
-                                                    onClick={() => {
-                                                        setTempSelectedDetailTypes(
-                                                            (prev) =>
-                                                                active
-                                                                    ? prev.filter(
-                                                                          (v) =>
-                                                                              v !==
-                                                                              dt.value
-                                                                      )
-                                                                    : [
-                                                                          ...prev,
-                                                                          dt.value,
-                                                                      ]
-                                                        );
-                                                    }}
+                                                    return acc;
+                                                },
+                                                [] as {
+                                                    value: AccountDetailType;
+                                                    label: string;
+                                                }[]
+                                            )
+                                            .map((dt) => (
+                                                <ToggleGroupItem
+                                                    key={dt.value}
+                                                    value={dt.value}
+                                                    className="h-8 px-3 text-xs"
                                                 >
                                                     {dt.label}
-                                                </Button>
-                                            );
-                                        })}
+                                                </ToggleGroupItem>
+                                            ))}
+                                    </ToggleGroup>
                                 </div>
                             </div>
 
@@ -1078,37 +1053,36 @@ const ChartOfAccountspage = () => {
                                 <div className="text-sm font-semibold text-primary mb-2">
                                     Status
                                 </div>
-                                <div className="flex flex-wrap gap-2">
-                                    {(['Active', 'Inactive'] as const).map(
-                                        (s) => {
-                                            const active =
-                                                (tempIsActiveFilter ===
-                                                    'Active' &&
-                                                    s === 'Active') ||
-                                                (tempIsActiveFilter ===
-                                                    'Inactive' &&
-                                                    s === 'Inactive');
-                                            return (
-                                                <Button
-                                                    key={s}
-                                                    variant={
-                                                        active
-                                                            ? 'default'
-                                                            : 'outline'
-                                                    }
-                                                    size="sm"
-                                                    onClick={() => {
-                                                        setTempIsActiveFilter(
-                                                            active ? 'all' : s
-                                                        );
-                                                    }}
-                                                >
-                                                    {s}
-                                                </Button>
-                                            );
-                                        }
-                                    )}
-                                </div>
+                                <ToggleGroup
+                                    type="single"
+                                    variant="outline"
+                                    value={
+                                        tempIsActiveFilter === 'all'
+                                            ? ''
+                                            : tempIsActiveFilter
+                                    }
+                                    onValueChange={(val) =>
+                                        setTempIsActiveFilter(
+                                            val
+                                                ? (val as 'Active' | 'Inactive')
+                                                : 'all'
+                                        )
+                                    }
+                                    className="justify-start gap-2"
+                                >
+                                    <ToggleGroupItem
+                                        value="Active"
+                                        className="h-8 px-3 text-xs"
+                                    >
+                                        Active
+                                    </ToggleGroupItem>
+                                    <ToggleGroupItem
+                                        value="Inactive"
+                                        className="h-8 px-3 text-xs"
+                                    >
+                                        Inactive
+                                    </ToggleGroupItem>
+                                </ToggleGroup>
                             </div>
                         </div>
                     </div>
