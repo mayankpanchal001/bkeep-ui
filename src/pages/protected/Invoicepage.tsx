@@ -339,7 +339,7 @@ const Invoicepage = () => {
                                         </span>
                                     </TableCell>
                                     <TableCell align="right">
-                                        <span className="font-semibold text-foreground">
+                                        <span className="font-medium text-foreground">
                                             {currencyFormatter.format(
                                                 invoice.amount
                                             )}

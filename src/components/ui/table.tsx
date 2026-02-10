@@ -566,13 +566,8 @@ function TableHeader({ className, sticky = true, ...props }: TableHeaderProps) {
         <thead
             data-slot="table-header"
             className={cn(
-                sticky && 'sticky top-0 z-10',
-                // Modern gradient background using theme colors
-                'bg-background/95 backdrop-blur-md backdrop-saturate-150',
-                'border-b-2',
-                'border-border',
-                // Smooth transitions
-                'transition-all duration-200',
+                sticky &&
+                    'sticky top-0 z-10 bg-background/95 backdrop-blur-md backdrop-saturate-150 border-b-2 border-border transition-all duration-200',
                 // Shadow for better separation when scrolling
                 sticky && 'shadow-sm',
                 transposeOnMobile && 'hidden md:table-header-group',
@@ -766,11 +761,14 @@ function TableHead({
                 'relative align-middle',
                 isCompact ? 'h-7 px-1 py-0.5' : 'h-8 px-2 py-1',
                 // Modern typography with better hierarchy
-                'text-xs font-semibold uppercase tracking-wider',
+                'text-xs font-medium uppercase tracking-wider',
                 'text-muted-foreground',
-                'whitespace-nowrap select-none',
+                // Prevent shrinking and ensure proper spacing
+                'whitespace-nowrap select-none [&:not(:has([role=checkbox]))]:w-[180px] [&:not(:has([role=checkbox]))]:max-w-[180px] [&:not(:has([role=checkbox]))]:overflow-hidden [&:not(:has([role=checkbox]))]:text-ellipsis',
                 alignClass,
                 transposeOnMobile && 'hidden md:table-cell',
+                // Theme-aware background
+                'bg-muted/50 dark:bg-muted/20 border-b border-border/60 shadow-sm',
                 // Checkbox column styling
                 isCompact
                     ? '[&:has([role=checkbox])]:w-8 [&:has([role=checkbox])]:px-1 [&:has([role=checkbox])>div]:justify-center'
@@ -1110,7 +1108,7 @@ function TableSelectionToolbar({
             )}
         >
             <div className="flex items-center gap-3">
-                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground text-sm font-semibold">
+                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground text-sm font-medium">
                     {selectedCount}
                 </div>
                 <span className="text-sm font-medium text-foreground">

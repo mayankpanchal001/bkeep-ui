@@ -125,7 +125,7 @@ const Popup = ({
                         ) : title ? (
                             <h2
                                 id="popup-title"
-                                className="text-xl font-semibold text-primary"
+                                className="text-xl font-medium text-primary"
                             >
                                 {title}
                             </h2>

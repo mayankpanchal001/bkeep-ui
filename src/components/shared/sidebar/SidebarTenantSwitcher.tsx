@@ -112,7 +112,7 @@ export function SidebarTenantSwitcher() {
                                 />
                             </div>
                             <div className="grid flex-1 text-left text-sm leading-tight">
-                                <span className="truncate font-semibold text-sidebar-foreground">
+                                <span className="truncate font-medium text-sidebar-foreground">
                                     {selectedTenant?.name ||
                                         `Select ${
                                             SINGLE_TENANT_PREFIX.charAt(

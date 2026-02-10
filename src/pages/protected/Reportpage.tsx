@@ -437,7 +437,7 @@ const Reportpage = () => {
             {/* Favourites Section */}
             {favouriteItems.length > 0 && (
                 <div className="flex flex-col gap-4">
-                    <h2 className="text-sm font-semibold text-primary/70 uppercase tracking-wider flex items-center gap-2">
+                    <h2 className="text-sm font-medium text-primary/70 uppercase tracking-wider flex items-center gap-2">
                         <Star className="w-4 h-4 text-amber-500 fill-current" />
                         Favourites
                     </h2>
@@ -465,7 +465,7 @@ const Reportpage = () => {
                             <div className="p-2 bg-primary/10 rounded-lg text-primary">
                                 {category.icon}
                             </div>
-                            <h2 className="text-lg font-semibold text-primary">
+                            <h2 className="text-lg font-medium text-primary">
                                 {category.title}
                             </h2>
                         </div>
@@ -496,7 +496,7 @@ const Reportpage = () => {
                         <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/5 mb-4">
                             <Search className="w-8 h-8 text-primary/40" />
                         </div>
-                        <h3 className="text-lg font-semibold text-primary mb-2">
+                        <h3 className="text-lg font-medium text-primary mb-2">
                             No reports found
                         </h3>
                         <p className="text-sm text-primary/60">

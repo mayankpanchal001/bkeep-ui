@@ -334,7 +334,7 @@ const ImportChartOfAccountsDrawer = ({
         >
             <DrawerContent className="h-[100vh] max-h-[100vh] mt-0 rounded-none bg-card flex flex-col">
                 <DrawerHeader className="flex flex-row items-center justify-between px-6 py-4 border-b border-primary/10">
-                    <DrawerTitle className="text-xl font-semibold text-primary">
+                    <DrawerTitle className="text-xl font-medium text-primary">
                         {step === 'select'
                             ? 'Import Chart of Accounts'
                             : step === 'template'
@@ -360,7 +360,7 @@ const ImportChartOfAccountsDrawer = ({
                     {step === 'select' ? (
                         <div className="space-y-6 py-8">
                             <div className="text-center flex flex-col gap-2 mb-8">
-                                <p className="text-lg font-semibold text-primary">
+                                <p className="text-lg font-medium text-primary">
                                     Choose Import Method
                                 </p>
                                 <p className="text-sm text-primary/50">
@@ -381,7 +381,7 @@ const ImportChartOfAccountsDrawer = ({
                                     <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-3 group-hover:bg-primary/20">
                                         <FileSpreadsheet className="w-6 h-6 text-primary" />
                                     </div>
-                                    <h3 className="text-base font-semibold text-primary mb-2">
+                                    <h3 className="text-base font-medium text-primary mb-2">
                                         Import from Template
                                     </h3>
                                     <p className="text-xs text-primary/50 text-center">
@@ -399,7 +399,7 @@ const ImportChartOfAccountsDrawer = ({
                                     <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-3 group-hover:bg-primary/20">
                                         <Upload className="w-6 h-6 text-primary" />
                                     </div>
-                                    <h3 className="text-base font-semibold text-primary mb-2">
+                                    <h3 className="text-base font-medium text-primary mb-2">
                                         Import from File
                                     </h3>
                                     <p className="text-xs text-primary/50 text-center">

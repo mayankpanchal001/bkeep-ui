@@ -74,7 +74,7 @@ export default function FeaturesSection() {
             <div className="mx-auto max-w-7xl px-6 lg:px-8">
                 {/* Section header */}
                 <div className="mx-auto max-w-2xl text-center">
-                    <p className="mb-4 text-sm font-semibold uppercase tracking-wider text-primary">
+                    <p className="mb-4 text-sm font-medium uppercase tracking-wider text-primary">
                         Features
                     </p>
                     <h2 className="mb-6 text-3xl font-bold tracking-tight text-foreground sm:text-4xl md:text-5xl">
@@ -203,7 +203,7 @@ export default function FeaturesSection() {
                                     <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary transition-colors group-hover:bg-primary/20">
                                         <Icon className="h-6 w-6" />
                                     </div>
-                                    <h4 className="mb-2 font-semibold text-foreground">
+                                    <h4 className="mb-2 font-medium text-foreground">
                                         {item.title}
                                     </h4>
                                     <p className="text-sm text-muted-foreground">
@@ -254,7 +254,7 @@ function TransactionMockup() {
                         </p>
                     </div>
                     <div className="text-right">
-                        <p className="font-semibold text-foreground">
+                        <p className="font-medium text-foreground">
                             {tx.amount}
                         </p>
                         <span className="inline-flex items-center gap-1 text-xs text-green-600 dark:text-green-400">
@@ -272,7 +272,7 @@ function JournalMockup() {
     return (
         <div className="space-y-4 rounded-lg border border-border bg-background p-6">
             <div className="flex items-center justify-between border-b border-border pb-3">
-                <h4 className="font-semibold text-foreground">
+                <h4 className="font-medium text-foreground">
                     Journal Entry #1024
                 </h4>
                 <span className="rounded-full bg-green-500/10 px-2.5 py-1 text-xs font-medium text-green-600 dark:text-green-400">
@@ -291,9 +291,7 @@ function JournalMockup() {
                     <span className="font-medium text-foreground">Revenue</span>
                 </div>
                 <div className="mt-3 flex justify-between border-t border-border pt-2">
-                    <span className="font-semibold text-foreground">
-                        Amount:
-                    </span>
+                    <span className="font-medium text-foreground">Amount:</span>
                     <span className="font-bold text-foreground">$5,240.00</span>
                 </div>
             </div>
@@ -305,7 +303,7 @@ function ReportMockup() {
     return (
         <div className="space-y-4">
             <div className="rounded-lg border border-border bg-background p-6">
-                <h4 className="mb-4 text-lg font-semibold text-foreground">
+                <h4 className="mb-4 text-lg font-medium text-foreground">
                     Income Statement
                 </h4>
                 <div className="space-y-3 text-sm">
@@ -322,7 +320,7 @@ function ReportMockup() {
                         </span>
                     </div>
                     <div className="flex justify-between border-t border-border pt-3">
-                        <span className="font-semibold text-foreground">
+                        <span className="font-medium text-foreground">
                             Net Income
                         </span>
                         <span className="font-bold text-green-600 dark:text-green-400">
@@ -370,7 +368,7 @@ function MultiCompanyMockup() {
                             </p>
                         </div>
                     </div>
-                    <p className="font-semibold text-foreground">
+                    <p className="font-medium text-foreground">
                         {company.balance}
                     </p>
                 </div>

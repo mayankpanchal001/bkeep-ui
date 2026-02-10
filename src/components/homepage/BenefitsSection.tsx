@@ -4,10 +4,10 @@ export default function BenefitsSection() {
     return (
         <section id="benefits" className="mx-auto max-w-6xl px-6 py-20">
             <div className="flex flex-col gap-4 text-center">
-                <p className="text-xs font-semibold uppercase tracking-[0.45em] text-muted-foreground">
+                <p className="text-xs font-medium uppercase tracking-[0.45em] text-muted-foreground">
                     Modern accounting starts here
                 </p>
-                <h2 className="text-3xl font-semibold text-foreground sm:text-4xl">
+                <h2 className="text-3xl font-medium text-foreground sm:text-4xl">
                     Control every ledger—transactions, journals, invoices—in one
                     platform.
                 </h2>
@@ -25,13 +25,13 @@ export default function BenefitsSection() {
                         <span className="text-[11px] uppercase tracking-[0.35em] text-muted-foreground">
                             {feature.metric}
                         </span>
-                        <h3 className="mt-3 text-xl font-semibold text-foreground">
+                        <h3 className="mt-3 text-xl font-medium text-foreground">
                             {feature.title}
                         </h3>
                         <p className="mt-2 text-sm text-muted-foreground">
                             {feature.description}
                         </p>
-                        <button className="mt-6 text-sm font-semibold text-primary transition hover:text-foreground">
+                        <button className="mt-6 text-sm font-medium text-primary transition hover:text-foreground">
                             Learn more →
                         </button>
                     </div>

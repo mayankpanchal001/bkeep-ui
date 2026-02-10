@@ -412,7 +412,7 @@ const ClientReviewpage = () => {
                                                 <div className="text-right shrink-0">
                                                     <div
                                                         className={cn(
-                                                            'font-semibold flex items-center gap-1 justify-end',
+                                                            'font-medium flex items-center gap-1 justify-end',
                                                             transaction.amount <
                                                                 0
                                                                 ? 'text-red-600'

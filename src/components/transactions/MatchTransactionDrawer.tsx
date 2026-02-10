@@ -248,7 +248,7 @@ export function MatchTransactionDrawer({
                 {/* Header */}
                 <SheetHeader className="flex flex-row items-center justify-between border-b px-6 py-4">
                     <div className="flex items-center gap-4 pr-8">
-                        <SheetTitle className="text-lg font-semibold">
+                        <SheetTitle className="text-lg font-medium">
                             Find other matches
                         </SheetTitle>
                         <a

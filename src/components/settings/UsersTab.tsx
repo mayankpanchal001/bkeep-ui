@@ -240,7 +240,7 @@ const UsersTab = () => {
                 <div className="w-16 h-16 rounded-full bg-destructive/10 flex items-center justify-center mb-4">
                     <Icons.Close className="w-8 h-8 text-destructive" />
                 </div>
-                <h3 className="text-lg font-semibold text-primary mb-2">
+                <h3 className="text-lg font-medium text-primary mb-2">
                     Failed to load users
                 </h3>
                 <p className="text-sm text-primary/60 text-center max-w-md">
@@ -371,7 +371,7 @@ const UsersTab = () => {
                 <div className="flex flex-col gap-4">
                     <div className="flex items-center justify-between">
                         <div>
-                            <h3 className="text-lg font-semibold text-primary">
+                            <h3 className="text-lg font-medium text-primary">
                                 Pending Invitations
                             </h3>
                             <p className="text-sm text-primary/60 mt-1">
@@ -457,7 +457,7 @@ const UsersTab = () => {
                                                     </TableCell>
                                                     <TableCell>
                                                         <div className="flex items-center gap-3">
-                                                            <div className="w-8 h-8 rounded-full bg-secondary/20 flex items-center justify-center text-xs font-semibold text-secondary">
+                                                            <div className="w-8 h-8 rounded-full bg-secondary/20 flex items-center justify-center text-xs font-medium text-secondary">
                                                                 {getUserInitials(
                                                                     invitation.userName
                                                                 )}
@@ -575,7 +575,7 @@ const UsersTab = () => {
             <div className="flex flex-col gap-4">
                 <div className="flex items-center justify-between">
                     <div>
-                        <h3 className="text-lg font-semibold text-primary">
+                        <h3 className="text-lg font-medium text-primary">
                             All Users
                         </h3>
                         <p className="text-sm text-primary/60 mt-1">
@@ -662,7 +662,7 @@ const UsersTab = () => {
                                     </TableCell>
                                     <TableCell>
                                         <div className="flex items-center gap-3">
-                                            <div className="w-9 h-9 rounded-full bg-linear-to-br from-secondary/30 to-primary/30 flex items-center justify-center text-sm font-semibold text-primary">
+                                            <div className="w-9 h-9 rounded-full bg-linear-to-br from-secondary/30 to-primary/30 flex items-center justify-center text-sm font-medium text-primary">
                                                 {getUserInitials(user.name)}
                                             </div>
                                             <div className="flex flex-col">

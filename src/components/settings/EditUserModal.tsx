@@ -131,7 +131,7 @@ const EditUserModal = ({ isOpen, onClose, user }: EditUserModalProps) => {
         >
             <div className="w-full max-w-2xl rounded bg-card p-4  max-h-[90vh] overflow-y-auto">
                 <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-2xl font-semibold text-primary">
+                    <h2 className="text-2xl font-medium text-primary">
                         Edit User
                     </h2>
                     <button
@@ -147,7 +147,7 @@ const EditUserModal = ({ isOpen, onClose, user }: EditUserModalProps) => {
                 <form onSubmit={handleSubmit} className="space-y-6">
                     {/* User Information */}
                     <div>
-                        <h3 className="text-lg font-semibold text-primary mb-4">
+                        <h3 className="text-lg font-medium text-primary mb-4">
                             User Information
                         </h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

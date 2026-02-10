@@ -133,7 +133,7 @@ const CommandPalette = ({
                         onChange={(e) => setQuery(e.target.value)}
                     />
                     <div className="hidden sm:flex items-center gap-1">
-                        <kbd className="px-2 py-1 text-xs font-semibold text-primary/50 bg-card rounded border border-primary/10">
+                        <kbd className="px-2 py-1 text-xs font-medium text-primary/50 bg-card rounded border border-primary/10">
                             ESC
                         </kbd>
                     </div>

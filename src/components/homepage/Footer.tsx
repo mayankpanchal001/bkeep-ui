@@ -81,7 +81,7 @@ export default function Footer() {
                     {/* Navigation Links */}
                     {footerLinks.map((column) => (
                         <div key={column.title} className="flex flex-col gap-4">
-                            <h3 className="text-sm font-semibold text-foreground">
+                            <h3 className="text-sm font-medium text-foreground">
                                 {column.title}
                             </h3>
                             <ul className="space-y-3">
@@ -101,7 +101,7 @@ export default function Footer() {
 
                     {/* Newsletter Section */}
                     <div className="flex flex-col gap-4 xl:col-span-1 lg:col-span-4 md:col-span-2">
-                        <h3 className="text-sm font-semibold text-foreground">
+                        <h3 className="text-sm font-medium text-foreground">
                             Stay updated
                         </h3>
                         <p className="text-sm text-muted-foreground">

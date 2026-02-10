@@ -30,7 +30,7 @@ const detectOS = (): OSKind => {
 };
 
 const KeyCap = ({ label }: { label: string }) => (
-    <kbd className="px-2 py-1 text-xs font-semibold text-primary/70 bg-card dark:bg-muted rounded-md border border-primary/10 ">
+    <kbd className="px-2 py-1 text-xs font-medium text-primary/70 bg-card dark:bg-muted rounded-md border border-primary/10 ">
         {label}
     </kbd>
 );
@@ -197,7 +197,7 @@ export default function KeyboardShortcuts({
                                 );
                                 return (
                                     <div key={sec.id}>
-                                        <div className="text-xs font-semibold text-primary/60 mb-2">
+                                        <div className="text-xs font-medium text-primary/60 mb-2">
                                             {sec.title}
                                         </div>
                                         {matches.length === 0 ? (

@@ -156,7 +156,7 @@ const IncomeStatementpage = () => {
 
             {/* Income Statement Table */}
             <div className="bg-card rounded  border border-primary/10 p-4">
-                <h3 className="text-lg font-semibold text-primary mb-4">
+                <h3 className="text-lg font-medium text-primary mb-4">
                     Detailed Income Statement
                 </h3>
                 <IncomeStatementTable />

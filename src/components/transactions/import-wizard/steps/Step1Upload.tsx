@@ -16,7 +16,7 @@ export function Step1Upload() {
         <div className="space-y-6">
             {/* Header */}
             <div>
-                <h2 className="text-lg font-semibold text-primary">
+                <h2 className="text-lg font-medium text-primary">
                     Upload your file
                 </h2>
                 <p className="text-sm text-muted-foreground mt-1">

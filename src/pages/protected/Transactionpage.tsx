@@ -49,6 +49,9 @@ const Transactionpage = () => {
     const filterStore = useTransactionsFilterStore();
     const [selectedItems, setSelectedItems] = useState<(string | number)[]>([]);
 
+    // Local state for debounced search
+    const [localSearch, setLocalSearch] = useState(filterStore.search || '');
+
     // Select individual filter values to make them reactive
     const page = useTransactionsFilterStore((state) => state.page);
     const limit = useTransactionsFilterStore((state) => state.limit);
@@ -80,6 +83,24 @@ const Transactionpage = () => {
     const order = useTransactionsFilterStore((state) => state.order);
 
     const itemsPerPage = limit;
+
+    // Sync local search with store on mount or external change
+    useEffect(() => {
+        setLocalSearch(filterStore.search || '');
+    }, [filterStore.search]);
+
+    // Debounce search update to store
+    useEffect(() => {
+        const handler = setTimeout(() => {
+            if (localSearch !== filterStore.search) {
+                filterStore.setSearch(localSearch);
+            }
+        }, 500);
+
+        return () => {
+            clearTimeout(handler);
+        };
+    }, [localSearch, filterStore]);
 
     // Fetch contacts data first (needed for supplier filter conversion)
     const { data: contactsData } = useContacts({
@@ -353,10 +374,8 @@ const Transactionpage = () => {
                 <div className="sm:ml-auto flex items-center gap-3 flex-wrap">
                     <div className="relative w-full sm:w-[260px]">
                         <Input
-                            value={filterStore.search}
-                            onChange={(e) =>
-                                filterStore.setSearch(e.target.value)
-                            }
+                            value={localSearch}
+                            onChange={(e) => setLocalSearch(e.target.value)}
                             placeholder="Search"
                             startIcon={<Search className="w-4 h-4" />}
                         />

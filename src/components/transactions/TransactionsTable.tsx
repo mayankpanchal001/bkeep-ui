@@ -190,18 +190,24 @@ export const TransactionsTable = ({
                         <TableHead sortable sortKey="date">
                             Date
                         </TableHead>
-                        <TableHead>Bank Description</TableHead>
-                        <TableHead sortable sortKey="spent">
+                        <TableHead sortable sortKey="description">
+                            Bank Description
+                        </TableHead>
+                        <TableHead sortable sortKey="amount">
                             Spent
                         </TableHead>
-                        <TableHead sortable sortKey="received">
+                        <TableHead sortable sortKey="amount">
                             Received
                         </TableHead>
-                        <TableHead sortable sortKey="tax">
+                        <TableHead sortable sortKey="taxId">
                             Tax
                         </TableHead>
-                        <TableHead>From/To</TableHead>
-                        <TableHead>Category</TableHead>
+                        <TableHead sortable sortKey="contactId">
+                            From/To
+                        </TableHead>
+                        <TableHead sortable sortKey="category">
+                            Category
+                        </TableHead>
                         <TableHead className="w-[1%] whitespace-nowrap">
                             Action
                         </TableHead>
@@ -236,12 +242,12 @@ export const TransactionsTable = ({
                                     </div>
                                 </TableCell>
                                 <TableCell data-label="Spent">
-                                    <span className="text-red-600 font-semibold">
+                                    <span className="text-red-600 font-medium">
                                         {t.spent ? `-${currency(t.spent)}` : ''}
                                     </span>
                                 </TableCell>
                                 <TableCell data-label="Received">
-                                    <span className="text-green-600 font-semibold">
+                                    <span className="text-green-600 font-medium">
                                         {t.received
                                             ? `+${currency(t.received)}`
                                             : ''}

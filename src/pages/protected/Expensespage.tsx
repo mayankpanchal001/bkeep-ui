@@ -20,12 +20,12 @@ import {
 } from '@/components/ui/table';
 import {
     Filter,
+    MoreVertical,
     Pencil,
     Receipt,
     Search,
     Tag,
     Trash2,
-    MoreVertical,
 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -274,7 +274,7 @@ const Expensespage = () => {
                                     </span>
                                 </TableCell>
                                 <TableCell align="right">
-                                    <span className="font-semibold text-primary">
+                                    <span className="font-medium text-primary">
                                         {currencyFormatter.format(
                                             expense.amount
                                         )}
@@ -325,7 +325,7 @@ const Expensespage = () => {
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4">
                     <div className="w-full max-w-2xl rounded bg-card p-4 max-h-[90vh] overflow-y-auto">
                         <div className="flex items-center justify-between mb-4">
-                            <h3 className="text-xl font-semibold text-primary">
+                            <h3 className="text-xl font-medium text-primary">
                                 Add New Expense
                             </h3>
                             <button

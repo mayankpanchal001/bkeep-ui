@@ -67,7 +67,7 @@ const ProfileTab = ({
                 <div className="flex items-center justify-between gap-6">
                     <div className="flex items-center gap-6">
                         <div className="flex h-16 w-16 items-center justify-center rounded-full border border-primary/10 bg-primary/10 text-primary">
-                            <span className="text-xl font-semibold">
+                            <span className="text-xl font-medium">
                                 {getInitials(
                                     formData.name || user?.name || 'User'
                                 )}

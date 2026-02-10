@@ -148,7 +148,7 @@ const TOTPSetupModal = ({
         >
             <div className="w-full max-w-2xl rounded bg-card p-4  max-h-[90vh] overflow-y-auto">
                 <div className="flex items-center justify-between mb-6">
-                    <h3 className="text-xl font-semibold text-primary">
+                    <h3 className="text-xl font-medium text-primary">
                         {step === 'setup'
                             ? 'Setup Authenticator App'
                             : 'Verify Setup'}
@@ -166,7 +166,7 @@ const TOTPSetupModal = ({
                     <div className="space-y-6">
                         {/* Instructions */}
                         <div className="bg-blue-50 border border-blue-200 rounded p-4">
-                            <h4 className="font-semibold text-blue-900 mb-2 flex items-center gap-2">
+                            <h4 className="font-medium text-blue-900 mb-2 flex items-center gap-2">
                                 <FaQrcode className="w-4 h-4" />
                                 Step 1: Scan QR Code
                             </h4>
@@ -188,7 +188,7 @@ const TOTPSetupModal = ({
 
                         {/* Manual Setup */}
                         <div className="bg-card border border-primary/10 rounded p-4">
-                            <h4 className="font-semibold text-primary mb-3 flex items-center gap-2">
+                            <h4 className="font-medium text-primary mb-3 flex items-center gap-2">
                                 <FaKey className="w-4 h-4" />
                                 Can't scan? Enter manually
                             </h4>
@@ -220,7 +220,7 @@ const TOTPSetupModal = ({
 
                         {/* Backup Codes */}
                         <div className="bg-yellow-50 border border-yellow-200 rounded p-4">
-                            <h4 className="font-semibold text-yellow-900 mb-2">
+                            <h4 className="font-medium text-yellow-900 mb-2">
                                 Save Your Backup Codes
                             </h4>
                             <p className="text-sm text-yellow-800 mb-3">
@@ -299,7 +299,7 @@ const TOTPSetupModal = ({
                     <form onSubmit={handleVerify} className="space-y-6">
                         {/* Verification Instructions */}
                         <div className="bg-blue-50 border border-blue-200 rounded p-4">
-                            <h4 className="font-semibold text-blue-900 mb-2">
+                            <h4 className="font-medium text-blue-900 mb-2">
                                 Step 2: Verify Your Setup
                             </h4>
                             <p className="text-sm text-blue-800">

@@ -76,7 +76,7 @@ const ExpensePieChart = ({ data }: ExpensePieChartProps) => {
                                 <div className="rounded-lg border border-border/50 bg-card p-3 ">
                                     <div className="grid gap-2">
                                         <div className="flex items-center justify-between gap-4">
-                                            <span className="font-semibold">
+                                            <span className="font-medium">
                                                 {data.name as string}
                                             </span>
                                         </div>
