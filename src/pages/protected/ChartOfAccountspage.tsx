@@ -215,21 +215,46 @@ const ChartOfAccountspage = () => {
             allAccounts = allAccounts.filter((a) => a.isActive === wantActive);
         }
 
-        if (!q) return allAccounts;
+        let filtered = allAccounts;
 
-        return allAccounts.filter((account) => {
-            const haystack = [
-                account.accountName,
-                account.accountNumber,
-                account.description,
-                account.accountType,
-                account.accountDetailType,
-            ]
-                .filter(Boolean)
-                .join(' ')
-                .toLowerCase();
+        if (q) {
+            filtered = allAccounts.filter((account) => {
+                const haystack = [
+                    account.accountName,
+                    account.accountNumber,
+                    account.description,
+                    account.accountType,
+                    account.accountDetailType,
+                ]
+                    .filter(Boolean)
+                    .join(' ')
+                    .toLowerCase();
 
-            return haystack.includes(q);
+                return haystack.includes(q);
+            });
+        }
+
+        // --- Custom Sorting ---
+        // Desired order: Assets, Liabilities, Equity, Income, Expenses
+        const typeOrder: Record<string, number> = {
+            asset: 1,
+            liability: 2,
+            equity: 3,
+            income: 4,
+            expense: 5,
+        };
+
+        // We sort a copy to avoid mutating the original array if it came from cache
+        return [...filtered].sort((a, b) => {
+            const orderA = typeOrder[a.accountType] || 99;
+            const orderB = typeOrder[b.accountType] || 99;
+
+            if (orderA !== orderB) {
+                return orderA - orderB;
+            }
+
+            // Secondary sort: Alphabetical by Name
+            return a.accountName.localeCompare(b.accountName);
         });
     }, [data, searchQuery, selectedTypes, selectedDetailTypes, isActiveFilter]);
 
