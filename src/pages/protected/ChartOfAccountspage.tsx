@@ -31,11 +31,11 @@ import {
     TableHead,
     TableHeader,
     TableLoadingState,
+    TablePagination,
     TableRow,
     TableRowCheckbox,
     TableSelectAllCheckbox,
     TableSelectionToolbar,
-    TablePagination,
 } from '@/components/ui/table';
 import {
     FileUp,
@@ -138,6 +138,17 @@ const ChartOfAccountspage = () => {
     );
     const [selectedItems, setSelectedItems] = useState<(string | number)[]>([]);
     const [isFilterOpen, setIsFilterOpen] = useState(false);
+
+    // Temporary filter state (before Apply)
+    const [tempSelectedTypes, setTempSelectedTypes] = useState<AccountType[]>(
+        []
+    );
+    const [tempSelectedDetailTypes, setTempSelectedDetailTypes] = useState<
+        AccountDetailType[]
+    >([]);
+    const [tempIsActiveFilter, setTempIsActiveFilter] = useState<
+        'all' | 'Active' | 'Inactive'
+    >('all');
     const [isActiveFilter, setIsActiveFilter] = useState<
         'all' | 'Active' | 'Inactive'
     >('all');
@@ -390,6 +401,38 @@ const ChartOfAccountspage = () => {
         setSelectedItems([]);
     };
 
+    const handleClearAllFilters = () => {
+        setSelectedTypes([]);
+        setSelectedDetailTypes([]);
+        setIsActiveFilter('all');
+    };
+
+    const hasActiveFilters =
+        selectedTypes.length > 0 ||
+        selectedDetailTypes.length > 0 ||
+        isActiveFilter !== 'all';
+
+    const handleOpenFilters = () => {
+        // Copy current filters to temp state
+        setTempSelectedTypes(selectedTypes);
+        setTempSelectedDetailTypes(selectedDetailTypes);
+        setTempIsActiveFilter(isActiveFilter);
+        setIsFilterOpen(true);
+    };
+
+    const handleApplyFilters = () => {
+        setSelectedTypes(tempSelectedTypes);
+        setSelectedDetailTypes(tempSelectedDetailTypes);
+        setIsActiveFilter(tempIsActiveFilter);
+        setIsFilterOpen(false);
+    };
+
+    const handleClearTempFilters = () => {
+        setTempSelectedTypes([]);
+        setTempSelectedDetailTypes([]);
+        setTempIsActiveFilter('all');
+    };
+
     return (
         <div className="h-full flex flex-col gap-4">
             {/* Filters and Search */}
@@ -429,10 +472,18 @@ const ChartOfAccountspage = () => {
                     </Select>
                 </div>
                 <div className="flex items-center gap-3">
-                    <Button
-                        onClick={() => setIsFilterOpen(true)}
-                        variant="outline"
-                    >
+                    {hasActiveFilters && (
+                        <Button
+                            onClick={handleClearAllFilters}
+                            variant="outline"
+                            size="sm"
+                            className="text-muted-foreground hover:text-primary"
+                        >
+                            <X size={16} className="mr-2" />
+                            Clear filters
+                        </Button>
+                    )}
+                    <Button onClick={handleOpenFilters} variant="outline">
                         <Filter size={16} className="mr-2" /> Filters
                     </Button>
                     <Button onClick={handleImportClick} variant="outline">
@@ -666,9 +717,10 @@ const ChartOfAccountspage = () => {
                                 </div>
                                 <div className="flex flex-wrap gap-2">
                                     {ACCOUNT_TYPE_OPTIONS.map((opt) => {
-                                        const active = selectedTypes.includes(
-                                            opt.value
-                                        );
+                                        const active =
+                                            tempSelectedTypes.includes(
+                                                opt.value
+                                            );
                                         return (
                                             <Button
                                                 key={opt.value}
@@ -679,17 +731,18 @@ const ChartOfAccountspage = () => {
                                                 }
                                                 size="sm"
                                                 onClick={() => {
-                                                    setSelectedTypes((prev) =>
-                                                        active
-                                                            ? prev.filter(
-                                                                  (t) =>
-                                                                      t !==
-                                                                      opt.value
-                                                              )
-                                                            : [
-                                                                  ...prev,
-                                                                  opt.value,
-                                                              ]
+                                                    setTempSelectedTypes(
+                                                        (prev) =>
+                                                            active
+                                                                ? prev.filter(
+                                                                      (t) =>
+                                                                          t !==
+                                                                          opt.value
+                                                                  )
+                                                                : [
+                                                                      ...prev,
+                                                                      opt.value,
+                                                                  ]
                                                     );
                                                 }}
                                             >
@@ -707,8 +760,9 @@ const ChartOfAccountspage = () => {
                                     {Object.entries(ACCOUNT_HIERARCHY)
                                         .filter(
                                             ([type]) =>
-                                                selectedTypes.length === 0 ||
-                                                selectedTypes.includes(
+                                                tempSelectedTypes.length ===
+                                                    0 ||
+                                                tempSelectedTypes.includes(
                                                     type as AccountType
                                                 )
                                         )
@@ -736,7 +790,7 @@ const ChartOfAccountspage = () => {
                                         )
                                         .map((dt) => {
                                             const active =
-                                                selectedDetailTypes.includes(
+                                                tempSelectedDetailTypes.includes(
                                                     dt.value
                                                 );
                                             return (
@@ -749,7 +803,7 @@ const ChartOfAccountspage = () => {
                                                     }
                                                     size="sm"
                                                     onClick={() => {
-                                                        setSelectedDetailTypes(
+                                                        setTempSelectedDetailTypes(
                                                             (prev) =>
                                                                 active
                                                                     ? prev.filter(
@@ -778,9 +832,10 @@ const ChartOfAccountspage = () => {
                                     {(['Active', 'Inactive'] as const).map(
                                         (s) => {
                                             const active =
-                                                (isActiveFilter === 'Active' &&
+                                                (tempIsActiveFilter ===
+                                                    'Active' &&
                                                     s === 'Active') ||
-                                                (isActiveFilter ===
+                                                (tempIsActiveFilter ===
                                                     'Inactive' &&
                                                     s === 'Inactive');
                                             return (
@@ -793,7 +848,7 @@ const ChartOfAccountspage = () => {
                                                     }
                                                     size="sm"
                                                     onClick={() => {
-                                                        setIsActiveFilter(
+                                                        setTempIsActiveFilter(
                                                             active ? 'all' : s
                                                         );
                                                     }}
@@ -810,24 +865,20 @@ const ChartOfAccountspage = () => {
                             <Button
                                 type="button"
                                 variant={
-                                    selectedTypes.length === 0 &&
-                                    selectedDetailTypes.length === 0 &&
-                                    isActiveFilter === 'all'
+                                    tempSelectedTypes.length === 0 &&
+                                    tempSelectedDetailTypes.length === 0 &&
+                                    tempIsActiveFilter === 'all'
                                         ? 'default'
                                         : 'outline'
                                 }
-                                onClick={() => {
-                                    setSelectedTypes([]);
-                                    setSelectedDetailTypes([]);
-                                    setIsActiveFilter('all');
-                                }}
+                                onClick={handleClearTempFilters}
                             >
                                 Clear
                             </Button>
                             <Button
                                 type="button"
                                 variant="default"
-                                onClick={() => setIsFilterOpen(false)}
+                                onClick={handleApplyFilters}
                             >
                                 Apply
                             </Button>
