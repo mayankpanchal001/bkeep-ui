@@ -164,6 +164,10 @@ const ChartOfAccountspage = () => {
     // Import State
     const [showImportDrawer, setShowImportDrawer] = useState(false);
 
+    // Sorting State
+    const [sortKey, setSortKey] = useState<string | null>(null);
+    const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
+
     // Form state
     const [formData, setFormData] = useState<CreateChartOfAccountPayload>({
         accountNumber: '',
@@ -234,48 +238,116 @@ const ChartOfAccountspage = () => {
             allAccounts = allAccounts.filter((a) => a.isActive === wantActive);
         }
 
+        // Optional client-side search
         let filtered = allAccounts;
+        if (q && q.length > 0) {
+            filtered = filtered.filter(
+                (a) =>
+                    a.accountName?.toLowerCase().includes(q) ||
+                    a.description?.toLowerCase().includes(q) ||
+                    a.accountNumber?.toLowerCase().includes(q) ||
+                    a.accountType?.toLowerCase().includes(q) ||
+                    a.accountDetailType?.toLowerCase().includes(q)
+            );
+        }
 
-        if (q) {
-            filtered = allAccounts.filter((account) => {
-                const haystack = [
-                    account.accountName,
-                    account.accountNumber,
-                    account.description,
-                    account.accountType,
-                    account.accountDetailType,
-                ]
-                    .filter(Boolean)
-                    .join(' ')
-                    .toLowerCase();
+        // Apply sorting if sortKey is set
+        if (sortKey) {
+            filtered = [...filtered].sort((a, b) => {
+                let aValue: string | number;
+                let bValue: string | number;
 
-                return haystack.includes(q);
+                switch (sortKey) {
+                    case 'accountNumber':
+                        aValue = a.accountNumber || '';
+                        bValue = b.accountNumber || '';
+                        break;
+                    case 'accountName':
+                        aValue = a.accountName.toLowerCase();
+                        bValue = b.accountName.toLowerCase();
+                        break;
+                    case 'accountType': {
+                        // Sort by the hierarchy label
+                        const getTypeLabel = (account: ChartOfAccount) => {
+                            const subtypes =
+                                ACCOUNT_HIERARCHY[account.accountType];
+                            if (subtypes) {
+                                for (const subtype of subtypes) {
+                                    if (
+                                        subtype.detailTypes.some(
+                                            (d) =>
+                                                d.value ===
+                                                account.accountDetailType
+                                        )
+                                    ) {
+                                        return subtype.label;
+                                    }
+                                }
+                            }
+                            return ACCOUNT_TYPE_DISPLAY[account.accountType];
+                        };
+                        aValue = getTypeLabel(a).toLowerCase();
+                        bValue = getTypeLabel(b).toLowerCase();
+                        break;
+                    }
+                    case 'accountDetailType':
+                        aValue = (a.accountDetailType || '')
+                            .replace(/-/g, ' ')
+                            .toLowerCase();
+                        bValue = (b.accountDetailType || '')
+                            .replace(/-/g, ' ')
+                            .toLowerCase();
+                        break;
+                    case 'currentBalance':
+                        aValue = parseFloat(
+                            a.currentBalance || String(a.openingBalance) || '0'
+                        );
+                        bValue = parseFloat(
+                            b.currentBalance || String(b.openingBalance) || '0'
+                        );
+                        break;
+                    default:
+                        return 0;
+                }
+
+                // Perform comparison
+                if (aValue < bValue) return sortDirection === 'asc' ? -1 : 1;
+                if (aValue > bValue) return sortDirection === 'asc' ? 1 : -1;
+                return 0;
+            });
+        } else {
+            // Default sorting: by account type order, then alphabetically by name
+            const typeOrder: Record<string, number> = {
+                asset: 1,
+                liability: 2,
+                equity: 3,
+                income: 4,
+                expense: 5,
+            };
+
+            filtered = [...filtered].sort((a, b) => {
+                const orderA = typeOrder[a.accountType] || 99;
+                const orderB = typeOrder[b.accountType] || 99;
+
+                if (orderA !== orderB) {
+                    return orderA - orderB;
+                }
+
+                // Secondary sort: Alphabetical by Name
+                return a.accountName.localeCompare(b.accountName);
             });
         }
 
-        // --- Custom Sorting ---
-        // Desired order: Assets, Liabilities, Equity, Income, Expenses
-        const typeOrder: Record<string, number> = {
-            asset: 1,
-            liability: 2,
-            equity: 3,
-            income: 4,
-            expense: 5,
-        };
-
-        // We sort a copy to avoid mutating the original array if it came from cache
-        return [...filtered].sort((a, b) => {
-            const orderA = typeOrder[a.accountType] || 99;
-            const orderB = typeOrder[b.accountType] || 99;
-
-            if (orderA !== orderB) {
-                return orderA - orderB;
-            }
-
-            // Secondary sort: Alphabetical by Name
-            return a.accountName.localeCompare(b.accountName);
-        });
-    }, [data, searchQuery, selectedTypes, selectedDetailTypes, isActiveFilter]);
+        return filtered;
+    }, [
+        data?.data?.items,
+        searchQuery,
+        selectedTypes,
+        selectedDetailTypes,
+        isActiveFilter,
+        sortKey,
+        sortDirection,
+    ]);
 
     const rowIds = accounts.map((a) => a.id);
 
@@ -561,6 +633,11 @@ const ChartOfAccountspage = () => {
         setTempIsActiveFilter('all');
     };
 
+    const handleSortChange = (key: string, direction: 'asc' | 'desc') => {
+        setSortKey(key);
+        setSortDirection(direction);
+    };
+
     return (
         <div className="h-full flex flex-col gap-4">
             {/* Filters and Search */}
@@ -642,6 +719,10 @@ const ChartOfAccountspage = () => {
                 rowIds={rowIds}
                 selectedIds={selectedItems}
                 onSelectionChange={setSelectedItems}
+                className="h-full"
+                sortKey={sortKey}
+                sortDirection={sortDirection}
+                onSortChange={handleSortChange}
             >
                 <TableSelectionToolbar>
                     <Button
@@ -676,7 +757,9 @@ const ChartOfAccountspage = () => {
                         <TableHead sortable sortKey="accountType">
                             Type
                         </TableHead>
-                        <TableHead>Detail Type</TableHead>
+                        <TableHead sortable sortKey="accountDetailType">
+                            Detail Type
+                        </TableHead>
                         <TableHead
                             align="right"
                             sortable
