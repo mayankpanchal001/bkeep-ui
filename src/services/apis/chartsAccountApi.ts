@@ -159,6 +159,7 @@ export type ChartOfAccount = {
 };
 
 export type CreateChartOfAccountPayload = {
+    accountNumber?: string;
     accountName: string;
     accountType: AccountType;
     accountDetailType: AccountDetailType;
@@ -168,6 +169,7 @@ export type CreateChartOfAccountPayload = {
 };
 
 export type UpdateChartOfAccountPayload = {
+    accountNumber?: string;
     accountName?: string;
     accountType?: AccountType;
     accountDetailType?: AccountDetailType;

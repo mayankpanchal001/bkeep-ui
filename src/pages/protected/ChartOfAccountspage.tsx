@@ -139,7 +139,7 @@ const ChartOfAccountspage = () => {
     const [selectedItems, setSelectedItems] = useState<(string | number)[]>([]);
     const [isFilterOpen, setIsFilterOpen] = useState(false);
     const [isActiveFilter, setIsActiveFilter] = useState<
-        'all' | 'active' | 'inactive'
+        'all' | 'Active' | 'Inactive'
     >('all');
 
     // Import State
@@ -147,6 +147,7 @@ const ChartOfAccountspage = () => {
 
     // Form state
     const [formData, setFormData] = useState<CreateChartOfAccountPayload>({
+        accountNumber: '',
         accountName: '',
         accountType: 'asset',
         accountDetailType: 'cash-on-hand',
@@ -179,7 +180,7 @@ const ChartOfAccountspage = () => {
     const serverAccountTypeParam =
         selectedTypes.length === 1 ? selectedTypes[0] : undefined;
     const serverIsActiveParam =
-        isActiveFilter === 'all' ? undefined : isActiveFilter === 'active';
+        isActiveFilter === 'all' ? undefined : isActiveFilter === 'Active';
     const { data, isLoading, isFetching, error } = useChartOfAccounts({
         search: debouncedSearchQuery || undefined,
         accountType: serverAccountTypeParam,
@@ -210,7 +211,7 @@ const ChartOfAccountspage = () => {
             );
         }
         if (isActiveFilter !== 'all') {
-            const wantActive = isActiveFilter === 'active';
+            const wantActive = isActiveFilter === 'Active';
             allAccounts = allAccounts.filter((a) => a.isActive === wantActive);
         }
 
@@ -243,6 +244,7 @@ const ChartOfAccountspage = () => {
     // Handle form reset
     const resetForm = () => {
         setFormData({
+            accountNumber: '',
             accountName: '',
             accountType: 'asset',
             accountDetailType: 'cash-on-hand',
@@ -262,6 +264,7 @@ const ChartOfAccountspage = () => {
     const handleOpenEditModal = (account: ChartOfAccount) => {
         setEditingAccount(account);
         setFormData({
+            accountNumber: account.accountNumber || '',
             accountName: account.accountName,
             accountType: account.accountType,
             accountDetailType: account.accountDetailType,
@@ -288,6 +291,20 @@ const ChartOfAccountspage = () => {
         if (!formData.accountName.trim()) {
             errors.accountName = 'Account Name is required';
         }
+        // Unique check for account number could go here if checking against loaded list
+        if (formData.accountNumber && formData.accountNumber.trim()) {
+            // Simple duplicate check on currently loaded items (Note: this is only partial validation)
+            const isDuplicate = accounts.some(
+                (a) =>
+                    a.accountNumber === formData.accountNumber &&
+                    (!editingAccount ||
+                        (editingAccount && a.id !== editingAccount.id))
+            );
+            if (isDuplicate) {
+                errors.accountNumber = 'Account Number must be unique';
+            }
+        }
+
         if (!formData.accountType) {
             errors.accountType = 'Account Type is required';
         }
@@ -439,8 +456,11 @@ const ChartOfAccountspage = () => {
 
                 <TableHeader>
                     <tr>
-                        <TableHead>
+                        <TableHead className="w-[50px]">
                             <TableSelectAllCheckbox />
+                        </TableHead>
+                        <TableHead sortable sortKey="accountNumber">
+                            Number
                         </TableHead>
                         <TableHead sortable sortKey="accountName">
                             Account Name
@@ -461,10 +481,10 @@ const ChartOfAccountspage = () => {
                 </TableHeader>
                 <TableBody>
                     {isLoading || isFetching ? (
-                        <TableLoadingState colSpan={6} rows={8} />
+                        <TableLoadingState colSpan={7} rows={8} />
                     ) : accounts.length === 0 ? (
                         <TableEmptyState
-                            colSpan={6}
+                            colSpan={7}
                             message="No accounts found"
                             description="Create your first account to get started"
                         />
@@ -473,6 +493,11 @@ const ChartOfAccountspage = () => {
                             <TableRow key={account.id} rowId={account.id}>
                                 <TableCell>
                                     <TableRowCheckbox rowId={account.id} />
+                                </TableCell>
+                                <TableCell>
+                                    <div className="font-medium text-primary">
+                                        {account.accountNumber || '-'}
+                                    </div>
                                 </TableCell>
                                 <TableCell>
                                     <div className="flex flex-col">
@@ -725,14 +750,14 @@ const ChartOfAccountspage = () => {
                                     Status
                                 </div>
                                 <div className="flex flex-wrap gap-2">
-                                    {(['active', 'inactive'] as const).map(
+                                    {(['Active', 'Inactive'] as const).map(
                                         (s) => {
                                             const active =
-                                                (isActiveFilter === 'active' &&
-                                                    s === 'active') ||
+                                                (isActiveFilter === 'Active' &&
+                                                    s === 'Active') ||
                                                 (isActiveFilter ===
-                                                    'inactive' &&
-                                                    s === 'inactive');
+                                                    'Inactive' &&
+                                                    s === 'Inactive');
                                             return (
                                                 <Button
                                                     key={s}
@@ -825,6 +850,34 @@ const ChartOfAccountspage = () => {
                             onSubmit={handleSubmit}
                             className="flex flex-col gap-4 flex-1"
                         >
+                            <div className="flex flex-col gap-2">
+                                <Label htmlFor="account-number">
+                                    Account Number
+                                </Label>
+                                <Input
+                                    id="account-number"
+                                    placeholder="Enter account number"
+                                    value={formData.accountNumber || ''}
+                                    onChange={(e) => {
+                                        setFormData({
+                                            ...formData,
+                                            accountNumber: e.target.value,
+                                        });
+                                        if (formErrors.accountNumber) {
+                                            setFormErrors((prev) => ({
+                                                ...prev,
+                                                accountNumber: '',
+                                            }));
+                                        }
+                                    }}
+                                />
+                                {formErrors.accountNumber && (
+                                    <p className="text-red-500 text-xs mt-1">
+                                        {formErrors.accountNumber}
+                                    </p>
+                                )}
+                            </div>
+
                             <div className="flex flex-col gap-2">
                                 <Label htmlFor="account-name">
                                     Account Name{' '}
