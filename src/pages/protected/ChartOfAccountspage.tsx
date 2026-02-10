@@ -2,6 +2,14 @@ import ConfirmationDialog from '@/components/shared/ConfirmationDialog';
 import ImportChartOfAccountsDrawer from '@/components/shared/ImportChartOfAccountsDrawer';
 import { Button } from '@/components/ui/button';
 import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog';
+import {
     Drawer,
     DrawerClose,
     DrawerContent,
@@ -931,28 +939,20 @@ const ChartOfAccountspage = () => {
                 </div>
             )}
 
-            {/* Filters Drawer */}
-            <Drawer
-                open={isFilterOpen}
-                onOpenChange={(open) => setIsFilterOpen(open)}
-                direction="right"
-            >
-                <DrawerContent className="data-[vaul-drawer-direction=right]:w-[420px] data-[vaul-drawer-direction=right]:sm:max-w-[420px] bg-card dark:bg-muted">
-                    <DrawerHeader className="flex flex-row items-center justify-between px-6 py-4 border-b border-primary/10">
-                        <DrawerTitle className="text-xl font-semibold text-primary">
-                            Filters
-                        </DrawerTitle>
-                        <DrawerClose asChild>
-                            <button
-                                className="p-2 -mr-2 text-primary/50 hover:text-primary rounded-full hover:bg-primary/10 transition-colors"
-                                aria-label="Close"
-                            >
-                                <X className="h-5 w-5" />
-                            </button>
-                        </DrawerClose>
-                    </DrawerHeader>
-                    <div className="flex flex-col h-full p-4">
-                        <div className="space-y-6 flex-1">
+            {/* Filters Modal */}
+            <Dialog open={isFilterOpen} onOpenChange={setIsFilterOpen}>
+                <DialogContent className="sm:max-w-[500px] max-h-[85vh] flex flex-col">
+                    <DialogHeader>
+                        <DialogTitle>Filter Accounts</DialogTitle>
+                        <DialogDescription>
+                            Refine your view by selecting account types and
+                            statuses.
+                        </DialogDescription>
+                    </DialogHeader>
+
+                    <div className="flex-1 overflow-y-auto py-4 pr-2">
+                        <div className="space-y-6">
+                            {/* Account Types */}
                             <div>
                                 <div className="text-sm font-semibold text-primary mb-2">
                                     Account Types
@@ -994,11 +994,13 @@ const ChartOfAccountspage = () => {
                                     })}
                                 </div>
                             </div>
+
+                            {/* Detail Types */}
                             <div>
                                 <div className="text-sm font-semibold text-primary mb-2">
                                     Detail Types
                                 </div>
-                                <div className="flex flex-wrap gap-2 max-h-40 overflow-auto pr-1">
+                                <div className="flex flex-wrap gap-2 max-h-40 overflow-y-auto pr-1 border rounded-md p-2 bg-muted/20">
                                     {Object.entries(ACCOUNT_HIERARCHY)
                                         .filter(
                                             ([type]) =>
@@ -1066,6 +1068,8 @@ const ChartOfAccountspage = () => {
                                         })}
                                 </div>
                             </div>
+
+                            {/* Status */}
                             <div>
                                 <div className="text-sm font-semibold text-primary mb-2">
                                     Status
@@ -1103,31 +1107,36 @@ const ChartOfAccountspage = () => {
                                 </div>
                             </div>
                         </div>
-                        <div className="flex justify-between gap-3 mt-8 pt-4 border-t border-primary/10">
+                    </div>
+
+                    <DialogFooter className="flex-row sm:justify-between sm:space-x-2 gap-2 border-t pt-4">
+                        <Button
+                            type="button"
+                            variant="outline"
+                            onClick={handleClearTempFilters}
+                            disabled={
+                                tempSelectedTypes.length === 0 &&
+                                tempSelectedDetailTypes.length === 0 &&
+                                tempIsActiveFilter === 'all'
+                            }
+                        >
+                            Clear All
+                        </Button>
+                        <div className="flex gap-2">
                             <Button
                                 type="button"
-                                variant={
-                                    tempSelectedTypes.length === 0 &&
-                                    tempSelectedDetailTypes.length === 0 &&
-                                    tempIsActiveFilter === 'all'
-                                        ? 'default'
-                                        : 'outline'
-                                }
-                                onClick={handleClearTempFilters}
+                                variant="secondary"
+                                onClick={() => setIsFilterOpen(false)}
                             >
-                                Clear
+                                Cancel
                             </Button>
-                            <Button
-                                type="button"
-                                variant="default"
-                                onClick={handleApplyFilters}
-                            >
-                                Apply
+                            <Button type="button" onClick={handleApplyFilters}>
+                                Apply Filters
                             </Button>
                         </div>
-                    </div>
-                </DrawerContent>
-            </Drawer>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
 
             {/* Add/Edit Account Drawer */}
             <Drawer
