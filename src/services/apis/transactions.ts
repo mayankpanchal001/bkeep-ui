@@ -13,6 +13,7 @@ export type TransactionFilters = {
     endDate?: string;
     contactId?: string; // For supplier filter
     category?: string;
+    categoryId?: string; // Added for correct filtering
     taxId?: string;
     minAmount?: number;
     maxAmount?: number;
@@ -52,7 +53,10 @@ const getTransactions = async (
     if (filters?.startDate) params.append('startDate', filters.startDate);
     if (filters?.endDate) params.append('endDate', filters.endDate);
     if (filters?.contactId) params.append('contactId', filters.contactId);
-    if (filters?.category) params.append('category', filters.category);
+    // Support both category (legacy) and categoryId (correct)
+    if (filters?.categoryId) params.append('categoryId', filters.categoryId);
+    else if (filters?.category) params.append('category', filters.category);
+
     if (filters?.taxId) params.append('taxId', filters.taxId);
     if (filters?.minAmount !== undefined)
         params.append('amountMin', filters.minAmount.toString());
@@ -99,6 +103,7 @@ export const useTransactions = (filters?: TransactionFilters) => {
         filters?.endDate,
         filters?.contactId,
         filters?.category,
+        filters?.categoryId,
         filters?.taxId,
         filters?.minAmount,
         filters?.maxAmount,

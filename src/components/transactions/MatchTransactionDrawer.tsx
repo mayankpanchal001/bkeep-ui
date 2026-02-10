@@ -232,10 +232,10 @@ export function MatchTransactionDrawer({
         billDateFrom && billDateTo
             ? `Date: ${formatDisplayDate(billDateFrom)}–${formatDisplayDate(billDateTo)}`
             : billDateFrom
-              ? `Date: from ${formatDisplayDate(billDateFrom)}`
-              : billDateTo
-                ? `Date: to ${formatDisplayDate(billDateTo)}`
-                : '';
+                ? `Date: from ${formatDisplayDate(billDateFrom)}`
+                : billDateTo
+                    ? `Date: to ${formatDisplayDate(billDateTo)}`
+                    : '';
 
     if (!transaction) return null;
 
@@ -248,7 +248,7 @@ export function MatchTransactionDrawer({
                 {/* Header */}
                 <SheetHeader className="flex flex-row items-center justify-between border-b px-6 py-4">
                     <div className="flex items-center gap-4 pr-8">
-                        <SheetTitle className="text-lg font-semibold">
+                        <SheetTitle className="text-lg font-medium">
                             Find other matches
                         </SheetTitle>
                         <a
@@ -278,7 +278,7 @@ export function MatchTransactionDrawer({
                             <div className="text-right">
                                 <p className="text-xs font-medium text-muted-foreground">
                                     {transaction.received != null &&
-                                    transaction.received > 0
+                                        transaction.received > 0
                                         ? 'Received'
                                         : 'Spent'}
                                 </p>

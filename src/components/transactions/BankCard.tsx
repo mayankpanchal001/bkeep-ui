@@ -82,7 +82,7 @@ export function BankCard({
                                                 onStatusClick?.('pending');
                                             }
                                         }}
-                                        className="rounded-full bg-orange-500/80 hover:bg-orange-500 text-white h-max font-semibold px-2 py-0.5 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-white/50"
+                                        className="rounded-full bg-orange-500/80 hover:bg-orange-500 text-white h-max font-medium px-2 py-0.5 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-white/50"
                                         title="Pending"
                                     >
                                         {pendingCount}
@@ -106,7 +106,7 @@ export function BankCard({
                                                 onStatusClick?.('posted');
                                             }
                                         }}
-                                        className="rounded-full bg-green-500/80 hover:bg-green-500 text-white h-max font-semibold px-2 py-0.5 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-white/50"
+                                        className="rounded-full bg-green-500/80 hover:bg-green-500 text-white h-max font-medium px-2 py-0.5 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-white/50"
                                         title="Posted"
                                     >
                                         {postedCount}
@@ -130,7 +130,7 @@ export function BankCard({
                                                 onStatusClick?.('voided');
                                             }
                                         }}
-                                        className="rounded-full bg-red-500/80 hover:bg-red-500 text-white h-max font-semibold px-2 py-0.5 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-white/50"
+                                        className="rounded-full bg-red-500/80 hover:bg-red-500 text-white h-max font-medium px-2 py-0.5 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-white/50"
                                         title="Voided"
                                     >
                                         {voidedCount}
@@ -154,7 +154,7 @@ export function BankCard({
                                                 onStatusClick?.('reversed');
                                             }
                                         }}
-                                        className="rounded-full bg-blue-500/80 hover:bg-blue-500 text-white h-max font-semibold px-2 py-0.5 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-white/50"
+                                        className="rounded-full bg-blue-500/80 hover:bg-blue-500 text-white h-max font-medium px-2 py-0.5 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-white/50"
                                         title="Reversed"
                                     >
                                         {reversedCount}

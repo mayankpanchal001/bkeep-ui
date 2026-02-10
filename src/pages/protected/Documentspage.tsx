@@ -260,14 +260,13 @@ const Documentspage = () => {
                 onDragOver={handleDrag}
                 onDrop={handleDrop}
                 onClick={handleUploadAreaClick}
-                className={`w-full max-w-3xl mx-auto border-2 border-dashed rounded p-10 sm:p-12 text-center transition-all cursor-pointer  ${
-                    dragActive
+                className={`w-full max-w-3xl mx-auto border-2 border-dashed rounded p-10 sm:p-12 text-center transition-all cursor-pointer  ${dragActive
                         ? 'border-primary bg-primary/10 scale-[1.01]'
                         : 'border-primary/25 bg-primary/5 hover:border-primary hover:bg-primary/10'
-                }`}
+                    }`}
             >
                 <FaUpload className="w-12 h-12 text-primary/50 mx-auto mb-4" />
-                <p className="text-lg font-semibold text-primary mb-2">
+                <p className="text-lg font-medium text-primary mb-2">
                     Drag and drop files here
                 </p>
                 <p className="text-sm text-primary/50 mb-4">

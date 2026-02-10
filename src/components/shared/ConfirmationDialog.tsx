@@ -61,7 +61,7 @@ const ConfirmationDialog = ({
         >
             <div className="w-full max-w-sm rounded bg-card p-4 border border-primary/10">
                 <div className="flex items-start justify-between mb-4">
-                    <h3 className="text-lg font-semibold text-primary">
+                    <h3 className="text-lg font-medium text-primary">
                         {title}
                     </h3>
                     {showCloseButton && (

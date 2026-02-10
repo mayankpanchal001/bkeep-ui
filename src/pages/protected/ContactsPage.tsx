@@ -1,5 +1,7 @@
+import { FileUp, MoreVertical } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
+import ImportContactsDrawer from '../../components/contacts/ImportContactsDrawer';
 import { Icons } from '../../components/shared/Icons';
 import PageHeader from '../../components/shared/PageHeader';
 import { Avatar, AvatarFallback } from '../../components/ui/avatar';
@@ -37,8 +39,6 @@ import {
     useRestoreContact,
 } from '../../services/apis/contactsApi';
 import { Contact, ContactsQueryParams } from '../../types/contact';
-import { FileUp, MoreVertical } from 'lucide-react';
-import ImportContactsDrawer from '../../components/contacts/ImportContactsDrawer';
 
 // Helper function to get contact initials
 const getContactInitials = (contact: Contact): string => {
@@ -407,8 +407,8 @@ const ContactsPage = () => {
                                 }
                                 action={
                                     !search &&
-                                    !filters.type &&
-                                    !filters.isActive ? (
+                                        !filters.type &&
+                                        !filters.isActive ? (
                                         <Button
                                             size="sm"
                                             onClick={handleGoToCreate}
@@ -435,7 +435,7 @@ const ContactsPage = () => {
                                     <TableCell className="">
                                         <div className="flex items-center gap-3">
                                             <Avatar className="size-10">
-                                                <AvatarFallback className="bg-linear-to-br from-primary/20 to-secondary/20 text-primary font-semibold">
+                                                <AvatarFallback className="bg-linear-to-br from-primary/20 to-secondary/20 text-primary font-medium">
                                                     {getContactInitials(
                                                         contact
                                                     )}

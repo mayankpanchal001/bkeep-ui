@@ -4,10 +4,10 @@ const TestimonialsSection = () => {
     return (
         <section id="testimonials" className="mx-auto max-w-6xl px-6 py-20">
             <div className="flex flex-col gap-4 text-center">
-                <p className="text-xs font-semibold uppercase tracking-[0.45em] text-muted-foreground">
+                <p className="text-xs font-medium uppercase tracking-[0.45em] text-muted-foreground">
                     Trusted by investors worldwide
                 </p>
-                <h2 className="text-3xl font-semibold text-foreground sm:text-4xl">
+                <h2 className="text-3xl font-medium text-foreground sm:text-4xl">
                     Real stories from forward-thinking leaders.
                 </h2>
             </div>
@@ -21,7 +21,7 @@ const TestimonialsSection = () => {
                             “{testimonial.quote}”
                         </p>
                         <div className="mt-4 text-sm text-muted-foreground">
-                            <p className="font-semibold text-foreground">
+                            <p className="font-medium text-foreground">
                                 {testimonial.name}
                             </p>
                             <p>{testimonial.role}</p>

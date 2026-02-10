@@ -101,11 +101,10 @@ const BalanceSheetpage = () => {
                                 onClick={() =>
                                     setDateRange(range.toLowerCase())
                                 }
-                                className={`px-4 py-2 text-sm font-medium rounded transition-all ${
-                                    dateRange === range.toLowerCase()
+                                className={`px-4 py-2 text-sm font-medium rounded transition-all ${dateRange === range.toLowerCase()
                                         ? 'bg-primary text-white'
                                         : 'bg-primary/10 text-primary hover:bg-primary/25'
-                                }`}
+                                    }`}
                             >
                                 {range}
                             </button>
@@ -137,7 +136,7 @@ const BalanceSheetpage = () => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 {/* Assets */}
                 <div className="bg-card rounded  border border-primary/10 p-4">
-                    <h3 className="text-lg font-semibold text-primary mb-4">
+                    <h3 className="text-lg font-medium text-primary mb-4">
                         Assets
                     </h3>
                     <div className="flex flex-col gap-4">
@@ -161,7 +160,7 @@ const BalanceSheetpage = () => {
                                         </span>
                                     </div>
                                 ))}
-                                <div className="flex justify-between items-center py-2 font-semibold text-primary border-t-2 border-primary">
+                                <div className="flex justify-between items-center py-2 font-medium text-primary border-t-2 border-primary">
                                     <span>Total Current Assets</span>
                                     <span>
                                         {currencyFormatter.format(
@@ -195,7 +194,7 @@ const BalanceSheetpage = () => {
                                         </span>
                                     </div>
                                 ))}
-                                <div className="flex justify-between items-center py-2 font-semibold text-primary border-t-2 border-primary">
+                                <div className="flex justify-between items-center py-2 font-medium text-primary border-t-2 border-primary">
                                     <span>Total Fixed Assets</span>
                                     <span>
                                         {currencyFormatter.format(
@@ -218,7 +217,7 @@ const BalanceSheetpage = () => {
 
                 {/* Liabilities & Equity */}
                 <div className="bg-card rounded  border border-primary/10 p-4">
-                    <h3 className="text-lg font-semibold text-primary mb-4">
+                    <h3 className="text-lg font-medium text-primary mb-4">
                         Liabilities & Equity
                     </h3>
                     <div className="flex flex-col gap-4">
@@ -242,7 +241,7 @@ const BalanceSheetpage = () => {
                                         </span>
                                     </div>
                                 ))}
-                                <div className="flex justify-between items-center py-2 font-semibold text-primary border-t-2 border-primary">
+                                <div className="flex justify-between items-center py-2 font-medium text-primary border-t-2 border-primary">
                                     <span>Total Current Liabilities</span>
                                     <span>
                                         {currencyFormatter.format(
@@ -276,7 +275,7 @@ const BalanceSheetpage = () => {
                                         </span>
                                     </div>
                                 ))}
-                                <div className="flex justify-between items-center py-2 font-semibold text-primary border-t-2 border-primary">
+                                <div className="flex justify-between items-center py-2 font-medium text-primary border-t-2 border-primary">
                                     <span>Total Long-term Liabilities</span>
                                     <span>
                                         {currencyFormatter.format(
@@ -310,7 +309,7 @@ const BalanceSheetpage = () => {
                                         </span>
                                     </div>
                                 ))}
-                                <div className="flex justify-between items-center py-2 font-semibold text-primary border-t-2 border-primary">
+                                <div className="flex justify-between items-center py-2 font-medium text-primary border-t-2 border-primary">
                                     <span>Total Equity</span>
                                     <span>
                                         {currencyFormatter.format(totalEquity)}

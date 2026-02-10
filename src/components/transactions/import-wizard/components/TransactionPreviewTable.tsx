@@ -1,5 +1,5 @@
-import { Checkbox } from '../../../ui/checkbox';
 import { cn } from '../../../../utils/cn';
+import { Checkbox } from '../../../ui/checkbox';
 import { ParsedTransaction } from '../types';
 
 interface TransactionPreviewTableProps {
@@ -72,13 +72,13 @@ export function TransactionPreviewTable({
                                     aria-label="Select all"
                                 />
                             </th>
-                            <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                            <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
                                 Date
                             </th>
-                            <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                            <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
                                 Description
                             </th>
-                            <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                            <th className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-muted-foreground">
                                 Amount
                             </th>
                         </tr>

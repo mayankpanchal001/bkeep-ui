@@ -39,7 +39,7 @@ export function SidebarUserMenu() {
                                 </AvatarFallback>
                             </Avatar>
                             <div className="grid flex-1 text-left text-sm leading-tight">
-                                <span className="truncate font-semibold text-sidebar-foreground">
+                                <span className="truncate font-medium text-sidebar-foreground">
                                     {user?.name || 'User'}
                                 </span>
                                 <span className="truncate text-xs text-muted-foreground">
@@ -64,7 +64,7 @@ export function SidebarUserMenu() {
                                 </Avatar>
 
                                 <div className="grid flex-1 text-left text-sm leading-tight">
-                                    <span className="truncate font-semibold">
+                                    <span className="truncate font-medium">
                                         {user?.name || 'User'}
                                     </span>
                                     <span className="truncate text-xs text-muted-foreground">

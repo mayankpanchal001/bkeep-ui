@@ -257,7 +257,7 @@ const CreateBillpage = () => {
                 <div className="flex items-center gap-2">
                     <div className="text-right text-sm">
                         <div className="text-muted-foreground">BALANCE DUE</div>
-                        <div className="font-semibold text-primary">
+                        <div className="font-medium text-primary">
                             {CURRENCY_FORMAT.format(balanceDue)}
                         </div>
                     </div>
@@ -431,7 +431,7 @@ const CreateBillpage = () => {
                                         className={cn(
                                             'border-b border-border last:border-0 transition-colors',
                                             draggedIndex === index &&
-                                                'opacity-50 bg-muted/50'
+                                            'opacity-50 bg-muted/50'
                                         )}
                                     >
                                         <td className="p-1 w-10 align-middle">
@@ -608,7 +608,7 @@ const CreateBillpage = () => {
                         <span className="text-muted-foreground">Subtotal</span>
                         <span>{CURRENCY_FORMAT.format(subtotal)}</span>
                     </div>
-                    <div className="flex justify-between w-full text-sm font-semibold">
+                    <div className="flex justify-between w-full text-sm font-medium">
                         <span>Total</span>
                         <span>{CURRENCY_FORMAT.format(total)}</span>
                     </div>

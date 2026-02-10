@@ -31,11 +31,11 @@ import {
     TableHead,
     TableHeader,
     TableLoadingState,
+    TablePagination,
     TableRow,
     TableRowCheckbox,
     TableSelectAllCheckbox,
     TableSelectionToolbar,
-    TablePagination,
 } from '@/components/ui/table';
 import {
     FileUp,
@@ -491,7 +491,7 @@ const ChartOfAccountspage = () => {
                                         {(() => {
                                             const subtypes =
                                                 ACCOUNT_HIERARCHY[
-                                                    account.accountType
+                                                account.accountType
                                                 ];
                                             if (subtypes) {
                                                 for (const subtype of subtypes) {
@@ -522,13 +522,13 @@ const ChartOfAccountspage = () => {
                                     </span>
                                 </TableCell>
                                 <TableCell align="right">
-                                    <span className="font-semibold text-primary">
+                                    <span className="font-medium text-primary">
                                         {currencyFormatter.format(
                                             parseFloat(
                                                 account.currentBalance ||
-                                                    String(
-                                                        account.openingBalance
-                                                    )
+                                                String(
+                                                    account.openingBalance
+                                                )
                                             )
                                         )}
                                     </span>
@@ -596,7 +596,7 @@ const ChartOfAccountspage = () => {
             >
                 <DrawerContent className="data-[vaul-drawer-direction=right]:w-[420px] data-[vaul-drawer-direction=right]:sm:max-w-[420px] bg-card dark:bg-muted">
                     <DrawerHeader className="flex flex-row items-center justify-between px-6 py-4 border-b border-primary/10">
-                        <DrawerTitle className="text-xl font-semibold text-primary">
+                        <DrawerTitle className="text-xl font-medium text-primary">
                             Filters
                         </DrawerTitle>
                         <DrawerClose asChild>
@@ -611,7 +611,7 @@ const ChartOfAccountspage = () => {
                     <div className="flex flex-col h-full p-4">
                         <div className="space-y-6 flex-1">
                             <div>
-                                <div className="text-sm font-semibold text-primary mb-2">
+                                <div className="text-sm font-medium text-primary mb-2">
                                     Account Types
                                 </div>
                                 <div className="flex flex-wrap gap-2">
@@ -632,14 +632,14 @@ const ChartOfAccountspage = () => {
                                                     setSelectedTypes((prev) =>
                                                         active
                                                             ? prev.filter(
-                                                                  (t) =>
-                                                                      t !==
-                                                                      opt.value
-                                                              )
+                                                                (t) =>
+                                                                    t !==
+                                                                    opt.value
+                                                            )
                                                             : [
-                                                                  ...prev,
-                                                                  opt.value,
-                                                              ]
+                                                                ...prev,
+                                                                opt.value,
+                                                            ]
                                                     );
                                                 }}
                                             >
@@ -650,7 +650,7 @@ const ChartOfAccountspage = () => {
                                 </div>
                             </div>
                             <div>
-                                <div className="text-sm font-semibold text-primary mb-2">
+                                <div className="text-sm font-medium text-primary mb-2">
                                     Detail Types
                                 </div>
                                 <div className="flex flex-wrap gap-2 max-h-40 overflow-auto pr-1">
@@ -703,14 +703,14 @@ const ChartOfAccountspage = () => {
                                                             (prev) =>
                                                                 active
                                                                     ? prev.filter(
-                                                                          (v) =>
-                                                                              v !==
-                                                                              dt.value
-                                                                      )
+                                                                        (v) =>
+                                                                            v !==
+                                                                            dt.value
+                                                                    )
                                                                     : [
-                                                                          ...prev,
-                                                                          dt.value,
-                                                                      ]
+                                                                        ...prev,
+                                                                        dt.value,
+                                                                    ]
                                                         );
                                                     }}
                                                 >
@@ -721,7 +721,7 @@ const ChartOfAccountspage = () => {
                                 </div>
                             </div>
                             <div>
-                                <div className="text-sm font-semibold text-primary mb-2">
+                                <div className="text-sm font-medium text-primary mb-2">
                                     Status
                                 </div>
                                 <div className="flex flex-wrap gap-2">
@@ -761,8 +761,8 @@ const ChartOfAccountspage = () => {
                                 type="button"
                                 variant={
                                     selectedTypes.length === 0 &&
-                                    selectedDetailTypes.length === 0 &&
-                                    isActiveFilter === 'all'
+                                        selectedDetailTypes.length === 0 &&
+                                        isActiveFilter === 'all'
                                         ? 'default'
                                         : 'outline'
                                 }
@@ -803,7 +803,7 @@ const ChartOfAccountspage = () => {
             >
                 <DrawerContent className="data-[vaul-drawer-direction=right]:w-[480px] data-[vaul-drawer-direction=right]:sm:max-w-[480px] bg-card dark:bg-muted">
                     <DrawerHeader className="flex flex-row items-center justify-between px-6 py-4 border-b border-primary/10">
-                        <DrawerTitle className="text-xl font-semibold text-primary">
+                        <DrawerTitle className="text-xl font-medium text-primary">
                             {editingAccount ? 'Edit Account' : 'New Account'}
                         </DrawerTitle>
                         <DrawerClose asChild>
@@ -895,7 +895,7 @@ const ChartOfAccountspage = () => {
                                         {ACCOUNT_TYPE_DROPDOWN_OPTIONS.map(
                                             (group) => (
                                                 <div key={group.label}>
-                                                    <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">
+                                                    <div className="px-2 py-1.5 text-xs font-medium text-muted-foreground">
                                                         {group.label}
                                                     </div>
                                                     {group.options.map(

@@ -88,7 +88,7 @@ export function TransactionHeader({
         setCanScrollLeft(container.scrollLeft > 0);
         setCanScrollRight(
             container.scrollLeft <
-                container.scrollWidth - container.clientWidth - 10
+            container.scrollWidth - container.clientWidth - 10
         );
     }, []);
 
@@ -141,7 +141,7 @@ export function TransactionHeader({
                 <div className="flex items-center gap-2">
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <button className="flex items-center gap-2 text-xl font-semibold text-foreground hover:opacity-80 transition-opacity">
+                            <button className="flex items-center gap-2 text-xl font-medium text-foreground hover:opacity-80 transition-opacity">
                                 <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center text-white">
                                     <svg
                                         viewBox="0 0 24 24"

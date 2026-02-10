@@ -103,12 +103,12 @@ export function SidebarNavMain() {
                         const isReports = item.path === '/reports';
                         const baseChildren = isReports
                             ? [
-                                  ...favLinks.map((f) => ({
-                                      label: f.label,
-                                      path: f.path,
-                                  })),
-                                  ...(item.children || []),
-                              ]
+                                ...favLinks.map((f) => ({
+                                    label: f.label,
+                                    path: f.path,
+                                })),
+                                ...(item.children || []),
+                            ]
                             : item.children || [];
 
                         const hasChildren =
@@ -152,7 +152,10 @@ export function SidebarNavMain() {
                                     }}
                                     className="group/collapsible"
                                 >
-                                    <SidebarMenuItem>
+                                    <SidebarMenuItem
+                                        onMouseEnter={handleMouseEnter}
+                                        onMouseLeave={handleMouseLeave}
+                                    >
                                         <div className="flex items-center">
                                             <SidebarMenuButton
                                                 asChild
@@ -179,12 +182,6 @@ export function SidebarNavMain() {
                                                 <SidebarMenuAction
                                                     className="hover:bg-sidebar-accent hover:text-sidebar-accent-foreground data-[state=open]:rotate-90 transition-transform duration-200"
                                                     showOnHover
-                                                    onMouseEnter={
-                                                        handleMouseEnter
-                                                    }
-                                                    onMouseLeave={
-                                                        handleMouseLeave
-                                                    }
                                                 >
                                                     <ChevronRight className="size-4" />
                                                 </SidebarMenuAction>
@@ -200,12 +197,12 @@ export function SidebarNavMain() {
                                                             asChild
                                                             isActive={
                                                                 child.path ===
-                                                                item.path
+                                                                    item.path
                                                                     ? location.pathname ===
-                                                                      child.path
+                                                                    child.path
                                                                     : isItemActive(
-                                                                          child.path
-                                                                      )
+                                                                        child.path
+                                                                    )
                                                             }
                                                             className="data-[active=true]:bg-sidebar-accent data-[active=true]:text-sidebar-accent-foreground transition-colors duration-200"
                                                         >

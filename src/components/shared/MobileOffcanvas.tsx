@@ -176,12 +176,12 @@ const MobileOffcanvas = ({ isOpen, onClose }: MobileOffcanvasProps) => {
                             const isReports = item.path === '/reports';
                             const computedChildren = isReports
                                 ? [
-                                      ...favLinks.map((f) => ({
-                                          label: f.label,
-                                          path: f.path,
-                                      })),
-                                      ...(item.children || []),
-                                  ]
+                                    ...favLinks.map((f) => ({
+                                        label: f.label,
+                                        path: f.path,
+                                    })),
+                                    ...(item.children || []),
+                                ]
                                 : item.children || [];
                             const hasChildren =
                                 computedChildren && computedChildren.length > 0;
@@ -245,13 +245,12 @@ const MobileOffcanvas = ({ isOpen, onClose }: MobileOffcanvasProps) => {
                                                             onClick={onClose}
                                                             className={`
                                                             flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors
-                                                            ${
-                                                                isItemActive(
-                                                                    child.path
-                                                                )
+                                                            ${isItemActive(
+                                                                child.path
+                                                            )
                                                                     ? 'text-primary font-medium bg-primary/5'
                                                                     : 'text-primary/50 hover:text-primary hover:bg-card'
-                                                            }
+                                                                }
                                                         `}
                                                         >
                                                             {child.label}
@@ -271,10 +270,9 @@ const MobileOffcanvas = ({ isOpen, onClose }: MobileOffcanvasProps) => {
                                     onClick={onClose}
                                     className={`
                                         flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors
-                                        ${
-                                            isActive
-                                                ? 'bg-primary/5 text-primary font-medium'
-                                                : 'text-primary/60 hover:bg-card hover:text-primary'
+                                        ${isActive
+                                            ? 'bg-primary/5 text-primary font-medium'
+                                            : 'text-primary/60 hover:bg-card hover:text-primary'
                                         }
                                     `}
                                 >
@@ -295,7 +293,7 @@ const MobileOffcanvas = ({ isOpen, onClose }: MobileOffcanvasProps) => {
                             {user?.name?.charAt(0) || 'U'}
                         </div>
                         <div className="flex-1 min-w-0">
-                            <p className="text-sm font-semibold text-primary truncate">
+                            <p className="text-sm font-medium text-primary truncate">
                                 {user?.name || 'User'}
                             </p>
                             <p className="text-xs text-primary/50 truncate">

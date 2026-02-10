@@ -4,10 +4,10 @@ export default function IndustriesSection() {
     return (
         <section className="mx-auto max-w-6xl px-6 pb-20">
             <div className="flex flex-col gap-4 text-center">
-                <p className="text-xs font-semibold uppercase tracking-[0.4em] text-muted-foreground">
+                <p className="text-xs font-medium uppercase tracking-[0.4em] text-muted-foreground">
                     Built for firms, finance teams, and startups
                 </p>
-                <h2 className="text-3xl font-semibold text-foreground sm:text-4xl">
+                <h2 className="text-3xl font-medium text-foreground sm:text-4xl">
                     One workspace per company with roles, approvals, and audit
                     trails.
                 </h2>
@@ -22,7 +22,7 @@ export default function IndustriesSection() {
                         key={card.title}
                         className="rounded-3xl border border-border bg-gradient-to-br from-muted to-transparent p-4"
                     >
-                        <h3 className="text-xl font-semibold text-foreground">
+                        <h3 className="text-xl font-medium text-foreground">
                             {card.title}
                         </h3>
                         <p className="mt-2 text-sm text-muted-foreground">

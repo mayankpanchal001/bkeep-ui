@@ -30,7 +30,7 @@ const detectOS = (): OSKind => {
 };
 
 const KeyCap = ({ label }: { label: string }) => (
-    <kbd className="px-2 py-1 text-xs font-semibold text-primary/70 bg-card dark:bg-muted rounded-md border border-primary/10 ">
+    <kbd className="px-2 py-1 text-xs font-medium text-primary/70 bg-card dark:bg-muted rounded-md border border-primary/10 ">
         {label}
     </kbd>
 );
@@ -197,7 +197,7 @@ export default function KeyboardShortcuts({
                                 );
                                 return (
                                     <div key={sec.id}>
-                                        <div className="text-xs font-semibold text-primary/60 mb-2">
+                                        <div className="text-xs font-medium text-primary/60 mb-2">
                                             {sec.title}
                                         </div>
                                         {matches.length === 0 ? (
@@ -244,11 +244,11 @@ export default function KeyboardShortcuts({
                                                                             it
                                                                                 .keys
                                                                                 .length -
-                                                                                1 && (
-                                                                            <span className="text-primary/30">
-                                                                                +
-                                                                            </span>
-                                                                        )}
+                                                                            1 && (
+                                                                                <span className="text-primary/30">
+                                                                                    +
+                                                                                </span>
+                                                                            )}
                                                                     </span>
                                                                 )
                                                             )}
@@ -261,9 +261,9 @@ export default function KeyboardShortcuts({
                                                                 className="ml-2 p-1 rounded-md text-primary/40 hover:text-primary"
                                                             >
                                                                 {copied ===
-                                                                it.keys.join(
-                                                                    '+'
-                                                                ) ? (
+                                                                    it.keys.join(
+                                                                        '+'
+                                                                    ) ? (
                                                                     <Check className="w-3.5 h-3.5" />
                                                                 ) : (
                                                                     <Copy className="w-3.5 h-3.5" />

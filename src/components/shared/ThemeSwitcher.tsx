@@ -16,14 +16,14 @@ const ThemeSwitcher = () => {
         <Button
             variant="ghost"
             size="icon"
-            className="size-9"
+            className="size-8"
             aria-label="Toggle theme"
             onClick={handleClick}
         >
             {theme === 'light' ? (
-                <Sun className="size-4" />
+                <Sun className="size-5!" />
             ) : (
-                <Moon className="size-4" />
+                <Moon className="size-5!" />
             )}
         </Button>
     );

@@ -150,7 +150,7 @@ export default function ViewJournalEntrypage() {
             return entry as unknown as JournalEntry;
         if (
             typeof (entry as { journalEntry?: unknown }).journalEntry ===
-                'object' &&
+            'object' &&
             (entry as { journalEntry?: Record<string, unknown> }).journalEntry
         ) {
             const nested = (entry as { journalEntry: Record<string, unknown> })
@@ -346,7 +346,7 @@ export default function ViewJournalEntrypage() {
                                     <label className="block text-sm font-medium text-primary/50 mb-1">
                                         New Entry Number
                                     </label>
-                                    <p className="text-primary font-semibold">
+                                    <p className="text-primary font-medium">
                                         {copyPreviewData.entryNumber}
                                     </p>
                                 </div>
@@ -384,21 +384,21 @@ export default function ViewJournalEntrypage() {
 
                             {(copyPreviewData.memo ||
                                 copyPreviewData.description) && (
-                                <div className="p-4 bg-card rounded-lg border border-primary/10">
-                                    <label className="block text-sm font-medium text-primary/50 mb-2">
-                                        Memo
-                                    </label>
-                                    <p className="text-primary text-sm whitespace-pre-wrap">
-                                        {copyPreviewData.memo ||
-                                            copyPreviewData.description ||
-                                            '—'}
-                                    </p>
-                                </div>
-                            )}
+                                    <div className="p-4 bg-card rounded-lg border border-primary/10">
+                                        <label className="block text-sm font-medium text-primary/50 mb-2">
+                                            Memo
+                                        </label>
+                                        <p className="text-primary text-sm whitespace-pre-wrap">
+                                            {copyPreviewData.memo ||
+                                                copyPreviewData.description ||
+                                                '—'}
+                                        </p>
+                                    </div>
+                                )}
 
                             <div className="border border-primary/10 rounded-lg overflow-hidden">
                                 <div className="px-4 py-2 bg-primary/5 border-b border-primary/10">
-                                    <h3 className="text-sm font-semibold text-primary">
+                                    <h3 className="text-sm font-medium text-primary">
                                         Journal Lines (
                                         {copyPreviewData.lines.length} lines)
                                     </h3>
@@ -437,9 +437,9 @@ export default function ViewJournalEntrypage() {
                                                         <td className="px-3 py-2 text-sm text-primary">
                                                             {line.accountId
                                                                 ? accountNameMap.get(
-                                                                      line.accountId
-                                                                  ) ||
-                                                                  line.accountId
+                                                                    line.accountId
+                                                                ) ||
+                                                                line.accountId
                                                                 : '—'}
                                                         </td>
                                                         <td className="px-3 py-2 text-sm text-primary/75">
@@ -478,11 +478,11 @@ export default function ViewJournalEntrypage() {
                                             <tr>
                                                 <td
                                                     colSpan={3}
-                                                    className="px-3 py-2 text-right font-semibold text-sm text-primary"
+                                                    className="px-3 py-2 text-right font-medium text-sm text-primary"
                                                 >
                                                     Total
                                                 </td>
-                                                <td className="px-3 py-2 text-right font-semibold text-sm text-primary">
+                                                <td className="px-3 py-2 text-right font-medium text-sm text-primary">
                                                     {copyPreviewData.lines
                                                         .reduce(
                                                             (sum, line) =>
@@ -500,7 +500,7 @@ export default function ViewJournalEntrypage() {
                                                             }
                                                         )}
                                                 </td>
-                                                <td className="px-3 py-2 text-right font-semibold text-sm text-primary">
+                                                <td className="px-3 py-2 text-right font-medium text-sm text-primary">
                                                     {copyPreviewData.lines
                                                         .reduce(
                                                             (sum, line) =>

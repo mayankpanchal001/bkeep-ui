@@ -38,7 +38,7 @@ const AIInsightCard = ({
             className={`rounded-lg border p-4 ${typeStyles[type]} transition-all`}
         >
             <div className="flex items-start justify-between mb-2">
-                <h4 className="font-semibold text-sm text-primary">{title}</h4>
+                <h4 className="font-medium text-sm text-primary">{title}</h4>
             </div>
             <p className="text-xs text-primary/75 mb-4">{message}</p>
             <div className="flex items-center flex-wrap gap-2">

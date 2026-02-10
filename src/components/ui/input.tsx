@@ -70,7 +70,7 @@ export default function Input({
     // Size classes
     const sizeClasses = {
         sm: 'h-8 text-xs px-2.5 [&_svg]:size-3.5',
-        default: 'h-9 text-sm px-3 [&_svg]:size-4',
+        default: 'h-8 text-sm px-3 [&_svg]:size-4',
         lg: 'h-10 text-base px-4 [&_svg]:size-5',
     };
 

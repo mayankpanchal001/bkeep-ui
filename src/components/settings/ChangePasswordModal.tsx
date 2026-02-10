@@ -62,15 +62,15 @@ const ChangePasswordModal = ({ isOpen, onClose }: ChangePasswordModalProps) => {
         } catch (error: unknown) {
             const message =
                 error &&
-                typeof error === 'object' &&
-                'response' in error &&
-                error.response &&
-                typeof error.response === 'object' &&
-                'data' in error.response &&
-                error.response.data &&
-                typeof error.response.data === 'object' &&
-                'message' in error.response.data &&
-                typeof error.response.data.message === 'string'
+                    typeof error === 'object' &&
+                    'response' in error &&
+                    error.response &&
+                    typeof error.response === 'object' &&
+                    'data' in error.response &&
+                    error.response.data &&
+                    typeof error.response.data === 'object' &&
+                    'message' in error.response.data &&
+                    typeof error.response.data.message === 'string'
                     ? error.response.data.message
                     : 'Failed to update password';
             setError(message);
@@ -86,7 +86,7 @@ const ChangePasswordModal = ({ isOpen, onClose }: ChangePasswordModalProps) => {
             <div className="w-full max-w-md rounded bg-card p-4  animate-in fade-in zoom-in duration-200">
                 {/* Header */}
                 <div className="flex items-center justify-between mb-6">
-                    <h3 className="text-xl font-semibold text-primary">
+                    <h3 className="text-xl font-medium text-primary">
                         Change Password
                     </h3>
                     <button

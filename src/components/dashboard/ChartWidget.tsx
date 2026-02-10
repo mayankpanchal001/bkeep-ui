@@ -19,7 +19,7 @@ const ChartWidget = ({
         <div className="inner-section">
             <div className="flex items-start justify-between mb-4">
                 <div>
-                    <h3 className="text-lg font-semibold text-primary mb-1">
+                    <h3 className="text-lg font-medium text-primary mb-1">
                         {title}
                     </h3>
                     {subtitle && (

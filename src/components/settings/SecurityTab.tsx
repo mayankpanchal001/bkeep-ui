@@ -52,26 +52,26 @@ const SecurityTab = () => {
     const statusLabel = isStatusLoading
         ? 'Checking...'
         : mfaEnabled
-          ? 'Enabled'
-          : 'Disabled';
+            ? 'Enabled'
+            : 'Disabled';
 
     const statusClass = isStatusLoading
         ? 'text-primary/50'
         : mfaEnabled
-          ? 'text-secondary'
-          : 'text-destructive';
+            ? 'text-secondary'
+            : 'text-destructive';
 
     const totpStatusLabel = isTotpStatusLoading
         ? 'Checking...'
         : totpEnabled
-          ? 'Enabled'
-          : 'Disabled';
+            ? 'Enabled'
+            : 'Disabled';
 
     const totpStatusClass = isTotpStatusLoading
         ? 'text-primary/50'
         : totpEnabled
-          ? 'text-secondary'
-          : 'text-destructive';
+            ? 'text-secondary'
+            : 'text-destructive';
 
     const handleMfaToggle = () => {
         if (mfaEnabled) {
@@ -120,12 +120,12 @@ const SecurityTab = () => {
             ? 'Disabling...'
             : 'Disable 2FA'
         : isEnabling
-          ? 'Enabling...'
-          : 'Enable 2FA';
+            ? 'Enabling...'
+            : 'Enable 2FA';
 
     return (
         <div className="space-y-6">
-            <h3 className="text-lg font-semibold text-primary mb-4">
+            <h3 className="text-lg font-medium text-primary mb-4">
                 Security Settings
             </h3>
             <div className="flex flex-col gap-4">

@@ -183,7 +183,7 @@ const AcceptInvitationForm = () => {
                 <div className="w-16 h-16 rounded-full bg-destructive/10 flex items-center justify-center mb-6 ring-8 ring-destructive/5">
                     <AlertTriangle className="w-8 h-8 text-destructive" />
                 </div>
-                <h2 className="text-xl font-semibold text-foreground mb-2">
+                <h2 className="text-xl font-medium text-foreground mb-2">
                     Invitation Invalid
                 </h2>
                 <p className="text-sm text-muted-foreground mb-8 max-w-[280px] leading-relaxed">
@@ -240,7 +240,7 @@ const AcceptInvitationForm = () => {
                 <div className="bg-linear-to-br from-primary/5 to-primary/10 rounded p-4 mb-8 border border-primary/20 ">
                     <div className="flex items-center gap-2 mb-4">
                         <CheckCircle className="w-5 h-5 text-primary" />
-                        <h3 className="text-sm font-semibold text-primary uppercase tracking-wide">
+                        <h3 className="text-sm font-medium text-primary uppercase tracking-wide">
                             Invitation Details
                         </h3>
                     </div>
@@ -253,7 +253,7 @@ const AcceptInvitationForm = () => {
                                 <p className="text-xs font-medium text-primary/50 uppercase tracking-wide mb-1">
                                     Full Name
                                 </p>
-                                <p className="text-base font-semibold text-primary truncate">
+                                <p className="text-base font-medium text-primary truncate">
                                     {invitationData.name}
                                 </p>
                             </div>
@@ -266,7 +266,7 @@ const AcceptInvitationForm = () => {
                                 <p className="text-xs font-medium text-primary/50 uppercase tracking-wide mb-1">
                                     Email Address
                                 </p>
-                                <p className="text-base font-semibold text-primary truncate">
+                                <p className="text-base font-medium text-primary truncate">
                                     {invitationData.email}
                                 </p>
                             </div>
@@ -280,7 +280,7 @@ const AcceptInvitationForm = () => {
                                     <p className="text-xs font-medium text-primary/50 uppercase tracking-wide mb-1">
                                         Role
                                     </p>
-                                    <p className="text-base font-semibold text-primary truncate">
+                                    <p className="text-base font-medium text-primary truncate">
                                         {invitationData.role.displayName}
                                     </p>
                                 </div>
@@ -288,21 +288,21 @@ const AcceptInvitationForm = () => {
                         )}
                         {(invitationData.tenantName ||
                             invitationData.tenant) && (
-                            <div className="flex items-start gap-4 p-3 bg-card/60 rounded-lg backdrop-blur-sm">
-                                <div className="w-12 h-12 rounded bg-primary/10 flex items-center justify-center shrink-0">
-                                    <Building className="w-5 h-5 text-primary" />
+                                <div className="flex items-start gap-4 p-3 bg-card/60 rounded-lg backdrop-blur-sm">
+                                    <div className="w-12 h-12 rounded bg-primary/10 flex items-center justify-center shrink-0">
+                                        <Building className="w-5 h-5 text-primary" />
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                        <p className="text-xs font-medium text-primary/50 uppercase tracking-wide mb-1">
+                                            Organization
+                                        </p>
+                                        <p className="text-base font-medium text-primary truncate">
+                                            {invitationData.tenantName ||
+                                                invitationData.tenant?.name}
+                                        </p>
+                                    </div>
                                 </div>
-                                <div className="flex-1 min-w-0">
-                                    <p className="text-xs font-medium text-primary/50 uppercase tracking-wide mb-1">
-                                        Organization
-                                    </p>
-                                    <p className="text-base font-semibold text-primary truncate">
-                                        {invitationData.tenantName ||
-                                            invitationData.tenant?.name}
-                                    </p>
-                                </div>
-                            </div>
-                        )}
+                            )}
                     </div>
                 </div>
             )}
@@ -337,7 +337,7 @@ const AcceptInvitationForm = () => {
                     {/* Password Requirements - Interactive */}
                     {password && (
                         <div className="bg-linear-to-br from-blue-50 to-indigo-50 border border-blue-100 rounded p-4 ">
-                            <p className="text-xs font-semibold text-blue-900 mb-3 flex items-center gap-2">
+                            <p className="text-xs font-medium text-blue-900 mb-3 flex items-center gap-2">
                                 <Lock className="w-3 h-3" />
                                 Password Requirements
                             </p>
@@ -345,18 +345,16 @@ const AcceptInvitationForm = () => {
                                 {passwordValidation.map((req, index) => (
                                     <li
                                         key={index}
-                                        className={`flex items-center gap-2 text-xs transition-all duration-200 ${
-                                            req.met
+                                        className={`flex items-center gap-2 text-xs transition-all duration-200 ${req.met
                                                 ? 'text-green-700'
                                                 : 'text-blue-700'
-                                        }`}
+                                            }`}
                                     >
                                         <div
-                                            className={`w-4 h-4 rounded-full flex items-center justify-center shrink-0 transition-all duration-200 ${
-                                                req.met
+                                            className={`w-4 h-4 rounded-full flex items-center justify-center shrink-0 transition-all duration-200 ${req.met
                                                     ? 'bg-green-500 text-white'
                                                     : 'bg-blue-200 text-blue-600'
-                                            }`}
+                                                }`}
                                         >
                                             {req.met ? (
                                                 <Check className="w-2.5 h-2.5" />
@@ -459,7 +457,7 @@ const AcceptInvitationForm = () => {
                     Already have an account?{' '}
                     <button
                         onClick={() => navigate('/login')}
-                        className="text-primary hover:text-primary/75 font-semibold underline transition-colors"
+                        className="text-primary hover:text-primary/75 font-medium underline transition-colors"
                     >
                         Sign In
                     </button>

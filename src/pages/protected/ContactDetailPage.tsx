@@ -267,7 +267,7 @@ const ContactDetailPage = () => {
             defaultTaxId: (formData.get('defaultTaxId') as string) || null,
             openingBalance:
                 formData.get('openingBalance') !== null &&
-                formData.get('openingBalance') !== ''
+                    formData.get('openingBalance') !== ''
                     ? Number(formData.get('openingBalance'))
                     : null,
             openingBalanceDate:
@@ -360,7 +360,7 @@ const ContactDetailPage = () => {
                     <div className="flex items-center gap-3">
                         {!isNew && (
                             <Avatar className="size-12">
-                                <AvatarFallback className="bg-linear-to-br from-primary/20 to-secondary/20 text-primary font-semibold text-lg">
+                                <AvatarFallback className="bg-linear-to-br from-primary/20 to-secondary/20 text-primary font-medium text-lg">
                                     {getContactInitials(displayName)}
                                 </AvatarFallback>
                             </Avatar>
@@ -741,8 +741,8 @@ const ContactDetailPage = () => {
                                 defaultValue={
                                     contact?.openingBalanceDate
                                         ? new Date(contact.openingBalanceDate)
-                                              .toISOString()
-                                              .split('T')[0]
+                                            .toISOString()
+                                            .split('T')[0]
                                         : ''
                                 }
                             />

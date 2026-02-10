@@ -173,12 +173,12 @@ const ClientReviewpage = () => {
         const updatedTransactions = transactions.map((t) =>
             t.id === selectedTransaction.id
                 ? {
-                      ...t,
-                      status: 'reviewed' as const,
-                      clientComment: comment,
-                      suggestedCategory:
-                          selectedCategory || t.suggestedCategory,
-                  }
+                    ...t,
+                    status: 'reviewed' as const,
+                    clientComment: comment,
+                    suggestedCategory:
+                        selectedCategory || t.suggestedCategory,
+                }
                 : t
         );
         setTransactions(updatedTransactions);
@@ -348,28 +348,28 @@ const ClientReviewpage = () => {
                                             className={cn(
                                                 'h-10 w-10 rounded-lg flex items-center justify-center shrink-0',
                                                 transaction.status ===
-                                                    'pending' &&
-                                                    'bg-yellow-500/10',
+                                                'pending' &&
+                                                'bg-yellow-500/10',
                                                 transaction.status ===
-                                                    'reviewed' &&
-                                                    'bg-blue-500/10',
+                                                'reviewed' &&
+                                                'bg-blue-500/10',
                                                 transaction.status ===
-                                                    'approved' &&
-                                                    'bg-green-500/10'
+                                                'approved' &&
+                                                'bg-green-500/10'
                                             )}
                                         >
                                             <StatusIcon
                                                 className={cn(
                                                     'h-5 w-5',
                                                     transaction.status ===
-                                                        'pending' &&
-                                                        'text-yellow-600',
+                                                    'pending' &&
+                                                    'text-yellow-600',
                                                     transaction.status ===
-                                                        'reviewed' &&
-                                                        'text-blue-600',
+                                                    'reviewed' &&
+                                                    'text-blue-600',
                                                     transaction.status ===
-                                                        'approved' &&
-                                                        'text-green-600'
+                                                    'approved' &&
+                                                    'text-green-600'
                                                 )}
                                             />
                                         </div>
@@ -412,7 +412,7 @@ const ClientReviewpage = () => {
                                                 <div className="text-right shrink-0">
                                                     <div
                                                         className={cn(
-                                                            'font-semibold flex items-center gap-1 justify-end',
+                                                            'font-medium flex items-center gap-1 justify-end',
                                                             transaction.amount <
                                                                 0
                                                                 ? 'text-red-600'
@@ -420,7 +420,7 @@ const ClientReviewpage = () => {
                                                         )}
                                                     >
                                                         {transaction.amount <
-                                                        0 ? (
+                                                            0 ? (
                                                             <ArrowDownRight className="h-4 w-4" />
                                                         ) : (
                                                             <ArrowUpRight className="h-4 w-4" />
@@ -507,37 +507,37 @@ const ClientReviewpage = () => {
                                             </Badge>
                                             {transaction.status ===
                                                 'pending' && (
-                                                <Button
-                                                    variant="outline"
-                                                    size="sm"
-                                                    onClick={() =>
-                                                        handleReview(
-                                                            transaction
-                                                        )
-                                                    }
-                                                    startIcon={
-                                                        <MessageSquare className="h-3.5 w-3.5" />
-                                                    }
-                                                >
-                                                    Review
-                                                </Button>
-                                            )}
+                                                    <Button
+                                                        variant="outline"
+                                                        size="sm"
+                                                        onClick={() =>
+                                                            handleReview(
+                                                                transaction
+                                                            )
+                                                        }
+                                                        startIcon={
+                                                            <MessageSquare className="h-3.5 w-3.5" />
+                                                        }
+                                                    >
+                                                        Review
+                                                    </Button>
+                                                )}
                                             {transaction.status ===
                                                 'reviewed' && (
-                                                <Button
-                                                    size="sm"
-                                                    onClick={() =>
-                                                        handleApprove(
-                                                            transaction.id
-                                                        )
-                                                    }
-                                                    startIcon={
-                                                        <Check className="h-3.5 w-3.5" />
-                                                    }
-                                                >
-                                                    Approve
-                                                </Button>
-                                            )}
+                                                    <Button
+                                                        size="sm"
+                                                        onClick={() =>
+                                                            handleApprove(
+                                                                transaction.id
+                                                            )
+                                                        }
+                                                        startIcon={
+                                                            <Check className="h-3.5 w-3.5" />
+                                                        }
+                                                    >
+                                                        Approve
+                                                    </Button>
+                                                )}
                                         </div>
                                     </div>
                                 </div>
@@ -663,13 +663,13 @@ const ClientReviewpage = () => {
                                 />
                                 {selectedTransaction.suggestedCategory &&
                                     selectedCategory !==
-                                        selectedTransaction.suggestedCategory && (
+                                    selectedTransaction.suggestedCategory && (
                                         <button
                                             type="button"
                                             onClick={() =>
                                                 setSelectedCategory(
                                                     selectedTransaction.suggestedCategory ||
-                                                        ''
+                                                    ''
                                                 )
                                             }
                                             className="text-xs text-primary hover:underline flex items-center gap-1"

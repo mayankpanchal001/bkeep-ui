@@ -38,7 +38,7 @@ const SummaryCard = ({
             <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-3">
                     {icon && <div className="text-primary text-xl">{icon}</div>}
-                    <h3 className="text-sm font-semibold text-primary/75 uppercase">
+                    <h3 className="text-sm font-medium text-primary/75 uppercase">
                         {title}
                     </h3>
                 </div>
@@ -53,11 +53,10 @@ const SummaryCard = ({
                 <p className="text-3xl font-bold text-primary mb-2">{value}</p>
                 {trend && (
                     <div
-                        className={`flex items-center gap-2 text-sm ${
-                            trend.direction === 'up'
+                        className={`flex items-center gap-2 text-sm ${trend.direction === 'up'
                                 ? 'text-secondary'
                                 : 'text-destructive'
-                        }`}
+                            }`}
                     >
                         {trend.direction === 'up' ? (
                             <FaArrowUp className="w-3 h-3" />

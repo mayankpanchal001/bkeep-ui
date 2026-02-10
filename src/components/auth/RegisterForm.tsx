@@ -1,7 +1,7 @@
+import { UserPlus } from 'lucide-react';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { showErrorToast, showSuccessToast } from '../../utills/toast';
-import { UserPlus } from 'lucide-react';
 import { Icons } from '../shared/Icons';
 import { Button } from '../ui/button';
 import Input from '../ui/input';
@@ -171,7 +171,7 @@ export function RegisterForm() {
 
                 {error && (
                     <div className="border border-red-100 bg-red-50/50 p-2.5 rounded-lg">
-                        <p className="text-[12px] text-center text-red-600 font-semibold tracking-tight">
+                        <p className="text-[12px] text-center text-red-600 font-medium tracking-tight">
                             {error}
                         </p>
                     </div>

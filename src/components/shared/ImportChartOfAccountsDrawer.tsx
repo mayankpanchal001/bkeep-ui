@@ -153,7 +153,7 @@ const ImportChartOfAccountsDrawer = ({
         // Validate file type
         if (
             file.type ===
-                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
             file.type === 'application/vnd.ms-excel' ||
             file.name.endsWith('.xlsx') ||
             file.name.endsWith('.xls') ||
@@ -184,9 +184,9 @@ const ImportChartOfAccountsDrawer = ({
                             const match = headers.find(
                                 (header) =>
                                     header.toLowerCase() ===
-                                        field.label.toLowerCase() ||
+                                    field.label.toLowerCase() ||
                                     header.toLowerCase() ===
-                                        field.key.toLowerCase()
+                                    field.key.toLowerCase()
                             );
                             if (match) {
                                 autoMapping[field.key] = match;
@@ -298,12 +298,12 @@ const ImportChartOfAccountsDrawer = ({
         step === 'select'
             ? false
             : step === 'template'
-              ? selectedTemplateId !== null
-              : step === 'file-upload'
-                ? selectedFile !== null
-                : importFields
-                      .filter((f) => f.required)
-                      .every((f) => mapping[f.key]);
+                ? selectedTemplateId !== null
+                : step === 'file-upload'
+                    ? selectedFile !== null
+                    : importFields
+                        .filter((f) => f.required)
+                        .every((f) => mapping[f.key]);
 
     const handleClose = () => {
         if (importMutation.isPending || applyTemplateMutation.isPending) {
@@ -334,14 +334,14 @@ const ImportChartOfAccountsDrawer = ({
         >
             <DrawerContent className="h-[100vh] max-h-[100vh] mt-0 rounded-none bg-card flex flex-col">
                 <DrawerHeader className="flex flex-row items-center justify-between px-6 py-4 border-b border-primary/10">
-                    <DrawerTitle className="text-xl font-semibold text-primary">
+                    <DrawerTitle className="text-xl font-medium text-primary">
                         {step === 'select'
                             ? 'Import Chart of Accounts'
                             : step === 'template'
-                              ? 'Import from Template'
-                              : step === 'file-upload'
-                                ? 'Import from File'
-                                : 'Map Import Fields'}
+                                ? 'Import from Template'
+                                : step === 'file-upload'
+                                    ? 'Import from File'
+                                    : 'Map Import Fields'}
                     </DrawerTitle>
                     <button
                         onClick={handleClose}
@@ -360,7 +360,7 @@ const ImportChartOfAccountsDrawer = ({
                     {step === 'select' ? (
                         <div className="space-y-6 py-8">
                             <div className="text-center flex flex-col gap-2 mb-8">
-                                <p className="text-lg font-semibold text-primary">
+                                <p className="text-lg font-medium text-primary">
                                     Choose Import Method
                                 </p>
                                 <p className="text-sm text-primary/50">
@@ -381,7 +381,7 @@ const ImportChartOfAccountsDrawer = ({
                                     <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-3 group-hover:bg-primary/20">
                                         <FileSpreadsheet className="w-6 h-6 text-primary" />
                                     </div>
-                                    <h3 className="text-base font-semibold text-primary mb-2">
+                                    <h3 className="text-base font-medium text-primary mb-2">
                                         Import from Template
                                     </h3>
                                     <p className="text-xs text-primary/50 text-center">
@@ -399,7 +399,7 @@ const ImportChartOfAccountsDrawer = ({
                                     <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-3 group-hover:bg-primary/20">
                                         <Upload className="w-6 h-6 text-primary" />
                                     </div>
-                                    <h3 className="text-base font-semibold text-primary mb-2">
+                                    <h3 className="text-base font-medium text-primary mb-2">
                                         Import from File
                                     </h3>
                                     <p className="text-xs text-primary/50 text-center">
@@ -599,15 +599,13 @@ const ImportChartOfAccountsDrawer = ({
                                 </p>
 
                                 <div
-                                    className={`relative flex flex-col items-center justify-center w-full h-48 border-2 border-dashed rounded-lg transition-colors cursor-pointer ${
-                                        dragActive
+                                    className={`relative flex flex-col items-center justify-center w-full h-48 border-2 border-dashed rounded-lg transition-colors cursor-pointer ${dragActive
                                             ? 'border-primary bg-primary/10'
                                             : 'border-primary/25 hover:border-primary/50 hover:bg-card'
-                                    } ${
-                                        selectedFile
+                                        } ${selectedFile
                                             ? 'bg-primary/20 border-primary'
                                             : ''
-                                    }`}
+                                        }`}
                                     onDragEnter={handleDrag}
                                     onDragLeave={handleDrag}
                                     onDragOver={handleDrag}

@@ -153,7 +153,7 @@ const IncomeStatementTable = () => {
                 return 'border-t-2 border-primary bg-primary/10 font-bold text-primary text-base';
             }
             let classes =
-                'border-b border-primary/10 font-semibold text-primary';
+                'border-b border-primary/10 font-medium text-primary';
             if (row.collapsible) classes += ' cursor-pointer hover:bg-card';
             return classes;
         }

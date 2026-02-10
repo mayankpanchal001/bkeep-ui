@@ -196,7 +196,7 @@ export function PasskeyLoginForm() {
                 // Handle generic errors
                 showErrorToast(
                     error.message ||
-                        'Passkey authentication failed. Please try again.'
+                    'Passkey authentication failed. Please try again.'
                 );
             }
             // Note: API errors are handled by the usePasskeyLoginInit and usePasskeyLoginVerify hooks
@@ -248,7 +248,7 @@ export function PasskeyLoginForm() {
                 </div>
 
                 <div>
-                    <h3 className="text-lg font-semibold text-primary mb-2">
+                    <h3 className="text-lg font-medium text-primary mb-2">
                         No Passkey Account Found
                     </h3>
                     <p className="text-sm text-primary/75 mb-4">
@@ -259,22 +259,22 @@ export function PasskeyLoginForm() {
                 <div className="bg-blue-50 border border-blue-200 rounded p-4 text-left">
                     <ol className="text-sm text-blue-900 flex flex-col gap-2">
                         <li className="flex gap-2">
-                            <span className="font-semibold">1.</span>
+                            <span className="font-medium">1.</span>
                             <span>Sign in with your email and password</span>
                         </li>
                         <li className="flex gap-2">
-                            <span className="font-semibold">2.</span>
+                            <span className="font-medium">2.</span>
                             <span>Go to Settings → Security</span>
                         </li>
                         <li className="flex gap-2">
-                            <span className="font-semibold">3.</span>
+                            <span className="font-medium">3.</span>
                             <span>
                                 Click "Passkey Management" and register a
                                 passkey
                             </span>
                         </li>
                         <li className="flex gap-2">
-                            <span className="font-semibold">4.</span>
+                            <span className="font-medium">4.</span>
                             <span>Return here to use passkey login</span>
                         </li>
                     </ol>

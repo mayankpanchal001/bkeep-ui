@@ -99,7 +99,6 @@ export const buildApiFilters = (params: {
         filterMaxAmount,
         sort,
         order,
-        contactsData,
     } = params;
 
     const filters: Record<string, unknown> = { page, limit };
@@ -112,42 +111,44 @@ export const buildApiFilters = (params: {
 
     if (search) {
         if (isDatePattern(trimmedSearch)) {
-            const isoDate = parseSearchAsDate(trimmedSearch);
-            if (isoDate) {
-                const fullDateMatch = trimmedSearch.match(
-                    /^(\d{4})[-/](\d{1,2})[-/](\d{1,2})$/
+            // Parse date manually to avoid timezone issues
+            const fullDateMatch = trimmedSearch.match(
+                /^(\d{4})[-/](\d{1,2})[-/](\d{1,2})$/
+            );
+            if (fullDateMatch) {
+                const [, year, month, day] = fullDateMatch;
+                // Construct ISO strings for start and end of day in UTC
+                // Or simply pass the date string if the API supports partial matching
+                // Here we construct a precise range
+                const startDate = new Date(
+                    Number(year),
+                    Number(month) - 1,
+                    Number(day),
+                    0,
+                    0,
+                    0,
+                    0
                 );
-                if (fullDateMatch) {
-                    const searchDate = new Date(isoDate);
-                    const startOfDay = new Date(
-                        searchDate.getFullYear(),
-                        searchDate.getMonth(),
-                        searchDate.getDate(),
-                        0,
-                        0,
-                        0,
-                        0
-                    );
-                    const endOfDay = new Date(
-                        searchDate.getFullYear(),
-                        searchDate.getMonth(),
-                        searchDate.getDate(),
-                        23,
-                        59,
-                        59,
-                        999
-                    );
-                    filters.startDate = startOfDay.toISOString();
-                    filters.endDate = endOfDay.toISOString();
-                } else {
-                    filters.startDate = isoDate;
-                }
+                const endDate = new Date(
+                    Number(year),
+                    Number(month) - 1,
+                    Number(day),
+                    23,
+                    59,
+                    59,
+                    999
+                );
+                filters.startDate = startDate.toISOString();
+                filters.endDate = endDate.toISOString();
             } else {
-                filters.search = search;
+                const isoDate = parseSearchAsDate(trimmedSearch);
+                if (isoDate) filters.startDate = isoDate;
+                else filters.search = search;
             }
         } else if (isNumericSearch) {
-            filters.minAmount = searchAsNumber;
-            filters.maxAmount = searchAsNumber;
+            // If it's a number, it could be an amount or a reference number
+            // We set search as the number string, but we DO NOT block other filters
+            filters.search = search;
         } else {
             filters.search = search;
         }
@@ -167,26 +168,20 @@ export const buildApiFilters = (params: {
     }
 
     if (filterSupplier) {
-        const items = contactsData?.data?.items || [];
-        const contactId = items.find(
-            (c) => c.displayName === filterSupplier
-        )?.id;
-        if (contactId) {
-            filters.contactId = contactId;
-        }
+        // filterSupplier comes from Combobox value which is the ID
+        filters.contactId = filterSupplier;
     }
-    if (filterCategory) filters.category = filterCategory;
+    if (filterCategory) filters.categoryId = filterCategory;
     if (filterTax) filters.taxId = filterTax;
 
-    if (!isNumericSearch) {
-        if (filterMinAmount) {
-            const minAmount = parseFloat(filterMinAmount);
-            if (!isNaN(minAmount)) filters.minAmount = minAmount;
-        }
-        if (filterMaxAmount) {
-            const maxAmount = parseFloat(filterMaxAmount);
-            if (!isNaN(maxAmount)) filters.maxAmount = maxAmount;
-        }
+    // Apply amount filters regardless of search type
+    if (filterMinAmount) {
+        const minAmount = parseFloat(filterMinAmount);
+        if (!isNaN(minAmount)) filters.minAmount = minAmount;
+    }
+    if (filterMaxAmount) {
+        const maxAmount = parseFloat(filterMaxAmount);
+        if (!isNaN(maxAmount)) filters.maxAmount = maxAmount;
     }
 
     if (sort) {
@@ -194,9 +189,16 @@ export const buildApiFilters = (params: {
             date: 'paidAt',
             spent: 'amount',
             received: 'amount',
-            tax: 'amount',
+            amount: 'amount',
+            tax: 'taxId',
+            taxId: 'taxId',
+            category: 'categoryId',
+            contactId: 'contactId',
+            description: 'description',
+            status: 'status',
         };
         const apiSortKey = sortKeyMap[sort] || sort;
+
         const validApiSortKeys = [
             'paidAt',
             'amount',
@@ -204,6 +206,11 @@ export const buildApiFilters = (params: {
             'reconciled',
             'createdAt',
             'updatedAt',
+            'description',
+            'taxId',
+            'contactId',
+            'categoryId',
+            'status',
         ];
         if (validApiSortKeys.includes(apiSortKey)) {
             filters.sort = apiSortKey;

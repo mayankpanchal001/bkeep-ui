@@ -96,11 +96,10 @@ const IncomeStatementpage = () => {
                                 onClick={() =>
                                     setDateRange(range.toLowerCase())
                                 }
-                                className={`px-4 py-2 text-sm font-medium rounded transition-all ${
-                                    dateRange === range.toLowerCase()
+                                className={`px-4 py-2 text-sm font-medium rounded transition-all ${dateRange === range.toLowerCase()
                                         ? 'bg-primary text-white'
                                         : 'bg-primary/10 text-primary hover:bg-primary/25'
-                                }`}
+                                    }`}
                             >
                                 {range}
                             </button>
@@ -156,7 +155,7 @@ const IncomeStatementpage = () => {
 
             {/* Income Statement Table */}
             <div className="bg-card rounded  border border-primary/10 p-4">
-                <h3 className="text-lg font-semibold text-primary mb-4">
+                <h3 className="text-lg font-medium text-primary mb-4">
                     Detailed Income Statement
                 </h3>
                 <IncomeStatementTable />

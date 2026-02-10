@@ -1,15 +1,15 @@
 import { LoginForm } from '@/components/auth/LoginForm';
+import { Icons } from '@/components/shared/Icons';
 import ThemeSwitcher from '@/components/shared/ThemeSwitcher';
+import { Button } from '@/components/ui/button';
+import Input from '@/components/ui/input';
 import { passkeyLoginInitRequest } from '@/services/apis/authApi';
 import { storePasskeyUser } from '@/utills/passkey';
 import { Lock, LogIn } from 'lucide-react';
-import { FaFingerprint } from 'react-icons/fa';
 import { useState } from 'react';
+import { FaFingerprint } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router';
 import { logo } from '../../utills/image';
-import { Button } from '@/components/ui/button';
-import Input from '@/components/ui/input';
-import { Icons } from '@/components/shared/Icons';
 
 type LoginStep = 'email' | 'verify' | 'password';
 
@@ -190,7 +190,7 @@ const Loginpage = () => {
                     {/* Login Form Card */}
                     <div className="p-8 lg:p-12">
                         <div className="mb-8 text-center">
-                            <h2 className="text-xl sm:text-2xl font-semibold leading-tight text-primary mb-2 tracking-tight">
+                            <h2 className="text-xl sm:text-2xl font-medium leading-tight text-primary mb-2 tracking-tight">
                                 {getStepHeading().title}
                             </h2>
                             <p className="text-sm sm:text-base text-primary/70 dark:text-primary/65 font-medium leading-relaxed">
@@ -242,7 +242,7 @@ const Loginpage = () => {
                                 className="h-24 w-24 object-contain"
                             />
                         </Link>
-                        <h1 className="text-2xl lg:text-3xl font-semibold leading-tight text-primary mb-2 tracking-tight">
+                        <h1 className="text-2xl lg:text-3xl font-medium leading-tight text-primary mb-2 tracking-tight">
                             Bkeep Accounting
                         </h1>
                         <p className="text-base lg:text-lg text-primary/70 dark:text-primary/65 font-medium tracking-normal leading-relaxed">
@@ -258,7 +258,7 @@ const Loginpage = () => {
 
                             {/* Left Section */}
                             <div className="pr-9">
-                                <h3 className="text-primary text-base font-semibold mb-1">
+                                <h3 className="text-primary text-base font-medium mb-1">
                                     Ready to launch?
                                 </h3>
                                 <p className="text-primary/70 dark:text-primary/65 text-sm leading-relaxed font-medium">
@@ -269,7 +269,7 @@ const Loginpage = () => {
 
                             {/* Right Section */}
                             <div className="pl-6">
-                                <h3 className="text-primary text-base font-semibold mb-1">
+                                <h3 className="text-primary text-base font-medium mb-1">
                                     Need help?
                                 </h3>
                                 <p className="text-primary/70 dark:text-primary/65 text-sm leading-relaxed font-medium">

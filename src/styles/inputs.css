@@ -10,6 +10,7 @@ input::placeholder {
 
 .input {
     @apply py-1 px-1 focus:outline-none focus:ring-0 w-full text-sm font-normal text-primary;
+
     /* Ensure autofill also uses primary text color */
     &:-webkit-autofill,
     &:-webkit-autofill:hover,
@@ -23,6 +24,7 @@ input::placeholder {
 .dark .input {
     /* Variables handle colors now, but keeping specific overrides just in case, using theme vars */
     color: var(--color-primary) !important;
+
     &:-webkit-autofill,
     &:-webkit-autofill:hover,
     &:-webkit-autofill:focus {
@@ -31,5 +33,5 @@ input::placeholder {
 }
 
 .input-label {
-    @apply text-[13px] font-semibold text-primary/80 mb-1 ml-0.5 block tracking-tight;
+    @apply text-[13px] font-medium text-primary/80 mb-1 ml-0.5 block tracking-tight;
 }

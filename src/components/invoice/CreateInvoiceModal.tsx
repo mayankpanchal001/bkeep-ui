@@ -166,10 +166,10 @@ const CreateInvoiceModal = ({
         const q = customerSearch.trim().toLowerCase();
         return q
             ? MOCK_CUSTOMERS.filter(
-                  (c) =>
-                      c.name.toLowerCase().includes(q) ||
-                      c.email?.toLowerCase().includes(q)
-              )
+                (c) =>
+                    c.name.toLowerCase().includes(q) ||
+                    c.email?.toLowerCase().includes(q)
+            )
             : MOCK_CUSTOMERS;
     }, [customerSearch]);
 
@@ -299,7 +299,7 @@ const CreateInvoiceModal = ({
                             <FileText className="h-5 w-5 text-primary" />
                         </div>
                         <div>
-                            <h1 className="text-lg font-semibold text-foreground">
+                            <h1 className="text-lg font-medium text-foreground">
                                 Create Invoice
                             </h1>
                             <p className="text-xs text-muted-foreground">
@@ -672,7 +672,7 @@ const CreateInvoiceModal = ({
                         >
                             <div className="flex justify-between items-center">
                                 <div>
-                                    <h3 className="text-sm font-semibold text-foreground">
+                                    <h3 className="text-sm font-medium text-foreground">
                                         Line Items
                                     </h3>
                                     <p className="text-xs text-muted-foreground">
@@ -786,7 +786,7 @@ const CreateInvoiceModal = ({
                                                         <div className="h-10 px-3 flex items-center bg-muted rounded-md text-sm font-medium">
                                                             {formatCurrency(
                                                                 item.qty *
-                                                                    item.price
+                                                                item.price
                                                             )}
                                                         </div>
                                                     </div>
@@ -884,11 +884,11 @@ const CreateInvoiceModal = ({
                                         <span className="text-muted-foreground">
                                             Discount (
                                             {formData.discountType ===
-                                            'percentage'
+                                                'percentage'
                                                 ? `${formData.discount}%`
                                                 : formatCurrency(
-                                                      formData.discount
-                                                  )}
+                                                    formData.discount
+                                                )}
                                             )
                                         </span>
                                         <span className="font-medium text-destructive">
@@ -906,7 +906,7 @@ const CreateInvoiceModal = ({
                                 </div>
                                 <Separator />
                                 <div className="flex justify-between">
-                                    <span className="font-semibold">Total</span>
+                                    <span className="font-medium">Total</span>
                                     <span className="font-bold text-lg">
                                         {formatCurrency(total)}
                                     </span>
@@ -920,7 +920,7 @@ const CreateInvoiceModal = ({
                             className="flex-1 p-6 space-y-6 mt-0"
                         >
                             <div>
-                                <h3 className="text-sm font-semibold text-foreground mb-1">
+                                <h3 className="text-sm font-medium text-foreground mb-1">
                                     Company Information
                                 </h3>
                                 <p className="text-xs text-muted-foreground mb-4">
@@ -1126,7 +1126,7 @@ const CreateInvoiceModal = ({
                                         <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1">
                                             From
                                         </p>
-                                        <p className="font-semibold text-foreground">
+                                        <p className="font-medium text-foreground">
                                             {companyInfo.name}
                                         </p>
                                         <p className="text-sm text-muted-foreground">
@@ -1151,7 +1151,7 @@ const CreateInvoiceModal = ({
                                         </p>
                                         {formData.customer ? (
                                             <>
-                                                <p className="font-semibold text-foreground">
+                                                <p className="font-medium text-foreground">
                                                     {formData.customer.name}
                                                 </p>
                                                 {formData.customer.email && (
@@ -1261,7 +1261,7 @@ const CreateInvoiceModal = ({
                                                     <td className="py-3 text-right font-medium text-foreground">
                                                         {formatCurrency(
                                                             item.qty *
-                                                                item.price
+                                                            item.price
                                                         )}
                                                     </td>
                                                 </tr>
@@ -1286,11 +1286,11 @@ const CreateInvoiceModal = ({
                                         <span className="text-muted-foreground">
                                             Discount (
                                             {formData.discountType ===
-                                            'percentage'
+                                                'percentage'
                                                 ? `${formData.discount}%`
                                                 : formatCurrency(
-                                                      formData.discount
-                                                  )}
+                                                    formData.discount
+                                                )}
                                             )
                                         </span>
                                         <span className="text-destructive">
@@ -1308,7 +1308,7 @@ const CreateInvoiceModal = ({
                                 </div>
                                 <Separator />
                                 <div className="flex justify-between pt-2">
-                                    <span className="font-semibold text-foreground">
+                                    <span className="font-medium text-foreground">
                                         Total
                                     </span>
                                     <span className="font-bold text-lg text-foreground">
