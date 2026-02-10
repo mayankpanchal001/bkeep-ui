@@ -32,6 +32,7 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import {
+    SortDirection,
     Table,
     TableBody,
     TableCell,
@@ -641,9 +642,9 @@ const ChartOfAccountspage = () => {
         setTempIsActiveFilter('all');
     };
 
-    const handleSortChange = (key: string, direction: 'asc' | 'desc') => {
-        setSortKey(key);
-        setSortDirection(direction);
+    const handleSortChange = (key: string, direction: SortDirection) => {
+        setSortKey(direction === null ? null : key);
+        setSortDirection(direction || 'asc');
     };
 
     return (
@@ -721,188 +722,190 @@ const ChartOfAccountspage = () => {
                 </div>
             )}
 
-            {/* Accounts Table */}
-            <Table
-                enableSelection
-                rowIds={rowIds}
-                selectedIds={selectedItems}
-                onSelectionChange={setSelectedItems}
-                className="h-full"
-                sortKey={sortKey}
-                sortDirection={sortDirection}
-                onSortChange={handleSortChange}
-            >
-                <TableSelectionToolbar>
-                    <Button
-                        onClick={handleBulkExport}
-                        variant="outline"
-                        size="sm"
-                        disabled={isExporting || deleteMutation.isPending}
-                    >
-                        {isExporting ? 'Exporting...' : 'Export Selected'}
-                    </Button>
-                    <Button
-                        onClick={handleBulkDelete}
-                        variant="destructive"
-                        size="sm"
-                        disabled={isExporting || deleteMutation.isPending}
-                    >
-                        Delete Selected
-                    </Button>
-                </TableSelectionToolbar>
-
-                <TableHeader>
-                    <tr>
-                        <TableHead className="w-[50px]">
-                            <TableSelectAllCheckbox />
-                        </TableHead>
-                        <TableHead sortable sortKey="accountNumber">
-                            Number
-                        </TableHead>
-                        <TableHead sortable sortKey="accountName">
-                            Account Name
-                        </TableHead>
-                        <TableHead sortable sortKey="accountType">
-                            Type
-                        </TableHead>
-                        <TableHead sortable sortKey="accountDetailType">
-                            Detail Type
-                        </TableHead>
-                        <TableHead
-                            align="right"
-                            sortable
-                            sortKey="currentBalance"
+            {/* Accounts Table -*/}
+            <div className="flex-1 flex flex-col min-h-0 gap-0">
+                <Table
+                    enableSelection
+                    rowIds={rowIds}
+                    selectedIds={selectedItems}
+                    onSelectionChange={setSelectedItems}
+                    containerClassName="flex-1 min-h-0 flex flex-col [&>div]:flex-1"
+                    sortKey={sortKey}
+                    sortDirection={sortDirection}
+                    onSortChange={handleSortChange}
+                >
+                    <TableSelectionToolbar>
+                        <Button
+                            onClick={handleBulkExport}
+                            variant="outline"
+                            size="sm"
+                            disabled={isExporting || deleteMutation.isPending}
                         >
-                            Current Balance
-                        </TableHead>
-                        <TableHead align="center">Actions</TableHead>
-                    </tr>
-                </TableHeader>
-                <TableBody>
-                    {isLoading || isFetching ? (
-                        <TableLoadingState colSpan={7} rows={8} />
-                    ) : accounts.length === 0 ? (
-                        <TableEmptyState
-                            colSpan={7}
-                            message="No accounts found"
-                            description="Create your first account to get started"
-                        />
-                    ) : (
-                        accounts.map((account) => (
-                            <TableRow key={account.id} rowId={account.id}>
-                                <TableCell>
-                                    <TableRowCheckbox rowId={account.id} />
-                                </TableCell>
-                                <TableCell>
-                                    <div className="font-medium text-primary">
-                                        {account.accountNumber || '-'}
-                                    </div>
-                                </TableCell>
-                                <TableCell>
-                                    <div className="flex flex-col">
+                            {isExporting ? 'Exporting...' : 'Export Selected'}
+                        </Button>
+                        <Button
+                            onClick={handleBulkDelete}
+                            variant="destructive"
+                            size="sm"
+                            disabled={isExporting || deleteMutation.isPending}
+                        >
+                            Delete Selected
+                        </Button>
+                    </TableSelectionToolbar>
+
+                    <TableHeader>
+                        <tr>
+                            <TableHead className="w-[50px]">
+                                <TableSelectAllCheckbox />
+                            </TableHead>
+                            <TableHead sortable sortKey="accountNumber">
+                                Number
+                            </TableHead>
+                            <TableHead sortable sortKey="accountName">
+                                Account Name
+                            </TableHead>
+                            <TableHead sortable sortKey="accountType">
+                                Type
+                            </TableHead>
+                            <TableHead sortable sortKey="accountDetailType">
+                                Detail Type
+                            </TableHead>
+                            <TableHead
+                                align="right"
+                                sortable
+                                sortKey="currentBalance"
+                            >
+                                Current Balance
+                            </TableHead>
+                            <TableHead align="center">Actions</TableHead>
+                        </tr>
+                    </TableHeader>
+                    <TableBody>
+                        {isLoading || isFetching ? (
+                            <TableLoadingState colSpan={7} rows={8} />
+                        ) : accounts.length === 0 ? (
+                            <TableEmptyState
+                                colSpan={7}
+                                message="No accounts found"
+                                description="Create your first account to get started"
+                            />
+                        ) : (
+                            accounts.map((account) => (
+                                <TableRow key={account.id} rowId={account.id}>
+                                    <TableCell>
+                                        <TableRowCheckbox rowId={account.id} />
+                                    </TableCell>
+                                    <TableCell>
                                         <div className="font-medium text-primary">
-                                            {account.accountName}
+                                            {account.accountNumber || '-'}
                                         </div>
-                                        {account.description && (
-                                            <div className="text-xs text-primary/50 mt-1">
-                                                {account.description}
+                                    </TableCell>
+                                    <TableCell>
+                                        <div className="flex flex-col">
+                                            <div className="font-medium text-primary">
+                                                {account.accountName}
                                             </div>
-                                        )}
-                                    </div>
-                                </TableCell>
-                                <TableCell>
-                                    <span className="text-sm text-primary">
-                                        {(() => {
-                                            const subtypes =
-                                                ACCOUNT_HIERARCHY[
-                                                    account.accountType
-                                                ];
-                                            if (subtypes) {
-                                                for (const subtype of subtypes) {
-                                                    if (
-                                                        subtype.detailTypes.some(
-                                                            (d) =>
-                                                                d.value ===
-                                                                account.accountDetailType
-                                                        )
-                                                    ) {
-                                                        return subtype.label;
+                                            {account.description && (
+                                                <div className="text-xs text-primary/50 mt-1">
+                                                    {account.description}
+                                                </div>
+                                            )}
+                                        </div>
+                                    </TableCell>
+                                    <TableCell>
+                                        <span className="text-sm text-primary">
+                                            {(() => {
+                                                const subtypes =
+                                                    ACCOUNT_HIERARCHY[
+                                                        account.accountType
+                                                    ];
+                                                if (subtypes) {
+                                                    for (const subtype of subtypes) {
+                                                        if (
+                                                            subtype.detailTypes.some(
+                                                                (d) =>
+                                                                    d.value ===
+                                                                    account.accountDetailType
+                                                            )
+                                                        ) {
+                                                            return subtype.label;
+                                                        }
                                                     }
                                                 }
-                                            }
-                                            // Fallback to generic type
-                                            return ACCOUNT_TYPE_DISPLAY[
-                                                account.accountType
-                                            ];
-                                        })()}
-                                    </span>
-                                </TableCell>
-                                <TableCell>
-                                    <span className="text-sm text-primary/75 capitalize">
-                                        {account.accountDetailType?.replace(
-                                            /-/g,
-                                            ' '
-                                        )}
-                                    </span>
-                                </TableCell>
-                                <TableCell align="right">
-                                    <span className="font-semibold text-primary">
-                                        {currencyFormatter.format(
-                                            parseFloat(
-                                                account.currentBalance ||
-                                                    String(
-                                                        account.openingBalance
-                                                    )
-                                            )
-                                        )}
-                                    </span>
-                                </TableCell>
-                                <TableCell>
-                                    <div className="flex items-center justify-center gap-2">
-                                        <DropdownMenu>
-                                            <DropdownMenuTrigger asChild>
-                                                <Button
-                                                    variant="outline"
-                                                    size="sm"
-                                                    className="min-w-[1rem]"
-                                                >
-                                                    <MoreVertical className="h-4 w-4" />
-                                                </Button>
-                                            </DropdownMenuTrigger>
-                                            <DropdownMenuContent align="end">
-                                                <DropdownMenuItem
-                                                    onClick={() =>
-                                                        handleOpenEditModal(
-                                                            account
+                                                // Fallback to generic type
+                                                return ACCOUNT_TYPE_DISPLAY[
+                                                    account.accountType
+                                                ];
+                                            })()}
+                                        </span>
+                                    </TableCell>
+                                    <TableCell>
+                                        <span className="text-sm text-primary/75 capitalize">
+                                            {account.accountDetailType?.replace(
+                                                /-/g,
+                                                ' '
+                                            )}
+                                        </span>
+                                    </TableCell>
+                                    <TableCell align="right">
+                                        <span className="font-semibold text-primary">
+                                            {currencyFormatter.format(
+                                                parseFloat(
+                                                    account.currentBalance ||
+                                                        String(
+                                                            account.openingBalance
                                                         )
-                                                    }
-                                                >
-                                                    <Pencil className="w-4 h-4" />
-                                                    Edit
-                                                </DropdownMenuItem>
+                                                )
+                                            )}
+                                        </span>
+                                    </TableCell>
+                                    <TableCell>
+                                        <div className="flex items-center justify-center gap-2">
+                                            <DropdownMenu>
+                                                <DropdownMenuTrigger asChild>
+                                                    <Button
+                                                        variant="outline"
+                                                        size="sm"
+                                                        className="min-w-[1rem]"
+                                                    >
+                                                        <MoreVertical className="h-4 w-4" />
+                                                    </Button>
+                                                </DropdownMenuTrigger>
+                                                <DropdownMenuContent align="end">
+                                                    <DropdownMenuItem
+                                                        onClick={() =>
+                                                            handleOpenEditModal(
+                                                                account
+                                                            )
+                                                        }
+                                                    >
+                                                        <Pencil className="w-4 h-4" />
+                                                        Edit
+                                                    </DropdownMenuItem>
 
-                                                <DropdownMenuItem
-                                                    onClick={() =>
-                                                        setDeleteAccount(
-                                                            account
-                                                        )
-                                                    }
-                                                >
-                                                    <Trash2 className="w-4 h-4" />
-                                                    Delete
-                                                </DropdownMenuItem>
-                                            </DropdownMenuContent>
-                                        </DropdownMenu>
-                                    </div>
-                                </TableCell>
-                            </TableRow>
-                        ))
-                    )}
-                </TableBody>
-            </Table>
+                                                    <DropdownMenuItem
+                                                        onClick={() =>
+                                                            setDeleteAccount(
+                                                                account
+                                                            )
+                                                        }
+                                                    >
+                                                        <Trash2 className="w-4 h-4" />
+                                                        Delete
+                                                    </DropdownMenuItem>
+                                                </DropdownMenuContent>
+                                            </DropdownMenu>
+                                        </div>
+                                    </TableCell>
+                                </TableRow>
+                            ))
+                        )}
+                    </TableBody>
+                </Table>
+            </div>
 
             {pagination && (
-                <div className="flex items-center justify-between px-2 py-4">
+                <div className="flex items-center justify-between py-0 mt-auto">
                     <div className="flex items-center space-x-2">
                         <p className="text-sm font-medium">Rows per page</p>
                         <Select
@@ -934,6 +937,7 @@ const ChartOfAccountspage = () => {
                             totalItems={pagination.total}
                             itemsPerPage={pagination.limit}
                             onPageChange={setPage}
+                            className="p-0 mt-0 mr-[100px]"
                         />
                     )}
                 </div>
