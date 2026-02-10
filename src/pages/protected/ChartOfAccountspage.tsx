@@ -38,6 +38,12 @@ import {
     TableSelectionToolbar,
 } from '@/components/ui/table';
 import {
+    dismissToast,
+    showErrorToast,
+    showLoadingToast,
+    showSuccessToast,
+} from '@/utills/toast';
+import {
     FileUp,
     Filter,
     MoreVertical,
@@ -137,6 +143,8 @@ const ChartOfAccountspage = () => {
         null
     );
     const [selectedItems, setSelectedItems] = useState<(string | number)[]>([]);
+    const [showBulkDeleteConfirm, setShowBulkDeleteConfirm] = useState(false);
+    const [isExporting, setIsExporting] = useState(false);
     const [isFilterOpen, setIsFilterOpen] = useState(false);
 
     // Temporary filter state (before Apply)
@@ -392,13 +400,133 @@ const ChartOfAccountspage = () => {
     };
 
     const handleBulkDelete = () => {
-        console.log('Deleting accounts:', selectedItems);
-        setSelectedItems([]);
+        if (selectedItems.length === 0) {
+            showErrorToast('Please select accounts to delete');
+            return;
+        }
+        setShowBulkDeleteConfirm(true);
     };
 
-    const handleBulkExport = () => {
-        console.log('Exporting accounts:', selectedItems);
-        setSelectedItems([]);
+    const confirmBulkDelete = async () => {
+        const toastId = showLoadingToast(
+            `Deleting ${selectedItems.length} account(s)...`
+        );
+
+        try {
+            // Delete each selected account
+            const deletePromises = selectedItems.map((id) =>
+                deleteMutation.mutateAsync(String(id))
+            );
+
+            await Promise.all(deletePromises);
+
+            dismissToast(toastId);
+            showSuccessToast(
+                `Successfully deleted ${selectedItems.length} account(s)`
+            );
+            setSelectedItems([]);
+            setShowBulkDeleteConfirm(false);
+        } catch (error) {
+            dismissToast(toastId);
+            showErrorToast('Failed to delete some accounts');
+            console.error('Bulk delete error:', error);
+        }
+    };
+
+    const handleBulkExport = async () => {
+        if (selectedItems.length === 0) {
+            showErrorToast('Please select accounts to export');
+            return;
+        }
+
+        setIsExporting(true);
+        const toastId = showLoadingToast(
+            `Exporting ${selectedItems.length} account(s)...`
+        );
+
+        try {
+            // Filter accounts to only those selected
+            const selectedAccounts = accounts.filter((account) =>
+                selectedItems.includes(account.id)
+            );
+
+            // Create CSV content
+            const headers = [
+                'Account Number',
+                'Account Name',
+                'Type',
+                'Detail Type',
+                'Current Balance',
+                'Description',
+                'Status',
+            ];
+
+            const csvRows = [
+                headers.join(','),
+                ...selectedAccounts.map((account) => {
+                    // Find the account type label
+                    const subtypes = ACCOUNT_HIERARCHY[account.accountType];
+                    let typeLabel = ACCOUNT_TYPE_DISPLAY[account.accountType];
+                    if (subtypes) {
+                        for (const subtype of subtypes) {
+                            if (
+                                subtype.detailTypes.some(
+                                    (d) => d.value === account.accountDetailType
+                                )
+                            ) {
+                                typeLabel = subtype.label;
+                                break;
+                            }
+                        }
+                    }
+
+                    return [
+                        account.accountNumber || '',
+                        `"${account.accountName.replace(/"/g, '""')}"`,
+                        `"${typeLabel}"`,
+                        `"${account.accountDetailType.replace(/-/g, ' ')}"`,
+                        parseFloat(
+                            account.currentBalance ||
+                                String(account.openingBalance)
+                        ).toFixed(2),
+                        `"${(account.description || '').replace(/"/g, '""')}"`,
+                        account.isActive ? 'Active' : 'Inactive',
+                    ].join(',');
+                }),
+            ];
+
+            const csvContent = csvRows.join('\n');
+
+            // Create and download file
+            const blob = new Blob([csvContent], {
+                type: 'text/csv;charset=utf-8;',
+            });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            const today = new Date().toISOString().split('T')[0];
+            link.setAttribute('href', url);
+            link.setAttribute(
+                'download',
+                `chart-of-accounts-selected-${today}.csv`
+            );
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+
+            dismissToast(toastId);
+            showSuccessToast(
+                `Successfully exported ${selectedItems.length} account(s)`
+            );
+            setSelectedItems([]);
+        } catch (error) {
+            dismissToast(toastId);
+            showErrorToast('Failed to export accounts');
+            console.error('Export error:', error);
+        } finally {
+            setIsExporting(false);
+        }
     };
 
     const handleClearAllFilters = () => {
@@ -520,13 +648,15 @@ const ChartOfAccountspage = () => {
                         onClick={handleBulkExport}
                         variant="outline"
                         size="sm"
+                        disabled={isExporting || deleteMutation.isPending}
                     >
-                        Export Selected
+                        {isExporting ? 'Exporting...' : 'Export Selected'}
                     </Button>
                     <Button
                         onClick={handleBulkDelete}
                         variant="destructive"
                         size="sm"
+                        disabled={isExporting || deleteMutation.isPending}
                     >
                         Delete Selected
                     </Button>
@@ -1221,6 +1351,19 @@ const ChartOfAccountspage = () => {
                 title="Delete Account"
                 message={`Are you sure you want to delete "${deleteAccount?.accountName}"? This action cannot be undone.`}
                 confirmText="Delete"
+                cancelText="Cancel"
+                confirmVariant="danger"
+                loading={deleteMutation.isPending}
+            />
+
+            {/* Bulk Delete Confirmation */}
+            <ConfirmationDialog
+                isOpen={showBulkDeleteConfirm}
+                onClose={() => setShowBulkDeleteConfirm(false)}
+                onConfirm={confirmBulkDelete}
+                title="Delete Multiple Accounts"
+                message={`Are you sure you want to delete ${selectedItems.length} account(s)? This action cannot be undone.`}
+                confirmText="Delete All"
                 cancelText="Cancel"
                 confirmVariant="danger"
                 loading={deleteMutation.isPending}
