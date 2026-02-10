@@ -112,7 +112,7 @@ const OtpVerificationpage = () => {
 
                     showSuccessToast(
                         response?.message ||
-                        'Successfully verified. Welcome back!'
+                            'Successfully verified. Welcome back!'
                     );
                     navigate('/dashboard');
                 }

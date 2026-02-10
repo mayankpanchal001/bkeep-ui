@@ -431,7 +431,7 @@ const CreateBillpage = () => {
                                         className={cn(
                                             'border-b border-border last:border-0 transition-colors',
                                             draggedIndex === index &&
-                                            'opacity-50 bg-muted/50'
+                                                'opacity-50 bg-muted/50'
                                         )}
                                     >
                                         <td className="p-1 w-10 align-middle">

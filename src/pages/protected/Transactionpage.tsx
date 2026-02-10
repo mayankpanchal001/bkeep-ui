@@ -341,8 +341,8 @@ const Transactionpage = () => {
                         status === 'posted'
                             ? 'posted'
                             : status === 'voided'
-                                ? 'excluded'
-                                : 'pending'
+                              ? 'excluded'
+                              : 'pending'
                     }
                     onValueChange={(value) => {
                         if (value === 'pending') {
@@ -399,8 +399,8 @@ const Transactionpage = () => {
                                     filterStore.filterEndDate ||
                                     filterStore.filterMinAmount ||
                                     filterStore.filterMaxAmount) && (
-                                        <span className="ml-2 h-2 w-2 rounded-full bg-accent" />
-                                    )}
+                                    <span className="ml-2 h-2 w-2 rounded-full bg-accent" />
+                                )}
                             </Button>
                         </DrawerTrigger>
                         <DrawerContent className="h-full w-full sm:w-[400px]">

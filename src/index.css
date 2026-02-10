@@ -22,7 +22,7 @@
 } */
 
 * {
-    letter-spacing: .25px;
+    letter-spacing: 0.25px;
 }
 
 @layer base {
@@ -78,7 +78,6 @@
 
     /* Respect reduced motion preference */
     @media (prefers-reduced-motion: reduce) {
-
         *,
         *::before,
         *::after {

@@ -291,9 +291,7 @@ function JournalMockup() {
                     <span className="font-medium text-foreground">Revenue</span>
                 </div>
                 <div className="mt-3 flex justify-between border-t border-border pt-2">
-                    <span className="font-medium text-foreground">
-                        Amount:
-                    </span>
+                    <span className="font-medium text-foreground">Amount:</span>
                     <span className="font-bold text-foreground">$5,240.00</span>
                 </div>
             </div>

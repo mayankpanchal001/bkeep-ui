@@ -104,7 +104,7 @@ export function SplitTransactionDrawer({
         const matchingAccount = splitAccounts.find(
             (account) =>
                 account.accountName.toLowerCase() ===
-                transactionCategoryId.toLowerCase() ||
+                    transactionCategoryId.toLowerCase() ||
                 `${account.accountNumber || ''} - ${account.accountName}`
                     .toLowerCase()
                     .includes(transactionCategoryId.toLowerCase())
@@ -354,12 +354,13 @@ export function SplitTransactionDrawer({
                                         Allocated
                                     </span>
                                     <p
-                                        className={`text-base sm:text-lg font-medium ${isFullyAllocated
+                                        className={`text-base sm:text-lg font-medium ${
+                                            isFullyAllocated
                                                 ? 'text-green-600'
                                                 : hasOverAllocation
-                                                    ? 'text-red-600'
-                                                    : 'text-orange-600'
-                                            }`}
+                                                  ? 'text-red-600'
+                                                  : 'text-orange-600'
+                                        }`}
                                     >
                                         {formatCurrency(totalSplit)}
                                     </p>
@@ -372,10 +373,11 @@ export function SplitTransactionDrawer({
                                                 Remaining
                                             </span>
                                             <p
-                                                className={`text-sm font-medium ${remaining > 0
+                                                className={`text-sm font-medium ${
+                                                    remaining > 0
                                                         ? 'text-orange-600'
                                                         : 'text-red-600'
-                                                    }`}
+                                                }`}
                                             >
                                                 {remaining > 0 ? '+' : ''}
                                                 {formatCurrency(remaining)}
@@ -499,8 +501,8 @@ export function SplitTransactionDrawer({
                                                             value={
                                                                 split.amount > 0
                                                                     ? String(
-                                                                        split.amount
-                                                                    )
+                                                                          split.amount
+                                                                      )
                                                                     : ''
                                                             }
                                                             onValueChange={(
@@ -522,8 +524,8 @@ export function SplitTransactionDrawer({
                                                         />
                                                         {remaining > 0.01 &&
                                                             index ===
-                                                            splits.length -
-                                                            1 && (
+                                                                splits.length -
+                                                                    1 && (
                                                                 <Button
                                                                     type="button"
                                                                     variant="ghost"
@@ -549,10 +551,10 @@ export function SplitTransactionDrawer({
                                                         options={taxOptions}
                                                         value={
                                                             split.taxIds &&
-                                                                split.taxIds
-                                                                    .length > 0
+                                                            split.taxIds
+                                                                .length > 0
                                                                 ? split
-                                                                    .taxIds[0]
+                                                                      .taxIds[0]
                                                                 : ''
                                                         }
                                                         onChange={(value) => {
@@ -561,8 +563,8 @@ export function SplitTransactionDrawer({
                                                                 {
                                                                     taxIds: value
                                                                         ? [
-                                                                            value,
-                                                                        ]
+                                                                              value,
+                                                                          ]
                                                                         : [],
                                                                 }
                                                             );

@@ -52,26 +52,26 @@ const SecurityTab = () => {
     const statusLabel = isStatusLoading
         ? 'Checking...'
         : mfaEnabled
-            ? 'Enabled'
-            : 'Disabled';
+          ? 'Enabled'
+          : 'Disabled';
 
     const statusClass = isStatusLoading
         ? 'text-primary/50'
         : mfaEnabled
-            ? 'text-secondary'
-            : 'text-destructive';
+          ? 'text-secondary'
+          : 'text-destructive';
 
     const totpStatusLabel = isTotpStatusLoading
         ? 'Checking...'
         : totpEnabled
-            ? 'Enabled'
-            : 'Disabled';
+          ? 'Enabled'
+          : 'Disabled';
 
     const totpStatusClass = isTotpStatusLoading
         ? 'text-primary/50'
         : totpEnabled
-            ? 'text-secondary'
-            : 'text-destructive';
+          ? 'text-secondary'
+          : 'text-destructive';
 
     const handleMfaToggle = () => {
         if (mfaEnabled) {
@@ -120,8 +120,8 @@ const SecurityTab = () => {
             ? 'Disabling...'
             : 'Disable 2FA'
         : isEnabling
-            ? 'Enabling...'
-            : 'Enable 2FA';
+          ? 'Enabling...'
+          : 'Enable 2FA';
 
     return (
         <div className="space-y-6">

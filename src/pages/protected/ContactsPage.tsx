@@ -407,8 +407,8 @@ const ContactsPage = () => {
                                 }
                                 action={
                                     !search &&
-                                        !filters.type &&
-                                        !filters.isActive ? (
+                                    !filters.type &&
+                                    !filters.isActive ? (
                                         <Button
                                             size="sm"
                                             onClick={handleGoToCreate}

@@ -101,10 +101,11 @@ const BalanceSheetpage = () => {
                                 onClick={() =>
                                     setDateRange(range.toLowerCase())
                                 }
-                                className={`px-4 py-2 text-sm font-medium rounded transition-all ${dateRange === range.toLowerCase()
+                                className={`px-4 py-2 text-sm font-medium rounded transition-all ${
+                                    dateRange === range.toLowerCase()
                                         ? 'bg-primary text-white'
                                         : 'bg-primary/10 text-primary hover:bg-primary/25'
-                                    }`}
+                                }`}
                             >
                                 {range}
                             </button>

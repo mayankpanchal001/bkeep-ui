@@ -103,12 +103,12 @@ export function SidebarNavMain() {
                         const isReports = item.path === '/reports';
                         const baseChildren = isReports
                             ? [
-                                ...favLinks.map((f) => ({
-                                    label: f.label,
-                                    path: f.path,
-                                })),
-                                ...(item.children || []),
-                            ]
+                                  ...favLinks.map((f) => ({
+                                      label: f.label,
+                                      path: f.path,
+                                  })),
+                                  ...(item.children || []),
+                              ]
                             : item.children || [];
 
                         const hasChildren =
@@ -197,12 +197,12 @@ export function SidebarNavMain() {
                                                             asChild
                                                             isActive={
                                                                 child.path ===
-                                                                    item.path
+                                                                item.path
                                                                     ? location.pathname ===
-                                                                    child.path
+                                                                      child.path
                                                                     : isItemActive(
-                                                                        child.path
-                                                                    )
+                                                                          child.path
+                                                                      )
                                                             }
                                                             className="data-[active=true]:bg-sidebar-accent data-[active=true]:text-sidebar-accent-foreground transition-colors duration-200"
                                                         >

@@ -150,7 +150,7 @@ export default function ViewJournalEntrypage() {
             return entry as unknown as JournalEntry;
         if (
             typeof (entry as { journalEntry?: unknown }).journalEntry ===
-            'object' &&
+                'object' &&
             (entry as { journalEntry?: Record<string, unknown> }).journalEntry
         ) {
             const nested = (entry as { journalEntry: Record<string, unknown> })
@@ -384,17 +384,17 @@ export default function ViewJournalEntrypage() {
 
                             {(copyPreviewData.memo ||
                                 copyPreviewData.description) && (
-                                    <div className="p-4 bg-card rounded-lg border border-primary/10">
-                                        <label className="block text-sm font-medium text-primary/50 mb-2">
-                                            Memo
-                                        </label>
-                                        <p className="text-primary text-sm whitespace-pre-wrap">
-                                            {copyPreviewData.memo ||
-                                                copyPreviewData.description ||
-                                                '—'}
-                                        </p>
-                                    </div>
-                                )}
+                                <div className="p-4 bg-card rounded-lg border border-primary/10">
+                                    <label className="block text-sm font-medium text-primary/50 mb-2">
+                                        Memo
+                                    </label>
+                                    <p className="text-primary text-sm whitespace-pre-wrap">
+                                        {copyPreviewData.memo ||
+                                            copyPreviewData.description ||
+                                            '—'}
+                                    </p>
+                                </div>
+                            )}
 
                             <div className="border border-primary/10 rounded-lg overflow-hidden">
                                 <div className="px-4 py-2 bg-primary/5 border-b border-primary/10">
@@ -437,9 +437,9 @@ export default function ViewJournalEntrypage() {
                                                         <td className="px-3 py-2 text-sm text-primary">
                                                             {line.accountId
                                                                 ? accountNameMap.get(
-                                                                    line.accountId
-                                                                ) ||
-                                                                line.accountId
+                                                                      line.accountId
+                                                                  ) ||
+                                                                  line.accountId
                                                                 : '—'}
                                                         </td>
                                                         <td className="px-3 py-2 text-sm text-primary/75">

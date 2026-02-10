@@ -551,13 +551,15 @@ export function JournalEntryForm({
                                 onDragOver={(e) => handleRowDragOver(e, index)}
                                 onDragEnd={handleRowDragEnd}
                                 onDrop={(e) => handleRowDrop(e, index)}
-                                className={`transition-colors ${draggedLineIndex === index
+                                className={`transition-colors ${
+                                    draggedLineIndex === index
                                         ? 'opacity-50 bg-muted/50'
                                         : ''
-                                    } ${dragOverLineIndex === index
+                                } ${
+                                    dragOverLineIndex === index
                                         ? 'border-t-2 border-primary'
                                         : ''
-                                    }`}
+                                }`}
                             >
                                 <TableCell className="text-primary/60 font-medium text-center">
                                     {index + 1}
@@ -769,10 +771,11 @@ export function JournalEntryForm({
                         </span>
                     </span>
                     <span
-                        className={`px-2 py-1 rounded-full text-xs font-medium ${isBalanced
+                        className={`px-2 py-1 rounded-full text-xs font-medium ${
+                            isBalanced
                                 ? 'bg-green-100 text-green-700'
                                 : 'bg-red-100 text-red-700'
-                            }`}
+                        }`}
                     >
                         {isBalanced ? 'Balanced' : 'Not balanced'}
                     </span>
@@ -791,10 +794,11 @@ export function JournalEntryForm({
                     onDragLeave={handleDrag}
                     onDragOver={handleDrag}
                     onDrop={handleDrop}
-                    className={`border-2 border-dashed rounded-lg p-4 flex flex-col items-center justify-center text-center cursor-pointer transition-colors min-h-[100px] ${dragActive
+                    className={`border-2 border-dashed rounded-lg p-4 flex flex-col items-center justify-center text-center cursor-pointer transition-colors min-h-[100px] ${
+                        dragActive
                             ? 'border-primary bg-primary/10'
                             : 'border-input hover:bg-muted/50 hover:border-primary/50'
-                        }`}
+                    }`}
                 >
                     <input
                         ref={fileInputRef}
@@ -805,7 +809,7 @@ export function JournalEntryForm({
                     />
 
                     {attachments.length > 0 ||
-                        existingAttachments.length > 0 ? (
+                    existingAttachments.length > 0 ? (
                         <div className="w-full flex flex-col gap-2">
                             <div className="flex flex-col gap-2 mb-2">
                                 {/* Existing Attachments */}

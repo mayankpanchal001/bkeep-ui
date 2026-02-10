@@ -8,8 +8,8 @@ export default function RouteErrorBoundary() {
     const message = isRouteErrorResponse(error)
         ? `${error.status} ${error.statusText}`
         : error instanceof Error
-            ? error.message
-            : String(error);
+          ? error.message
+          : String(error);
 
     const isChunkLoadError =
         message.includes('Failed to fetch dynamically imported module') ||

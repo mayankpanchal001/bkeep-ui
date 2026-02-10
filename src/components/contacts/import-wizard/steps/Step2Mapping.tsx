@@ -271,7 +271,7 @@ export function Step2Mapping() {
                                             <Select
                                                 value={
                                                     state.fieldMappings[
-                                                    field.key
+                                                        field.key
                                                     ] || '__none__'
                                                 }
                                                 onValueChange={(value) =>

@@ -319,10 +319,11 @@ const UsersTab = () => {
                                 filters.isVerified === true ? undefined : true
                             )
                         }
-                        className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${filters.isVerified === true
+                        className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
+                            filters.isVerified === true
                                 ? 'bg-secondary text-foreground'
                                 : 'bg-primary/5 text-primary/70 hover:bg-primary/10'
-                            }`}
+                        }`}
                     >
                         <Icons.Check className="inline w-3 h-3 mr-1" />
                         Verified Only
@@ -335,32 +336,33 @@ const UsersTab = () => {
                                 filters.isActive === true ? undefined : true
                             )
                         }
-                        className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${filters.isActive === true
+                        className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
+                            filters.isActive === true
                                 ? 'bg-secondary text-foreground'
                                 : 'bg-primary/5 text-primary/70 hover:bg-primary/10'
-                            }`}
+                        }`}
                     >
                         <Icons.UserCircle className="inline w-3 h-3 mr-1" />
                         Active Only
                     </button>
                     {(filters.isVerified === true ||
                         filters.isActive === true) && (
-                            <button
-                                type="button"
-                                onClick={() => {
-                                    setFilters((prev) => ({
-                                        ...prev,
-                                        isVerified: undefined,
-                                        isActive: undefined,
-                                        page: 1,
-                                    }));
-                                }}
-                                className="px-3 py-1.5 text-xs font-medium rounded-md bg-primary/5 text-primary/70 hover:bg-primary/10 transition-colors"
-                            >
-                                <Icons.Close className="inline w-3 h-3 mr-1" />
-                                Clear All
-                            </button>
-                        )}
+                        <button
+                            type="button"
+                            onClick={() => {
+                                setFilters((prev) => ({
+                                    ...prev,
+                                    isVerified: undefined,
+                                    isActive: undefined,
+                                    page: 1,
+                                }));
+                            }}
+                            className="px-3 py-1.5 text-xs font-medium rounded-md bg-primary/5 text-primary/70 hover:bg-primary/10 transition-colors"
+                        >
+                            <Icons.Close className="inline w-3 h-3 mr-1" />
+                            Clear All
+                        </button>
+                    )}
                 </div>
             </div>
 
@@ -629,15 +631,15 @@ const UsersTab = () => {
                                 message="No users found"
                                 description={
                                     search ||
-                                        filters.isVerified ||
-                                        filters.isActive
+                                    filters.isVerified ||
+                                    filters.isActive
                                         ? 'Try adjusting your search or filters'
                                         : 'Get started by inviting your first user'
                                 }
                                 action={
                                     !search &&
-                                        !filters.isVerified &&
-                                        !filters.isActive ? (
+                                    !filters.isVerified &&
+                                    !filters.isActive ? (
                                         <Button
                                             size="sm"
                                             onClick={() =>
@@ -717,8 +719,8 @@ const UsersTab = () => {
                                             <span className="text-primary/75 text-sm">
                                                 {user.createdAt
                                                     ? new Date(
-                                                        user.createdAt
-                                                    ).toLocaleDateString()
+                                                          user.createdAt
+                                                      ).toLocaleDateString()
                                                     : '—'}
                                             </span>
                                             {user.createdAt && (

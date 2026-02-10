@@ -160,8 +160,8 @@ export default function TenantsTab() {
                 : '',
             dateOfIncorporation: tenant.dateOfIncorporation
                 ? new Date(tenant.dateOfIncorporation)
-                    .toISOString()
-                    .split('T')[0]
+                      .toISOString()
+                      .split('T')[0]
                 : '',
         });
         setEditErrors({});
@@ -233,8 +233,8 @@ export default function TenantsTab() {
                 : '',
             dateOfIncorporation: tenant.dateOfIncorporation
                 ? new Date(tenant.dateOfIncorporation)
-                    .toISOString()
-                    .split('T')[0]
+                      .toISOString()
+                      .split('T')[0]
                 : '',
         });
     }, [editingTenantResponse?.data]);
@@ -510,10 +510,10 @@ export default function TenantsTab() {
                                         {header.isPlaceholder
                                             ? null
                                             : flexRender(
-                                                header.column.columnDef
-                                                    .header,
-                                                header.getContext()
-                                            )}
+                                                  header.column.columnDef
+                                                      .header,
+                                                  header.getContext()
+                                              )}
                                     </TableHead>
                                 );
                             })}
@@ -812,10 +812,10 @@ export default function TenantsTab() {
                                     value={
                                         detailsTenantResponse?.data?.fiscalYear
                                             ? new Date(
-                                                detailsTenantResponse.data.fiscalYear
-                                            )
-                                                .toISOString()
-                                                .split('T')[0]
+                                                  detailsTenantResponse.data.fiscalYear
+                                              )
+                                                  .toISOString()
+                                                  .split('T')[0]
                                             : ''
                                     }
                                     type="date"
@@ -827,10 +827,10 @@ export default function TenantsTab() {
                                         detailsTenantResponse?.data
                                             ?.dateOfIncorporation
                                             ? new Date(
-                                                detailsTenantResponse.data.dateOfIncorporation
-                                            )
-                                                .toISOString()
-                                                .split('T')[0]
+                                                  detailsTenantResponse.data.dateOfIncorporation
+                                              )
+                                                  .toISOString()
+                                                  .split('T')[0]
                                             : ''
                                     }
                                     type="date"

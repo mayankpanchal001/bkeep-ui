@@ -716,8 +716,8 @@ function RecentTransactionsCard({
                                     tx.type === 'income'
                                         ? 'bg-green-100 dark:bg-green-900/30'
                                         : tx.type === 'expense'
-                                            ? 'bg-red-100 dark:bg-red-900/30'
-                                            : 'bg-blue-100 dark:bg-blue-900/30'
+                                          ? 'bg-red-100 dark:bg-red-900/30'
+                                          : 'bg-blue-100 dark:bg-blue-900/30'
                                 )}
                             >
                                 {tx.type === 'income' ? (
@@ -744,15 +744,15 @@ function RecentTransactionsCard({
                                         tx.type === 'income'
                                             ? 'text-green-600 dark:text-green-400'
                                             : tx.type === 'expense'
-                                                ? 'text-red-600 dark:text-red-400'
-                                                : 'text-foreground'
+                                              ? 'text-red-600 dark:text-red-400'
+                                              : 'text-foreground'
                                     )}
                                 >
                                     {tx.type === 'income'
                                         ? '+'
                                         : tx.type === 'expense'
-                                            ? '-'
-                                            : ''}
+                                          ? '-'
+                                          : ''}
                                     {fmt(Math.abs(Number(tx.amount)))}
                                 </p>
                                 <Badge
@@ -1104,13 +1104,13 @@ export default function AdminDashboardKit() {
             ?.journalEntries;
         return Array.isArray(list)
             ? (list as {
-                id: string;
-                entryNumber: string;
-                entryDate: string;
-                memo: string;
-                totalDebit: number;
-                status: string;
-            }[])
+                  id: string;
+                  entryNumber: string;
+                  entryDate: string;
+                  memo: string;
+                  totalDebit: number;
+                  status: string;
+              }[])
             : [];
     }, [jeData]);
 
@@ -1119,8 +1119,8 @@ export default function AdminDashboardKit() {
         today.getHours() < 12
             ? 'Good morning'
             : today.getHours() < 17
-                ? 'Good afternoon'
-                : 'Good evening';
+              ? 'Good afternoon'
+              : 'Good evening';
 
     const anyLoading = plLoading || bsLoading || cfLoading;
 
@@ -1191,9 +1191,9 @@ export default function AdminDashboardKit() {
                         trend={
                             income > 0
                                 ? {
-                                    value: profitMargin,
-                                    label: 'profit margin',
-                                }
+                                      value: profitMargin,
+                                      label: 'profit margin',
+                                  }
                                 : undefined
                         }
                         subtitle={income === 0 ? 'No data yet' : undefined}

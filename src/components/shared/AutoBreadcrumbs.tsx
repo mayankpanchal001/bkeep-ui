@@ -146,11 +146,11 @@ export default function AutoBreadcrumbs({ className }: { className?: string }) {
     const needsEllipsis = parts.length > MAX_VISIBLE;
     const visibleParts = needsEllipsis
         ? [
-            parts[0],
-            parts[parts.length - 3],
-            parts[parts.length - 2],
-            parts[parts.length - 1],
-        ]
+              parts[0],
+              parts[parts.length - 3],
+              parts[parts.length - 2],
+              parts[parts.length - 1],
+          ]
         : parts;
 
     return (
@@ -174,7 +174,10 @@ export default function AutoBreadcrumbs({ className }: { className?: string }) {
                 {visibleParts.map((p, idx) => {
                     const isLast = idx === visibleParts.length - 1;
                     return (
-                        <div key={p.path} className="flex items-center gap-2 capitalize">
+                        <div
+                            key={p.path}
+                            className="flex items-center gap-2 capitalize"
+                        >
                             <BreadcrumbItem>
                                 {isLast ? (
                                     <BreadcrumbPage>{p.label}</BreadcrumbPage>

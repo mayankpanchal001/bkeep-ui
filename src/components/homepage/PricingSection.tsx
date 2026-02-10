@@ -19,10 +19,11 @@ const PricingSection = () => {
                 {PRICING_PLANS.map((plan) => (
                     <div
                         key={plan.name}
-                        className={`rounded-3xl border border-border p-8 ${plan.highlight
+                        className={`rounded-3xl border border-border p-8 ${
+                            plan.highlight
                                 ? 'bg-gradient-to-br from-primary/15 via-muted/20 to-background'
                                 : 'bg-background'
-                            }`}
+                        }`}
                     >
                         {plan.highlight && (
                             <span className="inline-flex rounded-full border border-border px-3 py-1 text-xs font-medium uppercase tracking-[0.35em] text-muted-foreground">

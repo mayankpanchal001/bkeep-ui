@@ -86,11 +86,11 @@ const ExpensePieChart = ({ data }: ExpensePieChartProps) => {
                                                 style={{
                                                     backgroundColor:
                                                         COLORS[
-                                                        chartData.findIndex(
-                                                            (d) =>
-                                                                d.name ===
-                                                                data.name
-                                                        ) % COLORS.length
+                                                            chartData.findIndex(
+                                                                (d) =>
+                                                                    d.name ===
+                                                                    data.name
+                                                            ) % COLORS.length
                                                         ],
                                                 }}
                                             />

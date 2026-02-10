@@ -232,10 +232,10 @@ export function MatchTransactionDrawer({
         billDateFrom && billDateTo
             ? `Date: ${formatDisplayDate(billDateFrom)}–${formatDisplayDate(billDateTo)}`
             : billDateFrom
-                ? `Date: from ${formatDisplayDate(billDateFrom)}`
-                : billDateTo
-                    ? `Date: to ${formatDisplayDate(billDateTo)}`
-                    : '';
+              ? `Date: from ${formatDisplayDate(billDateFrom)}`
+              : billDateTo
+                ? `Date: to ${formatDisplayDate(billDateTo)}`
+                : '';
 
     if (!transaction) return null;
 
@@ -278,7 +278,7 @@ export function MatchTransactionDrawer({
                             <div className="text-right">
                                 <p className="text-xs font-medium text-muted-foreground">
                                     {transaction.received != null &&
-                                        transaction.received > 0
+                                    transaction.received > 0
                                         ? 'Received'
                                         : 'Spent'}
                                 </p>

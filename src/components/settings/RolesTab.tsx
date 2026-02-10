@@ -141,7 +141,7 @@ const RolesTab = () => {
                     totalPages={pagination.totalPages}
                     totalItems={pagination.total}
                     itemsPerPage={10}
-                    onPageChange={() => { }} // No-op as per current implementation
+                    onPageChange={() => {}} // No-op as per current implementation
                 />
             )}
         </div>

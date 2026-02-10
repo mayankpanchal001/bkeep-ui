@@ -39,7 +39,7 @@ const buttonVariants = cva(
 
 export interface ButtonProps
     extends React.ComponentProps<'button'>,
-    VariantProps<typeof buttonVariants> {
+        VariantProps<typeof buttonVariants> {
     /** Render as child component */
     asChild?: boolean;
     /** Icon to display before the button text */
