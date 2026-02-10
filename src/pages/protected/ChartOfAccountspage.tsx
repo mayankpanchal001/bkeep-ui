@@ -170,7 +170,7 @@ const ChartOfAccountspage = () => {
         useState<string>('bank');
 
     const [page, setPage] = useState(1);
-    const [limit] = useState(20);
+    const [limit, setLimit] = useState(20);
     useEffect(() => {
         setPage(1);
     }, [
@@ -678,15 +678,42 @@ const ChartOfAccountspage = () => {
                 </TableBody>
             </Table>
 
-            {pagination && pagination.totalPages > 1 && (
-                <TablePagination
-                    page={pagination.page}
-                    totalPages={pagination.totalPages}
-                    totalItems={pagination.total}
-                    itemsPerPage={pagination.limit}
-                    onPageChange={setPage}
-                    className="mr-[40px]"
-                />
+            {pagination && (
+                <div className="flex items-center justify-between px-2 py-4">
+                    <div className="flex items-center space-x-2">
+                        <p className="text-sm font-medium">Rows per page</p>
+                        <Select
+                            value={String(limit)}
+                            onValueChange={(value) => {
+                                setLimit(Number(value));
+                                setPage(1);
+                            }}
+                        >
+                            <SelectTrigger className="h-8 w-[80px]">
+                                <SelectValue placeholder={String(limit)} />
+                            </SelectTrigger>
+                            <SelectContent side="top">
+                                {[20, 50, 100].map((pageSize) => (
+                                    <SelectItem
+                                        key={pageSize}
+                                        value={String(pageSize)}
+                                    >
+                                        {pageSize}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    </div>
+                    {pagination.totalPages > 1 && (
+                        <TablePagination
+                            page={pagination.page}
+                            totalPages={pagination.totalPages}
+                            totalItems={pagination.total}
+                            itemsPerPage={pagination.limit}
+                            onPageChange={setPage}
+                        />
+                    )}
+                </div>
             )}
 
             {/* Filters Drawer */}
