@@ -1095,6 +1095,7 @@ const ChartOfAccountspage = () => {
                                         )
                                     }
                                     className="justify-start gap-2"
+                                    spacing={2}
                                 >
                                     <ToggleGroupItem
                                         value="Active"
