@@ -16,6 +16,13 @@ import {
     DrawerTrigger,
 } from '@/components/ui/drawer';
 import Input from '@/components/ui/input';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
     buildApiFilters,
@@ -525,6 +532,43 @@ const Transactionpage = () => {
                                             }
                                         />
                                     </div>
+                                </div>
+
+                                <div>
+                                    <label className="text-sm font-medium text-primary/70 mb-2 block">
+                                        Sort by
+                                    </label>
+                                    <Select
+                                        value={filterStore.sort || 'date'}
+                                        onValueChange={(value) =>
+                                            filterStore.setSort(
+                                                value as
+                                                    | 'date'
+                                                    | 'amount'
+                                                    | 'createdAt'
+                                                    | 'updatedAt',
+                                                filterStore.order
+                                            )
+                                        }
+                                    >
+                                        <SelectTrigger className="w-full">
+                                            <SelectValue placeholder="Sort by" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="date">
+                                                paidAt
+                                            </SelectItem>
+                                            <SelectItem value="amount">
+                                                amount
+                                            </SelectItem>
+                                            <SelectItem value="createdAt">
+                                                createdAt
+                                            </SelectItem>
+                                            <SelectItem value="updatedAt">
+                                                updatedAt
+                                            </SelectItem>
+                                        </SelectContent>
+                                    </Select>
                                 </div>
                             </div>
                             <DrawerFooter className="border-t border-primary/10">

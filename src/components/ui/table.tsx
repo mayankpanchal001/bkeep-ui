@@ -1271,8 +1271,7 @@ function TablePagination({
     return (
         <div
             className={cn(
-                'flex items-center justify-between px-2 py-3 mt-4',
-                'text-sm text-muted-foreground',
+                'flex items-center justify-between pt-4 text-sm text-muted-foreground',
                 className
             )}
         >

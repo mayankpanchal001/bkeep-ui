@@ -190,24 +190,16 @@ export const TransactionsTable = ({
                         <TableHead sortable sortKey="date">
                             Date
                         </TableHead>
-                        <TableHead sortable sortKey="description">
-                            Bank Description
-                        </TableHead>
+                        <TableHead>Bank Description</TableHead>
                         <TableHead sortable sortKey="amount">
                             Spent
                         </TableHead>
                         <TableHead sortable sortKey="amount">
                             Received
                         </TableHead>
-                        <TableHead sortable sortKey="taxId">
-                            Tax
-                        </TableHead>
-                        <TableHead sortable sortKey="contactId">
-                            From/To
-                        </TableHead>
-                        <TableHead sortable sortKey="category">
-                            Category
-                        </TableHead>
+                        <TableHead>Tax</TableHead>
+                        <TableHead>From/To</TableHead>
+                        <TableHead>Category</TableHead>
                         <TableHead className="w-[1%] whitespace-nowrap">
                             Action
                         </TableHead>
