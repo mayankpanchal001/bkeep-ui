@@ -45,7 +45,7 @@ const RolesTab = () => {
     return (
         <div className="space-y-6">
             <div className="flex items-center justify-between">
-                <h3 className="text-lg font-semibold text-primary flex items-center gap-2">
+                <h3 className="text-lg font-medium text-primary flex items-center gap-2">
                     <Icons.Lock className="w-4 h-4" />
                     <span>Roles</span>
                 </h3>

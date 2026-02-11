@@ -1,10 +1,10 @@
+import { LogIn } from 'lucide-react';
 import React, { useEffect, useMemo, useState } from 'react';
+import { FaFingerprint } from 'react-icons/fa';
 import { Link } from 'react-router';
 import { useLogin } from '../../services/apis/authApi';
 import { getStoredPasskeyUser } from '../../utills/passkey';
 import { showErrorToast } from '../../utills/toast';
-import { LogIn } from 'lucide-react';
-import { FaFingerprint } from 'react-icons/fa';
 import { Icons } from '../shared/Icons';
 import { Button } from '../ui/button';
 import Input from '../ui/input';
@@ -157,7 +157,7 @@ export function LoginForm({
 
                 {error && (
                     <div className="border border-red-100 bg-red-50/50 dark:bg-red-950/20 dark:border-red-900/50 p-3 rounded-lg">
-                        <p className="text-xs sm:text-sm text-center text-red-600 dark:text-red-400 font-semibold tracking-normal leading-relaxed">
+                        <p className="text-xs sm:text-sm text-center text-red-600 dark:text-red-400 font-medium tracking-normal leading-relaxed">
                             {error}
                         </p>
                     </div>

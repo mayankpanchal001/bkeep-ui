@@ -118,7 +118,7 @@ const InviteUserModal = ({
             >
                 {/* User Information */}
                 <div>
-                    <h3 className="text-lg font-semibold text-primary mb-4">
+                    <h3 className="text-lg font-medium text-primary mb-4">
                         User Information
                     </h3>
                     <div className="flex flex-col gap-4">

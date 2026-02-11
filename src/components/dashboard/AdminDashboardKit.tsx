@@ -1,6 +1,4 @@
-import { useMemo } from 'react';
 import { format, startOfYear } from 'date-fns';
-import { Link, useNavigate } from 'react-router';
 import {
     ArrowDownRight,
     ArrowUpRight,
@@ -17,6 +15,8 @@ import {
     TrendingUp,
     Wallet,
 } from 'lucide-react';
+import { useMemo } from 'react';
+import { Link, useNavigate } from 'react-router';
 import {
     Bar,
     BarChart,
@@ -28,29 +28,29 @@ import {
     YAxis,
 } from 'recharts';
 
-import { AuthStore } from '@/stores/auth/authStore';
-import { TenantStore } from '@/stores/tenant/tenantStore';
+import { useBills } from '@/services/apis/billsApi';
+import { useJournalEntries } from '@/services/apis/journalApi';
 import {
-    useProfitLossReport,
     useBalanceSheetReport,
     useCashFlowReport,
+    useProfitLossReport,
     useUnpaidBillsReport,
 } from '@/services/apis/reportsApi';
 import { useTransactions } from '@/services/apis/transactions';
-import { useBills } from '@/services/apis/billsApi';
-import { useJournalEntries } from '@/services/apis/journalApi';
+import { AuthStore } from '@/stores/auth/authStore';
+import { TenantStore } from '@/stores/tenant/tenantStore';
 import { useTransactionsFilterStore } from '@/stores/transactions/transactionsFilterStore';
-import { getThemeColor } from '@/utils/themeColors';
 import { cn } from '@/utils/cn';
+import { getThemeColor } from '@/utils/themeColors';
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
-import { Progress } from '../ui/progress';
-import { Skeleton } from '../ui/skeleton';
 import {
     ChartContainer,
     ChartTooltip,
     type TooltipPayloadItem,
 } from '../ui/chart';
+import { Progress } from '../ui/progress';
+import { Skeleton } from '../ui/skeleton';
 
 // ─── Helpers ────────────────────────────────────────────
 const fmt = (n: number) =>
@@ -226,7 +226,7 @@ function IncomeExpenseChart({
         <div className="card !p-5">
             <div className="flex items-center justify-between mb-1">
                 <div>
-                    <h3 className="text-sm font-semibold text-foreground">
+                    <h3 className="text-sm font-medium text-foreground">
                         Income vs Expenses
                     </h3>
                     <p className="text-xs text-muted-foreground">
@@ -370,7 +370,7 @@ function ExpenseDonutChart({
 
     return (
         <div className="card !p-5 flex flex-col">
-            <h3 className="text-sm font-semibold text-foreground mb-1">
+            <h3 className="text-sm font-medium text-foreground mb-1">
                 Expense Breakdown
             </h3>
             <p className="text-xs text-muted-foreground mb-3">
@@ -488,7 +488,7 @@ function CashFlowCard({
     return (
         <div className="card !p-5">
             <div className="flex items-center justify-between mb-1">
-                <h3 className="text-sm font-semibold text-foreground">
+                <h3 className="text-sm font-medium text-foreground">
                     Cash Flow
                 </h3>
                 <Link
@@ -574,7 +574,7 @@ function BalanceSheetCard({
     return (
         <div className="card !p-5">
             <div className="flex items-center justify-between mb-1">
-                <h3 className="text-sm font-semibold text-foreground">
+                <h3 className="text-sm font-medium text-foreground">
                     Balance Sheet
                 </h3>
                 <Link
@@ -679,7 +679,7 @@ function RecentTransactionsCard({
     return (
         <div className="card !p-5">
             <div className="flex items-center justify-between mb-4">
-                <h3 className="text-sm font-semibold text-foreground">
+                <h3 className="text-sm font-medium text-foreground">
                     Recent Transactions
                 </h3>
                 <Link
@@ -740,7 +740,7 @@ function RecentTransactionsCard({
                             <div className="text-right shrink-0">
                                 <p
                                     className={cn(
-                                        'text-sm font-semibold tabular-nums',
+                                        'text-sm font-medium tabular-nums',
                                         tx.type === 'income'
                                             ? 'text-green-600 dark:text-green-400'
                                             : tx.type === 'expense'
@@ -789,7 +789,7 @@ function UnpaidBillsCard({
     return (
         <div className="card !p-5">
             <div className="flex items-center justify-between mb-4">
-                <h3 className="text-sm font-semibold text-foreground">
+                <h3 className="text-sm font-medium text-foreground">
                     Unpaid Bills
                 </h3>
                 <Link
@@ -867,7 +867,7 @@ function UnpaidBillsCard({
                                         </p>
                                     </div>
                                     <div className="text-right shrink-0">
-                                        <p className="text-sm font-semibold text-foreground tabular-nums">
+                                        <p className="text-sm font-medium text-foreground tabular-nums">
                                             {fmt(bill.openBalance)}
                                         </p>
                                         {isOverdue && (
@@ -976,7 +976,7 @@ function RecentJournalEntriesCard({
     return (
         <div className="card !p-5">
             <div className="flex items-center justify-between mb-4">
-                <h3 className="text-sm font-semibold text-foreground">
+                <h3 className="text-sm font-medium text-foreground">
                     Recent Journal Entries
                 </h3>
                 <Link
@@ -1022,7 +1022,7 @@ function RecentJournalEntriesCard({
                                 </p>
                             </div>
                             <div className="text-right shrink-0">
-                                <p className="text-sm font-semibold text-foreground tabular-nums">
+                                <p className="text-sm font-medium text-foreground tabular-nums">
                                     {fmt(entry.totalDebit)}
                                 </p>
                                 <Badge

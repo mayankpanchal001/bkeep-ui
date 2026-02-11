@@ -1199,7 +1199,7 @@ export function CreateRuleDrawer({
                             >
                                 {/* Basic Information Section */}
                                 <div className="space-y-4">
-                                    <h3 className="text-sm font-semibold text-foreground">
+                                    <h3 className="text-sm font-medium text-foreground">
                                         Basic Information
                                     </h3>
 
@@ -1247,7 +1247,7 @@ export function CreateRuleDrawer({
 
                                 {/* Apply To Section */}
                                 <div className="space-y-4 border-t pt-6">
-                                    <h3 className="text-sm font-semibold text-foreground">
+                                    <h3 className="text-sm font-medium text-foreground">
                                         Apply To
                                     </h3>
 
@@ -1348,7 +1348,7 @@ export function CreateRuleDrawer({
                                 {/* Conditions Section */}
                                 <div className="space-y-4 border-t pt-6">
                                     <div className="flex items-center justify-between">
-                                        <h3 className="text-sm font-semibold text-foreground">
+                                        <h3 className="text-sm font-medium text-foreground">
                                             Conditions
                                         </h3>
                                         <Button
@@ -1419,7 +1419,7 @@ export function CreateRuleDrawer({
                                 {/* Actions Section */}
                                 <div className="space-y-4 border-t pt-6">
                                     <div className="flex items-center justify-between">
-                                        <h3 className="text-sm font-semibold text-foreground">
+                                        <h3 className="text-sm font-medium text-foreground">
                                             Actions
                                         </h3>
                                         <span className="text-xs text-muted-foreground">
@@ -1552,7 +1552,7 @@ export function CreateRuleDrawer({
                                                                     {incomeCategories.length >
                                                                         0 && (
                                                                         <>
-                                                                            <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">
+                                                                            <div className="px-2 py-1.5 text-xs font-medium text-muted-foreground">
                                                                                 Income
                                                                             </div>
                                                                             {incomeCategories.map(
@@ -1578,7 +1578,7 @@ export function CreateRuleDrawer({
                                                                     {expenseCategories.length >
                                                                         0 && (
                                                                         <>
-                                                                            <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground mt-1">
+                                                                            <div className="px-2 py-1.5 text-xs font-medium text-muted-foreground mt-1">
                                                                                 Expense
                                                                             </div>
                                                                             {expenseCategories.map(

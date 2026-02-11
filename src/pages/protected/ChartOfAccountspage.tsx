@@ -2,14 +2,6 @@ import ConfirmationDialog from '@/components/shared/ConfirmationDialog';
 import ImportChartOfAccountsDrawer from '@/components/shared/ImportChartOfAccountsDrawer';
 import { Button } from '@/components/ui/button';
 import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-} from '@/components/ui/dialog';
-import {
     Drawer,
     DrawerClose,
     DrawerContent,
@@ -32,7 +24,6 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import {
-    SortDirection,
     Table,
     TableBody,
     TableCell,
@@ -46,13 +37,6 @@ import {
     TableSelectAllCheckbox,
     TableSelectionToolbar,
 } from '@/components/ui/table';
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
-import {
-    dismissToast,
-    showErrorToast,
-    showLoadingToast,
-    showSuccessToast,
-} from '@/utills/toast';
 import {
     FileUp,
     Filter,
@@ -153,34 +137,16 @@ const ChartOfAccountspage = () => {
         null
     );
     const [selectedItems, setSelectedItems] = useState<(string | number)[]>([]);
-    const [showBulkDeleteConfirm, setShowBulkDeleteConfirm] = useState(false);
-    const [isExporting, setIsExporting] = useState(false);
     const [isFilterOpen, setIsFilterOpen] = useState(false);
-
-    // Temporary filter state (before Apply)
-    const [tempSelectedTypes, setTempSelectedTypes] = useState<AccountType[]>(
-        []
-    );
-    const [tempSelectedDetailTypes, setTempSelectedDetailTypes] = useState<
-        AccountDetailType[]
-    >([]);
-    const [tempIsActiveFilter, setTempIsActiveFilter] = useState<
-        'all' | 'Active' | 'Inactive'
-    >('all');
     const [isActiveFilter, setIsActiveFilter] = useState<
-        'all' | 'Active' | 'Inactive'
+        'all' | 'active' | 'inactive'
     >('all');
 
     // Import State
     const [showImportDrawer, setShowImportDrawer] = useState(false);
 
-    // Sorting State
-    const [sortKey, setSortKey] = useState<string | null>(null);
-    const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
-
     // Form state
     const [formData, setFormData] = useState<CreateChartOfAccountPayload>({
-        accountNumber: '',
         accountName: '',
         accountType: 'asset',
         accountDetailType: 'cash-on-hand',
@@ -192,7 +158,7 @@ const ChartOfAccountspage = () => {
         useState<string>('bank');
 
     const [page, setPage] = useState(1);
-    const [limit, setLimit] = useState(20);
+    const [limit] = useState(20);
     useEffect(() => {
         setPage(1);
     }, [
@@ -213,7 +179,7 @@ const ChartOfAccountspage = () => {
     const serverAccountTypeParam =
         selectedTypes.length === 1 ? selectedTypes[0] : undefined;
     const serverIsActiveParam =
-        isActiveFilter === 'all' ? undefined : isActiveFilter === 'Active';
+        isActiveFilter === 'all' ? undefined : isActiveFilter === 'active';
     const { data, isLoading, isFetching, error } = useChartOfAccounts({
         search: debouncedSearchQuery || undefined,
         accountType: serverAccountTypeParam,
@@ -244,120 +210,27 @@ const ChartOfAccountspage = () => {
             );
         }
         if (isActiveFilter !== 'all') {
-            const wantActive = isActiveFilter === 'Active';
+            const wantActive = isActiveFilter === 'active';
             allAccounts = allAccounts.filter((a) => a.isActive === wantActive);
         }
 
-        // Optional client-side search
-        let filtered = allAccounts;
-        if (q && q.length > 0) {
-            filtered = filtered.filter(
-                (a) =>
-                    a.accountName?.toLowerCase().includes(q) ||
-                    a.description?.toLowerCase().includes(q) ||
-                    a.accountNumber?.toLowerCase().includes(q) ||
-                    a.accountType?.toLowerCase().includes(q) ||
-                    a.accountDetailType?.toLowerCase().includes(q)
-            );
-        }
+        if (!q) return allAccounts;
 
-        // Apply sorting if sortKey is set
-        if (sortKey) {
-            filtered = [...filtered].sort((a, b) => {
-                let aValue: string | number;
-                let bValue: string | number;
+        return allAccounts.filter((account) => {
+            const haystack = [
+                account.accountName,
+                account.accountNumber,
+                account.description,
+                account.accountType,
+                account.accountDetailType,
+            ]
+                .filter(Boolean)
+                .join(' ')
+                .toLowerCase();
 
-                switch (sortKey) {
-                    case 'accountNumber':
-                        aValue = a.accountNumber || '';
-                        bValue = b.accountNumber || '';
-                        break;
-                    case 'accountName':
-                        aValue = a.accountName.toLowerCase();
-                        bValue = b.accountName.toLowerCase();
-                        break;
-                    case 'accountType': {
-                        // Sort by the hierarchy label
-                        const getTypeLabel = (account: ChartOfAccount) => {
-                            const subtypes =
-                                ACCOUNT_HIERARCHY[account.accountType];
-                            if (subtypes) {
-                                for (const subtype of subtypes) {
-                                    if (
-                                        subtype.detailTypes.some(
-                                            (d) =>
-                                                d.value ===
-                                                account.accountDetailType
-                                        )
-                                    ) {
-                                        return subtype.label;
-                                    }
-                                }
-                            }
-                            return ACCOUNT_TYPE_DISPLAY[account.accountType];
-                        };
-                        aValue = getTypeLabel(a).toLowerCase();
-                        bValue = getTypeLabel(b).toLowerCase();
-                        break;
-                    }
-                    case 'accountDetailType':
-                        aValue = (a.accountDetailType || '')
-                            .replace(/-/g, ' ')
-                            .toLowerCase();
-                        bValue = (b.accountDetailType || '')
-                            .replace(/-/g, ' ')
-                            .toLowerCase();
-                        break;
-                    case 'currentBalance':
-                        aValue = parseFloat(
-                            a.currentBalance || String(a.openingBalance) || '0'
-                        );
-                        bValue = parseFloat(
-                            b.currentBalance || String(b.openingBalance) || '0'
-                        );
-                        break;
-                    default:
-                        return 0;
-                }
-
-                // Perform comparison
-                if (aValue < bValue) return sortDirection === 'asc' ? -1 : 1;
-                if (aValue > bValue) return sortDirection === 'asc' ? 1 : -1;
-                return 0;
-            });
-        } else {
-            // Default sorting: by account type order, then alphabetically by name
-            const typeOrder: Record<string, number> = {
-                asset: 1,
-                liability: 2,
-                equity: 3,
-                income: 4,
-                expense: 5,
-            };
-
-            filtered = [...filtered].sort((a, b) => {
-                const orderA = typeOrder[a.accountType] || 99;
-                const orderB = typeOrder[b.accountType] || 99;
-
-                if (orderA !== orderB) {
-                    return orderA - orderB;
-                }
-
-                // Secondary sort: Alphabetical by Name
-                return a.accountName.localeCompare(b.accountName);
-            });
-        }
-
-        return filtered;
-    }, [
-        data?.data?.items,
-        searchQuery,
-        selectedTypes,
-        selectedDetailTypes,
-        isActiveFilter,
-        sortKey,
-        sortDirection,
-    ]);
+            return haystack.includes(q);
+        });
+    }, [data, searchQuery, selectedTypes, selectedDetailTypes, isActiveFilter]);
 
     const rowIds = accounts.map((a) => a.id);
 
@@ -370,7 +243,6 @@ const ChartOfAccountspage = () => {
     // Handle form reset
     const resetForm = () => {
         setFormData({
-            accountNumber: '',
             accountName: '',
             accountType: 'asset',
             accountDetailType: 'cash-on-hand',
@@ -390,7 +262,6 @@ const ChartOfAccountspage = () => {
     const handleOpenEditModal = (account: ChartOfAccount) => {
         setEditingAccount(account);
         setFormData({
-            accountNumber: account.accountNumber || '',
             accountName: account.accountName,
             accountType: account.accountType,
             accountDetailType: account.accountDetailType,
@@ -417,20 +288,6 @@ const ChartOfAccountspage = () => {
         if (!formData.accountName.trim()) {
             errors.accountName = 'Account Name is required';
         }
-        // Unique check for account number could go here if checking against loaded list
-        if (formData.accountNumber && formData.accountNumber.trim()) {
-            // Simple duplicate check on currently loaded items (Note: this is only partial validation)
-            const isDuplicate = accounts.some(
-                (a) =>
-                    a.accountNumber === formData.accountNumber &&
-                    (!editingAccount ||
-                        (editingAccount && a.id !== editingAccount.id))
-            );
-            if (isDuplicate) {
-                errors.accountNumber = 'Account Number must be unique';
-            }
-        }
-
         if (!formData.accountType) {
             errors.accountType = 'Account Type is required';
         }
@@ -482,170 +339,13 @@ const ChartOfAccountspage = () => {
     };
 
     const handleBulkDelete = () => {
-        if (selectedItems.length === 0) {
-            showErrorToast('Please select accounts to delete');
-            return;
-        }
-        setShowBulkDeleteConfirm(true);
+        console.log('Deleting accounts:', selectedItems);
+        setSelectedItems([]);
     };
 
-    const confirmBulkDelete = async () => {
-        const toastId = showLoadingToast(
-            `Deleting ${selectedItems.length} account(s)...`
-        );
-
-        try {
-            // Delete each selected account
-            const deletePromises = selectedItems.map((id) =>
-                deleteMutation.mutateAsync(String(id))
-            );
-
-            await Promise.all(deletePromises);
-
-            dismissToast(toastId);
-            showSuccessToast(
-                `Successfully deleted ${selectedItems.length} account(s)`
-            );
-            setSelectedItems([]);
-            setShowBulkDeleteConfirm(false);
-        } catch (error) {
-            dismissToast(toastId);
-            showErrorToast('Failed to delete some accounts');
-            console.error('Bulk delete error:', error);
-        }
-    };
-
-    const handleBulkExport = async () => {
-        if (selectedItems.length === 0) {
-            showErrorToast('Please select accounts to export');
-            return;
-        }
-
-        setIsExporting(true);
-        const toastId = showLoadingToast(
-            `Exporting ${selectedItems.length} account(s)...`
-        );
-
-        try {
-            // Filter accounts to only those selected
-            const selectedAccounts = accounts.filter((account) =>
-                selectedItems.includes(account.id)
-            );
-
-            // Create CSV content
-            const headers = [
-                'Account Number',
-                'Account Name',
-                'Type',
-                'Detail Type',
-                'Current Balance',
-                'Description',
-                'Status',
-            ];
-
-            const csvRows = [
-                headers.join(','),
-                ...selectedAccounts.map((account) => {
-                    // Find the account type label
-                    const subtypes = ACCOUNT_HIERARCHY[account.accountType];
-                    let typeLabel = ACCOUNT_TYPE_DISPLAY[account.accountType];
-                    if (subtypes) {
-                        for (const subtype of subtypes) {
-                            if (
-                                subtype.detailTypes.some(
-                                    (d) => d.value === account.accountDetailType
-                                )
-                            ) {
-                                typeLabel = subtype.label;
-                                break;
-                            }
-                        }
-                    }
-
-                    return [
-                        account.accountNumber || '',
-                        `"${account.accountName.replace(/"/g, '""')}"`,
-                        `"${typeLabel}"`,
-                        `"${account.accountDetailType.replace(/-/g, ' ')}"`,
-                        parseFloat(
-                            account.currentBalance ||
-                                String(account.openingBalance)
-                        ).toFixed(2),
-                        `"${(account.description || '').replace(/"/g, '""')}"`,
-                        account.isActive ? 'Active' : 'Inactive',
-                    ].join(',');
-                }),
-            ];
-
-            const csvContent = csvRows.join('\n');
-
-            // Create and download file
-            const blob = new Blob([csvContent], {
-                type: 'text/csv;charset=utf-8;',
-            });
-            const link = document.createElement('a');
-            const url = URL.createObjectURL(blob);
-            const today = new Date().toISOString().split('T')[0];
-            link.setAttribute('href', url);
-            link.setAttribute(
-                'download',
-                `chart-of-accounts-selected-${today}.csv`
-            );
-            link.style.visibility = 'hidden';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            URL.revokeObjectURL(url);
-
-            dismissToast(toastId);
-            showSuccessToast(
-                `Successfully exported ${selectedItems.length} account(s)`
-            );
-            setSelectedItems([]);
-        } catch (error) {
-            dismissToast(toastId);
-            showErrorToast('Failed to export accounts');
-            console.error('Export error:', error);
-        } finally {
-            setIsExporting(false);
-        }
-    };
-
-    const handleClearAllFilters = () => {
-        setSelectedTypes([]);
-        setSelectedDetailTypes([]);
-        setIsActiveFilter('all');
-    };
-
-    const hasActiveFilters =
-        selectedTypes.length > 0 ||
-        selectedDetailTypes.length > 0 ||
-        isActiveFilter !== 'all';
-
-    const handleOpenFilters = () => {
-        // Copy current filters to temp state
-        setTempSelectedTypes(selectedTypes);
-        setTempSelectedDetailTypes(selectedDetailTypes);
-        setTempIsActiveFilter(isActiveFilter);
-        setIsFilterOpen(true);
-    };
-
-    const handleApplyFilters = () => {
-        setSelectedTypes(tempSelectedTypes);
-        setSelectedDetailTypes(tempSelectedDetailTypes);
-        setIsActiveFilter(tempIsActiveFilter);
-        setIsFilterOpen(false);
-    };
-
-    const handleClearTempFilters = () => {
-        setTempSelectedTypes([]);
-        setTempSelectedDetailTypes([]);
-        setTempIsActiveFilter('all');
-    };
-
-    const handleSortChange = (key: string, direction: SortDirection) => {
-        setSortKey(direction === null ? null : key);
-        setSortDirection(direction || 'asc');
+    const handleBulkExport = () => {
+        console.log('Exporting accounts:', selectedItems);
+        setSelectedItems([]);
     };
 
     return (
@@ -687,18 +387,10 @@ const ChartOfAccountspage = () => {
                     </Select>
                 </div>
                 <div className="flex items-center gap-3">
-                    {hasActiveFilters && (
-                        <Button
-                            onClick={handleClearAllFilters}
-                            variant="outline"
-                            size="sm"
-                            className="text-muted-foreground hover:text-primary"
-                        >
-                            <X size={16} className="mr-2" />
-                            Clear filters
-                        </Button>
-                    )}
-                    <Button onClick={handleOpenFilters} variant="outline">
+                    <Button
+                        onClick={() => setIsFilterOpen(true)}
+                        variant="outline"
+                    >
                         <Filter size={16} className="mr-2" /> Filters
                     </Button>
                     <Button onClick={handleImportClick} variant="outline">
@@ -723,398 +415,376 @@ const ChartOfAccountspage = () => {
                 </div>
             )}
 
-            {/* Accounts Table -*/}
-            <div className="flex-1 flex flex-col min-h-0 gap-0">
-                <Table
-                    enableSelection
-                    rowIds={rowIds}
-                    selectedIds={selectedItems}
-                    onSelectionChange={setSelectedItems}
-                    containerClassName="flex-1 min-h-0 flex flex-col [&>div]:flex-1"
-                    sortKey={sortKey}
-                    sortDirection={sortDirection}
-                    onSortChange={handleSortChange}
-                >
-                    <TableSelectionToolbar>
-                        <Button
-                            onClick={handleBulkExport}
-                            variant="outline"
-                            size="sm"
-                            disabled={isExporting || deleteMutation.isPending}
-                        >
-                            {isExporting ? 'Exporting...' : 'Export Selected'}
-                        </Button>
-                        <Button
-                            onClick={handleBulkDelete}
-                            variant="destructive"
-                            size="sm"
-                            disabled={isExporting || deleteMutation.isPending}
-                        >
-                            Delete Selected
-                        </Button>
-                    </TableSelectionToolbar>
+            {/* Accounts Table */}
+            <Table
+                enableSelection
+                rowIds={rowIds}
+                selectedIds={selectedItems}
+                onSelectionChange={setSelectedItems}
+            >
+                <TableSelectionToolbar>
+                    <button
+                        onClick={handleBulkExport}
+                        className="px-3 py-1.5 text-xs font-medium text-blue-700 bg-blue-100 hover:bg-blue-200 rounded-md transition-colors"
+                    >
+                        Export Selected
+                    </button>
+                    <button
+                        onClick={handleBulkDelete}
+                        className="px-3 py-1.5 text-xs font-medium text-red-700 bg-red-100 hover:bg-red-200 rounded-md transition-colors"
+                    >
+                        Delete Selected
+                    </button>
+                </TableSelectionToolbar>
 
-                    <TableHeader>
-                        <tr>
-                            <TableHead className="w-[50px]">
-                                <TableSelectAllCheckbox />
-                            </TableHead>
-                            <TableHead sortable sortKey="accountNumber">
-                                Number
-                            </TableHead>
-                            <TableHead sortable sortKey="accountName">
-                                Account Name
-                            </TableHead>
-                            <TableHead sortable sortKey="accountType">
-                                Type
-                            </TableHead>
-                            <TableHead sortable sortKey="accountDetailType">
-                                Detail Type
-                            </TableHead>
-                            <TableHead
-                                align="right"
-                                sortable
-                                sortKey="currentBalance"
-                            >
-                                Current Balance
-                            </TableHead>
-                            <TableHead align="center">Actions</TableHead>
-                        </tr>
-                    </TableHeader>
-                    <TableBody>
-                        {isLoading || isFetching ? (
-                            <TableLoadingState colSpan={7} rows={8} />
-                        ) : accounts.length === 0 ? (
-                            <TableEmptyState
-                                colSpan={7}
-                                message="No accounts found"
-                                description="Create your first account to get started"
-                            />
-                        ) : (
-                            accounts.map((account) => (
-                                <TableRow key={account.id} rowId={account.id}>
-                                    <TableCell>
-                                        <TableRowCheckbox rowId={account.id} />
-                                    </TableCell>
-                                    <TableCell>
-                                        <div className="font-medium text-primary">
-                                            {account.accountNumber || '-'}
-                                        </div>
-                                    </TableCell>
-                                    <TableCell>
-                                        <div className="flex flex-col">
-                                            <div className="font-medium text-primary">
-                                                {account.accountName}
-                                            </div>
-                                            {account.description && (
-                                                <div className="text-xs text-primary/50 mt-1">
-                                                    {account.description}
-                                                </div>
-                                            )}
-                                        </div>
-                                    </TableCell>
-                                    <TableCell>
-                                        <span className="text-sm text-primary">
-                                            {(() => {
-                                                const subtypes =
-                                                    ACCOUNT_HIERARCHY[
-                                                        account.accountType
-                                                    ];
-                                                if (subtypes) {
-                                                    for (const subtype of subtypes) {
-                                                        if (
-                                                            subtype.detailTypes.some(
-                                                                (d) =>
-                                                                    d.value ===
-                                                                    account.accountDetailType
-                                                            )
-                                                        ) {
-                                                            return subtype.label;
-                                                        }
-                                                    }
-                                                }
-                                                // Fallback to generic type
-                                                return ACCOUNT_TYPE_DISPLAY[
-                                                    account.accountType
-                                                ];
-                                            })()}
-                                        </span>
-                                    </TableCell>
-                                    <TableCell>
-                                        <span className="text-sm text-primary/75 capitalize">
-                                            {account.accountDetailType?.replace(
-                                                /-/g,
-                                                ' '
-                                            )}
-                                        </span>
-                                    </TableCell>
-                                    <TableCell align="right">
-                                        <span className="font-semibold text-primary">
-                                            {currencyFormatter.format(
-                                                parseFloat(
-                                                    account.currentBalance ||
-                                                        String(
-                                                            account.openingBalance
-                                                        )
-                                                )
-                                            )}
-                                        </span>
-                                    </TableCell>
-                                    <TableCell>
-                                        <div className="flex items-center justify-center gap-2">
-                                            <DropdownMenu>
-                                                <DropdownMenuTrigger asChild>
-                                                    <Button
-                                                        variant="outline"
-                                                        size="sm"
-                                                        className="min-w-[1rem]"
-                                                    >
-                                                        <MoreVertical className="h-4 w-4" />
-                                                    </Button>
-                                                </DropdownMenuTrigger>
-                                                <DropdownMenuContent align="end">
-                                                    <DropdownMenuItem
-                                                        onClick={() =>
-                                                            handleOpenEditModal(
-                                                                account
-                                                            )
-                                                        }
-                                                    >
-                                                        <Pencil className="w-4 h-4" />
-                                                        Edit
-                                                    </DropdownMenuItem>
-
-                                                    <DropdownMenuItem
-                                                        onClick={() =>
-                                                            setDeleteAccount(
-                                                                account
-                                                            )
-                                                        }
-                                                    >
-                                                        <Trash2 className="w-4 h-4" />
-                                                        Delete
-                                                    </DropdownMenuItem>
-                                                </DropdownMenuContent>
-                                            </DropdownMenu>
-                                        </div>
-                                    </TableCell>
-                                </TableRow>
-                            ))
-                        )}
-                    </TableBody>
-                </Table>
-            </div>
-
-            {pagination && (
-                <div className="flex items-center justify-between py-0 mt-auto">
-                    <div className="flex items-center space-x-2">
-                        <p className="text-sm font-medium">Rows per page</p>
-                        <Select
-                            value={String(limit)}
-                            onValueChange={(value) => {
-                                setLimit(Number(value));
-                                setPage(1);
-                            }}
+                <TableHeader>
+                    <tr>
+                        <TableHead>
+                            <TableSelectAllCheckbox />
+                        </TableHead>
+                        <TableHead sortable sortKey="accountName">
+                            Account Name
+                        </TableHead>
+                        <TableHead sortable sortKey="accountType">
+                            Type
+                        </TableHead>
+                        <TableHead>Detail Type</TableHead>
+                        <TableHead
+                            align="right"
+                            sortable
+                            sortKey="currentBalance"
                         >
-                            <SelectTrigger className="h-8 w-[80px]">
-                                <SelectValue placeholder={String(limit)} />
-                            </SelectTrigger>
-                            <SelectContent side="top">
-                                {[20, 50, 100].map((pageSize) => (
-                                    <SelectItem
-                                        key={pageSize}
-                                        value={String(pageSize)}
-                                    >
-                                        {pageSize}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-                    </div>
-                    {pagination.totalPages > 1 && (
-                        <TablePagination
-                            page={pagination.page}
-                            totalPages={pagination.totalPages}
-                            totalItems={pagination.total}
-                            itemsPerPage={pagination.limit}
-                            onPageChange={setPage}
-                            className="p-0 mt-0 mr-[100px]"
+                            Current Balance
+                        </TableHead>
+                        <TableHead align="center">Actions</TableHead>
+                    </tr>
+                </TableHeader>
+                <TableBody>
+                    {isLoading || isFetching ? (
+                        <TableLoadingState colSpan={6} rows={8} />
+                    ) : accounts.length === 0 ? (
+                        <TableEmptyState
+                            colSpan={6}
+                            message="No accounts found"
+                            description="Create your first account to get started"
                         />
-                    )}
-                </div>
-            )}
-
-            {/* Filters Modal */}
-            <Dialog open={isFilterOpen} onOpenChange={setIsFilterOpen}>
-                <DialogContent className="sm:max-w-[500px] max-h-[85vh] flex flex-col">
-                    <DialogHeader>
-                        <DialogTitle>Filter Accounts</DialogTitle>
-                        <DialogDescription>
-                            Refine your view by selecting account types and
-                            statuses.
-                        </DialogDescription>
-                    </DialogHeader>
-
-                    <div className="flex-1 overflow-y-auto py-4 pr-2">
-                        <div className="space-y-6">
-                            {/* Account Types */}
-                            <div>
-                                <div className="text-sm font-semibold text-primary mb-2">
-                                    Account Types
-                                </div>
-                                <ToggleGroup
-                                    type="multiple"
-                                    variant="outline"
-                                    value={tempSelectedTypes}
-                                    onValueChange={(vals) =>
-                                        setTempSelectedTypes(
-                                            vals as AccountType[]
-                                        )
-                                    }
-                                    className="flex-wrap justify-start gap-2"
-                                >
-                                    {ACCOUNT_TYPE_OPTIONS.map((opt) => (
-                                        <ToggleGroupItem
-                                            key={opt.value}
-                                            value={opt.value}
-                                            aria-label={opt.label}
-                                            className="h-8 px-3 text-xs"
-                                        >
-                                            {opt.label}
-                                        </ToggleGroupItem>
-                                    ))}
-                                </ToggleGroup>
-                            </div>
-
-                            {/* Detail Types */}
-                            <div>
-                                <div className="text-sm font-semibold text-primary mb-2">
-                                    Detail Types
-                                </div>
-                                <div className="max-h-40 overflow-y-auto pr-1 border rounded-md p-2 bg-muted/20">
-                                    <ToggleGroup
-                                        type="multiple"
-                                        variant="outline"
-                                        value={tempSelectedDetailTypes}
-                                        onValueChange={(vals) =>
-                                            setTempSelectedDetailTypes(
-                                                vals as AccountDetailType[]
-                                            )
-                                        }
-                                        className="flex-wrap justify-start gap-2"
-                                    >
-                                        {Object.entries(ACCOUNT_HIERARCHY)
-                                            .filter(
-                                                ([type]) =>
-                                                    tempSelectedTypes.length ===
-                                                        0 ||
-                                                    tempSelectedTypes.includes(
-                                                        type as AccountType
-                                                    )
-                                            )
-                                            .flatMap(([, subs]) =>
-                                                subs.flatMap(
-                                                    (sub) => sub.detailTypes
-                                                )
-                                            )
-                                            .reduce(
-                                                (acc, dt) => {
+                    ) : (
+                        accounts.map((account) => (
+                            <TableRow key={account.id} rowId={account.id}>
+                                <TableCell>
+                                    <TableRowCheckbox rowId={account.id} />
+                                </TableCell>
+                                <TableCell>
+                                    <div className="flex flex-col">
+                                        <div className="font-medium text-primary">
+                                            {account.accountName}
+                                        </div>
+                                        {account.description && (
+                                            <div className="text-xs text-primary/50 mt-1">
+                                                {account.description}
+                                            </div>
+                                        )}
+                                    </div>
+                                </TableCell>
+                                <TableCell>
+                                    <span className="text-sm text-primary">
+                                        {(() => {
+                                            const subtypes =
+                                                ACCOUNT_HIERARCHY[
+                                                account.accountType
+                                                ];
+                                            if (subtypes) {
+                                                for (const subtype of subtypes) {
                                                     if (
-                                                        !acc.some(
-                                                            (x) =>
-                                                                x.value ===
-                                                                dt.value
+                                                        subtype.detailTypes.some(
+                                                            (d) =>
+                                                                d.value ===
+                                                                account.accountDetailType
                                                         )
                                                     ) {
-                                                        acc.push(dt);
+                                                        return subtype.label;
                                                     }
-                                                    return acc;
-                                                },
-                                                [] as {
-                                                    value: AccountDetailType;
-                                                    label: string;
-                                                }[]
+                                                }
+                                            }
+                                            // Fallback to generic type
+                                            return ACCOUNT_TYPE_DISPLAY[
+                                                account.accountType
+                                            ];
+                                        })()}
+                                    </span>
+                                </TableCell>
+                                <TableCell>
+                                    <span className="text-sm text-primary/75 capitalize">
+                                        {account.accountDetailType?.replace(
+                                            /-/g,
+                                            ' '
+                                        )}
+                                    </span>
+                                </TableCell>
+                                <TableCell align="right">
+                                    <span className="font-medium text-primary">
+                                        {currencyFormatter.format(
+                                            parseFloat(
+                                                account.currentBalance ||
+                                                String(
+                                                    account.openingBalance
+                                                )
                                             )
-                                            .map((dt) => (
-                                                <ToggleGroupItem
+                                        )}
+                                    </span>
+                                </TableCell>
+                                <TableCell>
+                                    <div className="flex items-center justify-center gap-2">
+                                        <DropdownMenu>
+                                            <DropdownMenuTrigger asChild>
+                                                <Button
+                                                    variant="outline"
+                                                    size="sm"
+                                                    className="min-w-[1rem]"
+                                                >
+                                                    <MoreVertical className="h-4 w-4" />
+                                                </Button>
+                                            </DropdownMenuTrigger>
+                                            <DropdownMenuContent align="end">
+                                                <DropdownMenuItem
+                                                    onClick={() =>
+                                                        handleOpenEditModal(
+                                                            account
+                                                        )
+                                                    }
+                                                >
+                                                    <Pencil className="w-4 h-4" />
+                                                    Edit
+                                                </DropdownMenuItem>
+
+                                                <DropdownMenuItem
+                                                    onClick={() =>
+                                                        setDeleteAccount(
+                                                            account
+                                                        )
+                                                    }
+                                                >
+                                                    <Trash2 className="w-4 h-4" />
+                                                    Delete
+                                                </DropdownMenuItem>
+                                            </DropdownMenuContent>
+                                        </DropdownMenu>
+                                    </div>
+                                </TableCell>
+                            </TableRow>
+                        ))
+                    )}
+                </TableBody>
+            </Table>
+
+            {pagination && pagination.totalPages > 1 && (
+                <TablePagination
+                    page={pagination.page}
+                    totalPages={pagination.totalPages}
+                    totalItems={pagination.total}
+                    itemsPerPage={pagination.limit}
+                    onPageChange={setPage}
+                    className="mr-[40px]"
+                />
+            )}
+
+            {/* Filters Drawer */}
+            <Drawer
+                open={isFilterOpen}
+                onOpenChange={(open) => setIsFilterOpen(open)}
+                direction="right"
+            >
+                <DrawerContent className="data-[vaul-drawer-direction=right]:w-[420px] data-[vaul-drawer-direction=right]:sm:max-w-[420px] bg-card dark:bg-muted">
+                    <DrawerHeader className="flex flex-row items-center justify-between px-6 py-4 border-b border-primary/10">
+                        <DrawerTitle className="text-xl font-medium text-primary">
+                            Filters
+                        </DrawerTitle>
+                        <DrawerClose asChild>
+                            <button
+                                className="p-2 -mr-2 text-primary/50 hover:text-primary rounded-full hover:bg-primary/10 transition-colors"
+                                aria-label="Close"
+                            >
+                                <X className="h-5 w-5" />
+                            </button>
+                        </DrawerClose>
+                    </DrawerHeader>
+                    <div className="flex flex-col h-full p-4">
+                        <div className="space-y-6 flex-1">
+                            <div>
+                                <div className="text-sm font-medium text-primary mb-2">
+                                    Account Types
+                                </div>
+                                <div className="flex flex-wrap gap-2">
+                                    {ACCOUNT_TYPE_OPTIONS.map((opt) => {
+                                        const active = selectedTypes.includes(
+                                            opt.value
+                                        );
+                                        return (
+                                            <Button
+                                                key={opt.value}
+                                                variant={
+                                                    active
+                                                        ? 'default'
+                                                        : 'outline'
+                                                }
+                                                size="sm"
+                                                onClick={() => {
+                                                    setSelectedTypes((prev) =>
+                                                        active
+                                                            ? prev.filter(
+                                                                (t) =>
+                                                                    t !==
+                                                                    opt.value
+                                                            )
+                                                            : [
+                                                                ...prev,
+                                                                opt.value,
+                                                            ]
+                                                    );
+                                                }}
+                                            >
+                                                {opt.label}
+                                            </Button>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                            <div>
+                                <div className="text-sm font-medium text-primary mb-2">
+                                    Detail Types
+                                </div>
+                                <div className="flex flex-wrap gap-2 max-h-40 overflow-auto pr-1">
+                                    {Object.entries(ACCOUNT_HIERARCHY)
+                                        .filter(
+                                            ([type]) =>
+                                                selectedTypes.length === 0 ||
+                                                selectedTypes.includes(
+                                                    type as AccountType
+                                                )
+                                        )
+                                        .flatMap(([, subs]) =>
+                                            subs.flatMap(
+                                                (sub) => sub.detailTypes
+                                            )
+                                        )
+                                        .reduce(
+                                            (acc, dt) => {
+                                                if (
+                                                    !acc.some(
+                                                        (x) =>
+                                                            x.value === dt.value
+                                                    )
+                                                ) {
+                                                    acc.push(dt);
+                                                }
+                                                return acc;
+                                            },
+                                            [] as {
+                                                value: AccountDetailType;
+                                                label: string;
+                                            }[]
+                                        )
+                                        .map((dt) => {
+                                            const active =
+                                                selectedDetailTypes.includes(
+                                                    dt.value
+                                                );
+                                            return (
+                                                <Button
                                                     key={dt.value}
-                                                    value={dt.value}
-                                                    className="h-8 px-3 text-xs"
+                                                    variant={
+                                                        active
+                                                            ? 'default'
+                                                            : 'outline'
+                                                    }
+                                                    size="sm"
+                                                    onClick={() => {
+                                                        setSelectedDetailTypes(
+                                                            (prev) =>
+                                                                active
+                                                                    ? prev.filter(
+                                                                        (v) =>
+                                                                            v !==
+                                                                            dt.value
+                                                                    )
+                                                                    : [
+                                                                        ...prev,
+                                                                        dt.value,
+                                                                    ]
+                                                        );
+                                                    }}
                                                 >
                                                     {dt.label}
-                                                </ToggleGroupItem>
-                                            ))}
-                                    </ToggleGroup>
+                                                </Button>
+                                            );
+                                        })}
                                 </div>
                             </div>
-
-                            {/* Status */}
                             <div>
-                                <div className="text-sm font-semibold text-primary mb-2">
+                                <div className="text-sm font-medium text-primary mb-2">
                                     Status
                                 </div>
-                                <ToggleGroup
-                                    type="single"
-                                    variant="outline"
-                                    value={
-                                        tempIsActiveFilter === 'all'
-                                            ? ''
-                                            : tempIsActiveFilter
-                                    }
-                                    onValueChange={(val) =>
-                                        setTempIsActiveFilter(
-                                            val
-                                                ? (val as 'Active' | 'Inactive')
-                                                : 'all'
-                                        )
-                                    }
-                                    className="justify-start gap-2"
-                                >
-                                    <ToggleGroupItem
-                                        value="Active"
-                                        className="h-8 px-3 text-xs"
-                                    >
-                                        Active
-                                    </ToggleGroupItem>
-                                    <ToggleGroupItem
-                                        value="Inactive"
-                                        className="h-8 px-3 text-xs"
-                                    >
-                                        Inactive
-                                    </ToggleGroupItem>
-                                </ToggleGroup>
+                                <div className="flex flex-wrap gap-2">
+                                    {(['active', 'inactive'] as const).map(
+                                        (s) => {
+                                            const active =
+                                                (isActiveFilter === 'active' &&
+                                                    s === 'active') ||
+                                                (isActiveFilter ===
+                                                    'inactive' &&
+                                                    s === 'inactive');
+                                            return (
+                                                <Button
+                                                    key={s}
+                                                    variant={
+                                                        active
+                                                            ? 'default'
+                                                            : 'outline'
+                                                    }
+                                                    size="sm"
+                                                    onClick={() => {
+                                                        setIsActiveFilter(
+                                                            active ? 'all' : s
+                                                        );
+                                                    }}
+                                                >
+                                                    {s}
+                                                </Button>
+                                            );
+                                        }
+                                    )}
+                                </div>
                             </div>
                         </div>
-                    </div>
-
-                    <DialogFooter className="flex-row sm:justify-between sm:space-x-2 gap-2 border-t pt-4">
-                        <Button
-                            type="button"
-                            variant="outline"
-                            onClick={handleClearTempFilters}
-                            disabled={
-                                tempSelectedTypes.length === 0 &&
-                                tempSelectedDetailTypes.length === 0 &&
-                                tempIsActiveFilter === 'all'
-                            }
-                        >
-                            Clear All
-                        </Button>
-                        <div className="flex gap-2">
+                        <div className="flex justify-between gap-3 mt-8 pt-4 border-t border-primary/10">
                             <Button
                                 type="button"
-                                variant="secondary"
+                                variant={
+                                    selectedTypes.length === 0 &&
+                                        selectedDetailTypes.length === 0 &&
+                                        isActiveFilter === 'all'
+                                        ? 'default'
+                                        : 'outline'
+                                }
+                                onClick={() => {
+                                    setSelectedTypes([]);
+                                    setSelectedDetailTypes([]);
+                                    setIsActiveFilter('all');
+                                }}
+                            >
+                                Clear
+                            </Button>
+                            <Button
+                                type="button"
+                                variant="default"
                                 onClick={() => setIsFilterOpen(false)}
                             >
-                                Cancel
-                            </Button>
-                            <Button type="button" onClick={handleApplyFilters}>
-                                Apply Filters
+                                Apply
                             </Button>
                         </div>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
+                    </div>
+                </DrawerContent>
+            </Drawer>
 
             {/* Add/Edit Account Drawer */}
             <Drawer
@@ -1133,7 +803,7 @@ const ChartOfAccountspage = () => {
             >
                 <DrawerContent className="data-[vaul-drawer-direction=right]:w-[480px] data-[vaul-drawer-direction=right]:sm:max-w-[480px] bg-card dark:bg-muted">
                     <DrawerHeader className="flex flex-row items-center justify-between px-6 py-4 border-b border-primary/10">
-                        <DrawerTitle className="text-xl font-semibold text-primary">
+                        <DrawerTitle className="text-xl font-medium text-primary">
                             {editingAccount ? 'Edit Account' : 'New Account'}
                         </DrawerTitle>
                         <DrawerClose asChild>
@@ -1155,34 +825,6 @@ const ChartOfAccountspage = () => {
                             onSubmit={handleSubmit}
                             className="flex flex-col gap-4 flex-1"
                         >
-                            <div className="flex flex-col gap-2">
-                                <Label htmlFor="account-number">
-                                    Account Number
-                                </Label>
-                                <Input
-                                    id="account-number"
-                                    placeholder="Enter account number"
-                                    value={formData.accountNumber || ''}
-                                    onChange={(e) => {
-                                        setFormData({
-                                            ...formData,
-                                            accountNumber: e.target.value,
-                                        });
-                                        if (formErrors.accountNumber) {
-                                            setFormErrors((prev) => ({
-                                                ...prev,
-                                                accountNumber: '',
-                                            }));
-                                        }
-                                    }}
-                                />
-                                {formErrors.accountNumber && (
-                                    <p className="text-red-500 text-xs mt-1">
-                                        {formErrors.accountNumber}
-                                    </p>
-                                )}
-                            </div>
-
                             <div className="flex flex-col gap-2">
                                 <Label htmlFor="account-name">
                                     Account Name{' '}
@@ -1253,7 +895,7 @@ const ChartOfAccountspage = () => {
                                         {ACCOUNT_TYPE_DROPDOWN_OPTIONS.map(
                                             (group) => (
                                                 <div key={group.label}>
-                                                    <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">
+                                                    <div className="px-2 py-1.5 text-xs font-medium text-muted-foreground">
                                                         {group.label}
                                                     </div>
                                                     {group.options.map(
@@ -1421,19 +1063,6 @@ const ChartOfAccountspage = () => {
                 title="Delete Account"
                 message={`Are you sure you want to delete "${deleteAccount?.accountName}"? This action cannot be undone.`}
                 confirmText="Delete"
-                cancelText="Cancel"
-                confirmVariant="danger"
-                loading={deleteMutation.isPending}
-            />
-
-            {/* Bulk Delete Confirmation */}
-            <ConfirmationDialog
-                isOpen={showBulkDeleteConfirm}
-                onClose={() => setShowBulkDeleteConfirm(false)}
-                onConfirm={confirmBulkDelete}
-                title="Delete Multiple Accounts"
-                message={`Are you sure you want to delete ${selectedItems.length} account(s)? This action cannot be undone.`}
-                confirmText="Delete All"
                 cancelText="Cancel"
                 confirmVariant="danger"
                 loading={deleteMutation.isPending}

@@ -360,7 +360,7 @@ const ContactDetailPage = () => {
                     <div className="flex items-center gap-3">
                         {!isNew && (
                             <Avatar className="size-12">
-                                <AvatarFallback className="bg-linear-to-br from-primary/20 to-secondary/20 text-primary font-semibold text-lg">
+                                <AvatarFallback className="bg-linear-to-br from-primary/20 to-secondary/20 text-primary font-medium text-lg">
                                     {getContactInitials(displayName)}
                                 </AvatarFallback>
                             </Avatar>

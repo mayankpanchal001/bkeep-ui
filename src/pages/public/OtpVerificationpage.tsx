@@ -147,7 +147,7 @@ const OtpVerificationpage = () => {
                     <>
                         Open your authenticator app and enter the 6-digit code
                         for{' '}
-                        <span className="font-semibold text-primary">
+                        <span className="font-medium text-primary">
                             {email || 'your account'}
                         </span>
                         .
@@ -158,7 +158,7 @@ const OtpVerificationpage = () => {
                 return (
                     <>
                         We&apos;ve sent an email verification code to{' '}
-                        <span className="font-semibold text-primary">
+                        <span className="font-medium text-primary">
                             {email || 'your email'}
                         </span>
                         . Please enter it below to continue.

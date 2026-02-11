@@ -99,7 +99,7 @@ const AcceptInvitationpage = () => {
                     <div className="lg:col-span-3 p-8 lg:p-12 flex flex-col justify-center bg-card/50 relative">
                         <div className="max-w-md mx-auto w-full">
                             <div className="mb-8">
-                                <h2 className="text-2xl font-semibold text-foreground mb-2">
+                                <h2 className="text-2xl font-medium text-foreground mb-2">
                                     Create your account
                                 </h2>
                                 <p className="text-muted-foreground text-sm">

@@ -17,7 +17,7 @@ const Registerpage = () => {
                         Already have an account?{' '}
                         <Link
                             to="/login"
-                            className="text-primary white:text-white font-semibold hover:underline transition-all"
+                            className="text-primary white:text-white font-medium hover:underline transition-all"
                         >
                             Login
                         </Link>
@@ -35,7 +35,7 @@ const Registerpage = () => {
                     {/* Register Form Card */}
                     <div className="p-8 lg:p-12">
                         <div className="mb-6 text-center">
-                            <h2 className="text-[24px] font-semibold leading-tight text-primary white:text-white mb-1.5 tracking-tight">
+                            <h2 className="text-[24px] font-medium leading-tight text-primary white:text-white mb-1.5 tracking-tight">
                                 Create Account
                             </h2>
                             <p className="text-[14px] text-primary/50 dark:text-primary/40 font-medium">
@@ -78,7 +78,7 @@ const Registerpage = () => {
                                 className="h-24 w-24 object-contain brightness-0 invert dark:brightness-100 dark:invert-0"
                             />
                         </div>
-                        <h1 className="text-[30px] font-semibold leading-[36px] text-foreground mb-2 tracking-tight">
+                        <h1 className="text-[30px] font-medium leading-[36px] text-foreground mb-2 tracking-tight">
                             Bkeep Accounting
                         </h1>
                         <p className="text-[16px] text-foreground/90 font-medium tracking-tight">
@@ -94,7 +94,7 @@ const Registerpage = () => {
 
                             {/* Left Section */}
                             <div className="pr-9">
-                                <h3 className="text-foreground text-[16px] font-semibold">
+                                <h3 className="text-foreground text-[16px] font-medium">
                                     Ready to launch?
                                 </h3>
                                 <p className="text-foreground/70 text-[14px] leading-relaxed">
@@ -105,7 +105,7 @@ const Registerpage = () => {
 
                             {/* Right Section */}
                             <div className="pl-8">
-                                <h3 className="text-foreground text-[16px] font-semibold">
+                                <h3 className="text-foreground text-[16px] font-medium">
                                     Need help?
                                 </h3>
                                 <p className="text-foreground/70 text-[14px] leading-relaxed">

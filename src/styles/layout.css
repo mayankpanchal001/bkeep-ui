@@ -113,7 +113,7 @@
 }
 
 .sidebar-header-title-text {
-    @apply text-base font-semibold text-primary;
+    @apply text-base font-medium text-primary;
     line-height: 1.125;
     transition:
         opacity 0.15s ease-in-out 0.05s,
@@ -214,7 +214,7 @@
 }
 
 .topbar-logo-text {
-    @apply text-lg font-semibold text-primary;
+    @apply text-lg font-medium text-primary;
 }
 
 .topbar-avatar-container {
@@ -263,7 +263,7 @@
 }
 
 .topbar-dropdown-name {
-    @apply text-sm font-semibold text-primary;
+    @apply text-sm font-medium text-primary;
 }
 
 .topbar-dropdown-email {
@@ -284,7 +284,7 @@
 
 /* Transaction Table Styles */
 .transaction-table-header {
-    @apply px-4 py-3 text-left text-xs font-semibold text-primary/75 uppercase tracking-wider;
+    @apply px-4 py-3 text-left text-xs font-medium text-primary/75 uppercase tracking-wider;
 }
 
 .transaction-table-row {

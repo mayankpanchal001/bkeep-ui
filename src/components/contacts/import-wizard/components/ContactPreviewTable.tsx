@@ -75,7 +75,7 @@ export function ContactPreviewTable({
                             {columnsToShow.map((field) => (
                                 <th
                                     key={field.key}
-                                    className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground whitespace-nowrap"
+                                    className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground whitespace-nowrap"
                                 >
                                     {field.label}
                                 </th>

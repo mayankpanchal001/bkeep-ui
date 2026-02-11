@@ -56,7 +56,7 @@ function WizardContent({ onClose }: ImportContactsWizardProps) {
         <div className="flex flex-col h-full">
             {/* Header */}
             <div className="flex items-center justify-between px-4 md:px-6 py-4 border-b border-border">
-                <h2 className="text-lg md:text-xl font-semibold text-primary">
+                <h2 className="text-lg md:text-xl font-medium text-primary">
                     Import Contacts
                 </h2>
                 <button

@@ -34,7 +34,7 @@ export function Step4ReviewSelect() {
         <div className="space-y-6">
             {/* Header */}
             <div>
-                <h2 className="text-lg font-semibold text-primary">
+                <h2 className="text-lg font-medium text-primary">
                     Review & Select Transactions
                 </h2>
                 <p className="text-sm text-muted-foreground mt-1">

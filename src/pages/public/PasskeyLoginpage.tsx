@@ -1,7 +1,7 @@
+import { PasskeyLoginForm } from '@/components/auth/PasskeyLoginForm';
 import { Link } from 'react-router';
 import { APP_TITLE } from '../../constants';
 import { logo } from '../../utills/image';
-import { PasskeyLoginForm } from '@/components/auth/PasskeyLoginForm';
 
 const PasskeyLoginpage = () => {
     return (
@@ -16,7 +16,7 @@ const PasskeyLoginpage = () => {
                             className="h-10 mx-auto"
                         />
                     </Link>
-                    <h1 className="text-2xl font-semibold text-primary">
+                    <h1 className="text-2xl font-medium text-primary">
                         Let's get you in to {APP_TITLE}
                     </h1>
                 </div>

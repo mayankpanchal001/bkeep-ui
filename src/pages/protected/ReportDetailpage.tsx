@@ -914,7 +914,7 @@ const ReportDetailpage = () => {
         <div className="w-full mx-auto flex flex-col gap-6">
             {/* Header - hidden when printing */}
             <header className="flex justify-between items-center mb-0 print:hidden">
-                <h1 className="text-2xl font-semibold tracking-tight text-foreground">
+                <h1 className="text-2xl font-medium tracking-tight text-foreground">
                     {title}
                 </h1>
 
@@ -1286,7 +1286,7 @@ const ProfitLossReportView = ({
                                     open={incomeOpen}
                                     onOpenChange={setIncomeOpen}
                                 >
-                                    <CollapsibleTrigger className="flex w-full items-center gap-2 py-2 px-2 rounded hover:bg-muted/50 transition-colors text-left font-semibold text-sm text-foreground">
+                                    <CollapsibleTrigger className="flex w-full items-center gap-2 py-2 px-2 rounded hover:bg-muted/50 transition-colors text-left font-medium text-sm text-foreground">
                                         <ChevronDown
                                             className={cn(
                                                 'size-4 shrink-0 text-muted-foreground transition-transform',
@@ -1334,7 +1334,7 @@ const ProfitLossReportView = ({
                         </TableRow>
 
                         {/* Gross Profit */}
-                        <TableRow className="bg-muted/50 hover:bg-muted/50 font-semibold">
+                        <TableRow className="bg-muted/50 hover:bg-muted/50 font-medium">
                             <TableCell>Gross Profit</TableCell>
                             <TableCell
                                 align="right"
@@ -1351,7 +1351,7 @@ const ProfitLossReportView = ({
                                     open={expenseOpen}
                                     onOpenChange={setExpenseOpen}
                                 >
-                                    <CollapsibleTrigger className="flex w-full items-center gap-2 py-2 px-2 rounded hover:bg-muted/50 transition-colors text-left font-semibold text-sm text-foreground">
+                                    <CollapsibleTrigger className="flex w-full items-center gap-2 py-2 px-2 rounded hover:bg-muted/50 transition-colors text-left font-medium text-sm text-foreground">
                                         <ChevronDown
                                             className={cn(
                                                 'size-4 shrink-0 text-muted-foreground transition-transform',
@@ -1399,7 +1399,7 @@ const ProfitLossReportView = ({
                         </TableRow>
 
                         {/* Profit (Net Income) */}
-                        <TableRow className="bg-muted/50 hover:bg-muted/50 font-semibold">
+                        <TableRow className="bg-muted/50 hover:bg-muted/50 font-medium">
                             <TableCell>Profit</TableCell>
                             <TableCell
                                 align="right"
@@ -1619,7 +1619,7 @@ const BalanceSheetReportView = ({
                                     open={assetsOpen}
                                     onOpenChange={setAssetsOpen}
                                 >
-                                    <CollapsibleTrigger className="flex w-full items-center gap-2 py-2 px-2 rounded hover:bg-muted/50 transition-colors text-left font-semibold text-foreground">
+                                    <CollapsibleTrigger className="flex w-full items-center gap-2 py-2 px-2 rounded hover:bg-muted/50 transition-colors text-left font-medium text-foreground">
                                         <ChevronDown
                                             className={cn(
                                                 'size-4 shrink-0 text-muted-foreground transition-transform',
@@ -1655,7 +1655,7 @@ const BalanceSheetReportView = ({
                                                 </TableCell>
                                             </TableRow>
                                         ))}
-                                        <TableRow className="bg-muted/20 hover:bg-muted/30 font-semibold">
+                                        <TableRow className="bg-muted/20 hover:bg-muted/30 font-medium">
                                             <TableCell className="pl-8">
                                                 Total{' '}
                                                 {balanceSheetSectionLabel(type)}
@@ -1689,7 +1689,7 @@ const BalanceSheetReportView = ({
                                 </TableCell>
                             </TableRow>
                         )}
-                        <TableRow className="border-t-2 border-border font-semibold bg-muted/40 hover:bg-muted/40">
+                        <TableRow className="border-t-2 border-border font-medium bg-muted/40 hover:bg-muted/40">
                             <TableCell>Total Assets</TableCell>
                             <TableCell
                                 align="right"
@@ -1706,7 +1706,7 @@ const BalanceSheetReportView = ({
                                     open={liabEquityOpen}
                                     onOpenChange={setLiabEquityOpen}
                                 >
-                                    <CollapsibleTrigger className="flex w-full items-center gap-2 py-2 px-2 rounded hover:bg-muted/50 transition-colors text-left font-semibold text-foreground">
+                                    <CollapsibleTrigger className="flex w-full items-center gap-2 py-2 px-2 rounded hover:bg-muted/50 transition-colors text-left font-medium text-foreground">
                                         <ChevronDown
                                             className={cn(
                                                 'size-4 shrink-0 text-muted-foreground transition-transform',
@@ -1727,7 +1727,7 @@ const BalanceSheetReportView = ({
                                             open={liabilitiesOpen}
                                             onOpenChange={setLiabilitiesOpen}
                                         >
-                                            <CollapsibleTrigger className="flex w-full items-center gap-2 py-1.5 px-2 rounded hover:bg-muted/50 transition-colors text-left font-semibold text-foreground pl-8">
+                                            <CollapsibleTrigger className="flex w-full items-center gap-2 py-1.5 px-2 rounded hover:bg-muted/50 transition-colors text-left font-medium text-foreground pl-8">
                                                 <ChevronDown
                                                     className={cn(
                                                         'size-4 shrink-0 text-muted-foreground transition-transform',
@@ -1774,7 +1774,7 @@ const BalanceSheetReportView = ({
                                                         </TableRow>
                                                     )
                                                 )}
-                                                <TableRow className="bg-muted/20 hover:bg-muted/30 font-semibold">
+                                                <TableRow className="bg-muted/20 hover:bg-muted/30 font-medium">
                                                     <TableCell className="pl-14">
                                                         Total{' '}
                                                         {balanceSheetSectionLabel(
@@ -1814,7 +1814,7 @@ const BalanceSheetReportView = ({
                                             </TableCell>
                                         </TableRow>
                                     )}
-                                <TableRow className="border-t border-border font-semibold bg-muted/20 hover:bg-muted/30">
+                                <TableRow className="border-t border-border font-medium bg-muted/20 hover:bg-muted/30">
                                     <TableCell className="pl-8">
                                         Total Liabilities
                                     </TableCell>
@@ -1838,7 +1838,7 @@ const BalanceSheetReportView = ({
                                             open={equityOpen}
                                             onOpenChange={setEquityOpen}
                                         >
-                                            <CollapsibleTrigger className="flex w-full items-center gap-2 py-1.5 px-2 rounded hover:bg-muted/50 transition-colors text-left font-semibold text-foreground pl-8">
+                                            <CollapsibleTrigger className="flex w-full items-center gap-2 py-1.5 px-2 rounded hover:bg-muted/50 transition-colors text-left font-medium text-foreground pl-8">
                                                 <ChevronDown
                                                     className={cn(
                                                         'size-4 shrink-0 text-muted-foreground transition-transform',
@@ -1876,7 +1876,7 @@ const BalanceSheetReportView = ({
                                 {liabEquityOpen &&
                                     equityOpen &&
                                     equity.length > 0 && (
-                                        <TableRow className="bg-muted/20 hover:bg-muted/30 font-semibold">
+                                        <TableRow className="bg-muted/20 hover:bg-muted/30 font-medium">
                                             <TableCell className="pl-14">
                                                 Total Equity
                                             </TableCell>
@@ -1907,7 +1907,7 @@ const BalanceSheetReportView = ({
                                     )}
 
                                 {/* Total Liabilities and Equity */}
-                                <TableRow className="border-t-2 border-border font-semibold bg-muted/40 hover:bg-muted/40">
+                                <TableRow className="border-t-2 border-border font-medium bg-muted/40 hover:bg-muted/40">
                                     <TableCell>
                                         Total Liabilities and Equity
                                     </TableCell>
@@ -2089,7 +2089,7 @@ const CashFlowReportView = ({ data }: { data: CashFlowReportData }) => {
             </div>
             <div className="divide-y divide-primary/10">
                 <div className="p-4">
-                    <h3 className="font-semibold mb-2">
+                    <h3 className="font-medium mb-2">
                         Cash Flows from Operating Activities
                     </h3>
                     <div className="space-y-1">
@@ -2127,7 +2127,7 @@ const CashFlowReportView = ({ data }: { data: CashFlowReportData }) => {
                     </div>
                 </div>
                 <div className="p-4">
-                    <h3 className="font-semibold mb-2">
+                    <h3 className="font-medium mb-2">
                         Cash Flows from Investing Activities
                     </h3>
                     <div className="space-y-1">
@@ -2165,7 +2165,7 @@ const CashFlowReportView = ({ data }: { data: CashFlowReportData }) => {
                     </div>
                 </div>
                 <div className="p-4">
-                    <h3 className="font-semibold mb-2">
+                    <h3 className="font-medium mb-2">
                         Cash Flows from Financing Activities
                     </h3>
                     <div className="space-y-1">
@@ -2222,7 +2222,7 @@ const CashFlowReportView = ({ data }: { data: CashFlowReportData }) => {
                                 {formatCurrency(data.netChangeInCash ?? 0)}
                             </span>
                         </div>
-                        <div className="flex justify-between font-semibold text-lg pt-2 border-t border-primary/10">
+                        <div className="flex justify-between font-medium text-lg pt-2 border-t border-primary/10">
                             <span>Ending Cash Balance</span>
                             <span>
                                 {formatCurrency(data.endingCashBalance ?? 0)}
@@ -2249,7 +2249,7 @@ const UnpaidBillsReportView = ({ data }: { data: UnpaidBillsReportData }) => {
                     <div className="text-sm text-muted-foreground">
                         Total Bills
                     </div>
-                    <div className="text-lg font-semibold">
+                    <div className="text-lg font-medium">
                         {summary.totalBills ?? 0}
                     </div>
                 </div>
@@ -2257,7 +2257,7 @@ const UnpaidBillsReportView = ({ data }: { data: UnpaidBillsReportData }) => {
                     <div className="text-sm text-muted-foreground">
                         Total Amount
                     </div>
-                    <div className="text-lg font-semibold">
+                    <div className="text-lg font-medium">
                         {formatCurrency(summary.totalAmount ?? 0)}
                     </div>
                 </div>
@@ -2265,13 +2265,13 @@ const UnpaidBillsReportView = ({ data }: { data: UnpaidBillsReportData }) => {
                     <div className="text-sm text-muted-foreground">
                         Amount Due
                     </div>
-                    <div className="text-lg font-semibold text-primary">
+                    <div className="text-lg font-medium text-primary">
                         {formatCurrency(summary.totalDue ?? 0)}
                     </div>
                 </div>
                 <div className="bg-destructive/10 rounded p-3">
                     <div className="text-sm text-muted-foreground">Overdue</div>
-                    <div className="text-lg font-semibold text-destructive">
+                    <div className="text-lg font-medium text-destructive">
                         {summary.overdueBills ?? 0} (
                         {formatCurrency(summary.overdueAmount ?? 0)})
                     </div>

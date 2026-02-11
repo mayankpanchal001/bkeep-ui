@@ -15,7 +15,7 @@ const NotificationsTab = ({
 }: NotificationsTabProps) => {
     return (
         <div className="flex flex-col gap-4">
-            <h3 className="text-lg font-semibold text-primary">
+            <h3 className="text-lg font-medium text-primary">
                 Notification Preferences
             </h3>
             <div className="flex flex-col gap-4">

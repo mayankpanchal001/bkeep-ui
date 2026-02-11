@@ -124,7 +124,7 @@ const PageHeaderMenu = () => {
                                         .slice(0, 2)}
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                    <p className="text-sm font-semibold text-primary truncate">
+                                    <p className="text-sm font-medium text-primary truncate">
                                         {user?.name}
                                     </p>
                                     <p className="text-xs text-primary/50 truncate">
@@ -163,7 +163,7 @@ const PageHeaderMenu = () => {
             {showLogoutConfirm && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4">
                     <div className="w-full max-w-sm rounded bg-card p-4 ">
-                        <h3 className="text-lg font-semibold text-primary">
+                        <h3 className="text-lg font-medium text-primary">
                             Sign out?
                         </h3>
                         <p className="mt-2 text-sm text-primary/75">
@@ -172,14 +172,14 @@ const PageHeaderMenu = () => {
                         </p>
                         <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-end">
                             <button
-                                className="rounded border border-primary/10 px-4 py-2 text-sm font-semibold text-primary transition hover:bg-primary/10"
+                                className="rounded border border-primary/10 px-4 py-2 text-sm font-medium text-primary transition hover:bg-primary/10"
                                 onClick={handleCancelLogout}
                                 disabled={isLoggingOut}
                             >
                                 Cancel
                             </button>
                             <button
-                                className="rounded bg-primary px-4 py-2 text-sm font-semibold text-white transition hover:bg-primary/75 disabled:cursor-not-allowed disabled:opacity-70"
+                                className="rounded bg-primary px-4 py-2 text-sm font-medium text-white transition hover:bg-primary/75 disabled:cursor-not-allowed disabled:opacity-70"
                                 onClick={handleConfirmLogout}
                                 disabled={isLoggingOut}
                             >

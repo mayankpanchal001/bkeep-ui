@@ -135,7 +135,7 @@ export default function HeroSection() {
                                 <div className="space-y-4 p-6">
                                     {/* Header with live indicator */}
                                     <div className="flex items-center justify-between">
-                                        <h3 className="text-lg font-semibold text-foreground">
+                                        <h3 className="text-lg font-medium text-foreground">
                                             Financial Overview
                                         </h3>
                                         <div className="flex items-center gap-2 text-xs text-muted-foreground">

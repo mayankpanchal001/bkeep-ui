@@ -20,7 +20,7 @@ export default function RouteErrorBoundary() {
         <div className="min-h-[60vh] w-full flex items-center justify-center p-6">
             <div className="w-full max-w-lg rounded-md border border-border bg-background p-6 flex flex-col gap-4">
                 <div className="space-y-1">
-                    <div className="text-lg font-semibold text-foreground">
+                    <div className="text-lg font-medium text-foreground">
                         Unexpected application error
                     </div>
                     <div className="text-sm text-muted-foreground break-all">

@@ -394,7 +394,7 @@ function Avatar({ name }: { name: string }) {
         .map((n) => n[0])
         .join('');
     return (
-        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-secondary to-accent flex items-center justify-center text-foreground text-xs font-semibold">
+        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-secondary to-accent flex items-center justify-center text-foreground text-xs font-medium">
             {initials}
         </div>
     );
@@ -409,7 +409,7 @@ function RoleBadge({ role }: { role: User['role'] }) {
 
     return (
         <span
-            className={`px-2 py-1 text-xs font-semibold rounded-full ${styles[role]}`}
+            className={`px-2 py-1 text-xs font-medium rounded-full ${styles[role]}`}
         >
             {role}
         </span>
