@@ -65,8 +65,8 @@ export function AccountPreviewTable({
             {/* Table */}
             <div className="max-h-[400px] overflow-auto">
                 <table className="w-full">
-                    <thead className="bg-muted/30 sticky top-0">
-                        <tr className="border-b border-border">
+                    <thead className="bg-muted sticky top-0">
+                        <tr className="border-b border-border z-10">
                             {!readOnly && (
                                 <th className="w-12 px-4 py-3 text-left">
                                     <Checkbox
