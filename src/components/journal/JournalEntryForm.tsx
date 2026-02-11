@@ -782,20 +782,37 @@ export function JournalEntryForm({
                 </div>
             </div>
 
-            <div className="flex flex-col gap-2">
-                <label className="input-label">Attachments</label>
-                <div
-                    onClick={(e) => {
-                        // Don't trigger file picker if clicking remove button
-                        if ((e.target as HTMLElement).closest('button')) return;
-                        fileInputRef.current?.click();
-                    }}
-                    onDragEnter={handleDrag}
-                    onDragLeave={handleDrag}
-                    onDragOver={handleDrag}
-                    onDrop={handleDrop}
-                    className={`border-2 border-dashed rounded-lg p-4 flex flex-col items-center justify-center text-center cursor-pointer transition-colors min-h-[100px] ${
-                        dragActive
+            <div className="flex flex-row gap-6 items-start">
+                <div className="flex-1 flex flex-col gap-2">
+                    <label className="input-label">Memo</label>
+                    <div className="input-wrap h-[120px]">
+                        <textarea
+                            value={memo}
+                            onChange={(e) => setMemo(e.target.value)}
+                            className="input w-full h-full resize-none py-2"
+                            placeholder="Optional"
+                        />
+                    </div>
+                </div>
+
+                <div className="flex-1 flex flex-col gap-2">
+                    <div className="flex items-center justify-between">
+                        <label className="input-label">Attachments</label>
+                        <span className="text-xs text-muted-foreground">
+                            Max 10MB
+                        </span>
+                    </div>
+                    <div
+                        onClick={(e) => {
+                            if ((e.target as HTMLElement).closest('button'))
+                                return;
+                            fileInputRef.current?.click();
+                        }}
+                        onDragEnter={handleDrag}
+                        onDragLeave={handleDrag}
+                        onDragOver={handleDrag}
+                        onDrop={handleDrop}
+                        className={`border-2 border-dashed rounded-lg px-4 py-3 flex items-center justify-center gap-2 text-center cursor-pointer transition-colors h-[120px] ${dragActive
                             ? 'border-primary bg-primary/10'
                             : 'border-input hover:bg-muted/50 hover:border-primary/50'
                     }`}
@@ -808,110 +825,75 @@ export function JournalEntryForm({
                         onChange={handleFileSelect}
                     />
 
-                    {attachments.length > 0 ||
-                    existingAttachments.length > 0 ? (
-                        <div className="w-full flex flex-col gap-2">
-                            <div className="flex flex-col gap-2 mb-2">
-                                {/* Existing Attachments */}
+                        <Upload
+                            className={`h-4 w-4 ${dragActive
+                                ? 'text-primary'
+                                : 'text-muted-foreground'
+                                }`}
+                        />
+                        <span className="text-sm text-muted-foreground font-medium">
+                            {dragActive
+                                ? 'Drop files here'
+                                : 'Click or drag to upload'}
+                        </span>
+                    </div>
+
+                    {(attachments.length > 0 ||
+                        existingAttachments.length > 0) && (
+                            <div className="flex flex-wrap gap-2 mt-1">
                                 {existingAttachments.map((file, index) => (
                                     <div
                                         key={`existing-${file.id}`}
-                                        className="flex items-center justify-between p-2 bg-card border rounded-md shadow-sm"
+                                        className="flex items-center gap-2 bg-background border px-2 py-1.5 rounded-md text-xs shadow-sm hover:bg-accent/50 transition-colors"
+                                        title={`${file.filename} (${(
+                                            file.size / 1024
+                                        ).toFixed(1)} KB) - Existing`}
                                     >
-                                        <div className="flex items-center gap-3 overflow-hidden">
-                                            <div className="h-8 w-8 rounded bg-primary/10 flex items-center justify-center shrink-0">
-                                                <FileText className="h-4 w-4 text-primary" />
-                                            </div>
-                                            <div className="flex flex-col overflow-hidden text-left">
-                                                <span className="text-sm font-medium truncate max-w-[200px]">
-                                                    {file.filename}
-                                                </span>
-                                                <span className="text-xs text-muted-foreground">
-                                                    {(file.size / 1024).toFixed(
-                                                        1
-                                                    )}{' '}
-                                                    KB (Existing)
-                                                </span>
-                                            </div>
-                                        </div>
+                                        <FileText className="h-3 w-3 text-primary/70" />
+                                        <span className="truncate max-w-[150px]">
+                                            {file.filename}
+                                        </span>
                                         <button
                                             type="button"
                                             onClick={(e) => {
                                                 e.stopPropagation();
                                                 removeExistingAttachment(index);
                                             }}
-                                            className="p-1 text-muted-foreground hover:text-red-500 transition-colors"
+                                            className="text-muted-foreground hover:text-red-500 transition-colors ml-1"
                                             title="Remove file"
                                         >
-                                            <X className="h-4 w-4" />
+                                            <X className="h-3 w-3" />
                                         </button>
                                     </div>
                                 ))}
 
-                                {/* New Attachments */}
                                 {attachments.map((file, index) => (
                                     <div
                                         key={`new-${index}`}
-                                        className="flex items-center justify-between p-2 bg-card border rounded-md shadow-sm"
+                                        className="flex items-center gap-2 bg-background border px-2 py-1.5 rounded-md text-xs shadow-sm hover:bg-accent/50 transition-colors"
+                                        title={`${file.name} (${(
+                                            file.size / 1024
+                                        ).toFixed(1)} KB)`}
                                     >
-                                        <div className="flex items-center gap-3 overflow-hidden">
-                                            <div className="h-8 w-8 rounded bg-primary/10 flex items-center justify-center shrink-0">
-                                                <FileText className="h-4 w-4 text-primary" />
-                                            </div>
-                                            <div className="flex flex-col overflow-hidden text-left">
-                                                <span className="text-sm font-medium truncate max-w-[200px]">
-                                                    {file.name}
-                                                </span>
-                                                <span className="text-xs text-muted-foreground">
-                                                    {(file.size / 1024).toFixed(
-                                                        1
-                                                    )}{' '}
-                                                    KB
-                                                </span>
-                                            </div>
-                                        </div>
+                                        <FileText className="h-3 w-3 text-primary/70" />
+                                        <span className="truncate max-w-[150px]">
+                                            {file.name}
+                                        </span>
                                         <button
                                             type="button"
                                             onClick={(e) => {
                                                 e.stopPropagation();
                                                 removeAttachment(index);
                                             }}
-                                            className="p-1 text-muted-foreground hover:text-red-500 transition-colors"
+                                            className="text-muted-foreground hover:text-red-500 transition-colors ml-1"
                                             title="Remove file"
                                         >
-                                            <X className="h-4 w-4" />
+                                            <X className="h-3 w-3" />
                                         </button>
                                     </div>
                                 ))}
                             </div>
-                        </div>
-                    ) : (
-                        <>
-                            <Upload
-                                className={`h-8 w-8 mb-3 ${dragActive ? 'text-primary' : 'text-muted-foreground'}`}
-                            />
-                            <p className="text-sm font-medium">
-                                {dragActive
-                                    ? 'Drop files here'
-                                    : 'Click or drag files to upload'}
-                            </p>
-                            <p className="text-xs text-muted-foreground mt-1">
-                                Max size 10MB per file
-                            </p>
-                        </>
-                    )}
-                </div>
-            </div>
-
-            <div className="flex flex-col gap-2">
-                <label className="input-label">Memo</label>
-                <div className="input-wrap">
-                    <textarea
-                        value={memo}
-                        onChange={(e) => setMemo(e.target.value)}
-                        className="input min-h-[120px] resize-y py-2"
-                        placeholder="Optional"
-                    />
+                        )}
                 </div>
             </div>
 
