@@ -192,12 +192,7 @@ export const buildApiFilters = (params: {
             updatedAt: 'updatedAt',
         };
         const apiSortKey = sortKeyMap[sort] || sort;
-        const validApiSortKeys = [
-            'paidAt',
-            'amount',
-            'createdAt',
-            'updatedAt',
-        ];
+        const validApiSortKeys = ['paidAt', 'amount', 'createdAt', 'updatedAt'];
         if (validApiSortKeys.includes(apiSortKey)) {
             filters.sort = apiSortKey;
             if (order) filters.order = order;

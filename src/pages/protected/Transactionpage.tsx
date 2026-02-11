@@ -539,10 +539,7 @@ const Transactionpage = () => {
                                         Sort by
                                     </label>
                                     <Select
-                                        value={
-                                            filterStore.sort ||
-                                            'date'
-                                        }
+                                        value={filterStore.sort || 'date'}
                                         onValueChange={(value) =>
                                             filterStore.setSort(
                                                 value as
