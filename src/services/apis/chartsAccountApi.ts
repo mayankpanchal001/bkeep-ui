@@ -159,6 +159,7 @@ export type ChartOfAccount = {
 };
 
 export type CreateChartOfAccountPayload = {
+    accountNumber?: string;
     accountName: string;
     accountType: AccountType;
     accountDetailType: AccountDetailType;
@@ -168,6 +169,7 @@ export type CreateChartOfAccountPayload = {
 };
 
 export type UpdateChartOfAccountPayload = {
+    accountNumber?: string;
     accountName?: string;
     accountType?: AccountType;
     accountDetailType?: AccountDetailType;
@@ -442,13 +444,38 @@ export async function downloadSampleData(): Promise<Blob> {
     return response.data;
 }
 
+// ============= API Functions =============
+
+export interface ImportProgressResponse {
+    success: boolean;
+    statusCode: number;
+    message: string;
+    data: {
+        id: string;
+        status: 'pending' | 'processing' | 'completed' | 'failed';
+        totalRows: number;
+        processedRows: number;
+        successfulRows: number;
+        failedRows: number;
+        progress: number;
+        errorMessage: string | null;
+        errorDetails: Array<{
+            row: number;
+            error: string;
+            data: unknown;
+        }>;
+        startedAt: string;
+        completedAt: string | null;
+    };
+}
+
 /**
  * Import chart of accounts from file
  */
 export async function importChartOfAccounts(
     file: File,
     mapping?: Record<string, string>
-): Promise<{ success: boolean; message: string }> {
+): Promise<{ success: boolean; message: string; data?: { id: string } }> {
     const formData = new FormData();
     formData.append('file', file);
     if (mapping) {
@@ -460,6 +487,16 @@ export async function importChartOfAccounts(
             'Content-Type': 'multipart/form-data',
         },
     });
+    return response.data;
+}
+
+/**
+ * Get import progress
+ */
+export async function getAccountImportProgress(
+    id: string
+): Promise<ImportProgressResponse> {
+    const response = await axiosInstance.get(`/accounts/import/${id}/progress`);
     return response.data;
 }
 
