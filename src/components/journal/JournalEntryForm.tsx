@@ -812,24 +812,26 @@ export function JournalEntryForm({
                         onDragLeave={handleDrag}
                         onDragOver={handleDrag}
                         onDrop={handleDrop}
-                        className={`border-2 border-dashed rounded-lg px-4 py-3 flex items-center justify-center gap-2 text-center cursor-pointer transition-colors h-[120px] ${dragActive
-                            ? 'border-primary bg-primary/10'
-                            : 'border-input hover:bg-muted/50 hover:border-primary/50'
-                    }`}
-                >
-                    <input
-                        ref={fileInputRef}
-                        type="file"
-                        className="hidden"
-                        multiple
-                        onChange={handleFileSelect}
-                    />
+                        className={`border-2 border-dashed rounded-lg px-4 py-3 flex items-center justify-center gap-2 text-center cursor-pointer transition-colors h-[120px] ${
+                            dragActive
+                                ? 'border-primary bg-primary/10'
+                                : 'border-input hover:bg-muted/50 hover:border-primary/50'
+                        }`}
+                    >
+                        <input
+                            ref={fileInputRef}
+                            type="file"
+                            className="hidden"
+                            multiple
+                            onChange={handleFileSelect}
+                        />
 
                         <Upload
-                            className={`h-4 w-4 ${dragActive
-                                ? 'text-primary'
-                                : 'text-muted-foreground'
-                                }`}
+                            className={`h-4 w-4 ${
+                                dragActive
+                                    ? 'text-primary'
+                                    : 'text-muted-foreground'
+                            }`}
                         />
                         <span className="text-sm text-muted-foreground font-medium">
                             {dragActive
@@ -840,60 +842,60 @@ export function JournalEntryForm({
 
                     {(attachments.length > 0 ||
                         existingAttachments.length > 0) && (
-                            <div className="flex flex-wrap gap-2 mt-1">
-                                {existingAttachments.map((file, index) => (
-                                    <div
-                                        key={`existing-${file.id}`}
-                                        className="flex items-center gap-2 bg-background border px-2 py-1.5 rounded-md text-xs shadow-sm hover:bg-accent/50 transition-colors"
-                                        title={`${file.filename} (${(
-                                            file.size / 1024
-                                        ).toFixed(1)} KB) - Existing`}
+                        <div className="flex flex-wrap gap-2 mt-1">
+                            {existingAttachments.map((file, index) => (
+                                <div
+                                    key={`existing-${file.id}`}
+                                    className="flex items-center gap-2 bg-background border px-2 py-1.5 rounded-md text-xs shadow-sm hover:bg-accent/50 transition-colors"
+                                    title={`${file.filename} (${(
+                                        file.size / 1024
+                                    ).toFixed(1)} KB) - Existing`}
+                                >
+                                    <FileText className="h-3 w-3 text-primary/70" />
+                                    <span className="truncate max-w-[150px]">
+                                        {file.filename}
+                                    </span>
+                                    <button
+                                        type="button"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            removeExistingAttachment(index);
+                                        }}
+                                        className="text-muted-foreground hover:text-red-500 transition-colors ml-1"
+                                        title="Remove file"
                                     >
-                                        <FileText className="h-3 w-3 text-primary/70" />
-                                        <span className="truncate max-w-[150px]">
-                                            {file.filename}
-                                        </span>
-                                        <button
-                                            type="button"
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                removeExistingAttachment(index);
-                                            }}
-                                            className="text-muted-foreground hover:text-red-500 transition-colors ml-1"
-                                            title="Remove file"
-                                        >
-                                            <X className="h-3 w-3" />
-                                        </button>
-                                    </div>
-                                ))}
+                                        <X className="h-3 w-3" />
+                                    </button>
+                                </div>
+                            ))}
 
-                                {attachments.map((file, index) => (
-                                    <div
-                                        key={`new-${index}`}
-                                        className="flex items-center gap-2 bg-background border px-2 py-1.5 rounded-md text-xs shadow-sm hover:bg-accent/50 transition-colors"
-                                        title={`${file.name} (${(
-                                            file.size / 1024
-                                        ).toFixed(1)} KB)`}
+                            {attachments.map((file, index) => (
+                                <div
+                                    key={`new-${index}`}
+                                    className="flex items-center gap-2 bg-background border px-2 py-1.5 rounded-md text-xs shadow-sm hover:bg-accent/50 transition-colors"
+                                    title={`${file.name} (${(
+                                        file.size / 1024
+                                    ).toFixed(1)} KB)`}
+                                >
+                                    <FileText className="h-3 w-3 text-primary/70" />
+                                    <span className="truncate max-w-[150px]">
+                                        {file.name}
+                                    </span>
+                                    <button
+                                        type="button"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            removeAttachment(index);
+                                        }}
+                                        className="text-muted-foreground hover:text-red-500 transition-colors ml-1"
+                                        title="Remove file"
                                     >
-                                        <FileText className="h-3 w-3 text-primary/70" />
-                                        <span className="truncate max-w-[150px]">
-                                            {file.name}
-                                        </span>
-                                        <button
-                                            type="button"
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                removeAttachment(index);
-                                            }}
-                                            className="text-muted-foreground hover:text-red-500 transition-colors ml-1"
-                                            title="Remove file"
-                                        >
-                                            <X className="h-3 w-3" />
-                                        </button>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
+                                        <X className="h-3 w-3" />
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                    )}
                 </div>
             </div>
 
