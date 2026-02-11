@@ -8,8 +8,8 @@ import {
     SelectTrigger,
     SelectValue,
 } from '../../../ui/select';
-import { useImportWizard } from '../useImportWizard';
 import { ColumnMode } from '../types';
+import { useImportWizard } from '../useImportWizard';
 
 export function Step3FileSetup() {
     const { state, actions, importFields, allDateFormats } = useImportWizard();
@@ -18,7 +18,7 @@ export function Step3FileSetup() {
         <div className="space-y-8">
             {/* Header */}
             <div>
-                <h2 className="text-lg font-semibold text-primary">
+                <h2 className="text-lg font-medium text-primary">
                     Let's set up your file
                 </h2>
                 <p className="text-sm text-muted-foreground mt-1">
@@ -29,7 +29,7 @@ export function Step3FileSetup() {
             {/* Section 1: Format Setup */}
             <div className="space-y-4">
                 <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-semibold">
+                    <div className="w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-medium">
                         1
                     </div>
                     <h3 className="font-medium text-primary">
@@ -130,7 +130,7 @@ export function Step3FileSetup() {
             {/* Section 2: Field Mapping */}
             <div className="space-y-4">
                 <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-semibold">
+                    <div className="w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-medium">
                         2
                     </div>
                     <h3 className="font-medium text-primary">
@@ -140,7 +140,7 @@ export function Step3FileSetup() {
 
                 <div className="ml-8 space-y-3">
                     {/* Mapping Table Header */}
-                    <div className="grid grid-cols-12 gap-4 text-xs font-semibold uppercase tracking-wider text-muted-foreground border-b border-border pb-2">
+                    <div className="grid grid-cols-12 gap-4 text-xs font-medium uppercase tracking-wider text-muted-foreground border-b border-border pb-2">
                         <div className="col-span-5">System Field</div>
                         <div className="col-span-2 flex justify-center"></div>
                         <div className="col-span-5">Your File Column</div>

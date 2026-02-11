@@ -8,10 +8,10 @@ export default function CTASection() {
             <div className="relative overflow-hidden rounded-[32px] border border-border bg-background px-8 py-12 text-foreground ">
                 <div className="grid gap-10 md:grid-cols-[1.1fr,0.9fr]">
                     <div className="flex flex-col gap-4 text-center md:text-left">
-                        <p className="text-xs font-semibold uppercase tracking-[0.45em] text-muted-foreground">
+                        <p className="text-xs font-medium uppercase tracking-[0.45em] text-muted-foreground">
                             Start modern accounting today
                         </p>
-                        <h2 className="text-3xl font-semibold sm:text-4xl">
+                        <h2 className="text-3xl font-medium sm:text-4xl">
                             Automate bookkeeping, close faster, stay
                             audit‑ready.
                         </h2>

@@ -422,7 +422,7 @@ export default function TenantsTab() {
         <div className="w-full flex flex-col gap-4">
             <div className="flex items-center justify-between">
                 <div>
-                    <h3 className="text-lg font-semibold text-primary">
+                    <h3 className="text-lg font-medium text-primary">
                         {CAP_PLURAL} Management
                     </h3>
                     <p className="text-sm text-primary/50">

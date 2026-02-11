@@ -284,7 +284,7 @@ const PasskeyManagementModal = ({
                 <div className="w-full max-w-2xl rounded bg-card p-4  max-h-[90vh] overflow-y-auto">
                     {/* Header */}
                     <div className="flex items-center justify-between mb-6">
-                        <h3 className="text-xl font-semibold text-primary">
+                        <h3 className="text-xl font-medium text-primary">
                             {currentStep === 'list' && 'Passkey Management'}
                             {currentStep === 'register' &&
                                 'Register New Passkey'}
@@ -485,7 +485,7 @@ const PasskeyManagementModal = ({
                         {currentStep === 'register' && (
                             <div className="space-y-6">
                                 <div className="bg-blue-50 border border-blue-200 rounded p-4">
-                                    <h4 className="font-semibold text-blue-900 mb-2 flex items-center gap-2">
+                                    <h4 className="font-medium text-blue-900 mb-2 flex items-center gap-2">
                                         <FaFingerprint className="w-4 h-4" />
                                         Biometric Authentication
                                     </h4>

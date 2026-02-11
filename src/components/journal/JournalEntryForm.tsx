@@ -23,7 +23,7 @@ import { useTaxes } from '@/services/apis/taxApi';
 import type { Attachment, CreateJournalEntryPayload } from '@/types/journal';
 import { FileText, GripVertical, Save, Upload, X } from 'lucide-react';
 import { useMemo, useRef, useState } from 'react';
-import { FaPlus, FaTrash, FaCopy } from 'react-icons/fa';
+import { FaCopy, FaPlus, FaTrash } from 'react-icons/fa';
 
 type JournalEntryFormProps = {
     initialData?: Partial<CreateJournalEntryPayload>;
@@ -754,7 +754,7 @@ export function JournalEntryForm({
                 <div className="flex items-center gap-4 text-sm">
                     <span className="text-primary/70">
                         Debit:{' '}
-                        <span className="text-primary font-semibold">
+                        <span className="text-primary font-medium">
                             {totals.totalDebit.toLocaleString('en-US', {
                                 style: 'currency',
                                 currency: 'USD',
@@ -763,7 +763,7 @@ export function JournalEntryForm({
                     </span>
                     <span className="text-primary/70">
                         Credit:{' '}
-                        <span className="text-primary font-semibold">
+                        <span className="text-primary font-medium">
                             {totals.totalCredit.toLocaleString('en-US', {
                                 style: 'currency',
                                 currency: 'USD',
@@ -771,7 +771,7 @@ export function JournalEntryForm({
                         </span>
                     </span>
                     <span
-                        className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                        className={`px-2 py-1 rounded-full text-xs font-medium ${
                             isBalanced
                                 ? 'bg-green-100 text-green-700'
                                 : 'bg-red-100 text-red-700'

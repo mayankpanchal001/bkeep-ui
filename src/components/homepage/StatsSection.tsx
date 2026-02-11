@@ -4,7 +4,7 @@ export default function StatsSection() {
     return (
         <section id="metrics" className="mx-auto max-w-7xl px-6 lg:px-8">
             <div className="mx-auto max-w-2xl text-center">
-                <p className="mb-4 text-sm font-semibold uppercase tracking-wider text-primary">
+                <p className="mb-4 text-sm font-medium uppercase tracking-wider text-primary">
                     Performance Metrics
                 </p>
                 <h2 className="mb-6 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">

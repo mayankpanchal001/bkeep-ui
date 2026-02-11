@@ -173,9 +173,9 @@ const Navbar = ({ onSearchClick, onShortcutsClick }: NavbarProps) => {
     const isMac = navigator.userAgent.includes('Macintosh');
 
     return (
-        <nav className="flex items-center justify-between p-4 bg-card/80 dark:bg-muted/80 backdrop-blur-md border-b border-primary/10 sticky top-0 z-40 w-full">
+        <nav className="flex items-center justify-between p-4 py-2 bg-card/80 dark:bg-muted/80 backdrop-blur-md border-b border-primary/10 sticky top-0 z-40 w-full">
             <div className="flex items-center gap-4">
-                <SidebarTrigger className="-ml-1" />
+                <SidebarTrigger />
 
                 <AutoBreadcrumbs className="hidden sm:block max-w-[50vw]" />
             </div>
@@ -330,7 +330,7 @@ const Navbar = ({ onSearchClick, onShortcutsClick }: NavbarProps) => {
                                                                 className={cn(
                                                                     'text-sm truncate',
                                                                     n.unread
-                                                                        ? 'font-semibold text-primary dark:text-primary'
+                                                                        ? 'font-medium text-primary dark:text-primary'
                                                                         : 'font-medium text-primary dark:text-primary/90'
                                                                 )}
                                                             >
@@ -433,7 +433,7 @@ const Navbar = ({ onSearchClick, onShortcutsClick }: NavbarProps) => {
                                 <div className="flex items-center justify-between gap-4">
                                     <div className="flex items-center gap-2 min-w-0">
                                         <Bell className="w-4 h-4 text-primary shrink-0" />
-                                        <h3 className="text-sm font-semibold text-primary dark:text-primary truncate">
+                                        <h3 className="text-sm font-medium text-primary dark:text-primary truncate">
                                             Notifications
                                         </h3>
                                         {unreadCount > 0 && (
@@ -541,7 +541,7 @@ const Navbar = ({ onSearchClick, onShortcutsClick }: NavbarProps) => {
                                                                 className={cn(
                                                                     'text-sm truncate',
                                                                     n.unread
-                                                                        ? 'font-semibold text-primary dark:text-primary'
+                                                                        ? 'font-medium text-primary dark:text-primary'
                                                                         : 'font-medium text-primary dark:text-primary/90'
                                                                 )}
                                                             >
@@ -627,7 +627,7 @@ const Navbar = ({ onSearchClick, onShortcutsClick }: NavbarProps) => {
                         <TooltipTrigger asChild>
                             <DropdownMenuTrigger asChild>
                                 <button
-                                    className="w-9 cursor-pointer h-9 p-1 rounded-full bg-linear-to-br from-primary/20 to-primary/10 flex items-center justify-center text-xs text-primary font-semibold hover:from-primary/30 hover:to-primary/20 transition-colors"
+                                    className="w-9 cursor-pointer h-9 p-1 rounded-full bg-linear-to-br from-primary/20 to-primary/10 flex items-center justify-center text-xs text-primary font-medium hover:from-primary/30 hover:to-primary/20 transition-colors"
                                     aria-label="User menu"
                                 >
                                     {initials}
@@ -641,11 +641,11 @@ const Navbar = ({ onSearchClick, onShortcutsClick }: NavbarProps) => {
                     <DropdownMenuContent className="w-72" align="end">
                         <DropdownMenuLabel>
                             <div className="flex items-center gap-3">
-                                <div className="w-9 h-9 rounded-full bg-linear-to-br from-primary/20 to-primary/10 flex items-center justify-center text-primary font-semibold">
+                                <div className="w-9 h-9 rounded-full bg-linear-to-br from-primary/20 to-primary/10 flex items-center justify-center text-primary font-medium">
                                     {initials}
                                 </div>
                                 <div className="min-w-0">
-                                    <div className="text-sm font-semibold text-primary truncate">
+                                    <div className="text-sm font-medium text-primary truncate">
                                         {user?.name || 'User'}
                                     </div>
                                     <div className="text-xs text-primary/60 truncate">

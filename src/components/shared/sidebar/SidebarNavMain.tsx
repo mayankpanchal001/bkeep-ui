@@ -152,7 +152,10 @@ export function SidebarNavMain() {
                                     }}
                                     className="group/collapsible"
                                 >
-                                    <SidebarMenuItem>
+                                    <SidebarMenuItem
+                                        onMouseEnter={handleMouseEnter}
+                                        onMouseLeave={handleMouseLeave}
+                                    >
                                         <div className="flex items-center">
                                             <SidebarMenuButton
                                                 asChild
@@ -179,12 +182,6 @@ export function SidebarNavMain() {
                                                 <SidebarMenuAction
                                                     className="hover:bg-sidebar-accent hover:text-sidebar-accent-foreground data-[state=open]:rotate-90 transition-transform duration-200"
                                                     showOnHover
-                                                    onMouseEnter={
-                                                        handleMouseEnter
-                                                    }
-                                                    onMouseLeave={
-                                                        handleMouseLeave
-                                                    }
                                                 >
                                                     <ChevronRight className="size-4" />
                                                 </SidebarMenuAction>

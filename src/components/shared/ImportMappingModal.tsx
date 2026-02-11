@@ -73,7 +73,7 @@ const ImportMappingModal = ({
                 {/* Header */}
                 <div className="flex items-center justify-between p-4 border-b border-primary/10">
                     <div>
-                        <h2 className="text-xl font-semibold text-primary/90">
+                        <h2 className="text-xl font-medium text-primary/90">
                             Map Import Fields
                         </h2>
                         <p className="text-sm text-primary/50 mt-1">

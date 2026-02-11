@@ -125,7 +125,7 @@ const SecurityTab = () => {
 
     return (
         <div className="space-y-6">
-            <h3 className="text-lg font-semibold text-primary mb-4">
+            <h3 className="text-lg font-medium text-primary mb-4">
                 Security Settings
             </h3>
             <div className="flex flex-col gap-4">

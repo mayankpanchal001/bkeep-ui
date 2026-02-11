@@ -295,7 +295,7 @@ const MobileOffcanvas = ({ isOpen, onClose }: MobileOffcanvasProps) => {
                             {user?.name?.charAt(0) || 'U'}
                         </div>
                         <div className="flex-1 min-w-0">
-                            <p className="text-sm font-semibold text-primary truncate">
+                            <p className="text-sm font-medium text-primary truncate">
                                 {user?.name || 'User'}
                             </p>
                             <p className="text-xs text-primary/50 truncate">

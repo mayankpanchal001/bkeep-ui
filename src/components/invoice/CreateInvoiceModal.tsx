@@ -299,7 +299,7 @@ const CreateInvoiceModal = ({
                             <FileText className="h-5 w-5 text-primary" />
                         </div>
                         <div>
-                            <h1 className="text-lg font-semibold text-foreground">
+                            <h1 className="text-lg font-medium text-foreground">
                                 Create Invoice
                             </h1>
                             <p className="text-xs text-muted-foreground">
@@ -672,7 +672,7 @@ const CreateInvoiceModal = ({
                         >
                             <div className="flex justify-between items-center">
                                 <div>
-                                    <h3 className="text-sm font-semibold text-foreground">
+                                    <h3 className="text-sm font-medium text-foreground">
                                         Line Items
                                     </h3>
                                     <p className="text-xs text-muted-foreground">
@@ -906,7 +906,7 @@ const CreateInvoiceModal = ({
                                 </div>
                                 <Separator />
                                 <div className="flex justify-between">
-                                    <span className="font-semibold">Total</span>
+                                    <span className="font-medium">Total</span>
                                     <span className="font-bold text-lg">
                                         {formatCurrency(total)}
                                     </span>
@@ -920,7 +920,7 @@ const CreateInvoiceModal = ({
                             className="flex-1 p-6 space-y-6 mt-0"
                         >
                             <div>
-                                <h3 className="text-sm font-semibold text-foreground mb-1">
+                                <h3 className="text-sm font-medium text-foreground mb-1">
                                     Company Information
                                 </h3>
                                 <p className="text-xs text-muted-foreground mb-4">
@@ -1126,7 +1126,7 @@ const CreateInvoiceModal = ({
                                         <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1">
                                             From
                                         </p>
-                                        <p className="font-semibold text-foreground">
+                                        <p className="font-medium text-foreground">
                                             {companyInfo.name}
                                         </p>
                                         <p className="text-sm text-muted-foreground">
@@ -1151,7 +1151,7 @@ const CreateInvoiceModal = ({
                                         </p>
                                         {formData.customer ? (
                                             <>
-                                                <p className="font-semibold text-foreground">
+                                                <p className="font-medium text-foreground">
                                                     {formData.customer.name}
                                                 </p>
                                                 {formData.customer.email && (
@@ -1308,7 +1308,7 @@ const CreateInvoiceModal = ({
                                 </div>
                                 <Separator />
                                 <div className="flex justify-between pt-2">
-                                    <span className="font-semibold text-foreground">
+                                    <span className="font-medium text-foreground">
                                         Total
                                     </span>
                                     <span className="font-bold text-lg text-foreground">

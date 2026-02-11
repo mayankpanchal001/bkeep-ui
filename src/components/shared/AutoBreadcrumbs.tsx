@@ -174,7 +174,10 @@ export default function AutoBreadcrumbs({ className }: { className?: string }) {
                 {visibleParts.map((p, idx) => {
                     const isLast = idx === visibleParts.length - 1;
                     return (
-                        <div key={p.path} className="flex items-center">
+                        <div
+                            key={p.path}
+                            className="flex items-center gap-2 capitalize"
+                        >
                             <BreadcrumbItem>
                                 {isLast ? (
                                     <BreadcrumbPage>{p.label}</BreadcrumbPage>

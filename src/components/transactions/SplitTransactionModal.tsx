@@ -344,7 +344,7 @@ export function SplitTransactionDrawer({
                                     <span className="text-xs text-primary/60">
                                         Total Amount
                                     </span>
-                                    <p className="text-base sm:text-lg font-semibold text-primary">
+                                    <p className="text-base sm:text-lg font-medium text-primary">
                                         {formatCurrency(transactionAmount)}
                                     </p>
                                 </div>
@@ -354,7 +354,7 @@ export function SplitTransactionDrawer({
                                         Allocated
                                     </span>
                                     <p
-                                        className={`text-base sm:text-lg font-semibold ${
+                                        className={`text-base sm:text-lg font-medium ${
                                             isFullyAllocated
                                                 ? 'text-green-600'
                                                 : hasOverAllocation
@@ -373,7 +373,7 @@ export function SplitTransactionDrawer({
                                                 Remaining
                                             </span>
                                             <p
-                                                className={`text-sm font-semibold ${
+                                                className={`text-sm font-medium ${
                                                     remaining > 0
                                                         ? 'text-orange-600'
                                                         : 'text-red-600'

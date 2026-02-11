@@ -959,7 +959,7 @@ const ChartOfAccountspage = () => {
                         <div className="space-y-6">
                             {/* Account Types */}
                             <div>
-                                <div className="text-sm font-semibold text-primary mb-2">
+                                <div className="text-sm font-medium text-primary mb-2">
                                     Account Types
                                 </div>
                                 <ToggleGroup
@@ -988,7 +988,7 @@ const ChartOfAccountspage = () => {
 
                             {/* Detail Types */}
                             <div>
-                                <div className="text-sm font-semibold text-primary mb-2">
+                                <div className="text-sm font-medium text-primary mb-2">
                                     Detail Types
                                 </div>
                                 <div className="max-h-40 overflow-y-auto pr-1 border rounded-md p-2 bg-muted/20">
@@ -1050,7 +1050,7 @@ const ChartOfAccountspage = () => {
 
                             {/* Status */}
                             <div>
-                                <div className="text-sm font-semibold text-primary mb-2">
+                                <div className="text-sm font-medium text-primary mb-2">
                                     Status
                                 </div>
                                 <ToggleGroup
@@ -1133,7 +1133,7 @@ const ChartOfAccountspage = () => {
             >
                 <DrawerContent className="data-[vaul-drawer-direction=right]:w-[480px] data-[vaul-drawer-direction=right]:sm:max-w-[480px] bg-card dark:bg-muted">
                     <DrawerHeader className="flex flex-row items-center justify-between px-6 py-4 border-b border-primary/10">
-                        <DrawerTitle className="text-xl font-semibold text-primary">
+                        <DrawerTitle className="text-xl font-medium text-primary">
                             {editingAccount ? 'Edit Account' : 'New Account'}
                         </DrawerTitle>
                         <DrawerClose asChild>
@@ -1253,7 +1253,7 @@ const ChartOfAccountspage = () => {
                                         {ACCOUNT_TYPE_DROPDOWN_OPTIONS.map(
                                             (group) => (
                                                 <div key={group.label}>
-                                                    <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">
+                                                    <div className="px-2 py-1.5 text-xs font-medium text-muted-foreground">
                                                         {group.label}
                                                     </div>
                                                     {group.options.map(
