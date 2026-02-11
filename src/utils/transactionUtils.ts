@@ -187,30 +187,16 @@ export const buildApiFilters = (params: {
     if (sort) {
         const sortKeyMap: Record<string, string> = {
             date: 'paidAt',
-            spent: 'amount',
-            received: 'amount',
             amount: 'amount',
-            tax: 'taxId',
-            taxId: 'taxId',
-            category: 'categoryId',
-            contactId: 'contactId',
-            description: 'description',
-            status: 'status',
+            createdAt: 'createdAt',
+            updatedAt: 'updatedAt',
         };
         const apiSortKey = sortKeyMap[sort] || sort;
-
         const validApiSortKeys = [
             'paidAt',
             'amount',
-            'type',
-            'reconciled',
             'createdAt',
             'updatedAt',
-            'description',
-            'taxId',
-            'contactId',
-            'categoryId',
-            'status',
         ];
         if (validApiSortKeys.includes(apiSortKey)) {
             filters.sort = apiSortKey;
