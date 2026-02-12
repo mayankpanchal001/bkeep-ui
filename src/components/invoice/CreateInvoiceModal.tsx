@@ -9,6 +9,12 @@ import {
     CommandItem,
     CommandList,
 } from '@/components/ui/command';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import Input from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
@@ -27,25 +33,29 @@ import { Separator } from '@/components/ui/separator';
 import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
+import { useContacts } from '@/services/apis/contactsApi';
+import { useTaxes } from '@/services/apis/taxApi';
+import { ContactAddress } from '@/types/contact';
+import { calculateInvoiceTotals, calculateLineItemTotal } from '@/utils/calculations';
 import { cn } from '@/utils/cn';
 import {
     Building2,
     Calendar,
     Check,
+    ChevronDown,
     ChevronsUpDown,
     FileText,
     GripVertical,
     Mail,
     MapPin,
     Package,
-    Percent,
     Plus,
     Receipt,
     Settings,
     Trash2,
     Upload,
     User,
-    X,
+    X
 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
@@ -61,7 +71,6 @@ type LineItem = {
     description: string;
     qty: number;
     price: number;
-    tax: number;
 };
 
 type CompanyInfo = {
@@ -74,7 +83,7 @@ type CompanyInfo = {
     logo?: string;
 };
 
-type InvoiceFormData = {
+export type InvoiceFormData = {
     invoiceNumber: string;
     customer: Customer | null;
     issueDate: string;
@@ -88,37 +97,31 @@ type InvoiceFormData = {
     memo: string;
     notes: string;
     lineItems: LineItem[];
-    subtotal: number;
     taxRate: number;
+    taxId?: string;
     discount: number;
     discountType: 'percentage' | 'fixed';
 };
 
-const MOCK_CUSTOMERS: Customer[] = [
-    {
-        id: '1',
-        name: 'Acme Corporation',
-        email: 'contact@acme.com',
-        address: '123 Business St, City, State 12345',
-    },
-    {
-        id: '2',
-        name: 'Blue Ocean Enterprises',
-        email: 'info@blueocean.com',
-        address: '456 Commerce Ave, City, State 67890',
-    },
-    { id: '3', name: 'Cyberdyne Systems', email: 'hello@cyberdyne.com' },
-    { id: '4', name: 'Delta Dynamics', email: 'contact@delta.com' },
-    { id: '5', name: 'Emerald Innovations', email: 'info@emerald.com' },
-    { id: '6', name: 'Firefly Technologies', email: 'hello@firefly.com' },
-    { id: '7', name: 'Galactic Industries', email: 'contact@galactic.com' },
-];
+const formatContactAddress = (address?: ContactAddress | null) => {
+    if (!address) return undefined;
+    const parts = [
+        address.streetAddress1,
+        address.streetAddress2,
+        address.city,
+        address.province,
+        address.postalCode,
+        address.country,
+    ].filter(Boolean);
+    return parts.length > 0 ? parts.join(', ') : undefined;
+};
 
 type CreateInvoiceModalProps = {
     isOpen: boolean;
     onClose: () => void;
     onSaveDraft?: (data: InvoiceFormData) => void;
     onSendInvoice?: (data: InvoiceFormData) => void;
+    onSave?: (data: InvoiceFormData, action: 'new' | 'close' | 'share') => void;
 };
 
 const CreateInvoiceModal = ({
@@ -126,6 +129,7 @@ const CreateInvoiceModal = ({
     onClose,
     onSaveDraft,
     onSendInvoice,
+    onSave,
 }: CreateInvoiceModalProps) => {
     const [companyInfo, setCompanyInfo] = useState<CompanyInfo>({
         name: 'Excel Studio Inc.',
@@ -152,8 +156,8 @@ const CreateInvoiceModal = ({
         memo: '',
         notes: 'Thank you for your business!',
         lineItems: [],
-        subtotal: 0,
-        taxRate: 13,
+        taxRate: 0,
+        taxId: undefined,
         discount: 0,
         discountType: 'percentage',
     });
@@ -161,32 +165,40 @@ const CreateInvoiceModal = ({
     const [customerOpen, setCustomerOpen] = useState(false);
     const [customerSearch, setCustomerSearch] = useState('');
 
+    const { data: contactsData, isLoading: isLoadingContacts } = useContacts({
+        type: 'customer',
+        search: customerSearch,
+        limit: 10,
+    });
+
+    const { data: taxesData } = useTaxes({ limit: 1000 });
+    const allTaxes = taxesData?.data?.items || [];
+
     // Filter customers based on search
     const filteredCustomers = useMemo(() => {
-        const q = customerSearch.trim().toLowerCase();
-        return q
-            ? MOCK_CUSTOMERS.filter(
-                  (c) =>
-                      c.name.toLowerCase().includes(q) ||
-                      c.email?.toLowerCase().includes(q)
-              )
-            : MOCK_CUSTOMERS;
-    }, [customerSearch]);
+        if (!contactsData?.data?.items) return [];
+        return contactsData.data.items.map((contact) => ({
+            id: contact.id,
+            name: contact.displayName,
+            email: contact.email || undefined,
+            address: formatContactAddress(contact.billingAddress),
+        }));
+    }, [contactsData]);
 
     // Calculate totals
-    const subtotal = formData.lineItems.reduce(
-        (sum, item) => sum + item.qty * item.price,
-        0
-    );
-
-    const discountAmount =
-        formData.discountType === 'percentage'
-            ? (subtotal * formData.discount) / 100
-            : formData.discount;
-
-    const taxableAmount = subtotal - discountAmount;
-    const totalTax = (taxableAmount * formData.taxRate) / 100;
-    const total = taxableAmount + totalTax;
+    const { subtotal, discountAmount, taxAmount: totalTax, totalAmount: total } = useMemo(() => {
+        return calculateInvoiceTotals(
+            formData.lineItems,
+            formData.discount,
+            formData.discountType,
+            formData.taxRate
+        );
+    }, [
+        formData.lineItems,
+        formData.discount,
+        formData.discountType,
+        formData.taxRate,
+    ]);
 
     // Handle ESC key
     useEffect(() => {
@@ -221,7 +233,6 @@ const CreateInvoiceModal = ({
             description: '',
             qty: 1,
             price: 0,
-            tax: 0,
         };
         setFormData({
             ...formData,
@@ -315,12 +326,36 @@ const CreateInvoiceModal = ({
                     >
                         Save Draft
                     </Button>
-                    <Button
-                        onClick={() => onSendInvoice?.(formData)}
-                        disabled={!canSend}
-                    >
-                        Send Invoice
-                    </Button>
+                    <div className="flex items-center">
+                        <Button
+                            className="rounded-r-none border-r border-primary-foreground/20"
+                            onClick={() => onSave ? onSave(formData, 'close') : onSendInvoice?.(formData)}
+                            disabled={!canSend}
+                        >
+                            Save and close
+                        </Button>
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button
+                                    className="rounded-l-none px-2"
+                                    disabled={!canSend}
+                                >
+                                    <ChevronDown className="h-4 w-4" />
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                                <DropdownMenuItem onClick={() => onSave?.(formData, 'new')}>
+                                    Save and new
+                                </DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => onSave?.(formData, 'close')}>
+                                    Save and close
+                                </DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => onSave?.(formData, 'share')}>
+                                    Save and share link
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    </div>
                 </div>
             </header>
 
@@ -470,52 +505,59 @@ const CreateInvoiceModal = ({
                                                 }
                                             />
                                             <CommandList>
-                                                <CommandEmpty>
-                                                    No customers found.
-                                                </CommandEmpty>
-                                                <CommandGroup>
-                                                    {filteredCustomers.map(
-                                                        (customer) => (
-                                                            <CommandItem
-                                                                key={
-                                                                    customer.id
-                                                                }
-                                                                onSelect={() =>
-                                                                    handleSelectCustomer(
-                                                                        customer
-                                                                    )
-                                                                }
-                                                                className="flex flex-col items-start py-3"
-                                                            >
-                                                                <div className="flex items-center w-full">
-                                                                    <Check
-                                                                        className={cn(
-                                                                            'mr-2 h-4 w-4',
-                                                                            formData
-                                                                                .customer
-                                                                                ?.id ===
-                                                                                customer.id
-                                                                                ? 'opacity-100'
-                                                                                : 'opacity-0'
-                                                                        )}
-                                                                    />
-                                                                    <span className="font-medium">
-                                                                        {
-                                                                            customer.name
-                                                                        }
-                                                                    </span>
-                                                                </div>
-                                                                {customer.email && (
-                                                                    <span className="ml-6 text-xs text-muted-foreground">
-                                                                        {
-                                                                            customer.email
-                                                                        }
-                                                                    </span>
-                                                                )}
-                                                            </CommandItem>
-                                                        )
-                                                    )}
-                                                </CommandGroup>
+                                                {isLoadingContacts ? (
+                                                    <div className="py-6 text-center text-sm text-muted-foreground">
+                                                        Loading...
+                                                    </div>
+                                                ) : filteredCustomers.length === 0 ? (
+                                                    <CommandEmpty>
+                                                        No customers found.
+                                                    </CommandEmpty>
+                                                ) : (
+                                                    <CommandGroup>
+                                                        {filteredCustomers.map(
+                                                            (customer) => (
+                                                                <CommandItem
+                                                                    key={
+                                                                        customer.id
+                                                                    }
+                                                                    onSelect={() =>
+                                                                        handleSelectCustomer(
+                                                                            customer
+                                                                        )
+                                                                    }
+                                                                    className="flex flex-col items-start py-3"
+                                                                >
+                                                                    <div className="flex items-center w-full">
+                                                                        <Check
+                                                                            className={cn(
+                                                                                'mr-2 h-4 w-4',
+                                                                                formData
+                                                                                    .customer
+                                                                                    ?.id ===
+                                                                                    customer.id
+                                                                                    ? 'opacity-100'
+                                                                                    : 'opacity-0'
+                                                                            )}
+                                                                        />
+                                                                        <span className="font-medium">
+                                                                            {
+                                                                                customer.name
+                                                                            }
+                                                                        </span>
+                                                                    </div>
+                                                                    {customer.email && (
+                                                                        <span className="ml-6 text-xs text-muted-foreground">
+                                                                            {
+                                                                                customer.email
+                                                                            }
+                                                                        </span>
+                                                                    )}
+                                                                </CommandItem>
+                                                            )
+                                                        )}
+                                                    </CommandGroup>
+                                                )}
                                             </CommandList>
                                         </Command>
                                     </PopoverContent>
@@ -785,8 +827,7 @@ const CreateInvoiceModal = ({
                                                         <Label>Total</Label>
                                                         <div className="h-10 px-3 flex items-center bg-muted rounded-md text-sm font-medium">
                                                             {formatCurrency(
-                                                                item.qty *
-                                                                    item.price
+                                                                calculateLineItemTotal(item.qty, item.price)
                                                             )}
                                                         </div>
                                                     </div>
@@ -802,25 +843,30 @@ const CreateInvoiceModal = ({
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="flex flex-col gap-2">
                                     <Label htmlFor="taxRate">Tax Rate</Label>
-                                    <Input
-                                        id="taxRate"
-                                        type="number"
-                                        value={formData.taxRate}
-                                        onChange={(e) =>
-                                            setFormData({
-                                                ...formData,
-                                                taxRate:
-                                                    parseFloat(
-                                                        e.target.value
-                                                    ) || 0,
-                                            })
-                                        }
-                                        min="0"
-                                        step="0.1"
-                                        endIcon={
-                                            <Percent className="h-4 w-4" />
-                                        }
-                                    />
+                                    <Select
+                                        value={formData.taxId}
+                                        onValueChange={(value) => {
+                                            const selectedTax = allTaxes.find((t) => t.id === value);
+                                            if (selectedTax) {
+                                                setFormData({
+                                                    ...formData,
+                                                    taxId: value,
+                                                    taxRate: selectedTax.rate * 100,
+                                                });
+                                            }
+                                        }}
+                                    >
+                                        <SelectTrigger id="taxRate">
+                                            <SelectValue placeholder="Select Tax" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {allTaxes.map((tax) => (
+                                                <SelectItem key={tax.id} value={tax.id}>
+                                                    {tax.name} ({(tax.rate)}%)
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
                                 </div>
                                 <div className="flex flex-col gap-2">
                                     <Label htmlFor="discount">Discount</Label>
@@ -884,11 +930,11 @@ const CreateInvoiceModal = ({
                                         <span className="text-muted-foreground">
                                             Discount (
                                             {formData.discountType ===
-                                            'percentage'
+                                                'percentage'
                                                 ? `${formData.discount}%`
                                                 : formatCurrency(
-                                                      formData.discount
-                                                  )}
+                                                    formData.discount
+                                                )}
                                             )
                                         </span>
                                         <span className="font-medium text-destructive">
@@ -1260,8 +1306,7 @@ const CreateInvoiceModal = ({
                                                     </td>
                                                     <td className="py-3 text-right font-medium text-foreground">
                                                         {formatCurrency(
-                                                            item.qty *
-                                                                item.price
+                                                            calculateLineItemTotal(item.qty, item.price)
                                                         )}
                                                     </td>
                                                 </tr>
@@ -1286,11 +1331,11 @@ const CreateInvoiceModal = ({
                                         <span className="text-muted-foreground">
                                             Discount (
                                             {formData.discountType ===
-                                            'percentage'
+                                                'percentage'
                                                 ? `${formData.discount}%`
                                                 : formatCurrency(
-                                                      formData.discount
-                                                  )}
+                                                    formData.discount
+                                                )}
                                             )
                                         </span>
                                         <span className="text-destructive">

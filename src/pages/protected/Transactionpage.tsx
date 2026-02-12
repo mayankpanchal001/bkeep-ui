@@ -348,8 +348,8 @@ const Transactionpage = () => {
                         status === 'posted'
                             ? 'posted'
                             : status === 'voided'
-                              ? 'excluded'
-                              : 'pending'
+                                ? 'excluded'
+                                : 'pending'
                     }
                     onValueChange={(value) => {
                         if (value === 'pending') {
@@ -395,7 +395,6 @@ const Transactionpage = () => {
                     >
                         <DrawerTrigger asChild>
                             <Button
-                                variant="outline"
                                 className="flex-1 sm:flex-initial"
                             >
                                 <Filter className="mr-2 h-4 w-4" /> Filters
@@ -406,8 +405,8 @@ const Transactionpage = () => {
                                     filterStore.filterEndDate ||
                                     filterStore.filterMinAmount ||
                                     filterStore.filterMaxAmount) && (
-                                    <span className="ml-2 h-2 w-2 rounded-full bg-accent" />
-                                )}
+                                        <span className="ml-2 h-2 w-2 rounded-full bg-accent" />
+                                    )}
                             </Button>
                         </DrawerTrigger>
                         <DrawerContent className="h-full w-full sm:w-[400px]">
@@ -543,10 +542,10 @@ const Transactionpage = () => {
                                         onValueChange={(value) =>
                                             filterStore.setSort(
                                                 value as
-                                                    | 'date'
-                                                    | 'amount'
-                                                    | 'createdAt'
-                                                    | 'updatedAt',
+                                                | 'date'
+                                                | 'amount'
+                                                | 'createdAt'
+                                                | 'updatedAt',
                                                 filterStore.order
                                             )
                                         }
