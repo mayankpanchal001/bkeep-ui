@@ -52,15 +52,17 @@ export function Step4Results() {
         return null;
     }
 
-    const isSuccess = importResults.status === 'completed' && importResults.failed === 0;
+    const isSuccess =
+        importResults.status === 'completed' && importResults.failed === 0;
     const hasFailures = importResults.failed > 0;
     const hasSkipped = importResults.skipped > 0;
 
     return (
         <div className="flex flex-col items-center justify-center py-8 space-y-6 text-center">
             <div
-                className={`flex items-center justify-center w-16 h-16 rounded-full ${isSuccess ? 'bg-green-100' : 'bg-red-100'
-                    }`}
+                className={`flex items-center justify-center w-16 h-16 rounded-full ${
+                    isSuccess ? 'bg-green-100' : 'bg-red-100'
+                }`}
             >
                 {isSuccess ? (
                     <CheckCircle className="w-8 h-8 text-green-600" />
@@ -77,7 +79,7 @@ export function Step4Results() {
                     {isSuccess
                         ? 'Your chart of accounts has been successfully imported.'
                         : importResults.errorMessage ||
-                        'There were issues importing some accounts.'}
+                          'There were issues importing some accounts.'}
                 </p>
             </div>
 
@@ -99,24 +101,27 @@ export function Step4Results() {
                     </p>
                 </div>
                 <div
-                    className={`${hasSkipped || hasFailures
-                        ? 'bg-amber-50 border-amber-100'
-                        : 'bg-muted border-transparent'
-                        } p-4 rounded-lg border`}
+                    className={`${
+                        hasSkipped || hasFailures
+                            ? 'bg-amber-50 border-amber-100'
+                            : 'bg-muted border-transparent'
+                    } p-4 rounded-lg border`}
                 >
                     <p
-                        className={`text-2xl font-bold ${hasSkipped || hasFailures
-                            ? 'text-amber-600'
-                            : 'text-muted-foreground'
-                            }`}
+                        className={`text-2xl font-bold ${
+                            hasSkipped || hasFailures
+                                ? 'text-amber-600'
+                                : 'text-muted-foreground'
+                        }`}
                     >
                         {importResults.skipped + importResults.failed}
                     </p>
                     <p
-                        className={`text-xs uppercase tracking-wide ${hasSkipped || hasFailures
-                            ? 'text-amber-700/70'
-                            : 'text-muted-foreground'
-                            }`}
+                        className={`text-xs uppercase tracking-wide ${
+                            hasSkipped || hasFailures
+                                ? 'text-amber-700/70'
+                                : 'text-muted-foreground'
+                        }`}
                     >
                         Skipped/Failed
                     </p>
@@ -127,7 +132,10 @@ export function Step4Results() {
                 <div className="flex items-center gap-2 p-3 text-sm text-red-700 bg-red-50 rounded-lg max-w-md mx-auto">
                     <AlertTriangle className="w-4 h-4 shrink-0" />
                     <span>
-                        <span className="font-semibold">{importResults.failed}</span> accounts failed to import.
+                        <span className="font-semibold">
+                            {importResults.failed}
+                        </span>{' '}
+                        accounts failed to import.
                     </span>
                 </div>
             )}

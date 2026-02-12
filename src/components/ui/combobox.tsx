@@ -56,7 +56,7 @@ export function Combobox({
                     role="combobox"
                     aria-expanded={open}
                     className={cn(
-                        'h-8 w-full justify-between text-left font-normal',
+                        'w-full justify-between text-left font-normal',
                         className
                     )}
                     disabled={disabled}

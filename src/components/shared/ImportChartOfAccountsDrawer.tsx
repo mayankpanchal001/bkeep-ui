@@ -1,9 +1,5 @@
-
 import { ImportChartOfAccountsWizard } from '../chart-of-accounts/import-wizard/ImportChartOfAccountsWizard';
-import {
-    Drawer,
-    DrawerContent,
-} from '../ui/drawer';
+import { Drawer, DrawerContent } from '../ui/drawer';
 
 interface ImportChartOfAccountsDrawerProps {
     isOpen: boolean;
@@ -14,7 +10,6 @@ const ImportChartOfAccountsDrawer = ({
     isOpen,
     onClose,
 }: ImportChartOfAccountsDrawerProps) => {
-
     // Prevent closing on outside click or escape
     const handleOpenChange = (open: boolean) => {
         if (!open && isOpen) {

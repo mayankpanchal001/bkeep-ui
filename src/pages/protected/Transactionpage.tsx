@@ -394,10 +394,7 @@ const Transactionpage = () => {
                         direction="right"
                     >
                         <DrawerTrigger asChild>
-                            <Button
-                                variant="outline"
-                                className="flex-1 sm:flex-initial"
-                            >
+                            <Button className="flex-1 sm:flex-initial">
                                 <Filter className="mr-2 h-4 w-4" /> Filters
                                 {(filterStore.filterSupplier ||
                                     filterStore.filterCategory ||

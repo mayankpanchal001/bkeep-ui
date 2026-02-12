@@ -61,13 +61,18 @@ function WizardContent({ onClose }: ImportChartOfAccountsWizardProps) {
         onClose();
     };
 
-    const isLoading = state.isLoading || (state.importMethod === 'template' && isTemplatePreviewLoading);
+    const isLoading =
+        state.isLoading ||
+        (state.importMethod === 'template' && isTemplatePreviewLoading);
     const showBackButton = state.currentStep > 1 && state.currentStep < 4;
     const showNextButton = state.currentStep < 4;
     const showDoneButton = state.currentStep === 4 && !state.isLoading;
 
     const getNextButtonText = () => {
-        if (state.currentStep === 3) return state.importMethod === 'template' ? 'Apply Template' : 'Import';
+        if (state.currentStep === 3)
+            return state.importMethod === 'template'
+                ? 'Apply Template'
+                : 'Import';
         return 'Continue';
     };
 
@@ -157,7 +162,9 @@ function WizardContent({ onClose }: ImportChartOfAccountsWizardProps) {
     );
 }
 
-export function ImportChartOfAccountsWizard({ onClose }: ImportChartOfAccountsWizardProps) {
+export function ImportChartOfAccountsWizard({
+    onClose,
+}: ImportChartOfAccountsWizardProps) {
     return (
         <ImportChartOfAccountsWizardProvider>
             <WizardContent onClose={onClose} />

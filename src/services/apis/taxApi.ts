@@ -104,8 +104,7 @@ export async function getTaxes(filters?: TaxFilters): Promise<TaxListResponse> {
  * Get active taxes
  */
 export async function getActiveTaxes(): Promise<TaxListResponse> {
-    const response = await axiosInstance.get('/taxes/active');
-    return response.data;
+    return getTaxes({ isActive: true, limit: 1000 });
 }
 
 /**

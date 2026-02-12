@@ -1,4 +1,3 @@
-
 import { Download, FileSpreadsheet, LayoutTemplate } from 'lucide-react';
 import { useTemplates } from '../../../../services/apis/templatesApi';
 import { cn } from '../../../../utils/cn';
@@ -138,30 +137,29 @@ export function Step1MethodAndUpload() {
                         />
 
                         {/* File Info */}
-                        {state.selectedFile &&
-                            state.fileHeaders.length > 0 && (
-                                <div className="bg-muted/50 rounded-lg p-4">
-                                    <p className="text-sm font-medium text-primary mb-2">
-                                        File Analysis
-                                    </p>
-                                    <p className="text-sm text-muted-foreground">
-                                        Found {state.fileHeaders.length} columns:{' '}
-                                        <span className="text-foreground font-medium">
-                                            {state.fileHeaders
-                                                .slice(0, 5)
-                                                .join(', ')}
-                                            {state.fileHeaders.length > 5 &&
-                                                '...'}
-                                        </span>
-                                    </p>
-                                    <p className="text-sm text-muted-foreground mt-1">
-                                        {state.rawFileData.length > 1
-                                            ? `${state.rawFileData.length - 1
-                                            } data rows detected`
-                                            : 'No data rows detected'}
-                                    </p>
-                                </div>
-                            )}
+                        {state.selectedFile && state.fileHeaders.length > 0 && (
+                            <div className="bg-muted/50 rounded-lg p-4">
+                                <p className="text-sm font-medium text-primary mb-2">
+                                    File Analysis
+                                </p>
+                                <p className="text-sm text-muted-foreground">
+                                    Found {state.fileHeaders.length} columns:{' '}
+                                    <span className="text-foreground font-medium">
+                                        {state.fileHeaders
+                                            .slice(0, 5)
+                                            .join(', ')}
+                                        {state.fileHeaders.length > 5 && '...'}
+                                    </span>
+                                </p>
+                                <p className="text-sm text-muted-foreground mt-1">
+                                    {state.rawFileData.length > 1
+                                        ? `${
+                                              state.rawFileData.length - 1
+                                          } data rows detected`
+                                        : 'No data rows detected'}
+                                </p>
+                            </div>
+                        )}
 
                         <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between bg-muted/30 p-4 rounded-lg">
                             <div>
@@ -241,8 +239,6 @@ export function Step1MethodAndUpload() {
                                 </p>
                             )}
                         </div>
-
-
                     </div>
                 )}
             </div>
