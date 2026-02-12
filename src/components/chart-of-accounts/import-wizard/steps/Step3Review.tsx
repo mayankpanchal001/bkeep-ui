@@ -1,4 +1,3 @@
-
 import { AlertTriangle } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 import { Alert, AlertDescription, AlertTitle } from '../../../ui/alert';
@@ -8,8 +7,12 @@ import { useImportChartOfAccountsWizard } from '../useImportChartOfAccountsWizar
 
 export function Step3Review() {
     const { state, actions } = useImportChartOfAccountsWizardContext();
-    const { prepareReview, importFields, templatePreviewData, isTemplatePreviewLoading } =
-        useImportChartOfAccountsWizard();
+    const {
+        prepareReview,
+        importFields,
+        templatePreviewData,
+        isTemplatePreviewLoading,
+    } = useImportChartOfAccountsWizard();
     const hasInitialized = useRef(false);
 
     // Parse accounts when entering this step (only once for file)
@@ -23,7 +26,9 @@ export function Step3Review() {
     if (state.importMethod === 'template' && isTemplatePreviewLoading) {
         return (
             <div className="flex justify-center p-8">
-                <span className="text-muted-foreground">Loading template preview...</span>
+                <span className="text-muted-foreground">
+                    Loading template preview...
+                </span>
             </div>
         );
     }
@@ -35,19 +40,21 @@ export function Step3Review() {
     if (state.importMethod === 'template') {
         isReadOnly = true;
         if (templatePreviewData?.data?.accounts) {
-            accountsToDisplay = templatePreviewData.data.accounts.map((acc, index) => ({
-                id: `template-acc-${index}`,
-                rawData: acc as unknown as Record<string, unknown>,
-                // Map template fields to standard keys
-                accountNumber: acc.accountNumber,
-                accountName: acc.accountName,
-                accountType: acc.accountType,
-                accountDetailType: acc.accountDetailType,
-                description: acc.description,
-                openingBalance: acc.openingBalance,
-                currencyCode: acc.currencyCode,
-                // ... other fields
-            }));
+            accountsToDisplay = templatePreviewData.data.accounts.map(
+                (acc, index) => ({
+                    id: `template-acc-${index}`,
+                    rawData: acc as unknown as Record<string, unknown>,
+                    // Map template fields to standard keys
+                    accountNumber: acc.accountNumber,
+                    accountName: acc.accountName,
+                    accountType: acc.accountType,
+                    accountDetailType: acc.accountDetailType,
+                    description: acc.description,
+                    openingBalance: acc.openingBalance,
+                    currencyCode: acc.currencyCode,
+                    // ... other fields
+                })
+            );
         }
     }
 
@@ -73,8 +80,8 @@ export function Step3Review() {
                         Before you import
                     </AlertTitle>
                     <AlertDescription className="text-amber-700">
-                        Please review the accounts below. Ensure columns are mapped
-                        correctly.
+                        Please review the accounts below. Ensure columns are
+                        mapped correctly.
                     </AlertDescription>
                 </Alert>
             )}
@@ -87,7 +94,11 @@ export function Step3Review() {
                 onSelectAll={actions.selectAllAccounts}
                 onDeselectAll={actions.deselectAllAccounts}
                 importFields={importFields}
-                mappedFields={state.importMethod === 'file' ? state.fieldMappings : undefined}
+                mappedFields={
+                    state.importMethod === 'file'
+                        ? state.fieldMappings
+                        : undefined
+                }
                 readOnly={isReadOnly}
             />
 
@@ -125,36 +136,46 @@ export function Step3Review() {
             )}
 
             {/* For Template Summary */}
-            {state.importMethod === 'template' && templatePreviewData?.data?.summary && (
-                <div className="bg-muted/50 rounded-lg p-4">
-                    <div className="grid grid-cols-3 gap-4 text-center">
-                        <div>
-                            <p className="text-2xl font-bold text-primary">
-                                {templatePreviewData.data.summary.totalAccounts}
-                            </p>
-                            <p className="text-xs text-muted-foreground">
-                                Total Accounts
-                            </p>
-                        </div>
-                        <div>
-                            <p className="text-2xl font-bold text-green-600">
-                                {templatePreviewData.data.summary.newAccounts}
-                            </p>
-                            <p className="text-xs text-muted-foreground">
-                                New Accounts
-                            </p>
-                        </div>
-                        <div>
-                            <p className="text-2xl font-bold text-amber-600">
-                                {templatePreviewData.data.summary.skippedAccounts}
-                            </p>
-                            <p className="text-xs text-muted-foreground">
-                                Will separate/skipped
-                            </p>
+            {state.importMethod === 'template' &&
+                templatePreviewData?.data?.summary && (
+                    <div className="bg-muted/50 rounded-lg p-4">
+                        <div className="grid grid-cols-3 gap-4 text-center">
+                            <div>
+                                <p className="text-2xl font-bold text-primary">
+                                    {
+                                        templatePreviewData.data.summary
+                                            .totalAccounts
+                                    }
+                                </p>
+                                <p className="text-xs text-muted-foreground">
+                                    Total Accounts
+                                </p>
+                            </div>
+                            <div>
+                                <p className="text-2xl font-bold text-green-600">
+                                    {
+                                        templatePreviewData.data.summary
+                                            .newAccounts
+                                    }
+                                </p>
+                                <p className="text-xs text-muted-foreground">
+                                    New Accounts
+                                </p>
+                            </div>
+                            <div>
+                                <p className="text-2xl font-bold text-amber-600">
+                                    {
+                                        templatePreviewData.data.summary
+                                            .skippedAccounts
+                                    }
+                                </p>
+                                <p className="text-xs text-muted-foreground">
+                                    Will separate/skipped
+                                </p>
+                            </div>
                         </div>
                     </div>
-                </div>
-            )}
+                )}
         </div>
     );
 }

@@ -1,4 +1,3 @@
-
 import { FileSpreadsheet, Upload } from 'lucide-react';
 import { useCallback, useRef, useState } from 'react';
 import { cn } from '../../../../utils/cn';
@@ -79,8 +78,8 @@ export function FileDropzone({
                 'relative flex flex-col items-center justify-center w-full h-48 border-2 border-dashed rounded-lg transition-colors cursor-pointer',
                 dragActive && 'border-primary bg-primary/10',
                 !dragActive &&
-                !selectedFile &&
-                'border-primary/25 hover:border-primary/50 hover:bg-card',
+                    !selectedFile &&
+                    'border-primary/25 hover:border-primary/50 hover:bg-card',
                 selectedFile && 'bg-primary/5 border-primary',
                 isLoading && 'opacity-50 cursor-wait',
                 className

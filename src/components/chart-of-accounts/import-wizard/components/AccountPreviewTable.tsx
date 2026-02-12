@@ -1,4 +1,3 @@
-
 import { cn } from '@/utils/cn';
 import { Checkbox } from '../../../ui/checkbox';
 import { ImportField, ParsedAccount } from '../types';
@@ -57,7 +56,8 @@ export function AccountPreviewTable({
             {!readOnly && (
                 <div className="bg-muted/50 px-4 py-2 border-b border-border">
                     <span className="text-sm text-muted-foreground">
-                        {selectedIds.size} of {accounts.length} accounts selected
+                        {selectedIds.size} of {accounts.length} accounts
+                        selected
                     </span>
                 </div>
             )}
@@ -94,7 +94,9 @@ export function AccountPreviewTable({
                                     key={account.id}
                                     className={cn(
                                         'transition-colors hover:bg-muted/30',
-                                        isSelected && !readOnly && 'bg-accent/20'
+                                        isSelected &&
+                                            !readOnly &&
+                                            'bg-accent/20'
                                     )}
                                 >
                                     {!readOnly && (

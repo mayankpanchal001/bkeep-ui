@@ -31,7 +31,7 @@ import {
     Printer,
     Send,
     Trash2,
-    XCircle
+    XCircle,
 } from 'lucide-react';
 import { useMemo } from 'react';
 
@@ -48,12 +48,12 @@ const statusConfig: Record<
     {
         label: string;
         variant:
-        | 'default'
-        | 'secondary'
-        | 'destructive'
-        | 'outline'
-        | 'success'
-        | 'warning';
+            | 'default'
+            | 'secondary'
+            | 'destructive'
+            | 'outline'
+            | 'success'
+            | 'warning';
         icon: React.ReactNode;
     }
 > = {
@@ -148,7 +148,9 @@ const InvoiceDetailsDrawer = ({
             <SheetContent className="w-[400px] sm:w-[540px] p-0 flex flex-col gap-0">
                 <SheetHeader className="px-6 py-4 border-b border-border flex flex-row items-center justify-between space-y-0">
                     <SheetTitle>
-                        {isLoading ? 'Loading...' : `Invoice ${invoice?.invoiceNumber}`}
+                        {isLoading
+                            ? 'Loading...'
+                            : `Invoice ${invoice?.invoiceNumber}`}
                     </SheetTitle>
                 </SheetHeader>
 
@@ -167,9 +169,7 @@ const InvoiceDetailsDrawer = ({
                                             variant={statusInfo.variant}
                                             className="gap-1.5"
                                         >
-                                            {
-                                                statusInfo.icon
-                                            }
+                                            {statusInfo.icon}
                                             {statusInfo.label}
                                         </Badge>
                                         {invoice.status === 'overdue' && (
@@ -185,7 +185,7 @@ const InvoiceDetailsDrawer = ({
                                         <h2 className="text-4xl font-bold tracking-tight">
                                             {currencyFormatter.format(
                                                 invoice.balanceRemaining ||
-                                                invoice.totalAmount
+                                                    invoice.totalAmount
                                             )}
                                         </h2>
                                     </div>
@@ -261,17 +261,19 @@ const InvoiceDetailsDrawer = ({
                                                 className="relative pl-6"
                                             >
                                                 <div
-                                                    className={`absolute -left-[9px] top-1 h-4 w-4 rounded-full border-2 ${step.completed
-                                                        ? 'bg-success border-success'
-                                                        : 'bg-background border-muted-foreground'
-                                                        }`}
+                                                    className={`absolute -left-[9px] top-1 h-4 w-4 rounded-full border-2 ${
+                                                        step.completed
+                                                            ? 'bg-success border-success'
+                                                            : 'bg-background border-muted-foreground'
+                                                    }`}
                                                 />
                                                 <div className="flex flex-col">
                                                     <span
-                                                        className={`text-sm font-medium ${step.completed
-                                                            ? 'text-foreground'
-                                                            : 'text-muted-foreground'
-                                                            }`}
+                                                        className={`text-sm font-medium ${
+                                                            step.completed
+                                                                ? 'text-foreground'
+                                                                : 'text-muted-foreground'
+                                                        }`}
                                                     >
                                                         {step.label}
                                                     </span>
@@ -392,10 +394,7 @@ const InvoiceDetailsDrawer = ({
                                 </DropdownMenuContent>
                             </DropdownMenu>
 
-                            <Button
-
-                                onClick={() => onEdit(invoice.id)}
-                            >
+                            <Button onClick={() => onEdit(invoice.id)}>
                                 <Edit className="w-4 h-4 mr-2" />
                                 Edit invoice
                             </Button>

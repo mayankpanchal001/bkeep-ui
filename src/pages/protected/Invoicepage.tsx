@@ -1,4 +1,6 @@
-import CreateInvoiceModal, { InvoiceFormData } from '@/components/invoice/CreateInvoiceModal';
+import CreateInvoiceModal, {
+    InvoiceFormData,
+} from '@/components/invoice/CreateInvoiceModal';
 import InvoiceDetailsDrawer from '@/components/invoice/InvoiceDetailsDrawer';
 import PageHeader from '@/components/shared/PageHeader';
 import { Badge } from '@/components/ui/badge';
@@ -63,12 +65,12 @@ const statusConfig: Record<
     {
         label: string;
         variant:
-        | 'default'
-        | 'secondary'
-        | 'destructive'
-        | 'outline'
-        | 'success'
-        | 'warning';
+            | 'default'
+            | 'secondary'
+            | 'destructive'
+            | 'outline'
+            | 'success'
+            | 'warning';
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         icon: any;
     }
@@ -105,7 +107,9 @@ const Invoicepage = () => {
     const [statusFilter, setStatusFilter] = useState<string>('all');
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [selectedItems, setSelectedItems] = useState<(string | number)[]>([]);
-    const [selectedInvoiceId, setSelectedInvoiceId] = useState<string | null>(null);
+    const [selectedInvoiceId, setSelectedInvoiceId] = useState<string | null>(
+        null
+    );
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
     const { data, isLoading } = useInvoices({
@@ -134,7 +138,10 @@ const Invoicepage = () => {
                         console.log('Saving draft:', data);
                         setShowCreateModal(false);
                     }}
-                    onSave={(data: InvoiceFormData, action: 'new' | 'close' | 'share') => {
+                    onSave={(
+                        data: InvoiceFormData,
+                        action: 'new' | 'close' | 'share'
+                    ) => {
                         if (!data.customer) {
                             toast.error('Please select a customer');
                             return;
@@ -157,7 +164,7 @@ const Invoicepage = () => {
                                 description: item.description || '',
                                 quantity: item.qty,
                                 rate: item.price,
-                                taxId: data.taxId // Use the selected global tax ID
+                                taxId: data.taxId, // Use the selected global tax ID
                             })),
                         };
 
@@ -169,14 +176,21 @@ const Invoicepage = () => {
                                 } else if (action === 'new') {
                                     // Reset form by re-mounting (simple approach)
                                     setShowCreateModal(false);
-                                    setTimeout(() => setShowCreateModal(true), 0);
+                                    setTimeout(
+                                        () => setShowCreateModal(true),
+                                        0
+                                    );
                                 } else if (action === 'share') {
                                     setShowCreateModal(false);
-                                    toast.info('Invoice saved. Share link feature coming soon.');
+                                    toast.info(
+                                        'Invoice saved. Share link feature coming soon.'
+                                    );
                                 }
                             },
                             onError: (error: Error) => {
-                                toast.error(`Failed to create invoice: ${error.message}`);
+                                toast.error(
+                                    `Failed to create invoice: ${error.message}`
+                                );
                             },
                         });
                     }}
@@ -193,7 +207,7 @@ const Invoicepage = () => {
                 },
                 onError: () => {
                     toast.error('Failed to delete invoice');
-                }
+                },
             });
         }
     };
@@ -235,34 +249,20 @@ const Invoicepage = () => {
                     <Plus className="w-4 h-4 mr-1" />
                     New Invoice
                 </Button>
-                <Select
-                    value={statusFilter}
-                    onValueChange={setStatusFilter}
-                >
+                <Select value={statusFilter} onValueChange={setStatusFilter}>
                     <SelectTrigger className="w-[180px]">
                         <Filter className="w-4 h-4 mr-2" />
                         <SelectValue placeholder="All Status" />
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectItem value="all">
-                            All
-                        </SelectItem>
-                        <SelectItem value="draft">
-                            Draft
-                        </SelectItem>
-                        <SelectItem value="sent">
-                            Sent
-                        </SelectItem>
-                        <SelectItem value="paid">
-                            Paid
-                        </SelectItem>
-                        <SelectItem value="overdue">
-                            Overdue
-                        </SelectItem>
+                        <SelectItem value="all">All</SelectItem>
+                        <SelectItem value="draft">Draft</SelectItem>
+                        <SelectItem value="sent">Sent</SelectItem>
+                        <SelectItem value="paid">Paid</SelectItem>
+                        <SelectItem value="overdue">Overdue</SelectItem>
                     </SelectContent>
                 </Select>
             </div>
-
 
             {/* Invoices Table */}
             <Table
@@ -329,7 +329,9 @@ const Invoicepage = () => {
                         />
                     ) : (
                         invoices.map((invoice) => {
-                            const config = statusConfig[invoice.status] || statusConfig.draft;
+                            const config =
+                                statusConfig[invoice.status] ||
+                                statusConfig.draft;
                             const statusVariant = config.variant;
 
                             return (
@@ -348,7 +350,8 @@ const Invoicepage = () => {
                                     </TableCell>
                                     <TableCell>
                                         <span className="text-foreground">
-                                            {invoice.clientName || invoice.customerName}
+                                            {invoice.clientName ||
+                                                invoice.customerName}
                                         </span>
                                     </TableCell>
                                     <TableCell>
@@ -425,7 +428,9 @@ const Invoicepage = () => {
                                                     className="text-destructive focus:text-destructive"
                                                     onClick={(e) => {
                                                         e.stopPropagation();
-                                                        handleDelete(invoice.id);
+                                                        handleDelete(
+                                                            invoice.id
+                                                        );
                                                     }}
                                                 >
                                                     <Trash2 className="w-4 h-4 mr-2" />

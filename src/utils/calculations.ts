@@ -1,4 +1,3 @@
-
 /**
  * Utility functions for invoice calculations
  * Handles floating point precision by rounding at appropriate steps
@@ -47,7 +46,9 @@ export const calculateInvoiceTotals = (
     // 1. Calculate Subtotal
     // Sum of rounded line item totals
     const subtotal = lineItems.reduce((sum, item) => {
-        return roundToTwoDecimals(sum + calculateLineItemTotal(item.qty, item.price));
+        return roundToTwoDecimals(
+            sum + calculateLineItemTotal(item.qty, item.price)
+        );
     }, 0);
 
     // 2. Calculate Discount Amount
@@ -70,7 +71,9 @@ export const calculateInvoiceTotals = (
 
     // 4. Calculate Tax Amount
     // Tax is applied to the taxable amount (post-discount)
-    const taxAmount = roundToTwoDecimals(taxableAmount * (taxRatePercentage / 100));
+    const taxAmount = roundToTwoDecimals(
+        taxableAmount * (taxRatePercentage / 100)
+    );
 
     // 5. Calculate Total Amount
     const totalAmount = roundToTwoDecimals(taxableAmount + taxAmount);

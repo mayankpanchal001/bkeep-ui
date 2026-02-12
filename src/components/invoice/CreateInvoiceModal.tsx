@@ -36,7 +36,10 @@ import { Textarea } from '@/components/ui/textarea';
 import { useContacts } from '@/services/apis/contactsApi';
 import { useTaxes } from '@/services/apis/taxApi';
 import { ContactAddress } from '@/types/contact';
-import { calculateInvoiceTotals, calculateLineItemTotal } from '@/utils/calculations';
+import {
+    calculateInvoiceTotals,
+    calculateLineItemTotal,
+} from '@/utils/calculations';
 import { cn } from '@/utils/cn';
 import {
     Building2,
@@ -55,7 +58,7 @@ import {
     Trash2,
     Upload,
     User,
-    X
+    X,
 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
@@ -186,7 +189,12 @@ const CreateInvoiceModal = ({
     }, [contactsData]);
 
     // Calculate totals
-    const { subtotal, discountAmount, taxAmount: totalTax, totalAmount: total } = useMemo(() => {
+    const {
+        subtotal,
+        discountAmount,
+        taxAmount: totalTax,
+        totalAmount: total,
+    } = useMemo(() => {
         return calculateInvoiceTotals(
             formData.lineItems,
             formData.discount,
@@ -329,7 +337,11 @@ const CreateInvoiceModal = ({
                     <div className="flex items-center">
                         <Button
                             className="rounded-r-none border-r border-primary-foreground/20"
-                            onClick={() => onSave ? onSave(formData, 'close') : onSendInvoice?.(formData)}
+                            onClick={() =>
+                                onSave
+                                    ? onSave(formData, 'close')
+                                    : onSendInvoice?.(formData)
+                            }
                             disabled={!canSend}
                         >
                             Save and close
@@ -344,13 +356,19 @@ const CreateInvoiceModal = ({
                                 </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
-                                <DropdownMenuItem onClick={() => onSave?.(formData, 'new')}>
+                                <DropdownMenuItem
+                                    onClick={() => onSave?.(formData, 'new')}
+                                >
                                     Save and new
                                 </DropdownMenuItem>
-                                <DropdownMenuItem onClick={() => onSave?.(formData, 'close')}>
+                                <DropdownMenuItem
+                                    onClick={() => onSave?.(formData, 'close')}
+                                >
                                     Save and close
                                 </DropdownMenuItem>
-                                <DropdownMenuItem onClick={() => onSave?.(formData, 'share')}>
+                                <DropdownMenuItem
+                                    onClick={() => onSave?.(formData, 'share')}
+                                >
                                     Save and share link
                                 </DropdownMenuItem>
                             </DropdownMenuContent>
@@ -509,7 +527,8 @@ const CreateInvoiceModal = ({
                                                     <div className="py-6 text-center text-sm text-muted-foreground">
                                                         Loading...
                                                     </div>
-                                                ) : filteredCustomers.length === 0 ? (
+                                                ) : filteredCustomers.length ===
+                                                  0 ? (
                                                     <CommandEmpty>
                                                         No customers found.
                                                     </CommandEmpty>
@@ -827,7 +846,10 @@ const CreateInvoiceModal = ({
                                                         <Label>Total</Label>
                                                         <div className="h-10 px-3 flex items-center bg-muted rounded-md text-sm font-medium">
                                                             {formatCurrency(
-                                                                calculateLineItemTotal(item.qty, item.price)
+                                                                calculateLineItemTotal(
+                                                                    item.qty,
+                                                                    item.price
+                                                                )
                                                             )}
                                                         </div>
                                                     </div>
@@ -846,12 +868,15 @@ const CreateInvoiceModal = ({
                                     <Select
                                         value={formData.taxId}
                                         onValueChange={(value) => {
-                                            const selectedTax = allTaxes.find((t) => t.id === value);
+                                            const selectedTax = allTaxes.find(
+                                                (t) => t.id === value
+                                            );
                                             if (selectedTax) {
                                                 setFormData({
                                                     ...formData,
                                                     taxId: value,
-                                                    taxRate: selectedTax.rate * 100,
+                                                    taxRate:
+                                                        selectedTax.rate * 100,
                                                 });
                                             }
                                         }}
@@ -861,8 +886,11 @@ const CreateInvoiceModal = ({
                                         </SelectTrigger>
                                         <SelectContent>
                                             {allTaxes.map((tax) => (
-                                                <SelectItem key={tax.id} value={tax.id}>
-                                                    {tax.name} ({(tax.rate)}%)
+                                                <SelectItem
+                                                    key={tax.id}
+                                                    value={tax.id}
+                                                >
+                                                    {tax.name} ({tax.rate}%)
                                                 </SelectItem>
                                             ))}
                                         </SelectContent>
@@ -930,11 +958,11 @@ const CreateInvoiceModal = ({
                                         <span className="text-muted-foreground">
                                             Discount (
                                             {formData.discountType ===
-                                                'percentage'
+                                            'percentage'
                                                 ? `${formData.discount}%`
                                                 : formatCurrency(
-                                                    formData.discount
-                                                )}
+                                                      formData.discount
+                                                  )}
                                             )
                                         </span>
                                         <span className="font-medium text-destructive">
@@ -1306,7 +1334,10 @@ const CreateInvoiceModal = ({
                                                     </td>
                                                     <td className="py-3 text-right font-medium text-foreground">
                                                         {formatCurrency(
-                                                            calculateLineItemTotal(item.qty, item.price)
+                                                            calculateLineItemTotal(
+                                                                item.qty,
+                                                                item.price
+                                                            )
                                                         )}
                                                     </td>
                                                 </tr>
@@ -1331,11 +1362,11 @@ const CreateInvoiceModal = ({
                                         <span className="text-muted-foreground">
                                             Discount (
                                             {formData.discountType ===
-                                                'percentage'
+                                            'percentage'
                                                 ? `${formData.discount}%`
                                                 : formatCurrency(
-                                                    formData.discount
-                                                )}
+                                                      formData.discount
+                                                  )}
                                             )
                                         </span>
                                         <span className="text-destructive">

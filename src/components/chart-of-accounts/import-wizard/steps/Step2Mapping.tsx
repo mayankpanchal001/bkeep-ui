@@ -1,4 +1,3 @@
-
 import { ArrowRight } from 'lucide-react';
 import {
     Select,
@@ -20,9 +19,7 @@ export function Step2Mapping() {
     if (isLoadingFields) {
         return (
             <div className="flex items-center justify-center p-8">
-                <span className="text-muted-foreground">
-                    Loading fields...
-                </span>
+                <span className="text-muted-foreground">Loading fields...</span>
             </div>
         );
     }
@@ -90,10 +87,11 @@ export function Step2Mapping() {
                                         }
                                     >
                                         <SelectTrigger
-                                            className={`w-full ${isMapped
-                                                ? 'border-primary/50 bg-primary/5'
-                                                : ''
-                                                }`}
+                                            className={`w-full ${
+                                                isMapped
+                                                    ? 'border-primary/50 bg-primary/5'
+                                                    : ''
+                                            }`}
                                         >
                                             <SelectValue placeholder="Select column..." />
                                         </SelectTrigger>
@@ -114,8 +112,6 @@ export function Step2Mapping() {
                     })}
                 </div>
             </div>
-
-
         </div>
     );
 }
